@@ -271,7 +271,7 @@ public class GameController : MonoBehaviour
         holdButton.enabled = false;
         LineObj.gameObject.SetActive(true);
         holdButtonEvent.enabled = false;
-
+        slider.gameObject.SetActive(false);
         // DoTween Text in Sequence
         Sequence sequence = DOTween.Sequence();
 
@@ -279,7 +279,7 @@ public class GameController : MonoBehaviour
 
         // Add the first scale animation and move animation to the sequence
         sequence.Append(txtObj.DOScale(new Vector3(1.7f, 1.7f, 1.7f), timeLength).SetEase(Ease.InOutSine))
-                .Join(txtObj.DOMove(new Vector3(0f, -1.5f, 0f), timeLength).SetEase(Ease.InOutSine))
+                .Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), 1.3f).SetEase(Ease.InOutSine))
                 .Join(LineImg.DOColor(new Color32(255, 255, 255, 255), timeLength).SetEase(Ease.Linear));
 
         // Add a delay of 1 second
@@ -287,6 +287,7 @@ public class GameController : MonoBehaviour
 
         // Add the second scale animation to the sequence
         sequence.Append(txtObj.DOScale(new Vector3(0f, 0f, 0f), timeLength))
+                //.Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), timeLength).SetEase(Ease.InOutSine))
                 .Join(LineImg.DOColor(new Color32(255, 255, 255, 0), timeLength).SetEase(Ease.Linear));
         // Start the sequence
         sequence.Play();
