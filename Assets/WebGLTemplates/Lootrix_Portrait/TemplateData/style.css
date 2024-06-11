@@ -1,0 +1,110 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  /* fix mobile viewport menu bar on iOS */
+  height: -webkit-fill-available;
+}
+
+body {
+  height: 100%;
+  /* fix mobile viewport menu bar on iOS */
+  height: -webkit-fill-available;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+
+#unity-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+}
+
+#unity-canvas {
+  width: 100%;
+  height: 100%;
+
+  background: {
+      {
+        {
+        BACKGROUND_COLOR
+      }
+    }
+  }
+}
+
+#unity-loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none
+}
+
+#unity-logo {
+  width: 351px;
+  height: 130px;
+  background: url(../TemplateData/logo.svg);
+  background-size: 100% 65%;
+  background-repeat: no-repeat;
+}
+
+#unity-progress-bar-empty {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  height: 4px;
+  /* margin-top: 10px; */
+  /* border: 2px solid white; */
+  position: relative;
+  border-radius: 30px;
+  top: -25px;
+  background: rgba(88, 88, 88, 1);
+}
+
+#unity-progress-bar-full {
+  width: 0%;
+  height: 4px;
+  margin-top: 0px;
+  background: white;
+}
+
+
+#unity-warning {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%);
+  background: white;
+  padding: 10px;
+  display: none
+}
+
+/*For Portrait */
+@media (min-aspect-ratio: 9/16) {
+  #unity-canvas {
+    width: auto;
+    height: 100%;
+    aspect-ratio: 9/16;
+  }
+}
+
+/*For Landscape 
+@media (max-aspect-ratio: 16/9) {
+    #unity-canvas {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+    }
+  }
+
+  */
