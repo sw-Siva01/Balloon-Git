@@ -24,7 +24,11 @@ public class GameController : MonoBehaviour
     [SerializeField] Button TakeCashbutton;
     [SerializeField] Button holdButton;
     //UI bet Buttons
-    [SerializeField] Button button_5, button_25, button_50, button_100;
+    [SerializeField] Button button_1, button_2, button_5, button_10;
+    [SerializeField] Button plusButton, minusButton;
+
+    //UI bet Buttons Imgaes
+    [SerializeField] Image plusButtomImg, minusButtonImg;
 
     [SerializeField] EventTrigger holdButtonEvent;
 
@@ -35,6 +39,8 @@ public class GameController : MonoBehaviour
     private bool takeBetAmount;
     private bool lost;
     private bool take;
+    private bool enter;
+
 
     // TextMeshProUGUI
     [SerializeField] TextMeshProUGUI multiplierTxt;
@@ -101,7 +107,7 @@ public class GameController : MonoBehaviour
                 slider.gameObject.SetActive(true);
 
                 countTime -= 1f * Time.deltaTime;
-                
+
                 slider.value = countTime;
 
                 if (countTime >= 0)
@@ -144,7 +150,7 @@ public class GameController : MonoBehaviour
             if (isPressed)
             {
                 startGame = true;
-              
+
                 if (timeSinceLastIncrement >= incrementInterval)
                 {
                     IncrementMultiplier();
@@ -169,7 +175,7 @@ public class GameController : MonoBehaviour
                     }
                 }
             }
-            
+
             // Check if the timer has reached 7 seconds and no button is pressed
             else if (timeSinceLastIncrement >= 7f)
             {
@@ -193,6 +199,8 @@ public class GameController : MonoBehaviour
     public void OnClickDown()
     {
         isPressed = true;
+        Debug.Log(":::::::::: 1 :::::::::::");
+
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
     }
     public void OnClickUp()
@@ -200,6 +208,29 @@ public class GameController : MonoBehaviour
         isPressed = false;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
     }
+    //public void OnEnter()
+    //{
+    //    //StartCoroutine(nameof(starrCort));
+    //    isPressed = true;
+    //}
+
+    public void OnExit()
+    {
+        //StopCoroutine(nameof(starrCort));
+        isPressed = false;
+    }
+
+    /*public IEnumerator starrCort()
+    {
+        while (true)
+        {
+            isPressed = false;
+            ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+            Debug.Log(":::::::::: 2 :::::::::::");
+            yield return null;
+        }
+
+    }*/
     void StartOfTheGame()
     {
         if (multiplier >= 1.01 && !lost)
@@ -262,7 +293,7 @@ public class GameController : MonoBehaviour
         WinAmount = takeCash;
         // Change the text color
         multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
-        multiplierTxt.color = Color.blue;
+        multiplierTxt.color = Color.green;
         winAmountTxt.gameObject.SetActive(true);
         winAmountTxt.text = WinAmount.ToString("+" + "0.00");
         TotalAmount += WinAmount;
@@ -321,10 +352,10 @@ public class GameController : MonoBehaviour
         txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
         txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);
 
+        button_1.gameObject.SetActive(false);
+        button_2.gameObject.SetActive(false);
         button_5.gameObject.SetActive(false);
-        button_25.gameObject.SetActive(false);
-        button_50.gameObject.SetActive(false);
-        button_100.gameObject.SetActive(false);
+        button_10.gameObject.SetActive(false);
     }
     void ResetBets()
     {
@@ -339,72 +370,185 @@ public class GameController : MonoBehaviour
     }
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
+    public void BetButton_1()
+    {
+        if (!startGame)
+        {
+            betAmount = 1f;
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+            button_1.gameObject.SetActive(true);
+            button_2.gameObject.SetActive(false);
+            button_5.gameObject.SetActive(false);
+            button_10.gameObject.SetActive(false);
+
+            plusButton.enabled = true;
+            minusButton.enabled = true;
+            plusButtomImg.color = new Color32(255, 255, 255, 255);
+            minusButtonImg.color = new Color32(255, 255, 255, 255);
+        }
+    }
+    public void BetButton_2()
+    {
+        if (!startGame)
+        {
+            betAmount = 2f;
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+            button_1.gameObject.SetActive(false);
+            button_2.gameObject.SetActive(true);
+            button_5.gameObject.SetActive(false);
+            button_10.gameObject.SetActive(false);
+
+            plusButton.enabled = true;
+            minusButton.enabled = true;
+            plusButtomImg.color = new Color32(255, 255, 255, 255);
+            minusButtonImg.color = new Color32(255, 255, 255, 255);
+        }
+    }
     public void BetButton_5()
     {
         if (!startGame)
         {
             betAmount = 5f;
             betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+            button_1.gameObject.SetActive(false);
+            button_2.gameObject.SetActive(false);
             button_5.gameObject.SetActive(true);
-            button_25.gameObject.SetActive(false);
-            button_50.gameObject.SetActive(false);
-            button_100.gameObject.SetActive(false);
+            button_10.gameObject.SetActive(false);
+
+            plusButton.enabled = true;
+            minusButton.enabled = true;
+            plusButtomImg.color = new Color32(255, 255, 255, 255);
+            minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
     }
-    public void BetButton_25()
+    public void BetButton_10()
     {
         if (!startGame)
         {
-            betAmount = 25f;
+            betAmount = 10f;
             betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+            button_1.gameObject.SetActive(false);
+            button_2.gameObject.SetActive(false);
             button_5.gameObject.SetActive(false);
-            button_25.gameObject.SetActive(true);
-            button_50.gameObject.SetActive(false);
-            button_100.gameObject.SetActive(false);
+            button_10.gameObject.SetActive(true);
+
+            plusButton.enabled = true;
+            minusButton.enabled = true;
+            plusButtomImg.color = new Color32(255, 255, 255, 255);
+            minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
     }
-    public void BetButton_50()
+
+    // Select bet buttons
+    public void SelectBetButton_1()
     {
         if (!startGame)
         {
-            betAmount = 50f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
-            button_5.gameObject.SetActive(false);
-            button_25.gameObject.SetActive(false);
-            button_50.gameObject.SetActive(true);
-            button_100.gameObject.SetActive(false);
+            if (betAmount < 100f)
+            {
+                betAmount += 1f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = true;
+                minusButton.enabled = true;
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
+            }
+
+            if (betAmount >= 100)
+            {
+                betAmount = 100f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
+            }
         }
     }
-    public void BetButton_100()
+    public void SelectBetButton_2()
     {
         if (!startGame)
         {
-            betAmount = 100f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
-            button_5.gameObject.SetActive(false);
-            button_25.gameObject.SetActive(false);
-            button_50.gameObject.SetActive(false);
-            button_100.gameObject.SetActive(true);
+            if (betAmount < 100f)
+            {
+                betAmount += 2f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = true;
+                minusButton.enabled = true;
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
+            }
+
+            if (betAmount >= 100)
+            {
+                betAmount = 100f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
+            }
+        }
+    }
+    public void SelectBetButton_5()
+    {
+        if (!startGame)
+        {
+            if (betAmount < 100f)
+            {
+                betAmount += 5f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = true;
+                minusButton.enabled = true;
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
+            }
+
+            if (betAmount >= 100)
+            {
+                betAmount = 100f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
+            }
+        }
+    }
+    public void SelectBetButton_10()
+    {
+        if (!startGame)
+        {
+            if (betAmount < 100f)
+            {
+                betAmount += 10f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = true;
+                minusButton.enabled = true;
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
+            }
+
+            if (betAmount >= 100)
+            {
+                betAmount = 100f;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
+            }
         }
     }
     public void PlusButton()
     {
         if (!startGame)
         {
-            if (betAmount == 5f)
+            if (betAmount < 100)
             {
-                betAmount = 25f;
+                betAmount += 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                minusButton.enabled = true;
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
             }
-            else if (betAmount == 25f)
-            {
-                betAmount = 50f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
-            }
-            else if (betAmount == 50f)
+            if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
         }
     }
@@ -412,20 +556,18 @@ public class GameController : MonoBehaviour
     {
         if (!startGame)
         {
-            if (betAmount == 100f)
+            if (betAmount > 0.10f)
             {
-                betAmount = 50f;
+                betAmount -= 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
             }
-            else if (betAmount == 50f)
+            if (betAmount <= 0.10f)
             {
-                betAmount = 25f;
+                betAmount = 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
-            }
-            else if (betAmount == 25f)
-            {
-                betAmount = 5f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+                minusButton.enabled = false;
+                minusButtonImg.color = new Color32(255, 255, 255, 120);
             }
         }
     }
