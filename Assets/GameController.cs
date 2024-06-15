@@ -9,6 +9,7 @@ using DG.Tweening;
 public class GameController : MonoBehaviour
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
+    [Header("Float")]
     [SerializeField] float betAmount = 5f;  // Initial bet amount
     [SerializeField] float multiplier = 0.00f;  // Initial multiplier value
     [SerializeField] float incrementRate = 1.01f;  // Increment rate
@@ -21,28 +22,39 @@ public class GameController : MonoBehaviour
     private float WinAmount = 0;
     [SerializeField] float TotalAmount = 250.00f;  // Total Amount
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Buttons")]
     [SerializeField] Button TakeCashbutton;
     [SerializeField] Button holdButton;
     //UI bet Buttons
+    [Header("UI bet Buttons")]
     [SerializeField] Button button_1, button_2, button_5, button_10;
     [SerializeField] Button plusButton, minusButton;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     //UI bet Buttons Imgaes
+    [Header("UI bet Buttons Imgaes")]
     [SerializeField] Image plusButtomImg, minusButtonImg;
 
     [SerializeField] EventTrigger holdButtonEvent;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // Boolean
-    public bool startGame;
-    public bool isPressed;
+    [Header("Boolean")]
+    private bool startGame;
+    private bool isPressed;
     private bool isOnMouse;
     private bool takeBetAmount;
     private bool lost;
     private bool take;
-    private bool enter;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // TextMeshProUGUI
+    [Header("TextMeshProUGUI")]
     [SerializeField] TextMeshProUGUI multiplierTxt;
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI winAmountTxt;
@@ -50,29 +62,59 @@ public class GameController : MonoBehaviour
     // UI Bet Amount txt
     [SerializeField] TextMeshProUGUI betAmountTxt;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // UI background Image
+    [Header("UI background Image")]
     [SerializeField] RectTransform background;
     [SerializeField] float parallaxAmount = 2000f;
     [SerializeField] float smoothness = 0.05f; // Adjust this value to control smoothness
     private Vector3 initialBackgroundPosition;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // Balloon Image
+    [Header("Balloon Image")]
     [SerializeField] float speed = 1.0f;
     [SerializeField] RectTransform target;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // Sliders
+    [Header("Sliders")]
     [SerializeField] Slider slider;
     [SerializeField] float countTime;
     private bool timeout;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // DoTween Text
+    [Header("DoTween Text")]
     [SerializeField] RectTransform txtObj;
     [SerializeField] float timeLength = 1f;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     // DoTween Win_Images 
+    [Header("DoTween Win_Images")]
     [SerializeField] RectTransform LineObj;
     [SerializeField] Image LineImg;
     [SerializeField] float timeTween = 1f;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    // Bonus Reward Fill Img
+    [Header("Bonus Reward Fill Img")]
+    [SerializeField] float totalTime = 10f;  // Total time for the timer
+    private float timeRemaining;    // Time remaining for the timer
+    [SerializeField] Image timerBar;          // Reference to the UI Image representing the timer
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    // Bonuse Rewards Winning int
+    [Header("Bonuse Rewards Winning int")]
+    [SerializeField] float winCash;
+
     #endregion
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     private void Start()
@@ -90,6 +132,22 @@ public class GameController : MonoBehaviour
         slider.maxValue = 6f;
         slider.minValue = 0f;
         StartCoroutine(TimerCount());
+
+        // Bonus Reward Fill Img
+        timeRemaining = 0f; // Start the timer at 0
+        UpdateTimerUI(); // Initialize the UI
+        StartCoroutine(FillImg());
+    }
+    IEnumerator FillImg()
+    {
+        while (true)
+        {
+            if (timeRemaining == 10)
+            {
+                Debug.Log("%%%%%%%% &&&&&&&&& **********");
+            }
+            yield return null;
+        }
     }
     IEnumerator TimerCount()
     {
@@ -139,6 +197,7 @@ public class GameController : MonoBehaviour
             if (lost)
             {
                 target.anchoredPosition += Vector2.up * speed * Time.deltaTime;
+                holdButtonEvent.enabled = false;
             }
             if (take)
             {
@@ -147,7 +206,7 @@ public class GameController : MonoBehaviour
 
             StartOfTheGame();
 
-            if (isPressed)
+            if (isPressed && !lost)
             {
                 startGame = true;
 
@@ -166,12 +225,14 @@ public class GameController : MonoBehaviour
                     if (timeHeld >= Random.Range(minHoldTime, maxHoldTime))
                     {
                         // Bet is lost
+                        
                         ResetBets();
                         lost = true;
                         holdButton.enabled = false;
                         TakeCashbutton.enabled = false;
                         timeSinceLastIncrement = 0f; // Reset the timer
                         timeHeld = 0f; // Reset the time button is held
+                        winCash = 0f;
                     }
                 }
             }
@@ -199,8 +260,6 @@ public class GameController : MonoBehaviour
     public void OnClickDown()
     {
         isPressed = true;
-        Debug.Log(":::::::::: 1 :::::::::::");
-
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
     }
     public void OnClickUp()
@@ -208,29 +267,6 @@ public class GameController : MonoBehaviour
         isPressed = false;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
     }
-    //public void OnEnter()
-    //{
-    //    //StartCoroutine(nameof(starrCort));
-    //    isPressed = true;
-    //}
-
-    public void OnExit()
-    {
-        //StopCoroutine(nameof(starrCort));
-        isPressed = false;
-    }
-
-    /*public IEnumerator starrCort()
-    {
-        while (true)
-        {
-            isPressed = false;
-            ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
-            Debug.Log(":::::::::: 2 :::::::::::");
-            yield return null;
-        }
-
-    }*/
     void StartOfTheGame()
     {
         if (multiplier >= 1.01 && !lost)
@@ -323,6 +359,28 @@ public class GameController : MonoBehaviour
         // Start the sequence
         sequence.Play();
 
+
+        winCash++;
+
+        if (winCash == 3)
+        {
+            // Bonus Reward Fill Img
+            if (timeRemaining < totalTime)
+            {
+                timeRemaining += 2f; // increase time remaining
+                UpdateTimerUI(); // Update the UI
+            }
+            else
+            {
+                // Timer has reached the total time
+                timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
+                UpdateTimerUI(); // Update the UI to reflect that the timer is full
+                                 // Here you can add what should happen when the timer reaches total time
+            }
+
+            winCash = 0f;
+        }
+
         Invoke("TimeDelay", 2.5f);
     }
     void TimeDelay()
@@ -360,7 +418,6 @@ public class GameController : MonoBehaviour
     void ResetBets()
     {
         isPressed = false;
-        holdButtonEvent.enabled = false;
         startGame = false;
         multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
         // Change the text color
@@ -368,6 +425,19 @@ public class GameController : MonoBehaviour
 
         Invoke("TimeDelay", 1.5f);
     }
+
+    #region ::::::::::::::::::::::::::: Bonus Reward Fill Img :::::::::::::::::::::::::::
+    void UpdateTimerUI()
+    {
+        float fillAmount = timeRemaining / totalTime;
+        timerBar.fillAmount = fillAmount;
+    }
+    private void OnDisable()
+    {
+        timeRemaining = 0f; // Reset the timer
+        timerBar.fillAmount = 0; // Reset the UI
+    }
+    #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
     public void BetButton_1()
