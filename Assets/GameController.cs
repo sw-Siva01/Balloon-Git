@@ -112,8 +112,20 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // Bonuse Rewards Winning int
-    [Header("Bonuse Rewards Winning int")]
+    [Header("Bonus Rewards Winning int")]
     [SerializeField] float winCash;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    // Bonus GameObjects
+    [Header("Bonus GameObjects")]
+    [SerializeField] GameObject bonusObj;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    // ScrollView GameObjects
+    [Header("ScrollView GameObjects")]
+    [SerializeField] GameObject scrollViewObj;
 
     #endregion
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -375,7 +387,9 @@ public class GameController : MonoBehaviour
                 // Timer has reached the total time
                 timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
                 UpdateTimerUI(); // Update the UI to reflect that the timer is full
-                                 // Here you can add what should happen when the timer reaches total time
+                // Here you can add what should happen when the timer reaches total time
+                bonusObj.gameObject.SetActive(true);
+                scrollViewObj.SetActive(true);
             }
 
             winCash = 0f;
