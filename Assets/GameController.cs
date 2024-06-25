@@ -119,7 +119,7 @@ public class GameController : MonoBehaviour
 
     // Bonus GameObjects
     [Header("Bonus GameObjects")]
-    [SerializeField] GameObject bonusObj;
+    [SerializeField] RectTransform bonusObj;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -157,6 +157,7 @@ public class GameController : MonoBehaviour
             if (timeRemaining == 10)
             {
                 Debug.Log("%%%%%%%% &&&&&&&&& **********");
+                scrollViewObj.SetActive(true);
             }
             yield return null;
         }
@@ -379,6 +380,7 @@ public class GameController : MonoBehaviour
             // Bonus Reward Fill Img
             if (timeRemaining < totalTime)
             {
+                bonusObj.gameObject.SetActive(true);
                 timeRemaining += 2f; // increase time remaining
                 UpdateTimerUI(); // Update the UI
             }
@@ -388,8 +390,8 @@ public class GameController : MonoBehaviour
                 timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
                 UpdateTimerUI(); // Update the UI to reflect that the timer is full
                 // Here you can add what should happen when the timer reaches total time
-                bonusObj.gameObject.SetActive(true);
-                scrollViewObj.SetActive(true);
+                /*bonusObj.gameObject.SetActive(true);
+                scrollViewObj.SetActive(true);*/
             }
 
             winCash = 0f;
@@ -446,11 +448,11 @@ public class GameController : MonoBehaviour
         float fillAmount = timeRemaining / totalTime;
         timerBar.fillAmount = fillAmount;
     }
-    private void OnDisable()
+    /*private void OnDisable()
     {
         timeRemaining = 0f; // Reset the timer
         timerBar.fillAmount = 0; // Reset the UI
-    }
+    }*/
     #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }

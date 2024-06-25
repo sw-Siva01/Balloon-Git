@@ -26,9 +26,6 @@ public class InfiniteScroll : MonoBehaviour
         isUpdated = false;
         oldVelocity = Vector2.zero;
 
-        // Shuffle the ItemList
-        ShuffleItems();
-
         // Calculate the number of items needed to fill the viewport
         int itemsToAdd = Mathf.CeilToInt(viewPortTransform.rect.width / (ItemList[0].rect.width + HLG.spacing));
 
@@ -91,19 +88,22 @@ public class InfiniteScroll : MonoBehaviour
         // Handle automatic scrolling
         if (autoScroll)
         {
+            // Shuffle the children of the content panel
+            ShuffleContentChildren();
+
             StartCoroutine(AutoScrollForRandomTime());
             autoScroll = false;
         }
     }
 
-    private void ShuffleItems()
+    private void ShuffleContentChildren()
     {
-        for (int i = 0; i < ItemList.Length; i++)
+        int childCount = contentPanelTransform.childCount;
+        for (int i = 0; i < childCount; i++)
         {
-            int randomIndex = Random.Range(0, ItemList.Length);
-            RectTransform temp = ItemList[i];
-            ItemList[i] = ItemList[randomIndex];
-            ItemList[randomIndex] = temp;
+            Transform child = contentPanelTransform.GetChild(i);
+            int randomIndex = Random.Range(0, childCount);
+            child.SetSiblingIndex(randomIndex);
         }
     }
 
@@ -123,28 +123,37 @@ public class InfiniteScroll : MonoBehaviour
         {
             scrollRect.velocity = Vector2.Lerp(scrollRect.velocity, Vector2.zero, Time.deltaTime * decelerationRate);
             yield return null;
+        }
 
-            // Check if any item is centered
-            for (int i = 0; i < ItemList.Length; i++)
+        // Adjust to the nearest centered item after stopping
+        CenterOnClosestItem();
+    }
+
+    private void CenterOnClosestItem()
+    {
+        float closestDistance = float.MaxValue;
+        RectTransform closestItem = null;
+
+        foreach (RectTransform item in contentPanelTransform)
+        {
+            Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
+            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
+            float distance = Mathf.Abs(itemPos.x - targetPos.x);
+
+            if (distance < closestDistance)
             {
-                if (IsItemCentered(ItemList[i]))
-                {
-                    scrollRect.velocity = Vector2.zero;
-                    yield break;
-                }
+                closestDistance = distance;
+                closestItem = item;
             }
         }
 
-        scrollRect.velocity = Vector2.zero;
-    }
+        if (closestItem != null)
+        {
+            Vector3 closestItemPos = viewPortTransform.InverseTransformPoint(closestItem.position);
+            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
+            float adjustment = closestItemPos.x - targetPos.x;
 
-    private bool IsItemCentered(RectTransform item)
-    {
-        // Get the position of the item in the viewport
-        Vector3 itemPos = contentPanelTransform.InverseTransformPoint(item.position);
-        Vector3 targetPos = contentPanelTransform.InverseTransformPoint(targetPositionObject.transform.position);
-
-        // Check if the item's x position is close to the target position's x position
-        return Mathf.Abs(itemPos.x - targetPos.x) < 0.1f;
+            contentPanelTransform.localPosition -= new Vector3(adjustment, 0, 0);
+        }
     }
 }
