@@ -21,6 +21,8 @@ public class InfiniteScroll : MonoBehaviour
     public float minScrollTime = 4f;
     public float maxScrollTime = 6f;
 
+    public float slerpDuration = 1.0f; // Duration of the slerp for centering
+
     void Start()
     {
         isUpdated = false;
@@ -125,11 +127,14 @@ public class InfiniteScroll : MonoBehaviour
             yield return null;
         }
 
+        /*// Adjust to the nearest centered item after stopping
+        CenterOnClosestItem();*/
+
         // Adjust to the nearest centered item after stopping
-        CenterOnClosestItem();
+        StartCoroutine(CenterOnClosestItem());
     }
 
-    private void CenterOnClosestItem()
+    /*private void CenterOnClosestItem()
     {
         float closestDistance = float.MaxValue;
         RectTransform closestItem = null;
@@ -154,6 +159,55 @@ public class InfiniteScroll : MonoBehaviour
             float adjustment = closestItemPos.x - targetPos.x;
 
             contentPanelTransform.localPosition -= new Vector3(adjustment, 0, 0);
+        }
+    }*/
+
+    private bool IsItemCentered(RectTransform item)
+    {
+        // Get the position of the item and the target position in the viewport
+        Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
+        Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
+
+        // Check if the item's x position is close to the target position's x position
+        return Mathf.Abs(itemPos.x - targetPos.x) < 0.1f;
+    }
+
+    private IEnumerator CenterOnClosestItem()
+    {
+        float closestDistance = float.MaxValue;
+        RectTransform closestItem = null;
+
+        foreach (RectTransform item in contentPanelTransform)
+        {
+            Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
+            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
+            float distance = Mathf.Abs(itemPos.x - targetPos.x);
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestItem = item;
+            }
+        }
+
+        if (closestItem != null)
+        {
+            Vector3 closestItemPos = viewPortTransform.InverseTransformPoint(closestItem.position);
+            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
+            float adjustment = closestItemPos.x - targetPos.x;
+
+            Vector3 startPosition = contentPanelTransform.localPosition;
+            Vector3 endPosition = contentPanelTransform.localPosition - new Vector3(adjustment, 0, 0);
+            float elapsedTime = 0f;
+
+            while (elapsedTime < slerpDuration)
+            {
+                contentPanelTransform.localPosition = Vector3.Slerp(startPosition, endPosition, elapsedTime / slerpDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            contentPanelTransform.localPosition = endPosition;
         }
     }
 }

@@ -29,7 +29,10 @@ public class GameController : MonoBehaviour
     [SerializeField] Button holdButton;
     //UI bet Buttons
     [Header("UI bet Buttons")]
-    [SerializeField] Button button_1, button_2, button_5, button_10;
+    [SerializeField] Button button_1;
+    [SerializeField] Button button_2;
+    [SerializeField] Button button_5;
+    [SerializeField] Button button_10;
     [SerializeField] Button plusButton, minusButton;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -46,10 +49,9 @@ public class GameController : MonoBehaviour
     [Header("Boolean")]
     private bool startGame;
     private bool isPressed;
-    private bool isOnMouse;
     private bool takeBetAmount;
-    private bool lost;
-    private bool take;
+    public bool lost;
+    public bool take;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -65,11 +67,20 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // UI background Image
-    [Header("UI background Image")]
+    [Header("UI background Cloud Image")]
     [SerializeField] RectTransform background;
     [SerializeField] float parallaxAmount = 2000f;
     [SerializeField] float smoothness = 0.05f; // Adjust this value to control smoothness
     private Vector3 initialBackgroundPosition;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    // UI background Image
+    [Header("UI background Balloon Image")]
+    [SerializeField] RectTransform bg;
+    [SerializeField] float parallaxAmt = 10f;
+    [SerializeField] float smooth = 0.05f; // Adjust this value to control smoothness
+    private Vector3 iniBackgroundPos;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -207,6 +218,8 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
+            ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+
             if (lost)
             {
                 target.anchoredPosition += Vector2.up * speed * Time.deltaTime;
@@ -238,7 +251,7 @@ public class GameController : MonoBehaviour
                     if (timeHeld >= Random.Range(minHoldTime, maxHoldTime))
                     {
                         // Bet is lost
-                        
+
                         ResetBets();
                         lost = true;
                         holdButton.enabled = false;
@@ -274,11 +287,13 @@ public class GameController : MonoBehaviour
     {
         isPressed = true;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+        /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
     }
     public void OnClickUp()
     {
         isPressed = false;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+        /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
     }
     void StartOfTheGame()
     {
@@ -300,6 +315,7 @@ public class GameController : MonoBehaviour
         else if (isPressed && startGame && multiplier >= 1.01)
         {
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+            /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
             multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
             //holdButtonEvent.enabled = true;
             takeCash = betAmount * multiplier;
@@ -372,7 +388,6 @@ public class GameController : MonoBehaviour
         // Start the sequence
         sequence.Play();
 
-
         winCash++;
 
         if (winCash == 3)
@@ -414,8 +429,9 @@ public class GameController : MonoBehaviour
         take = false;
         lost = false;
         background.localPosition = initialBackgroundPosition;
+        bg.localPosition = iniBackgroundPos;
 
-        target.localPosition = new Vector3(0f, -37f, 0f);
+        target.localPosition = new Vector3(0f, -152f, 0f);
         LineObj.gameObject.SetActive(false);
 
         countTime = 0f;
@@ -666,5 +682,14 @@ public class GameController : MonoBehaviour
 
         // Smoothly interpolate towards the target position over time
         background.localPosition = Vector3.Lerp(background.localPosition, targetBackgroundPosition, Time.deltaTime * smoothness);
+    }
+    void ApplyBalloonParallaxEffect(float holdButtonYPos)
+    {
+        // Calculate the target position for the background
+        Vector3 targetBackgroundPosition = iniBackgroundPos;
+        targetBackgroundPosition.y += holdButtonYPos + parallaxAmt;
+
+        // Smoothly interpolate towards the target position over time
+        bg.localPosition = Vector3.Lerp(bg.localPosition, targetBackgroundPosition, Time.deltaTime * smooth);
     }
 }
