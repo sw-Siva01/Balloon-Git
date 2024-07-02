@@ -2,9 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using DG.Tweening;
+using Cysharp.Threading.Tasks;
 
 public class InfiniteScroll : MonoBehaviour
 {
+    #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
+    [Header("GameController Script")]
+    public GameController controller;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("ScrollView")]
     public ScrollRect scrollRect;
     public RectTransform viewPortTransform;
     public RectTransform contentPanelTransform;
@@ -12,17 +22,32 @@ public class InfiniteScroll : MonoBehaviour
     public RectTransform[] ItemList;
     public GameObject targetPositionObject; // Target position GameObject
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     private Vector2 oldVelocity;
     private bool isUpdated;
 
-    public bool autoScroll = false;
-    public float scrollSpeed = 200f;
-    public float decelerationRate = 0.1f;
-    public float minScrollTime = 4f;
-    public float maxScrollTime = 6f;
+    [SerializeField] bool autoScroll = false;
+    public int Count = 4;
+    public float bfloat;
+    public float BonusValue;
 
-    public float slerpDuration = 1.0f; // Duration of the slerp for centering
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
+    [Header("Float")]
+    [SerializeField] float scrollSpeed = 200f;
+    [SerializeField] float decelerationRate = 0.1f;
+    [SerializeField] float minScrollTime = 4f;
+    [SerializeField] float maxScrollTime = 6f;
+    [SerializeField] float slerpDuration = 1.0f; // Duration of the slerp for centering
+
+    public TextMeshProUGUI Bonus_Count_txt;
+
+    #endregion
+    private void OnEnable()
+    {
+        autoScroll = true;
+    }
     void Start()
     {
         isUpdated = false;
@@ -34,8 +59,8 @@ public class InfiniteScroll : MonoBehaviour
         // Add items to the end of the content panel
         for (int i = 0; i < itemsToAdd; i++)
         {
-            RectTransform rt = Instantiate(ItemList[i % ItemList.Length], contentPanelTransform);
-            rt.SetAsLastSibling();
+            /*RectTransform rt = Instantiate(ItemList[i % ItemList.Length], contentPanelTransform);
+            rt.SetAsLastSibling();*/
         }
 
         // Add items to the beginning of the content panel
@@ -57,7 +82,6 @@ public class InfiniteScroll : MonoBehaviour
             contentPanelTransform.localPosition.z
         );
     }
-
     void Update()
     {
         if (isUpdated)
@@ -97,7 +121,6 @@ public class InfiniteScroll : MonoBehaviour
             autoScroll = false;
         }
     }
-
     private void ShuffleContentChildren()
     {
         int childCount = contentPanelTransform.childCount;
@@ -108,15 +131,23 @@ public class InfiniteScroll : MonoBehaviour
             child.SetSiblingIndex(randomIndex);
         }
     }
-
     private IEnumerator AutoScrollForRandomTime()
     {
+        Bonus_Count_txt.text = Count.ToString();
+
         float scrollDuration = Random.Range(minScrollTime, maxScrollTime);
         float elapsedTime = 0f;
 
         while (elapsedTime < scrollDuration)
         {
-            contentPanelTransform.localPosition += new Vector3(scrollSpeed * Time.deltaTime, 0, 0);
+            if (Count == 2)
+            {
+                contentPanelTransform.localPosition -= new Vector3(scrollSpeed * Time.deltaTime, 0, 0);
+            }
+            else if (Count == 1 || Count == 3)
+            {
+                contentPanelTransform.localPosition += new Vector3(scrollSpeed * Time.deltaTime, 0, 0);
+            }
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -133,45 +164,6 @@ public class InfiniteScroll : MonoBehaviour
         // Adjust to the nearest centered item after stopping
         StartCoroutine(CenterOnClosestItem());
     }
-
-    /*private void CenterOnClosestItem()
-    {
-        float closestDistance = float.MaxValue;
-        RectTransform closestItem = null;
-
-        foreach (RectTransform item in contentPanelTransform)
-        {
-            Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
-            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
-            float distance = Mathf.Abs(itemPos.x - targetPos.x);
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestItem = item;
-            }
-        }
-
-        if (closestItem != null)
-        {
-            Vector3 closestItemPos = viewPortTransform.InverseTransformPoint(closestItem.position);
-            Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
-            float adjustment = closestItemPos.x - targetPos.x;
-
-            contentPanelTransform.localPosition -= new Vector3(adjustment, 0, 0);
-        }
-    }*/
-
-    private bool IsItemCentered(RectTransform item)
-    {
-        // Get the position of the item and the target position in the viewport
-        Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
-        Vector3 targetPos = viewPortTransform.InverseTransformPoint(targetPositionObject.transform.position);
-
-        // Check if the item's x position is close to the target position's x position
-        return Mathf.Abs(itemPos.x - targetPos.x) < 0.1f;
-    }
-
     private IEnumerator CenterOnClosestItem()
     {
         float closestDistance = float.MaxValue;
@@ -208,6 +200,107 @@ public class InfiniteScroll : MonoBehaviour
             }
 
             contentPanelTransform.localPosition = endPosition;
+
+            // Change the text color of the centered item
+            TextMeshProUGUI textComponent = closestItem.GetComponentInChildren<TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                /*textComponent.color = Color.green;*/ // Change to the desired color
+                controller.BonusRewardValue = textComponent.text.ToString();
+                ///
+                string input = controller.BonusRewardValue; // Replace with your actual input
+                string numericPart = input.TrimEnd('x'); // Remove the trailing 'x'
+
+                if (float.TryParse(numericPart, out bfloat))
+                {
+                    // Successfully parsed the numeric part to a float
+                    /*Debug.Log($"Parsed value: {bfloat}");*/
+                }
+                ///
+
+                BonusValue += bfloat;
+
+                controller.BonusRewardTxt.text = textComponent.text.ToString();
+                controller.BonusRewardTxt.color = Color.green;
+
+                /*if (Count == 1)
+                {
+                    Invoke("BounsAmount_Moves", 1f);
+                    Invoke("TimerDelay", 4f);
+
+                }
+                else if (Count > 0)
+                {
+                    Invoke("TimeDelay", 4f);
+                    Invoke("BounsAmount_Moves", 1f);
+                }*/
+                DelayFuction();
+            }
+        }
+    }
+    async void DelayFuction()
+    {
+        if (Count == 1)
+        {
+            await UniTask.Delay(1000); // wait for 1 seconds
+            BounsAmount_Moves();
+
+            await UniTask.Delay(4000); // wait for 4 seconds
+            TimerDelay();
+            controller.TakeCashOut();
+        }
+        else if (Count > 0)
+        {
+            await UniTask.Delay(1000); // wait for 1 seconds
+            BounsAmount_Moves();
+
+            await UniTask.Delay(4000); // wait for 4 seconds
+            TimeDelay();
+        }
+    }
+    void BounsAmount_Moves()
+    {
+        Count--;
+        // DoTween Text in Sequence
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(3f, 3f, 3f), 0.5f).SetEase(Ease.InOutSine))
+                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0f, 0f), 1f).SetEase(Ease.InOutSine));
+        // Add a delay of 1 second
+        sequence.AppendInterval(1f);
+
+        Invoke("Object_Delay", 1.6f);
+
+        sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(1.0008f, 1.0008f, 1.0008f), 0.5f).SetEase(Ease.InOutSine))
+                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 3.81f, 0f), 1f).SetEase(Ease.InOutSine));
+    }
+    void TimeDelay()
+    {
+        autoScroll = true;
+    }
+
+    void Object_Delay()
+    {
+        /*controller.multiplier += bfloat;
+        controller.multiplierTxt.text = controller.multiplier.ToString("0.00" + "<size=40>X</size>");*/
+        StartCoroutine(Add_BonusValue());
+        controller.BonusRewardTxt.text = null;
+    }
+    void TimerDelay()
+    {
+        controller.ScrollViewObj.SetActive(false);
+        controller.CenterBack_Img.SetActive(false);
+        controller.BonusRewardTxt.text = null;
+        Count = 3;
+    }
+
+    IEnumerator Add_BonusValue()
+    {
+        while (controller.multiplier < BonusValue)
+        {
+            controller.multiplier += BonusValue * Time.deltaTime;
+            controller.multiplierTxt.text = controller.multiplier.ToString("0.00");
+            yield return null;
         }
     }
 }

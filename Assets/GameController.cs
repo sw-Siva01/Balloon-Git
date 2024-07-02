@@ -5,13 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using Cysharp.Threading.Tasks;
 
 public class GameController : MonoBehaviour
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     [Header("Float")]
-    [SerializeField] float betAmount = 5f;  // Initial bet amount
-    [SerializeField] float multiplier = 0.00f;  // Initial multiplier value
+    [SerializeField] float betAmount = 1f;  // Initial bet amount
+    public float multiplier = 0.00f;  // Initial multiplier value
     [SerializeField] float incrementRate = 1.01f;  // Increment rate
     [SerializeField] float incrementInterval = 0.2f;  // Time interval between increments in seconds
     [SerializeField] float timeSinceLastIncrement = 0f;   // Timer to track time since last increment
@@ -21,12 +22,20 @@ public class GameController : MonoBehaviour
     [SerializeField] float takeCash;  // TakeCash
     private float WinAmount = 0;
     [SerializeField] float TotalAmount = 250.00f;  // Total Amount
+    public float bonusTimer;
+
+    /*[Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Script")]
+    [SerializeField] FireButton fireButton;*/
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Buttons")]
     [SerializeField] Button TakeCashbutton;
     [SerializeField] Button holdButton;
+    [SerializeField] Button holdButton_dup;
+    [SerializeField] Button empty_holdButton;
     //UI bet Buttons
     [Header("UI bet Buttons")]
     [SerializeField] Button button_1;
@@ -38,8 +47,9 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     //UI bet Buttons Imgaes
-    [Header("UI bet Buttons Imgaes")]
-    [SerializeField] Image plusButtomImg, minusButtonImg;
+    [Header("UI bet Buttons Images")]
+    [SerializeField] Image plusButtomImg;
+    [SerializeField] Image minusButtonImg;
 
     [SerializeField] EventTrigger holdButtonEvent;
 
@@ -48,16 +58,23 @@ public class GameController : MonoBehaviour
     // Boolean
     [Header("Boolean")]
     private bool startGame;
-    private bool isPressed;
+    public bool isPressed;
     private bool takeBetAmount;
+    public bool isSet;
+    public bool isFire;
     public bool lost;
     public bool take;
+    public bool isBonus_1;
+    public bool isBonus_2;
+    public bool isBonus_3;
+    public bool isNormal;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // TextMeshProUGUI
     [Header("TextMeshProUGUI")]
-    [SerializeField] TextMeshProUGUI multiplierTxt;
+    public TextMeshProUGUI multiplierTxt;
+    [SerializeField] TextMeshProUGUI Xtxt;
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI winAmountTxt;
     [SerializeField] TextMeshProUGUI totalAmountTxt;
@@ -88,6 +105,7 @@ public class GameController : MonoBehaviour
     [Header("Balloon Image")]
     [SerializeField] float speed = 1.0f;
     [SerializeField] RectTransform target;
+    [SerializeField] Vector3 targetPosition;  // To move the Target pos Up at the Start
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -125,6 +143,7 @@ public class GameController : MonoBehaviour
     // Bonuse Rewards Winning int
     [Header("Bonus Rewards Winning int")]
     [SerializeField] float winCash;
+    [SerializeField] float winCash_Demo;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -136,18 +155,22 @@ public class GameController : MonoBehaviour
 
     // ScrollView GameObjects
     [Header("ScrollView GameObjects")]
-    [SerializeField] GameObject scrollViewObj;
+    public GameObject ScrollViewObj;
+    public GameObject CenterBack_Img;
+    public string BonusRewardValue;
+    public float BonusRewardfloatValue;
+    public TextMeshProUGUI BonusRewardTxt;
 
     #endregion
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     private void Start()
     {
         // Set the initial multiplier text
-        multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         StartCoroutine(HolidngButtons());
         totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>EUR</size>");
-        TakeCashbutton.enabled = false;
-        TakeCashbutton.onClick.AddListener(TakeCashOut);
+        /*TakeCashbutton.enabled = false;
+        TakeCashbutton.onClick.AddListener(TakeCashOut);*/
         initialBackgroundPosition = background.localPosition;
 
         // Sliders
@@ -165,10 +188,9 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            if (timeRemaining == 10)
+            if (timeRemaining >= 10)
             {
-                Debug.Log("%%%%%%%% &&&&&&&&& **********");
-                scrollViewObj.SetActive(true);
+                isSet = true;
             }
             yield return null;
         }
@@ -224,16 +246,20 @@ public class GameController : MonoBehaviour
             {
                 target.anchoredPosition += Vector2.up * speed * Time.deltaTime;
                 holdButtonEvent.enabled = false;
+                empty_holdButton.gameObject.SetActive(true);
             }
             if (take)
             {
                 target.anchoredPosition += Vector2.up * speed * Time.deltaTime;
             }
-
+            FireButton();
             StartOfTheGame();
 
-            if (isPressed && !lost)
+            if (isPressed && isFire && !lost)
             {
+                // To move the Target pos Up at the Start
+                target.anchoredPosition = Vector3.Lerp(target.anchoredPosition, targetPosition, 0.2f * Time.deltaTime);
+
                 startGame = true;
 
                 if (timeSinceLastIncrement >= incrementInterval)
@@ -255,7 +281,7 @@ public class GameController : MonoBehaviour
                         ResetBets();
                         lost = true;
                         holdButton.enabled = false;
-                        TakeCashbutton.enabled = false;
+                        /*TakeCashbutton.enabled = false;*/
                         timeSinceLastIncrement = 0f; // Reset the timer
                         timeHeld = 0f; // Reset the time button is held
                         winCash = 0f;
@@ -278,37 +304,43 @@ public class GameController : MonoBehaviour
             yield return null;
         }
     }
-    public void HoldButton()
+    void FireButton()
     {
-        takeBetAmount = true;
-        betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
-    }
-    public void OnClickDown()
-    {
-        isPressed = true;
-        ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
-        /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
-    }
-    public void OnClickUp()
-    {
-        isPressed = false;
-        ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
-        /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
+        if (isFire)
+        {
+            holdButton.gameObject.SetActive(true);
+            holdButtonEvent.enabled = true;
+            holdButton_dup.gameObject.SetActive(false);
+        }
+        if (!isFire)
+        {
+            holdButtonEvent.enabled = false;
+            holdButton.gameObject.SetActive(false);
+            holdButton_dup.gameObject.SetActive(true);
+            OnClickUp();
+        }
+        if (!holdButton_dup.gameObject.activeSelf)
+        {
+            isSet = false;
+        }
     }
     void StartOfTheGame()
     {
         if (multiplier >= 1.01 && !lost)
         {
             holdButton.enabled = true;
-            TakeCashbutton.enabled = true;
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
+        }
+        if (multiplier >= 1.01 && !take)
+        {
+            TakeCashbutton.enabled = true;
         }
 
         if (startGame && multiplier < 1.01f)
         {
             multiplier += Time.deltaTime;
-            multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+            multiplierTxt.text = multiplier.ToString("0.00" /*+ "<size=40>X</size>"*/);
             /*isPressed = false;*/
             /*holdButtonEvent.enabled = false;*/
         }
@@ -316,7 +348,7 @@ public class GameController : MonoBehaviour
         {
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
             /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
-            multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+            multiplierTxt.text = multiplier.ToString("0.00" /*+ "<size=40>X</size>"*/);
             //holdButtonEvent.enabled = true;
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
@@ -343,7 +375,7 @@ public class GameController : MonoBehaviour
             // Increase the multiplier by the increment rate
             multiplier *= incrementRate;
             // Update the multiplier text
-            multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+            multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
 
             // Calculate the win amount
             takeCash = betAmount * multiplier;
@@ -351,23 +383,25 @@ public class GameController : MonoBehaviour
             takeCashTxt.text = takeCash.ToString("0.00");
         }
     }
-    void TakeCashOut()
+    public void TakeCashOut()
     {
         take = true;
         startGame = false;
         WinAmount = takeCash;
         // Change the text color
-        multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         multiplierTxt.color = Color.green;
+        Xtxt.color = Color.green;
         winAmountTxt.gameObject.SetActive(true);
         winAmountTxt.text = WinAmount.ToString("+" + "0.00");
         TotalAmount += WinAmount;
         totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>EUR</size>");
-        TakeCashbutton.enabled = false;
         holdButton.enabled = false;
         LineObj.gameObject.SetActive(true);
         holdButtonEvent.enabled = false;
         slider.gameObject.SetActive(false);
+        empty_holdButton.gameObject.SetActive(true);
+
         // DoTween Text in Sequence
         Sequence sequence = DOTween.Sequence();
 
@@ -383,42 +417,84 @@ public class GameController : MonoBehaviour
 
         // Add the second scale animation to the sequence
         sequence.Append(txtObj.DOScale(new Vector3(0f, 0f, 0f), timeLength))
-                //.Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), timeLength).SetEase(Ease.InOutSine))
+                .Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), timeLength).SetEase(Ease.InOutSine))
                 .Join(LineImg.DOColor(new Color32(255, 255, 255, 0), timeLength).SetEase(Ease.Linear));
         // Start the sequence
         sequence.Play();
 
         winCash++;
 
+        #region
+        /*Bonus_Conditions();*/
+
+        /*if (winCash == 3)
+        {
+            Invoke("Bonus_Conditions", 2.5f);
+            if (!isSet)
+            {
+                Invoke("TimeDelay_WinCash", 6f);
+            }
+        } 
+
+        if (winCash != 3)
+            Invoke("TimeDelay", 2.5f);*/
+        #endregion
+
+        Demo_Bonus();
+        Call_Functions();
+        DelayFuction();
+    }
+    void Call_Functions()
+    {
         if (winCash == 3)
         {
-            // Bonus Reward Fill Img
-            if (timeRemaining < totalTime)
-            {
-                bonusObj.gameObject.SetActive(true);
-                timeRemaining += 2f; // increase time remaining
-                UpdateTimerUI(); // Update the UI
-            }
-            else
-            {
-                // Timer has reached the total time
-                timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
-                UpdateTimerUI(); // Update the UI to reflect that the timer is full
-                // Here you can add what should happen when the timer reaches total time
-                /*bonusObj.gameObject.SetActive(true);
-                scrollViewObj.SetActive(true);*/
-            }
-
-            winCash = 0f;
+            isBonus_1 = true;
+            if (!isSet)
+                isBonus_2 = true;
+            else if (isSet)
+                isBonus_3 = true;
         }
 
-        Invoke("TimeDelay", 2.5f);
+        if (winCash != 3)
+            isNormal = true;
+
+    }
+    async void DelayFuction()
+    {
+        if (isBonus_1)
+        {
+            await UniTask.Delay(2500);
+            Bonus_Conditions();
+        }
+        if (isBonus_2)
+        {
+            await UniTask.Delay(4500); // wait for 5 seconds
+            TimeDelay_WinCash();
+        }
+
+        if (isNormal)
+        {
+            await UniTask.Delay(2500); // wait for 2.5 seconds
+            TimeDelay();
+        }
+
+        /*if (timeRemaining >= 10)
+        {
+            await UniTask.Delay(3500); // wait for 2.5 seconds
+            ScrollView_Conditions();
+        }*/
+        if (isBonus_3)
+        {
+            await UniTask.Delay(1000); // wait for 2.5 seconds
+            Bonus_Delay();
+        }
     }
     void TimeDelay()
     {
         multiplierTxt.color = Color.white;
+        Xtxt.color = Color.white;
         multiplier = 0f;
-        multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         winAmountTxt.gameObject.SetActive(false);
@@ -426,8 +502,10 @@ public class GameController : MonoBehaviour
         winAmountTxt.text = WinAmount.ToString("0.00");
         holdButton.enabled = true;
         holdButtonEvent.enabled = true;
+        empty_holdButton.gameObject.SetActive(false);
         take = false;
         lost = false;
+        isNormal = false;
         background.localPosition = initialBackgroundPosition;
         bg.localPosition = iniBackgroundPos;
 
@@ -440,23 +518,176 @@ public class GameController : MonoBehaviour
 
         // DoTween Text
         txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
-        txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);
+        /*txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);*/
+        txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);   // new Position
 
         button_1.gameObject.SetActive(false);
         button_2.gameObject.SetActive(false);
         button_5.gameObject.SetActive(false);
         button_10.gameObject.SetActive(false);
     }
+    void TimeDelay_WinCash()
+    {
+        multiplierTxt.color = Color.white;
+        Xtxt.color = Color.white;
+        multiplier = 0f;
+        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
+        takeCash = 0f;
+        takeCashTxt.text = takeCash.ToString("0.00");
+        winAmountTxt.gameObject.SetActive(false);
+        WinAmount = 0;
+        winAmountTxt.text = WinAmount.ToString("0.00");
+        holdButton.enabled = true;
+        holdButtonEvent.enabled = true;
+        empty_holdButton.gameObject.SetActive(false);
+        take = false;
+        lost = false;
+        isBonus_2 = false;
+        background.localPosition = initialBackgroundPosition;
+        bg.localPosition = iniBackgroundPos;
+
+        target.localPosition = new Vector3(0f, -152f, 0f);
+        LineObj.gameObject.SetActive(false);
+
+        countTime = 0f;
+        slider.value = 0f;
+        slider.gameObject.SetActive(true);
+
+        // DoTween Text
+        txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
+        /*txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);*/
+        txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);   // new Position
+
+        button_1.gameObject.SetActive(false);
+        button_2.gameObject.SetActive(false);
+        button_5.gameObject.SetActive(false);
+        button_10.gameObject.SetActive(false);
+    }
+    void Bonus_Delay()
+    {
+        multiplierTxt.color = Color.white;
+        Xtxt.color = Color.white;
+        multiplier = 0f;
+        multiplierTxt.text = multiplier.ToString("0.00");
+        txtObj.gameObject.SetActive(true);
+        takeCash = 0f;
+        takeCashTxt.text = takeCash.ToString("0.00");
+        winAmountTxt.gameObject.SetActive(false);
+        WinAmount = 0;
+        winAmountTxt.text = WinAmount.ToString("0.00");
+        LineObj.gameObject.SetActive(false);
+        ScrollView_Conditions();
+
+    }
+    void Bonus_Conditions()
+    {
+        if (winCash == 3)
+        {
+            bonusObj.gameObject.SetActive(true);
+
+            // Bonus Reward Fill Img
+            if (timeRemaining < totalTime)
+            {
+                if (betAmount <= 5f)
+                {
+                    if (betAmount <= 1f)
+                    {
+                        bonusTimer += 8;
+                        /*timeRemaining += 8f; // increase time remaining
+                        UpdateTimerUI(); // Update the UI*/
+                    }
+                    if (betAmount > 1f)
+                    {
+                        bonusTimer += 4;
+                    }
+                    if (betAmount > 2f)
+                    {
+                        bonusTimer += 2;
+                    }
+
+                }
+            }
+            else
+            {
+                // Timer has reached the total time
+                timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
+                UpdateTimerUI(); // Update the UI to reflect that the timer is full
+            }
+
+            winCash = 0;
+            isBonus_1 = false;
+        }
+    }
+    void Demo_Bonus()
+    {
+        if (winCash == 3)
+        {
+            if (betAmount <= 5f)
+            {
+                if (betAmount <= 1f)
+                {
+                    winCash_Demo += 8f;
+                }
+                if (betAmount > 1f)
+                {
+                    winCash_Demo += 4f;
+                }
+                if (betAmount > 2f)
+                {
+                    winCash_Demo += 2f;
+                }
+            }
+        }
+        if (winCash_Demo >= 10)
+        {
+            isSet = true;
+        }
+    }
+    void ScrollView_Conditions()
+    {
+        Debug.Log("%%%%%%%% &&&&&&&&& **********");
+        ScrollViewObj.SetActive(true);
+        CenterBack_Img.SetActive(true);
+        timeRemaining = 0;
+        isSet = false;
+    }
     void ResetBets()
     {
         isPressed = false;
         startGame = false;
-        multiplierTxt.text = multiplier.ToString("0.00" + "<size=40>X</size>");
+        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         // Change the text color
         multiplierTxt.color = Color.black;
+        Xtxt.color = Color.black;
 
         Invoke("TimeDelay", 1.5f);
     }
+
+    #region ::::::::::::::::::::::::::: Event Trigger Buttons :::::::::::::::::::::::::::
+    public void HoldButton()
+    {
+        takeBetAmount = true;
+        betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>EUR</size>");
+    }
+    public void OnClickDown()
+    {
+        isPressed = true;
+        ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+    }
+    public void OnClickUp()
+    {
+        isPressed = false;
+        /*ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
+    }
+    public void Button_ONEnter()
+    {
+        isFire = true;
+    }
+    public void Button_OFFEnter()
+    {
+        isFire = false;
+    }
+    #endregion
 
     #region ::::::::::::::::::::::::::: Bonus Reward Fill Img :::::::::::::::::::::::::::
     void UpdateTimerUI()
@@ -464,11 +695,6 @@ public class GameController : MonoBehaviour
         float fillAmount = timeRemaining / totalTime;
         timerBar.fillAmount = fillAmount;
     }
-    /*private void OnDisable()
-    {
-        timeRemaining = 0f; // Reset the timer
-        timerBar.fillAmount = 0; // Reset the UI
-    }*/
     #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
@@ -674,7 +900,9 @@ public class GameController : MonoBehaviour
         }
     }
     #endregion
-    void ApplyParallaxEffect(float holdButtonYPosition)
+
+    #region { ::::::::::::::::::::::::: ParallaxEffect ::::::::::::::::::::::::: }
+    void ApplyParallaxEffect(float holdButtonYPosition)     // Moving BackGround Main Image
     {
         // Calculate the target position for the background
         Vector3 targetBackgroundPosition = initialBackgroundPosition;
@@ -683,7 +911,8 @@ public class GameController : MonoBehaviour
         // Smoothly interpolate towards the target position over time
         background.localPosition = Vector3.Lerp(background.localPosition, targetBackgroundPosition, Time.deltaTime * smoothness);
     }
-    void ApplyBalloonParallaxEffect(float holdButtonYPos)
+
+    void ApplyBalloonParallaxEffect(float holdButtonYPos)    // Moving Balloon Image
     {
         // Calculate the target position for the background
         Vector3 targetBackgroundPosition = iniBackgroundPos;
@@ -692,4 +921,5 @@ public class GameController : MonoBehaviour
         // Smoothly interpolate towards the target position over time
         bg.localPosition = Vector3.Lerp(bg.localPosition, targetBackgroundPosition, Time.deltaTime * smooth);
     }
+    #endregion
 }
