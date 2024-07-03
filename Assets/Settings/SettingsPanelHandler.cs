@@ -145,9 +145,9 @@ public class SettingsPanelHandler : MonoBehaviour
     {
     //    AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);
 
-        Debug.Log("Tower Exit Entered");
+        Debug.Log("Exit Entered");
      //   TowerUIController.instance.ExitWebGL();
-        Debug.Log("Tower Exit Called");
+        Debug.Log("Exit Called");
         HideSettings();
     }
     private void ShowFullScreen()

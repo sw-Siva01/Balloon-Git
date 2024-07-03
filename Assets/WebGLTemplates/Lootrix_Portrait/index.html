@@ -20,10 +20,21 @@
           <div id="unity-warning"> </div>
       </div>
       <script>
+              var currentDate = new Date();
+          // Get the current date components
+          var year = currentDate.getFullYear(); // Full year (e.g., 2024)
+          var month = currentDate.getMonth() + 1; // Month (0-11, so we add 1 for human readability)
+          var day = currentDate.getDate(); // Day of the month (1-31)
+          // Get the current time components
+          var hours = currentDate.getHours(); // Hours (0-23)
+          var minutes = currentDate.getMinutes(); // Minutes (0-59)
+          var seconds = currentDate.getSeconds(); // Seconds (0-59)
+          // Combine date and time components into a single string variable
+          var currentDateTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
       var applicationInstance;
       window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("ServiceWorker.js");
+          navigator.serviceWorker.register("ServiceWorker.js?timefornocatch=" + currentDateTime);
         }
       });
 
@@ -58,21 +69,21 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}?timefornocatch=" + currentDateTime;
       var config = {
-        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
-        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}?timefornocatch=" + currentDateTime,
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}?timefornocatch=" + currentDateTime,
 #if USE_THREADS
-        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}",
+        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}?timefornocatch=" + currentDateTime,
 #endif
 #if USE_WASM
-        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}?timefornocatch=" + currentDateTime,
 #endif
 #if MEMORY_FILENAME
-        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}?timefornocatch=" + currentDateTime,
 #endif
 #if SYMBOLS_FILENAME
-        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}?timefornocatch=" + currentDateTime,
 #endif
         streamingAssetsUrl: "StreamingAssets",
         companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
@@ -115,8 +126,12 @@
       };
       document.body.appendChild(script);
       </script>
-      <script src="../ingame.js"></script>
       <script>
+
+          // Create a new script element with the updated src attribute
+          var script = document.createElement('script');
+          script.src = "../ingame.js?timefornocatch=" + currentDateTime;
+          document.head.appendChild(script);
         function GetLoginDetails(data) {
             // GetBotData();
             //      SetParentUrl();
@@ -163,11 +178,7 @@
             }
             return parentUrl;
         }
-        function CheckNetworkStatus() {
-            var status = navigator.onLine;
-            window.applicationInstance.SendMessage("APIController", "GetNetworkStatus", status.toString());
-            return;
-        }
+ 
        
         // function GetRandomPrediction(type,rowCount,columnCount,predictionCount)
         // {
