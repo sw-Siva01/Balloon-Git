@@ -24,11 +24,6 @@ public class GameController : MonoBehaviour
     [SerializeField] float TotalAmount = 250.00f;  // Total Amount
     public float bonusTimer;
 
-    /*[Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
-
-    [Header("Script")]
-    [SerializeField] FireButton fireButton;*/
-
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Buttons")]
@@ -58,16 +53,18 @@ public class GameController : MonoBehaviour
     // Boolean
     [Header("Boolean")]
     private bool startGame;
-    public bool isPressed;
+    private bool isPressed;
     private bool takeBetAmount;
-    public bool isSet;
-    public bool isFire;
-    public bool lost;
-    public bool take;
-    public bool isBonus_1;
-    public bool isBonus_2;
-    public bool isBonus_3;
-    public bool isNormal;
+    private bool isSet;
+    private bool isFire;
+    private bool lost;
+    private bool take;
+    public bool isScroll;
+    public bool winCount;
+    private bool isBonus_1;
+    private bool isBonus_2;
+    private bool isBonus_3;
+    private bool isNormal;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -104,7 +101,9 @@ public class GameController : MonoBehaviour
     // Balloon Image
     [Header("Balloon Image")]
     [SerializeField] float speed = 1.0f;
+    [SerializeField] Image targetImg;
     [SerializeField] RectTransform target;
+    [SerializeField] RectTransform bonus_Balloon;
     [SerializeField] Vector3 targetPosition;  // To move the Target pos Up at the Start
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -143,7 +142,7 @@ public class GameController : MonoBehaviour
     // Bonuse Rewards Winning int
     [Header("Bonus Rewards Winning int")]
     [SerializeField] float winCash;
-    [SerializeField] float winCash_Demo;
+    public float winCash_Demo;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -161,7 +160,7 @@ public class GameController : MonoBehaviour
     public float BonusRewardfloatValue;
     public TextMeshProUGUI BonusRewardTxt;
 
-    #endregion
+    #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     private void Start()
     {
@@ -241,6 +240,12 @@ public class GameController : MonoBehaviour
         while (true)
         {
             ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+
+            if (isScroll)
+            {
+                ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+                ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+            }
 
             if (lost)
             {
@@ -340,20 +345,16 @@ public class GameController : MonoBehaviour
         if (startGame && multiplier < 1.01f)
         {
             multiplier += Time.deltaTime;
-            multiplierTxt.text = multiplier.ToString("0.00" /*+ "<size=40>X</size>"*/);
-            /*isPressed = false;*/
-            /*holdButtonEvent.enabled = false;*/
+            multiplierTxt.text = multiplier.ToString("0.00");
         }
         else if (isPressed && startGame && multiplier >= 1.01)
         {
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
             /*ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
-            multiplierTxt.text = multiplier.ToString("0.00" /*+ "<size=40>X</size>"*/);
+            multiplierTxt.text = multiplier.ToString("0.00");
             //holdButtonEvent.enabled = true;
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
-
-            /*holdButtonEvent.enabled = true;*/
 
             // Increment the timer by the time elapsed since the last frame
             timeSinceLastIncrement += Time.deltaTime;
@@ -375,7 +376,7 @@ public class GameController : MonoBehaviour
             // Increase the multiplier by the increment rate
             multiplier *= incrementRate;
             // Update the multiplier text
-            multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
+            multiplierTxt.text = multiplier.ToString("0.00");
 
             // Calculate the win amount
             takeCash = betAmount * multiplier;
@@ -389,7 +390,7 @@ public class GameController : MonoBehaviour
         startGame = false;
         WinAmount = takeCash;
         // Change the text color
-        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
+        multiplierTxt.text = multiplier.ToString("0.00");
         multiplierTxt.color = Color.green;
         Xtxt.color = Color.green;
         winAmountTxt.gameObject.SetActive(true);
@@ -402,6 +403,7 @@ public class GameController : MonoBehaviour
         slider.gameObject.SetActive(false);
         empty_holdButton.gameObject.SetActive(true);
 
+        #region :::::::::::::::::::::::::: DoTween sequence ::::::::::::::::::::::::::
         // DoTween Text in Sequence
         Sequence sequence = DOTween.Sequence();
 
@@ -409,7 +411,7 @@ public class GameController : MonoBehaviour
 
         // Add the first scale animation and move animation to the sequence
         sequence.Append(txtObj.DOScale(new Vector3(1.7f, 1.7f, 1.7f), timeLength).SetEase(Ease.InOutSine))
-                .Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), 1.3f).SetEase(Ease.InOutSine))
+                .Join(txtObj.DOMove(new Vector3(0f, -2.8f, 0f), 1.3f).SetEase(Ease.InOutSine))
                 .Join(LineImg.DOColor(new Color32(255, 255, 255, 255), timeLength).SetEase(Ease.Linear));
 
         // Add a delay of 1 second
@@ -417,28 +419,22 @@ public class GameController : MonoBehaviour
 
         // Add the second scale animation to the sequence
         sequence.Append(txtObj.DOScale(new Vector3(0f, 0f, 0f), timeLength))
-                .Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), timeLength).SetEase(Ease.InOutSine))
+                //.Join(txtObj.DOMove(new Vector3(0f, -2.2f, 0f), timeLength).SetEase(Ease.InOutSine))
+                .Join(txtObj.DOMove(new Vector3(0f, -3f, 0f), timeLength).SetEase(Ease.InOutSine))  // new Position
                 .Join(LineImg.DOColor(new Color32(255, 255, 255, 0), timeLength).SetEase(Ease.Linear));
         // Start the sequence
         sequence.Play();
 
-        winCash++;
+        #endregion  :::::::::::::::::::::::::: END ::::::::::::::::::::::::::
 
-        #region
-        /*Bonus_Conditions();*/
-
-        /*if (winCash == 3)
+        if (!winCount)
         {
-            Invoke("Bonus_Conditions", 2.5f);
-            if (!isSet)
-            {
-                Invoke("TimeDelay_WinCash", 6f);
-            }
-        } 
-
-        if (winCash != 3)
-            Invoke("TimeDelay", 2.5f);*/
-        #endregion
+            winCash++;
+        }
+        else
+        {
+            isNormal = true;
+        }
 
         Demo_Bonus();
         Call_Functions();
@@ -468,7 +464,7 @@ public class GameController : MonoBehaviour
         }
         if (isBonus_2)
         {
-            await UniTask.Delay(4500); // wait for 5 seconds
+            await UniTask.Delay(6000); // wait for 5 seconds
             TimeDelay_WinCash();
         }
 
@@ -478,14 +474,9 @@ public class GameController : MonoBehaviour
             TimeDelay();
         }
 
-        /*if (timeRemaining >= 10)
-        {
-            await UniTask.Delay(3500); // wait for 2.5 seconds
-            ScrollView_Conditions();
-        }*/
         if (isBonus_3)
         {
-            await UniTask.Delay(1000); // wait for 2.5 seconds
+            await UniTask.Delay(5500); // wait for 2.5 seconds
             Bonus_Delay();
         }
     }
@@ -494,7 +485,7 @@ public class GameController : MonoBehaviour
         multiplierTxt.color = Color.white;
         Xtxt.color = Color.white;
         multiplier = 0f;
-        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
+        multiplierTxt.text = multiplier.ToString("0.00");
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         winAmountTxt.gameObject.SetActive(false);
@@ -508,6 +499,13 @@ public class GameController : MonoBehaviour
         isNormal = false;
         background.localPosition = initialBackgroundPosition;
         bg.localPosition = iniBackgroundPos;
+
+        if (winCount == true)
+        {
+            targetImg.enabled = true;
+            bonus_Balloon.gameObject.SetActive(false);
+            winCount = false;
+        }
 
         target.localPosition = new Vector3(0f, -152f, 0f);
         LineObj.gameObject.SetActive(false);
@@ -531,7 +529,7 @@ public class GameController : MonoBehaviour
         multiplierTxt.color = Color.white;
         Xtxt.color = Color.white;
         multiplier = 0f;
-        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
+        multiplierTxt.text = multiplier.ToString("0.00");
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         winAmountTxt.gameObject.SetActive(false);
@@ -555,7 +553,6 @@ public class GameController : MonoBehaviour
 
         // DoTween Text
         txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
-        /*txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);*/
         txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);   // new Position
 
         button_1.gameObject.SetActive(false);
@@ -563,6 +560,18 @@ public class GameController : MonoBehaviour
         button_5.gameObject.SetActive(false);
         button_10.gameObject.SetActive(false);
     }
+    void ResetBets()
+    {
+        isPressed = false;
+        startGame = false;
+        multiplierTxt.text = multiplier.ToString("0.00");
+        // Change the text color
+        multiplierTxt.color = Color.black;
+        Xtxt.color = Color.black;
+
+        Invoke("TimeDelay", 1.5f);
+    }
+    #region ::::::::::::::::::::::::::: Bonus Functions :::::::::::::::::::::::::::
     void Bonus_Delay()
     {
         multiplierTxt.color = Color.white;
@@ -576,8 +585,22 @@ public class GameController : MonoBehaviour
         WinAmount = 0;
         winAmountTxt.text = WinAmount.ToString("0.00");
         LineObj.gameObject.SetActive(false);
-        ScrollView_Conditions();
+        isBonus_3 = false;
+        take = false;
 
+        target.localPosition = new Vector3(0f, 0f, 0f);
+        targetImg.enabled = false;
+        /*bonus_Balloon.localPosition = new Vector3(0f, -130f, 0f);*/
+        bonus_Balloon.gameObject.SetActive(true);
+        // DoTween Text
+        txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
+        txtObj.DOMove(new Vector3(0f, 1f, 0f), 0.01f);
+        ScrollViewer();
+    }
+    async void ScrollViewer()
+    {
+        await UniTask.Delay(1000); // wait for 2.5 seconds
+        ScrollView_Conditions();
     }
     void Bonus_Conditions()
     {
@@ -592,7 +615,7 @@ public class GameController : MonoBehaviour
                 {
                     if (betAmount <= 1f)
                     {
-                        bonusTimer += 8;
+                        bonusTimer += 10;
                         /*timeRemaining += 8f; // increase time remaining
                         UpdateTimerUI(); // Update the UI*/
                     }
@@ -612,8 +635,8 @@ public class GameController : MonoBehaviour
                 // Timer has reached the total time
                 timeRemaining = totalTime; // Ensure timeRemaining does not exceed totalTime
                 UpdateTimerUI(); // Update the UI to reflect that the timer is full
+                isScroll = true;
             }
-
             winCash = 0;
             isBonus_1 = false;
         }
@@ -626,7 +649,7 @@ public class GameController : MonoBehaviour
             {
                 if (betAmount <= 1f)
                 {
-                    winCash_Demo += 8f;
+                    winCash_Demo += 10f;
                 }
                 if (betAmount > 1f)
                 {
@@ -641,27 +664,18 @@ public class GameController : MonoBehaviour
         if (winCash_Demo >= 10)
         {
             isSet = true;
+            isScroll = true;
+            bonusTimer = 0f;
         }
     }
     void ScrollView_Conditions()
     {
-        Debug.Log("%%%%%%%% &&&&&&&&& **********");
         ScrollViewObj.SetActive(true);
         CenterBack_Img.SetActive(true);
         timeRemaining = 0;
         isSet = false;
     }
-    void ResetBets()
-    {
-        isPressed = false;
-        startGame = false;
-        multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
-        // Change the text color
-        multiplierTxt.color = Color.black;
-        Xtxt.color = Color.black;
-
-        Invoke("TimeDelay", 1.5f);
-    }
+    #endregion
 
     #region ::::::::::::::::::::::::::: Event Trigger Buttons :::::::::::::::::::::::::::
     public void HoldButton()

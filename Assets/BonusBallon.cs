@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
 
 public class BonusBallon : MonoBehaviour
 {
@@ -24,7 +21,6 @@ public class BonusBallon : MonoBehaviour
         bonusObj.DOMove(new Vector2(0f, 8f), 0.8f).SetEase(Ease.InOutBack);
         Invoke("SetOFF", 1f);
     }
-
     void SetOFF()
     {
         bonusObj.gameObject.SetActive(false);

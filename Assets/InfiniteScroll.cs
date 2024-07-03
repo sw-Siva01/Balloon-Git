@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
@@ -28,7 +27,7 @@ public class InfiniteScroll : MonoBehaviour
     private bool isUpdated;
 
     [SerializeField] bool autoScroll = false;
-    public int Count = 4;
+    public int Count = 3;
     public float bfloat;
     public float BonusValue;
 
@@ -41,9 +40,14 @@ public class InfiniteScroll : MonoBehaviour
     [SerializeField] float maxScrollTime = 6f;
     [SerializeField] float slerpDuration = 1.0f; // Duration of the slerp for centering
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("TextMeshProUGUI")]
+
     public TextMeshProUGUI Bonus_Count_txt;
 
-    #endregion
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
+    #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void OnEnable()
     {
         autoScroll = true;
@@ -223,17 +227,6 @@ public class InfiniteScroll : MonoBehaviour
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
 
-                /*if (Count == 1)
-                {
-                    Invoke("BounsAmount_Moves", 1f);
-                    Invoke("TimerDelay", 4f);
-
-                }
-                else if (Count > 0)
-                {
-                    Invoke("TimeDelay", 4f);
-                    Invoke("BounsAmount_Moves", 1f);
-                }*/
                 DelayFuction();
             }
         }
@@ -243,6 +236,7 @@ public class InfiniteScroll : MonoBehaviour
         if (Count == 1)
         {
             await UniTask.Delay(1000); // wait for 1 seconds
+            controller.winCount = true;
             BounsAmount_Moves();
 
             await UniTask.Delay(4000); // wait for 4 seconds
@@ -265,20 +259,21 @@ public class InfiniteScroll : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(3f, 3f, 3f), 0.5f).SetEase(Ease.InOutSine))
-                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0f, 0f), 1f).SetEase(Ease.InOutSine));
+                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0.6f, 0f), 1f).SetEase(Ease.InOutSine))
+                .Join(controller.BonusRewardTxt.DOColor(new Color32(255, 255, 0, 255), 0.01f).SetEase(Ease.Linear));
         // Add a delay of 1 second
         sequence.AppendInterval(1f);
 
         Invoke("Object_Delay", 1.6f);
 
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(1.0008f, 1.0008f, 1.0008f), 0.5f).SetEase(Ease.InOutSine))
-                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 3.81f, 0f), 1f).SetEase(Ease.InOutSine));
+                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 3.81f, 0f), 1f).SetEase(Ease.InOutSine))
+                .Join(controller.BonusRewardTxt.DOColor(new Color32(95, 255, 0, 255), 0.01f).SetEase(Ease.Linear));
     }
     void TimeDelay()
     {
         autoScroll = true;
     }
-
     void Object_Delay()
     {
         /*controller.multiplier += bfloat;
@@ -293,7 +288,6 @@ public class InfiniteScroll : MonoBehaviour
         controller.BonusRewardTxt.text = null;
         Count = 3;
     }
-
     IEnumerator Add_BonusValue()
     {
         while (controller.multiplier < BonusValue)
@@ -302,5 +296,12 @@ public class InfiniteScroll : MonoBehaviour
             controller.multiplierTxt.text = controller.multiplier.ToString("0.00");
             yield return null;
         }
+    }
+    private void OnDisable()
+    {
+        bfloat = 0f;
+        BonusValue = 0f;
+        controller.winCash_Demo = 0f;
+        controller.isScroll = false;
     }
 }
