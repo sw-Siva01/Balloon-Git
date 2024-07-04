@@ -63,6 +63,7 @@ namespace Nakama.Helpers
         }
 
 
+        //public string backupServer = "turbogames.utwebapps.com";
         public async void AutoLogin(Action<bool> action, bool isTryBackupServer = false)
         {
             try
@@ -98,6 +99,36 @@ namespace Nakama.Helpers
                 Debug.LogError("Error ::: " + ex.Message);
             }
         }
+
+
+        //public async void AutoLogin(Action<bool> action)
+        //{
+        //    try
+        //    {
+        //        client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+        //        CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
+        //        {
+        //            if (status)
+        //            {
+        //                await OpenSocket();
+        //                action.Invoke(true);
+        //            }
+        //            else
+        //            {
+        //                action.Invoke(false);
+        //                Debug.Log("Status failed");
+        //            }
+        //        }
+        //        ), true);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        action.Invoke(false);
+        //        Debug.LogError("Error ::: "+ex.Message);
+        //    }
+
+        //}
+
 
 
         private void OnApplicationQuit()
@@ -263,23 +294,47 @@ namespace Nakama.Helpers
             }
         }
       
-        public async void SendRPC(string rpc, string payload,Action<string> action)
+        public async void SendRPC(string rpc, string payload,Action<string> action,bool isCheckNetwork = false)
         {
+            Debug.Log($"Rpc called {rpc} {payload} {isCheckNetwork.ToString()}");
             try
             {
                 if (client == null || session == null)
                     action.Invoke(null);
                 EncryptedPayload encryptpayload = new EncryptedPayload();
                 encryptpayload.data = EncryptString(payload);
-                encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
+                encryptpayload.value = EncryptString(APIController.instance.userDetails.operatorDomainUrl);
                 var output = await client.RpcAsync(session, EncryptString(rpc), encryptpayload.ToJson(), retryConfiguration);
-                encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
+                Debug.Log($"Rpc Done Output {output.Payload}");
+                encryptpayload = JsonUtility.FromJson<EncryptedPayload>(output.Payload);
                 string outputPayload = DecryptString(encryptpayload.data);
                 action.Invoke(outputPayload);
             }
             catch(Exception ex)
             {
-                action.Invoke(ex.Message);
+                if (!isCheckNetwork)
+                {
+                    bool isDone = false;
+                    while (!isDone)
+                    {
+                        Debug.Log($"Rpc try to called again {rpc} {payload} {isCheckNetwork.ToString()}");
+                        APIController.instance.CheckInternetandProcess((success) =>
+                        {
+                            if (success)
+                            {
+                                isDone = true;  
+                                SendRPC(rpc, payload, action, true);
+                            }
+                        });
+                        await UniTask.Delay(2000);
+                        return;
+
+                    }
+                }
+                else
+                {
+                    action.Invoke(ex.Message);
+                }
             }
         }
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key

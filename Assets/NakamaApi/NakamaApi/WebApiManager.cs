@@ -147,7 +147,6 @@ public class WebApiManager : MonoBehaviour
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);
-            Debug.Log(items.keyId + "::" + items.value);
         }
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, bodyFormData))

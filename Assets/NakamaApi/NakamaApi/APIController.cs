@@ -132,6 +132,7 @@ public class APIController : MonoBehaviour
         GetABotAction = null;
         Debug.Log("get bot response :::::::----::: after response " + data);
     }
+
     public void UpdateBalanceResponse(double data)
     {
         Debug.Log("Balance Updated response  :::::::----::: " + data);
@@ -142,15 +143,26 @@ public class APIController : MonoBehaviour
             OnUserDeposit?.Invoke();
         }
     }
+
     public bool isNeedToPauseWhileSwitchingTab = false;
     public void GetNetworkStatus(string data)
     {
         Time.timeScale = 1;
         isOnline = data.ToLower() == "true" ? true : false;
         Debug.Log($"Calleeedddd check internet {data}   -   {isOnline}   -   {isInFocus}");
-      
-        OnInternetStatusChange?.Invoke(data);
+        if (isNeedToPauseWhileSwitchingTab)
+        {
+            if (isInFocus && isOnline)
+            {
+                Time.timeScale = 1;
+            }
+            else
+            {
+                Time.timeScale = 0;
 
+            }
+        }
+        OnInternetStatusChange?.Invoke(data);
     }
 
     public void OnSwitchingTabs(string data)
@@ -312,13 +324,13 @@ public class APIController : MonoBehaviour
         CheckAPICallBack(base64EncodedString);
 
     }
-    public void SetUserData(string data)
+    public async void SetUserData(string data)
     {
-        Debug.Log("Response from webgl ::::: " + data);
+        /*Debug.Log("Response from webgl ::::: " + data);*/
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 100;
+            userDetails.balance = 5000;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
@@ -328,7 +340,7 @@ public class APIController : MonoBehaviour
             userDetails.hasBot = true;
             userDetails.game_Id = "demo_" + defaultGameName;
             userDetails.isBlockApiConnection = true;
-            //userDetails.commission = 0.2f;
+
         }
         else
         {
@@ -342,11 +354,11 @@ public class APIController : MonoBehaviour
         userDetails.bootAmount = defaultBootAmount;
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
             userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
-        Debug.Log(JsonUtility.ToJson(userDetails));
+        /*Debug.Log(JsonUtility.ToJson(userDetails));*/
         //#if UNITY_EDITOR
         //        userDetails.isBlockApiConnection = false;
         //#endif
-#if CasinoGames
+#if CasinoGames && !UNITY_EDITOR
 
         InitNakamaClient();
 #else
@@ -364,8 +376,7 @@ public class APIController : MonoBehaviour
             {
                 OnUserDetailsUpdate?.Invoke();
                 OnUserBalanceUpdate?.Invoke();
-                
-                    CheckSession();
+                CheckSession();
             }
             else
             {
@@ -382,14 +393,14 @@ public class APIController : MonoBehaviour
         OnDepositCancelAction?.Invoke((data.ToLower() == "true"));
     }
 
-    void Start()
+    async void Start()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();
         CheckInternetStatus();
 #elif UNITY_EDITOR
-        SetUserData("");
-        CheckInternetStatus();
+                SetUserData("");
+                CheckInternetStatus();
 #endif
     }
     private void Awake()
@@ -645,15 +656,14 @@ public class APIController : MonoBehaviour
 
     public void GetRandomPredictionIndexApi(int rowCount, int columnCount, int predectedCount, Action<string, bool> OnScucces = null, string gamename = "")
     {
-
-
-#if CasinoGames && !UNITY_EDITOR
+#if CasinoGames
         GetPredictionReq predictionReq = new GetPredictionReq();
         predictionReq.RowCount = rowCount.ToString();
         predictionReq.ColumnCount = columnCount.ToString();
         predictionReq.PredictionCount = predectedCount.ToString();
         predictionReq.GameName = gamename == "" ? userDetails.game_Id.Split("_")[1] : gamename;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetRandomPresiction", predictionReq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetRandomPresiction", predictionReq.ToJson(), (res) =>
+        {
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             if (response.code == 200)
             {
@@ -912,11 +922,8 @@ public class APIController : MonoBehaviour
     /// <param name="gameId"></param> Get that from client side and stored that into server side. APIController.instance.userDetails.gameId
 
 
-    public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, float pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
+    public async void WinningsBetMultiplayerAPI(int betIndex, string betId, double win_amount_with_comission, double spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
-
-
-        Debug.Log("Checking Bet Amount 4 : " + win_amount_with_comission + "........" + spend_amount + " .... " + metadata.Amount);
         Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
         Debug.Log($"Request data is {JsonUtility.ToJson(request)}");
@@ -1291,10 +1298,8 @@ public class APIController : MonoBehaviour
 
     // <bool,string,CreateMatchResponse>  = <status,matchid,CreateMatchResponse>
     //https://vmiama243zvt2v2icbu4twsknm0opjax.lambda-url.ap-south-1.on.aws/?Created_By=fed1a31f-d93b-4ffc-ab1b-8652e7d0f29c&Game_Name=mines&Operator=rumblebetsdev&requestType=CreateAndJoinMatch&Lobby_Name=rumblebetsdev_mines_3_5&GameName=mines&Players=%5b%22fed1a31f-d93b-4ffc-ab1b-8652e7d0f29c%22%5d&Game_user_Id=fed1a31f-d93b-4ffc-ab1b-8652e7d0f29c&Game_Id=2540ae31-19f4-4133-9ca8-fa5115c50e2b&IsAbleToCancel=false&playerID=fed1a31f-d93b-4ffc-ab1b-8652e7d0f29c&Index=1&Bet_amount=5&cashType=1&MetaData=%7b%22Amount%22%3a5.0%2c%22Info%22%3a%22Bet+placed%22%7d&IsBot=0&DateTime=Date___22%2f03%2f2024+06%3a50%3a35
-    public int CreateAndJoinMatch(int index, float amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<bool, string, CreateMatchResponse> action)
+    public int CreateAndJoinMatch(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<bool, string, CreateMatchResponse> action)
     {
-
-        Debug.Log("Checking Bet Amount 2 : " + amount + "........" + metadata.Amount);
         CreateMatchResponse matchResponse = new CreateMatchResponse();
         if (isBlockAPI)
         {
@@ -1439,6 +1444,209 @@ public class APIController : MonoBehaviour
         return bet.betId;
     }
 
+    public bool isCheckInternet;
+    public async void StopCheckInternetLoop()
+    {
+        isCheckInternet = false;
+    }
+    public async void StartCheckInternetLoop()
+    {
+        isCheckInternet = true;
+        while (isCheckInternet)
+        {
+            bool isrun = false;
+            if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
+            {
+                isrun = true;
+                ValidateSessionReq validateSession = new ValidateSessionReq();
+                validateSession.PlayerId = userDetails.Id;
+                validateSession.GameName = userDetails.game_Id.Split("_")[1];
+                validateSession.Operator = userDetails.game_Id.Split("_")[0];
+                validateSession.Session_token = userDetails.session_token;
+                validateSession.Control = "0";
+                validateSession.Token = userDetails.token;
+                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+                {
+                    try
+                    {
+                        JObject jsonObject = JObject.Parse(res);
+                        if ((int)(jsonObject["code"]) == 200)
+                        {
+                            Debug.Log("online true 1");
+                            isOnline = true;
+                        }
+                        else
+                        {
+                            Debug.Log("online false 1" + res);
+                            isOnline = false;
+                        }
+                    }
+                    catch
+                    {
+                        Debug.Log("online false 2");
+                        isOnline = false;
+                    }
+                    Debug.Log("socket connected" + isOnline);
+                    isrun = false;
+                });
+            }
+            else
+            {
+                isOnline = false;
+                Debug.Log("socket not connected" + isOnline);
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                if (!isrun)
+                    break;
+                await UniTask.Delay(100);
+            }
+            if (isrun)
+            {
+                Debug.Log("online false 3");
+                isOnline = false;
+            }
+            GetNetworkStatus(isOnline.ToString());
+            Debug.Log("Internet check " + isOnline);
+        }
+    }
+    public async void CheckInternetandProcess(Action<bool> action)
+    {
+        bool isrun = false;
+        if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
+        {
+            isrun = true;
+            ValidateSessionReq validateSession = new ValidateSessionReq();
+            validateSession.PlayerId = userDetails.Id;
+            validateSession.GameName = userDetails.game_Id.Split("_")[1];
+            validateSession.Operator = userDetails.game_Id.Split("_")[0];
+            validateSession.Session_token = userDetails.session_token;
+            validateSession.Control = "0";
+            validateSession.Token = userDetails.token;
+            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+            {
+                try
+                {
+                    JObject jsonObject = JObject.Parse(res);
+                    if ((int)(jsonObject["code"]) == 200)
+                    {
+                        Debug.Log("online true 1");
+                        isOnline = true;
+                    }
+                    else
+                    {
+                        Debug.Log("online false 1" + res);
+                        isOnline = false;
+                    }
+                }
+                catch
+                {
+                    Debug.Log("online false 2");
+                    isOnline = false;
+                }
+                Debug.Log("socket connected" + isOnline);
+                isrun = false;
+            });
+        }
+        else
+        {
+            isOnline = false;
+            Debug.Log("socket not connected" + isOnline);
+        }
+        for (int i = 0; i < 20; i++)
+        {
+            if (!isrun)
+                break;
+            await UniTask.Delay(100);
+        }
+        if (isrun)
+        {
+            Debug.Log("online false 3");
+            isOnline = false;
+        }
+        action.Invoke(isOnline);
+        GetNetworkStatus(isOnline.ToString());
+        Debug.Log("Internet check " + isOnline);
+    }
+    public async void CheckSession()
+    {
+        int Runcount = 0;
+        while (true)
+        {
+            Runcount += 1;
+            bool isrun = false;
+            if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
+            {
+                isrun = true;
+                ValidateSessionReq validateSession = new ValidateSessionReq();
+                validateSession.PlayerId = userDetails.Id;
+                validateSession.GameName = userDetails.game_Id.Split("_")[1];
+                validateSession.Operator = userDetails.game_Id.Split("_")[0];
+                validateSession.Session_token = userDetails.session_token;
+                validateSession.Control = "0";
+                if (Runcount == 4)
+                {
+                    if (APIController.instance.userDetails.isBlockApiConnection)
+                    {
+                        Runcount = 1;
+                    }
+                    else
+                    {
+                        Runcount = 0;
+                        validateSession.Control = "1";
+                    }
+                }
+                validateSession.Token = userDetails.token;
+                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+                {
+                    try
+                    {
+                        JObject jsonObject = JObject.Parse(res);
+                        if ((int)(jsonObject["code"]) == 200)
+                        {
+                            Debug.Log("online true 1");
+                            isOnline = true;
+                        }
+                        else if ((int)(jsonObject["code"]) != 200)
+                        {
+                            Debug.Log("online true 2");
+                            isOnline = true;
+                            DisconnectGame("Session expired. Account active in another device.");
+                            Debug.Log("invalide session");
+                        }
+                        else
+                        {
+                            Debug.Log("online false 1" + res);
+                            isOnline = false;
+                        }
+                    }
+                    catch
+                    {
+                        Debug.Log("online false 2");
+                        isOnline = false;
+                    }
+                    Debug.Log("socket connected" + isOnline);
+                    isrun = false;
+                });
+            }
+            else
+            {
+                Debug.Log("socket not connected" + isOnline);
+            }
+            int count = 0;
+            await UniTask.Delay(2000);
+            if (isrun && Runcount != 0)
+            {
+                Debug.Log("online false 3");
+                isOnline = false;
+            }
+            if (isOnline)
+                GetNetworkStatus(isOnline.ToString());
+            Debug.Log("Internet check " + isOnline);
+        }
+    }
+
+
     public int InitBetMultiplayerAPI(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, Action<bool> action, string playerId, bool isBot, Action<string> betIdAction, string gameName, string operatorName, string gameID, string matchToken)
     {
         Debug.Log($"<color=orange>Initializing bet for player {playerId}, index is {index}</color>");
@@ -1565,6 +1773,7 @@ public class APIController : MonoBehaviour
 
     public void WinningsBetMultiplayer(int betIndex, string betId, double win_amount_with_comission, double spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false, bool isWinner = true)
     {
+
         if (isPlayByDummyData)
         {
             if (playerId == "" || playerId == userDetails.Id)
@@ -1664,213 +1873,6 @@ public class APIController : MonoBehaviour
         return BetProcess.Failed;
     }
     #endregion
-
-    #region New Internet connection
-
-    public bool isCheckInternet;
-    public async void StopCheckInternetLoop()
-    {
-        isCheckInternet = false;
-    }
-    public async void StartCheckInternetLoop()
-    {
-        isCheckInternet = true;
-        while (isCheckInternet)
-        {
-            bool isrun = false;
-            if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
-            {
-                isrun = true;
-                ValidateSessionReq validateSession = new ValidateSessionReq();
-                validateSession.PlayerId = userDetails.Id;
-                validateSession.GameName = userDetails.game_Id.Split("_")[1];
-                validateSession.Operator = userDetails.game_Id.Split("_")[0];
-                validateSession.Session_token = userDetails.session_token;
-                validateSession.Control = "0";
-                validateSession.Token = userDetails.token;
-                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
-                {
-                    try
-                    {
-                        JObject jsonObject = JObject.Parse(res);
-                        if ((int)(jsonObject["code"]) == 200)
-                        {
-                            Debug.Log("online true 1");
-                            isOnline = true;
-                        }
-                        else
-                        {
-                            Debug.Log("online false 1" + res);
-                            isOnline = false;
-                        }
-                    }
-                    catch
-                    {
-                        Debug.Log("online false 2");
-                        isOnline = false;
-                    }
-                    Debug.Log("socket connected" + isOnline);
-                    isrun = false;
-                });
-            }
-            else
-            {
-                isOnline = false;
-                Debug.Log("socket not connected" + isOnline);
-            }
-            for (int i = 0; i < 20; i++)
-            {
-                if (!isrun)
-                    break;
-                await UniTask.Delay(100);
-            }
-            if (isrun)
-            {
-                Debug.Log("online false 3");
-                isOnline = false;
-            }
-            GetNetworkStatus(isOnline.ToString());
-            Debug.Log("Internet check " + isOnline);
-        }
-    }
-    public async void CheckInternetandProcess(Action<bool> action)
-    {
-        bool isrun = false;
-        if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
-        {
-            isrun = true;
-            ValidateSessionReq validateSession = new ValidateSessionReq();
-            validateSession.PlayerId = userDetails.Id;
-            validateSession.GameName = userDetails.game_Id.Split("_")[1];
-            validateSession.Operator = userDetails.game_Id.Split("_")[0];
-            validateSession.Session_token = userDetails.session_token;
-            validateSession.Control = "0";
-            validateSession.Token = userDetails.token;
-            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
-            {
-                try
-                {
-                    JObject jsonObject = JObject.Parse(res);
-                    if ((int)(jsonObject["code"]) == 200)
-                    {
-                        Debug.Log("online true 1");
-                        isOnline = true;
-                    }
-                    else
-                    {
-                        Debug.Log("online false 1" + res);
-                        isOnline = false;
-                    }
-                }
-                catch
-                {
-                    Debug.Log("online false 2");
-                    isOnline = false;
-                }
-                Debug.Log("socket connected" + isOnline);
-                isrun = false;
-            });
-        }
-        else
-        {
-            isOnline = false;
-            Debug.Log("socket not connected" + isOnline);
-        }
-        for (int i = 0; i < 20; i++)
-        {
-            if (!isrun)
-                break;
-            await UniTask.Delay(100);
-        }
-        if (isrun)
-        {
-            Debug.Log("online false 3");
-            isOnline = false;
-        }
-
-        action.Invoke(isOnline);
-
-        GetNetworkStatus(isOnline.ToString());
-        Debug.Log("Internet check " + isOnline);
-    }
-public async void CheckSession()
-    {
-        int Runcount = 0;
-        while (true)
-        {
-            Runcount += 1;
-            bool isrun = false;
-            if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
-            {
-                isrun = true;
-                ValidateSessionReq validateSession = new ValidateSessionReq();
-                validateSession.PlayerId = userDetails.Id;
-                validateSession.GameName = userDetails.game_Id.Split("_")[1];
-                validateSession.Operator = userDetails.game_Id.Split("_")[0];
-                validateSession.Session_token = userDetails.session_token;
-                validateSession.Control = "0";
-                if (Runcount == 4)
-                {
-                    if (APIController.instance.userDetails.isBlockApiConnection)
-                    {
-                        Runcount = 1;
-                    }
-                    else
-                    {
-                        Runcount = 0;
-                        validateSession.Control = "1";
-                    }
-                }
-                validateSession.Token = userDetails.token;
-                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
-                    try
-                    {
-                        JObject jsonObject = JObject.Parse(res);
-                        if ((int)(jsonObject["code"]) == 200)
-                        {
-                            Debug.Log("online true 1");
-                            isOnline = true;
-                        }
-                        else if((int)(jsonObject["code"]) != 200)
-                        {
-                            Debug.Log("online true 2");
-                            isOnline = true;
-                            DisconnectGame("Session expired. Account active in another device.");
-                            Debug.Log("invalide session");
-                        }
-                        else
-                        {
-                            Debug.Log("online false 1"+res);
-                            isOnline = false;
-                        }
-                    }
-                    catch
-                    {
-                        Debug.Log("online false 2");
-                        isOnline = false;
-                    }
-                    Debug.Log("socket connected" + isOnline);
-                    isrun = false;
-                });
-            }
-            else
-            {
-                Debug.Log("socket not connected"+isOnline);
-            }
-            int count = 0;
-            await UniTask.Delay(2000);
-            if (isrun && Runcount != 0)
-            {
-                Debug.Log("online false 3");
-                isOnline = false;
-            }
-            if(isOnline)
-            GetNetworkStatus(isOnline.ToString());
-            Debug.Log("Internet check " + isOnline);
-        }
-    }
-
-    #endregion
 }
 
 [System.Serializable]
@@ -1928,13 +1930,13 @@ public class UserGameData
     public bool hasSound;
     public bool hasMusic;
     public string operatorDomainUrl;
-    public string UserDevice="mobile";
+    public string UserDevice = "mobile";
 }
 
 [System.Serializable]
 public class TransactionMetaData
 {
-    public float Amount;
+    public double Amount;
     public string Info;
 }
 public class CreateAndJoinGameReq
@@ -2016,10 +2018,10 @@ public class WinningBetReq
 {
     public int Index;
     public string BetId;
-    public float Amount;
-    public float AmountSpend;
+    public double Amount;
+    public double AmountSpend;
     public float Commission;
-    public float Potamount;
+    public double Potamount;
     public TransactionMetaData Metadata;
     public bool IsBot;
     public bool IsWin;
