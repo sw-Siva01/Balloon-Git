@@ -167,6 +167,10 @@ public class GameController : MonoBehaviour
     [SerializeField] Animator heat_Anim;
     [SerializeField] GameObject heat_Anim_Img;
 
+    [SerializeField] Animator slider_Anim;
+    [SerializeField] GameObject slider_Anim_Img;
+    [SerializeField] GameObject slider_Obj;
+
 
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -190,6 +194,8 @@ public class GameController : MonoBehaviour
         timeRemaining = 0f; // Start the timer at 0
         UpdateTimerUI(); // Initialize the UI
         StartCoroutine(FillImg());
+
+        heat_Anim.SetBool("isStart", true);
     }
     IEnumerator FillImg()
     {
@@ -231,7 +237,7 @@ public class GameController : MonoBehaviour
                 countTime = 7f;
                 slider.maxValue = 7f;
                 slider.value = 7f;
-                slider.gameObject.SetActive(false);
+                /*slider.gameObject.SetActive(false);*/
             }
 
             // Tween Geometric Line Objs
@@ -272,9 +278,6 @@ public class GameController : MonoBehaviour
 
             if (isPressed && isFire && !lost)
             {
-                heat_Anim.SetTrigger("isEnd");
-                heat_Anim_Img.SetActive(true);
-
                 // To move the Target pos Up at the Start
                 target.anchoredPosition = Vector3.Lerp(target.anchoredPosition, targetPosition, 0.2f * Time.deltaTime);
 
@@ -359,6 +362,10 @@ public class GameController : MonoBehaviour
         {
             multiplier += Time.deltaTime;
             multiplierTxt.text = multiplier.ToString("0.00");
+
+            slider_Anim_Img.SetActive(true);
+            slider_Anim.SetBool("isON", true);
+            Slider_Obj();
         }
         else if (isPressed && startGame && multiplier >= 1.01)
         {
@@ -700,11 +707,23 @@ public class GameController : MonoBehaviour
     {
         isPressed = true;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+
+        heat_Anim.SetBool("isEnd", true);
+        heat_Anim_Img.SetActive(true);
+    }
+    async void Slider_Obj()
+    {
+        await UniTask.Delay(1000);
+        slider_Anim_Img.SetActive(false);
+        slider_Obj.SetActive(true);
     }
     public void OnClickUp()
     {
         isPressed = false;
         /*ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);*/
+        /*heat_Anim.SetTrigger("isEnd");*/
+        heat_Anim.SetBool("isEnd", false);
+        heat_Anim_Img.SetActive(false);
     }
     public void Button_ONEnter()
     {
