@@ -52,19 +52,19 @@ public class GameController : MonoBehaviour
 
     // Boolean
     [Header("Boolean")]
+    public bool isScroll;
+    public bool winCount;
     private bool startGame;
     private bool isPressed;
     private bool takeBetAmount;
-    private bool isSet;
+    public bool isSet;
     private bool isFire;
-    private bool lost;
-    private bool take;
-    public bool isScroll;
-    public bool winCount;
-    private bool isBonus_1;
-    private bool isBonus_2;
-    private bool isBonus_3;
-    private bool isNormal;
+    public bool lost;
+    public bool take;
+    public bool isBonus_1;
+    public bool isBonus_2;
+    public bool isBonus_3;
+    public bool isNormal;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -106,12 +106,18 @@ public class GameController : MonoBehaviour
     [SerializeField] RectTransform bonus_Balloon;
     [SerializeField] Vector3 targetPosition;  // To move the Target pos Up at the Start
 
+    [SerializeField] GameObject balloonJumpObj;
+    [SerializeField] GameObject balloonDefaultObj;
+
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // Sliders
     [Header("Sliders")]
     [SerializeField] Slider slider;
     [SerializeField] float countTime;
+    [SerializeField] GameObject slider_bg;
+    [SerializeField] GameObject fillArea;
+    [SerializeField] GameObject slider_txt;
     private bool timeout;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -168,8 +174,15 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject heat_Anim_Img;
 
     [SerializeField] Animator slider_Anim;
-    [SerializeField] GameObject slider_Anim_Img;
-    [SerializeField] GameObject slider_Obj;
+
+    [SerializeField] Animator fire_Anim;
+    [SerializeField] Animator blueFire_Anim;
+
+    [SerializeField] Animator balloon;
+    [SerializeField] Animator balloon_Jump;
+
+    [SerializeField] Animator takecashOut;
+
 
 
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -195,7 +208,13 @@ public class GameController : MonoBehaviour
         UpdateTimerUI(); // Initialize the UI
         StartCoroutine(FillImg());
 
+        blueFire_Anim.SetBool("isBlue", false);
         heat_Anim.SetBool("isStart", true);
+
+        // sliderOBjs
+        slider_bg.SetActive(false);
+        fillArea.SetActive(false);
+        slider_txt.SetActive(false);
     }
     IEnumerator FillImg()
     {
@@ -279,7 +298,7 @@ public class GameController : MonoBehaviour
             if (isPressed && isFire && !lost)
             {
                 // To move the Target pos Up at the Start
-                target.anchoredPosition = Vector3.Lerp(target.anchoredPosition, targetPosition, 0.2f * Time.deltaTime);
+                /*target.anchoredPosition = Vector3.Lerp(target.anchoredPosition, targetPosition, 0.2f * Time.deltaTime);*/
 
                 startGame = true;
 
@@ -291,6 +310,8 @@ public class GameController : MonoBehaviour
 
                 if (multiplier >= 1.01)
                 {
+                    balloon.SetBool("isBalloon", false);
+
                     // Increment the time button is held
                     timeHeld += Time.deltaTime;
 
@@ -306,6 +327,17 @@ public class GameController : MonoBehaviour
                         timeSinceLastIncrement = 0f; // Reset the timer
                         timeHeld = 0f; // Reset the time button is held
                         winCash = 0f;
+
+                        // sliderOBjs
+                        slider_Anim.SetBool("isOFF", true);
+                        slider_bg.SetActive(false);
+                        fillArea.SetActive(false);
+                        slider_txt.SetActive(false);
+
+                        fire_Anim.SetBool("isFire", false);
+                        balloon.SetBool("isBalloon", false);
+
+                        takecashOut.SetBool("isTake", false);
                     }
                 }
             }
@@ -363,9 +395,15 @@ public class GameController : MonoBehaviour
             multiplier += Time.deltaTime;
             multiplierTxt.text = multiplier.ToString("0.00");
 
-            slider_Anim_Img.SetActive(true);
+            // sliderOBjs
             slider_Anim.SetBool("isON", true);
-            Slider_Obj();
+            Slider_Objs();
+
+            //balloon objs
+            balloonDefaultObj.SetActive(false);
+            balloonJumpObj.SetActive(true);
+            balloon.SetBool("isBalloon", true);
+            balloon_Objs();
         }
         else if (isPressed && startGame && multiplier >= 1.01)
         {
@@ -420,7 +458,7 @@ public class GameController : MonoBehaviour
         holdButton.enabled = false;
         LineObj.gameObject.SetActive(true);
         holdButtonEvent.enabled = false;
-        slider.gameObject.SetActive(false);
+        /*slider.gameObject.SetActive(false);*/
         empty_holdButton.gameObject.SetActive(true);
 
         #region :::::::::::::::::::::::::: DoTween sequence ::::::::::::::::::::::::::
@@ -455,6 +493,14 @@ public class GameController : MonoBehaviour
         {
             isNormal = true;
         }
+
+        // sliderOBjs
+        slider_Anim.SetBool("isOFF", true);
+        slider_bg.SetActive(false);
+        fillArea.SetActive(false);
+        slider_txt.SetActive(false);
+        balloon.SetBool("isBalloon", false);
+        takecashOut.SetBool("isTake", false);
 
         Demo_Bonus();
         Call_Functions();
@@ -527,22 +573,30 @@ public class GameController : MonoBehaviour
             winCount = false;
         }
 
-        target.localPosition = new Vector3(0f, -152f, 0f);
+        /*target.localPosition = new Vector3(0f, -152f, 0f);*/
+        target.localPosition = new Vector3(0f, 202f, 0f);
         LineObj.gameObject.SetActive(false);
 
         countTime = 0f;
         slider.value = 0f;
-        slider.gameObject.SetActive(true);
+        /*slider.gameObject.SetActive(true);*/
 
         // DoTween Text
         txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
-        /*txtObj.DOMove(new Vector3(0f, 0f, 0f), 0.01f);*/
-        txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);   // new Position
+        /*txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);*/
+        txtObj.DOMove(new Vector3(0f, 1.7f, 0f), 0.01f);// new Position
 
         button_1.gameObject.SetActive(false);
         button_2.gameObject.SetActive(false);
         button_5.gameObject.SetActive(false);
         button_10.gameObject.SetActive(false);
+
+        slider_Anim.SetBool("isOFF", false);
+        slider_Anim.SetBool("isON", false);
+
+        balloon.SetBool("isBalloon", false);
+        balloonDefaultObj.SetActive(true);
+        target.gameObject.SetActive(false);
     }
     void TimeDelay_WinCash()
     {
@@ -564,21 +618,29 @@ public class GameController : MonoBehaviour
         background.localPosition = initialBackgroundPosition;
         bg.localPosition = iniBackgroundPos;
 
-        target.localPosition = new Vector3(0f, -152f, 0f);
+        /*target.localPosition = new Vector3(0f, -152f, 0f);*/
+        target.localPosition = new Vector3(0f, 202f, 0f);
         LineObj.gameObject.SetActive(false);
 
         countTime = 0f;
         slider.value = 0f;
-        slider.gameObject.SetActive(true);
+        /*slider.gameObject.SetActive(true);*/
 
         // DoTween Text
-        txtObj.DOScale(new Vector3(1f, 1f, 1f), 0.01f);
-        txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);   // new Position
+        /*txtObj.DOMove(new Vector3(0f, 0.27f, 0f), 0.01f);*/
+        txtObj.DOMove(new Vector3(0f, 1.7f, 0f), 0.01f);// new Position
 
         button_1.gameObject.SetActive(false);
         button_2.gameObject.SetActive(false);
         button_5.gameObject.SetActive(false);
         button_10.gameObject.SetActive(false);
+
+        slider_Anim.SetBool("isOFF", false);
+        slider_Anim.SetBool("isON", false);
+
+        balloon.SetBool("isBalloon", false);
+        balloonDefaultObj.SetActive(true);
+        target.gameObject.SetActive(false);
     }
     void ResetBets()
     {
@@ -590,6 +652,19 @@ public class GameController : MonoBehaviour
         Xtxt.color = Color.black;
 
         Invoke("TimeDelay", 1.5f);
+    }
+    async void balloon_Objs()
+    {
+        await UniTask.Delay(1300);
+        balloonJumpObj.SetActive(false);
+        target.gameObject.SetActive(true);
+    }
+    async void Slider_Objs()
+    {
+        await UniTask.Delay(200);
+        slider_bg.SetActive(true);
+        fillArea.SetActive(true);
+        slider_txt.SetActive(true);
     }
     #region ::::::::::::::::::::::::::: Bonus Functions :::::::::::::::::::::::::::
     void Bonus_Delay()
@@ -708,14 +783,13 @@ public class GameController : MonoBehaviour
         isPressed = true;
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
+        blueFire_Anim.SetBool("isBlue", true);
+        fire_Anim.SetBool("isFire", true);
+
         heat_Anim.SetBool("isEnd", true);
         heat_Anim_Img.SetActive(true);
-    }
-    async void Slider_Obj()
-    {
-        await UniTask.Delay(1000);
-        slider_Anim_Img.SetActive(false);
-        slider_Obj.SetActive(true);
+
+        takecashOut.SetBool("isTake", true);
     }
     public void OnClickUp()
     {
