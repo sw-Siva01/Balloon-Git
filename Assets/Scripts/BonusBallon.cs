@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Cysharp.Threading.Tasks;
 
 public class BonusBallon : MonoBehaviour
 {
@@ -9,17 +10,22 @@ public class BonusBallon : MonoBehaviour
     {
         //bonusObj.DOMove(new Vector2(0f, -0.23f), 1f).SetEase(Ease.InSine);
         bonusObj.DOMove(new Vector2(0f, -0.6f), 1f).SetEase(Ease.InSine); // new balloon position
-        Invoke("SetON", 2f);
-        Invoke("TimeDelay", 5f);
+
+        SetON();
+        TimeDelay();
     }
-    void SetON()
+    async void SetON()
     {
+        await UniTask.Delay(2000);
         Fill_Img.SetActive(true);
     }
-    void TimeDelay()
+    async void TimeDelay()
     {
+        await UniTask.Delay(4500);
         bonusObj.DOMove(new Vector2(0f, 8f), 0.8f).SetEase(Ease.InOutBack);
-        Invoke("SetOFF", 1f);
+
+        await UniTask.Delay(5500);
+        SetOFF();
     }
     void SetOFF()
     {

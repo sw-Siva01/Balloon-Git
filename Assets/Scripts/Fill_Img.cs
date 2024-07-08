@@ -8,6 +8,7 @@ public class Fill_Img : MonoBehaviour
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     [Header("Script")]
     [SerializeField] GameController controller;
+    [SerializeField] BonusBallon bonus;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -20,23 +21,46 @@ public class Fill_Img : MonoBehaviour
 
     [Header("Float")]
     [SerializeField] float totalTime = 10f;  // Total time for the timer
-    private float timeRemaining;    // Time remaining for the timer
-    [SerializeField] float Timer;
+    [SerializeField] float timeRemaining;    // Time remaining for the timer
+    public float Timer;
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
-    private void OnEnable()
+    /*private void OnEnable()
     {
-        Timer = controller.bonusTimer;
-    }
+        Timer = controller.bonusTimer;  
+    }*/
     void Start()
     {
         timeRemaining = 0f;
     }
     void Update()
     {
-        //Timer = controller.bonusTimer;
+        /*Timer = controller.bonusTimer;*/
 
+        if (controller.timer)
+        {
+            timeRemaining = 0f;
+            timerBar.fillAmount = 0;
+            Timer = 0;
+            fill_Img_Dup.fillAmount = fill_Img.fillAmount;
+            controller.timer = false;
+        }
+
+        if (bonus.bonusObj.gameObject.activeSelf)
+        {
+            Timer = controller.bonusTimer;
+            TimerUpdate();
+        }
+
+        if (Timer > 0)
+        {
+            fill_Img_Dup.fillAmount = fill_Img.fillAmount;
+        }
+    }
+    async void TimerUpdate()
+    {
+        await UniTask.Delay(2500);
         if (timeRemaining < totalTime)
         {
             if (timeRemaining < Timer)
@@ -46,8 +70,12 @@ public class Fill_Img : MonoBehaviour
             }
         }
 
-        if (Timer > 0)
+        await UniTask.Delay(3500);
+        if (Timer >= 10)
         {
+            timeRemaining = 0f;
+            timerBar.fillAmount = 0;
+            Timer = 0;
             fill_Img_Dup.fillAmount = fill_Img.fillAmount;
         }
     }
