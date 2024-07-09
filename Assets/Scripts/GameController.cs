@@ -215,6 +215,8 @@ public class GameController : MonoBehaviour
     public string gameName;
     public string lobbyName;
     public string betID;
+    public int BetIndex;
+    public CreateMatchResponse MatchRes;
 
 
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -246,9 +248,9 @@ public class GameController : MonoBehaviour
         fillArea.SetActive(false);
         slider_txt.SetActive(false);
 
-        /*APIController.instance.OnUserDetailsUpdate += InitPlayerDetails;
+        APIController.instance.OnUserDetailsUpdate += InitPlayerDetails;
         APIController.instance.OnUserBalanceUpdate += InitAmountDetails;
-        APIController.instance.OnUserDeposit += InitUserDeposit;*/
+        APIController.instance.OnUserDeposit += InitUserDeposit;
     }
 
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
@@ -547,6 +549,7 @@ public class GameController : MonoBehaviour
         {
             takeBetAmount = false;
             holdButton.enabled = false;
+            API_IntitalizeBetAmount();
             // Taking the bet amount that we choose
             TotalAmount -= betAmount;
             totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>EUR</size>");
@@ -587,6 +590,8 @@ public class GameController : MonoBehaviour
         fillArea.SetActive(false);
         slider_txt.SetActive(false);
         slider_Anim.SetBool("isOFF", true);
+
+        API_Winning();
 
         #region :::::::::::::::::::::::::: DoTween sequence ::::::::::::::::::::::::::
 
@@ -634,6 +639,173 @@ public class GameController : MonoBehaviour
         Demo_Bonus();
         Call_Functions();
         DelayFuction();
+    }
+    void API_IntitalizeBetAmount()
+    {
+        APIController.instance.CheckInternetandProcess((success) =>
+        {
+            Debug.Log("CheckInternetandProcess Betbtn");
+
+            if (success)
+            {
+
+                Debug.Log("CheckInternetandProcess Betbtn Success");
+                if (APIController.instance.userDetails.isBlockApiConnection)
+                {
+                    Debug.Log("Calling LocalInitializeBet Calling Demo");
+                    LocalInitializeBet();
+                }
+            }
+            else
+            {
+                Debug.Log("CheckInternetandProcess Failed");
+                //Controller.Interactble_Or_UninteractableBtn(startGame, true);
+                //ChechkAmountBtns(true);
+                //HideOrShowObject(Controller.BetPlacedimg.gameObject, false);
+                takeBetAmount = false;
+                BetInputController.Instance.BetAmtInput.interactable = true;
+            }
+        });
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+        {
+            Debug.Log("Calling LocalInitializeBet Calling Live");
+
+            LocalInitializeBet();
+        }
+    }
+    void LocalInitializeBet()
+    {
+        Debug.Log("Entered LocalInitializeBet");
+
+        //  APIController.instance.StartCheckInternetLoop();
+
+        string m = TotalAmount.ToString("0.00");
+        /*betAmountTxt = float.Parse(m);*/
+
+
+        if (betAmount <= TotalAmount)
+        {
+            if (betAmount < 0.1f)
+            {
+                if (TotalAmount >= .1f)
+                {
+                    // Controller.BetAmount = 5;
+                    PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);
+                }
+                else
+                {
+                    Debug.Log("nmnm");
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+        string message = "Bet Initiated";
+
+
+
+        int _index = UnityEngine.Random.Range(100, 999);
+        //   Controller.BetIndex = APIController.instance.InitlizeBet((Controller.BetAmount), val);
+        BetInputController.Instance.CloseKeyPadPanel();
+        BetInputController.Instance.BetAmtInput.interactable = false;
+
+
+        string _s = betAmount.ToString("0.00");
+        float amount = float.Parse(_s);
+
+        TransactionMetaData val = new TransactionMetaData();
+        val.Amount = amount;
+        val.Info = message;
+
+        Debug.Log("Checking Bet Amount 1 : " + amount + "........" + val.Amount);
+
+        List<string> _list = new List<string>();
+        _list.Add(APIController.instance.userDetails.Id);
+        //APIController.instance.AddPlayers(MatchRes.MatchToken, _list);
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+        {
+            Debug.Log("isBlockApiConnection " + APIController.instance.userDetails.isBlockApiConnection);
+
+            BetIndex = APIController.instance.CreateAndJoinMatch(_index, amount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
+            {
+                if (success)
+                {
+                    betID = newbetID.ToString();
+                    MatchRes = res;
+                    Debug.Log("Bet Initiated");
+                    APIController.GetUpdatedBalance();
+
+                    /*Debug.Log("Setting_index_FromAPI ");
+                    WrongBtnSetter_ByIndex.Instance.Setting_index_FromAPI();
+                    Debug.Log("Bet Completed");*/
+
+                }
+                else
+                {
+                    Debug.Log("Bet Initiate Failed");
+                }
+
+            });
+        }
+        else
+        {
+            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
+            {
+                if (success)
+                {
+                    Debug.Log("Bet Completed");
+                }
+                else
+                {
+                    Debug.Log("Bet Initiate Failed");
+                }
+            }, APIController.instance.userDetails.Id, false);
+        }
+    }
+    void API_Winning()
+    {
+        string value = WinAmount.ToString("F2");
+        TransactionMetaData val = new TransactionMetaData();
+        float amount = float.Parse(value);
+
+        // APIController.instance.WinningsBet(Controller.BetIndex, Controller.WonAmount, Controller.BetAmount, val);
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+        {
+            APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, amount, betAmount, WinAmount, val, (success) =>
+            {
+                if (success)
+                {
+                    Debug.Log("Winning Bet Initiated");
+                    APIController.GetUpdatedBalance();
+
+                }
+                else
+                {
+                    Debug.Log("Winning Bet Failed");
+
+                }
+            }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
+        }
+        /*else
+        {
+            APIController.instance.WinningsBet(BetIndex, WinAmount, betAmount, val, (success) =>
+            {
+                if (success)
+                {
+                    Debug.Log("Winning Bet Initiated");
+
+
+                }
+                else
+                {
+                    Debug.Log("Winning Bet Failed");
+
+                }
+            }, APIController.instance.userDetails.Id, false);
+        }*/
+        //     Controller.ShowingAll(Controller.AllController[Controller.DropDown.value].Board);
     }
     void Call_Functions()
     {
@@ -942,7 +1114,7 @@ public class GameController : MonoBehaviour
                 {
                     winCash_Demo += 4f;
                 }
-                else if(betAmount >= 2.1f && betAmount <= 5f)
+                else if (betAmount >= 2.1f && betAmount <= 5f)
                 {
                     winCash_Demo += 2f;
                 }
