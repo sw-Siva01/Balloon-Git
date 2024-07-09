@@ -16,7 +16,6 @@ public class WelcomSettings : MonoBehaviour
         SoundToggle.onValueChanged.AddListener((state) => { ToggleSound(state); });
         MusicToggle.onValueChanged.AddListener((state) => { ToggleMusic(state); });
     }
-
     public void ToggleMusic(bool value)
     {
 

@@ -8,7 +8,6 @@ public class BonusBallon : MonoBehaviour
     public GameObject Fill_Img;
     private void OnEnable()
     {
-        //bonusObj.DOMove(new Vector2(0f, -0.23f), 1f).SetEase(Ease.InSine);
         bonusObj.DOMove(new Vector2(0f, -0.6f), 1f).SetEase(Ease.InSine); // new balloon position
 
         SetON();

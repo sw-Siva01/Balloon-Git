@@ -146,7 +146,8 @@ public class SettingsPanelHandler : MonoBehaviour
     //    AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);
 
         Debug.Log("Exit Entered");
-     //   TowerUIController.instance.ExitWebGL();
+
+        APIController.CloseWindow();
         Debug.Log("Exit Called");
         HideSettings();
     }
@@ -154,18 +155,7 @@ public class SettingsPanelHandler : MonoBehaviour
     {
        // AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);
 
-        Debug.Log("FFFFFUUUULLL");
-        //APIController.FullScreen();
-        //if(TowerManager.Instance.IsGameis_Fullscreen)
-        //{
-        //    TowerManager.Instance.IsGameis_Fullscreen = false;
-        //}
-        //else
-        //{
-        //    TowerManager.Instance.IsGameis_Fullscreen = true;
-        //}
-        Debug.Log("FFFFFUUUULLL Called");
+        APIController.FullScreen();
         HideSettings();
     }
-
 }

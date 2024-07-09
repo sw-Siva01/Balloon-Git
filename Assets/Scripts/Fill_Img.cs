@@ -26,10 +26,6 @@ public class Fill_Img : MonoBehaviour
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
-    /*private void OnEnable()
-    {
-        Timer = controller.bonusTimer;  
-    }*/
     void Start()
     {
         timeRemaining = 0f;
@@ -51,11 +47,6 @@ public class Fill_Img : MonoBehaviour
         {
             Timer = controller.bonusTimer;
             TimerUpdate();
-        }
-
-        if (Timer > 0)
-        {
-            fill_Img_Dup.fillAmount = fill_Img.fillAmount;
         }
     }
     async void TimerUpdate()

@@ -96,7 +96,6 @@ public class BetInputController : MonoBehaviour
 
         //}
 
-
         //  BetAmtInput.textViewport.gameObject.SetActive(true);
         string pattern = @"^\d*(\.\d{0,2})?$";
         if (Regex.IsMatch(BetAmtInput.text, pattern))
@@ -205,7 +204,8 @@ public class BetInputController : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnEditInput ELse"); 
+            Debug.Log("OnEditInput ELse");
+            controller.numPad = true;
             OpenKeyPadPanel();
             /*_KeyBoardHandler.ShowKeyBoard((float)TowerGameController.Instance.BetAmount,*/
             _KeyBoardHandler.ShowKeyBoard((float)controller.betAmount,

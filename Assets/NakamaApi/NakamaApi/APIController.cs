@@ -331,7 +331,7 @@ public class APIController : MonoBehaviour
         {
             userDetails = new UserGameData();
             userDetails.balance = 5000;
-            userDetails.currency_type = "USD";
+            userDetails.currency_type = "EUR";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             //userDetails.name = SystemInfo.deviceName + SystemInfo.deviceModel;
