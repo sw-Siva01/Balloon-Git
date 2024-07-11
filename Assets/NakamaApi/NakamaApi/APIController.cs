@@ -331,7 +331,7 @@ public class APIController : MonoBehaviour
         {
             userDetails = new UserGameData();
             userDetails.balance = 500;
-            userDetails.currency_type = "EUR";
+            userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             //userDetails.name = SystemInfo.deviceName + SystemInfo.deviceModel;
@@ -744,6 +744,15 @@ public class APIController : MonoBehaviour
         }, 2);
 #endif
     }
+    public void CheckInternetForButtonClick(Action<bool> action)
+    {
+        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA, checkInternetUrl,
+                 new List<KeyValuePojo>(),
+                 (bool isSuccess, string error, string body) =>
+                 {
+                     action.Invoke(isSuccess);
+                 });
+    }public const string checkInternetUrl = "https://dev.lootrix.utwebapps.com/checkinternet.php";
 
     public void AddMatchLog(string matchToken, string action, string metadata, string PlayerId = "")
     {

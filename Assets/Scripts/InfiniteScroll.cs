@@ -46,6 +46,14 @@ public class InfiniteScroll : MonoBehaviour
 
     public TextMeshProUGUI Bonus_Count_txt;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Bonus_Numb_Count")]
+
+    [SerializeField] RectTransform numbCount_1;
+    [SerializeField] RectTransform numbCount_2;
+    [SerializeField] RectTransform numbCount_3;
+
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void OnEnable()
@@ -118,6 +126,8 @@ public class InfiniteScroll : MonoBehaviour
         // Handle automatic scrolling
         if (autoScroll)
         {
+            CountText_Animation();
+            Fill_Img.instance.CountText_Animation();
             // Shuffle the children of the content panel
             ShuffleContentChildren();
 
@@ -153,6 +163,8 @@ public class InfiniteScroll : MonoBehaviour
                 contentPanelTransform.localPosition += new Vector3(scrollSpeed * Time.deltaTime, 0, 0);
             }
             elapsedTime += Time.deltaTime;
+
+            
             yield return null;
         }
 
@@ -297,11 +309,67 @@ public class InfiniteScroll : MonoBehaviour
             yield return null;
         }
     }
+    void CountText_Animation()
+    {
+        if (Count == 0)
+        {
+            // DoTween Text in Sequence
+            Sequence sequence = DOTween.Sequence();
+
+            // Add the first scale animation and move animation to the sequence
+            sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine));
+        }
+        else if (Count == 1)
+        {
+            // DoTween Text in Sequence
+            Sequence sequence = DOTween.Sequence();
+
+            // Add the first scale animation and move animation to the sequence
+            sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                    .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+
+            // Add a delay of 1 second
+            sequence.AppendInterval(0.01f);
+
+            // Add the second scale animation to the sequence
+            sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+        }
+        else if (Count == 2)
+        {
+            // DoTween Text in Sequence
+            Sequence sequence = DOTween.Sequence();
+
+            // Add the first scale animation and move animation to the sequence
+            sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                    .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+
+            // Add a delay of 1 second
+            sequence.AppendInterval(0.01f);
+
+            // Add the second scale animation to the sequence
+            sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+        }
+        else if (Count == 3)
+        {
+            // DoTween Text in Sequence
+            Sequence sequence = DOTween.Sequence();
+
+            // Add the first scale animation and move animation to the sequence
+            sequence.Append(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+
+            // Add a delay of 1 second
+            sequence.AppendInterval(0.01f);
+
+            // Add the second scale animation to the sequence
+            sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+        }
+    }
     private void OnDisable()
     {
         bfloat = 0f;
         BonusValue = 0f;
         controller.winCash_Demo = 0f;
         controller.isScroll = false;
+        StopAllCoroutines();
     }
 }
