@@ -45,6 +45,7 @@ public class InfiniteScroll : MonoBehaviour
     [Header("TextMeshProUGUI")]
 
     public TextMeshProUGUI Bonus_Count_txt;
+    public TextMeshProUGUI BonusMultiplier_txt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -53,6 +54,8 @@ public class InfiniteScroll : MonoBehaviour
     [SerializeField] RectTransform numbCount_1;
     [SerializeField] RectTransform numbCount_2;
     [SerializeField] RectTransform numbCount_3;
+
+    [SerializeField] Image GlowEffect;
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -271,7 +274,7 @@ public class InfiniteScroll : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(3f, 3f, 3f), 0.5f).SetEase(Ease.InOutSine))
-                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0.7f, 0f), 1f).SetEase(Ease.InOutSine))
+                .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0.4f, 0f), 1f).SetEase(Ease.InOutSine))
                 .Join(controller.BonusRewardTxt.DOColor(new Color32(255, 255, 0, 255), 0.01f).SetEase(Ease.Linear));
         // Add a delay of 1 second
         sequence.AppendInterval(1f);
@@ -288,8 +291,6 @@ public class InfiniteScroll : MonoBehaviour
     }
     void Object_Delay()
     {
-        /*controller.multiplier += bfloat;
-        controller.multiplierTxt.text = controller.multiplier.ToString("0.00" + "<size=40>X</size>");*/
         StartCoroutine(Add_BonusValue());
         controller.BonusRewardTxt.text = null;
     }
@@ -298,6 +299,7 @@ public class InfiniteScroll : MonoBehaviour
         controller.ScrollViewObj.SetActive(false);
         controller.CenterBack_Img.SetActive(false);
         controller.BonusRewardTxt.text = null;
+        NumbCountSet_OFF();
         Count = 3;
     }
     IEnumerator Add_BonusValue()
@@ -305,19 +307,33 @@ public class InfiniteScroll : MonoBehaviour
         while (controller.multiplier < BonusValue)
         {
             controller.multiplier += BonusValue * Time.deltaTime;
-            controller.multiplierTxt.text = controller.multiplier.ToString("0.00");
+            /*controller.multiplierTxt.text = controller.multiplier.ToString("0.00");*/
+            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
+
+            //BonusMultiplier_txt
             yield return null;
         }
     }
+    void NumbCountSet_OFF()
+    {
+        // DoTween Text in Sequence
+        Sequence sequence = DOTween.Sequence();
+
+        // Add the first scale animation and move animation to the sequence
+        sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+            .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
+    }
     void CountText_Animation()
     {
-        if (Count == 0)
+        #region
+        /*if (Count == 0)
         {
             // DoTween Text in Sequence
             Sequence sequence = DOTween.Sequence();
 
             // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine));
+            sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
         }
         else if (Count == 1)
         {
@@ -326,13 +342,15 @@ public class InfiniteScroll : MonoBehaviour
 
             // Add the first scale animation and move animation to the sequence
             sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                    .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+                    .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
 
             // Add a delay of 1 second
             sequence.AppendInterval(0.01f);
 
             // Add the second scale animation to the sequence
-            sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+            sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
         }
         else if (Count == 2)
         {
@@ -341,13 +359,15 @@ public class InfiniteScroll : MonoBehaviour
 
             // Add the first scale animation and move animation to the sequence
             sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                    .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+                    .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear)); 
 
             // Add a delay of 1 second
             sequence.AppendInterval(0.01f);
 
             // Add the second scale animation to the sequence
-            sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+            sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
         }
         else if (Count == 3)
         {
@@ -355,13 +375,60 @@ public class InfiniteScroll : MonoBehaviour
             Sequence sequence = DOTween.Sequence();
 
             // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
+            sequence.Append(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
 
             // Add a delay of 1 second
             sequence.AppendInterval(0.01f);
 
             // Add the second scale animation to the sequence
-            sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
+            sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
+        }*/
+        #endregion
+        // DoTween Text in Sequence
+        Sequence sequence = DOTween.Sequence();
+        switch (Count)
+        {
+            case 1:
+                // Add the first scale animation and move animation to the sequence
+                sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                        .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
+
+                // Add a delay of 1 second
+                sequence.AppendInterval(0.01f);
+
+                // Add the second scale animation to the sequence
+                sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
+                break;
+            case 2:
+                // Add the first scale animation and move animation to the sequence
+                sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                        .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
+
+                // Add a delay of 1 second
+                sequence.AppendInterval(0.01f);
+
+                // Add the second scale animation to the sequence
+                sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
+                break;
+            case 3:
+                // Add the first scale animation and move animation to the sequence
+                sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                        .Join(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
+
+                // Add a delay of 1 second
+                sequence.AppendInterval(0.01f);
+
+                // Add the second scale animation to the sequence
+                sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
+                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
+                break;
         }
     }
     private void OnDisable()
@@ -369,6 +436,7 @@ public class InfiniteScroll : MonoBehaviour
         bfloat = 0f;
         BonusValue = 0f;
         controller.winCash_Demo = 0f;
+        BonusMultiplier_txt.text = 0.00f.ToString("0.00");
         controller.isScroll = false;
         StopAllCoroutines();
     }

@@ -64,7 +64,7 @@ public class BetInputController : MonoBehaviour
     }
     public void OpenKeyPadPanel()
     {
-
+        controller.numPad = true;
         Debug.Log(" TOwer UserDevice ::" + APIController.instance.userDetails.UserDevice);
         if (APIController.instance.userDetails.UserDevice == "desktop")
         {
@@ -75,7 +75,7 @@ public class BetInputController : MonoBehaviour
         //{
         //     BetPanel.DOAnchorPosY(1050f, .2f);
         BetPanel.gameObject.SetActive(true);
-    //    TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(false);
+        //    TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(false);
         if (KeyBoardHandler.instance != null)
         {
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(true);
@@ -83,7 +83,7 @@ public class BetInputController : MonoBehaviour
         }
 
 
-       // clickCount++;
+        // clickCount++;
         // }
     }
     public void OnBetAmountEdit()
@@ -319,6 +319,7 @@ public class BetInputController : MonoBehaviour
     }
     public void CloseKeyPadPanel()
     {
+        controller.numPad = false;
         Debug.Log("CloseKeyPadPanel ");
         BetPanel.gameObject.SetActive(false);
         RestrictInput();
@@ -326,13 +327,14 @@ public class BetInputController : MonoBehaviour
         if (KeyBoardHandler.instance != null)
         {
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
-         
+
         }
-        
-             EnableBetInput();
-            Debug.Log("CloseKeyPadPanel Done ");
+
+        EnableBetInput();
+        Debug.Log("CloseKeyPadPanel Done ");
 
         Debug.Log(" Done  Done");
+
     }
 
     public void EnableBetInput()

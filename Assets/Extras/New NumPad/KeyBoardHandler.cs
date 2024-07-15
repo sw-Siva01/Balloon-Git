@@ -191,7 +191,7 @@ public class KeyBoardHandler : MonoBehaviour
 
     }
 
-    void OnCancelInput()
+    public void OnCancelInput()
     {
         Debug.Log("OnCancelInput");
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
