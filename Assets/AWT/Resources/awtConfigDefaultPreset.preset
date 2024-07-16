@@ -1,0 +1,282 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: awtConfigDefaultPreset
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: 71743494deec8b24489b4592ead08203, type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _aspectRatio
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _forceToRotate
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _maxAspectRatioWidth
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _maxAspectRatioHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _minAspectRatioWidth
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _minAspectRatioHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _fixedAspectRatioWidth
+    value: 16
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _fixedAspectRatioHeight
+    value: 9
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _forceToRotateText
+    value: Please Rotate Your Device!
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _antiAdBlocker
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _antiAdBlockerWarningTitle
+    value: Adblock Detected
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _antiAdBlockerWarningDescription
+    value: Your browser is using the Adblock Plugin. To continue website please disable
+      adblock plugin.
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _startToLoadButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _startToLoadButtonText
+    value: RUN GAME
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showAppStoreButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _microsoftStoreButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showMicrosoftStoreButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _appStoreButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showPlayStoreButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _playStoreButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showDescription
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _descriptionText
+    value: '[GAME NAME] is a multiplayer, first-person shooter game. The game is
+      in early development but is updated regularly with new content.'
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showFacebookButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _facebookButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showTwitterButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _twitterButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showGoogleButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _googleButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showLinkedinButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _linkedinButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showYoutubeButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _youtubeButtonLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showPrivacyPolicy
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _privacyPolicyLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showTermsOfService
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _termsOfServiceLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showCopyright
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _copyrightLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _copyrightText
+    value: "Copyright \xA9 2020 Agnosia Games"
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showGameLogo
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _gameLogoSize
+    value: 50
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showCompanyLogo
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _companyLogoSize
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _companyLogoLink
+    value: https://u3d.as/1Xr0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showProgressBar
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showProgressText
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showFullscreenButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showWatchVideoButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _showPlayPongButton
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _watchVideoButtonText
+    value: WATCH TUTORIAL
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _playPongButtonText
+    value: PLAY PONG
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _watchVideoButtonAutoSize
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _playPongButtonAutoSize
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _watchVideoButtonFontSize
+    value: 12px
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _playPongButtonFontSize
+    value: 13px
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _watchVideoButtonYoutubeLink
+    value: https://www.youtube.com/watch?v=FIpZ1h7LEos
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _disableMobileWarning
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _targetPath
+    value: C:/Users/PC/Downloads/AWT0/Builds/b18
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _s11
+    value: "\n    &&& title2019start &&&<title>%UNITY_WEB_NAME%</title>&&& title2019end
+      &&&\n    &&& title2020start &&&<title>AWT Pro</title>&&& title2020end &&&\n   
+      &&& UnityLoader1 &&& <script src=\"%UNITY_WEBGL_LOADER_URL%\"></script> &&&
+      UnityLoader2 &&&\n    "
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _s21
+    value: "\n            applicationInstance = UnityLoader.instantiate(\"gameContainer\",
+      \"%UNITY_WEBGL_BUILD_URL%\", {onProgress: UnityProgress});\n            "
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _s31
+    value: "\n    var buildUrl = \"Build\";\n    var loaderUrl = buildUrl + \"/b17.loader.js\";\n   
+      var config = {\n        dataUrl: buildUrl + \"/b17.data.unityweb\",\n       
+      frameworkUrl: buildUrl + \"/b17.framework.js.unityweb\",\n        codeUrl:
+      buildUrl + \"/b17.wasm.unityweb\",\n        streamingAssetsUrl: \"StreamingAssets\",\n       
+      companyName: \"DefaultCompany\",\n        productName: \"AWT Pro\",\n       
+      productVersion: \"0.1\",\n    };\n"
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []

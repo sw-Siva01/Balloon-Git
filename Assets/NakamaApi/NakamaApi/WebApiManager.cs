@@ -107,20 +107,12 @@ public class WebApiManager : MonoBehaviour
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         string getParameters = getEncodedParams(parameters);
         Debug.Log("Check $$$$$" + url + getParameters);
-        //foreach (var item in parameters)
-        //{
-        //    DebugHelper.Log(item.keyId + "____" +item.value);
-        //}
+       
 
 #if !UNITY_WEBGL || UNITY_EDITOR
         using (UnityWebRequest www = UnityWebRequest.Get(url + getParameters))
         {
             www.timeout = timeout;
-            //www.SetRequestHeader("Access-Control-Allow-Credentials", "true");
-            //www.SetRequestHeader("Content-Type", "text/plain");
-            //www.SetRequestHeader("Access-Control-Allow-Headers", "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time");
-            //www.SetRequestHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            //www.SetRequestHeader("Access-Control-Allow-Origin", "*");   //Send request
             www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             yield return www.SendWebRequest();
             while (!www.isDone)
@@ -147,19 +139,20 @@ public class WebApiManager : MonoBehaviour
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);
+            Debug.Log(items.keyId + "::" + items.value);
         }
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, bodyFormData))
         {
             www.timeout = timeout;
             yield return www.SendWebRequest();
-            //                www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            
 
             while (!www.isDone)
                 yield return www;
 
-            //while (!www.downloadHandler.isDone)
-            //   yield return null;
+            
+           
 
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
         }
@@ -174,9 +167,7 @@ public class WebApiManager : MonoBehaviour
             keyValuePairs.Add(kvp.keyId, kvp.value);
         }
 
-        // Convert dictionary to JSON string
         string jsonData = JsonConvert.SerializeObject(keyValuePairs);
-
         Debug.Log($"<color=magenta>{jsonData}\n{url}</color>");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
         using UnityWebRequest request = UnityWebRequest.PostWwwForm(url, "POST");
@@ -186,54 +177,25 @@ public class WebApiManager : MonoBehaviour
         request.SetRequestHeader("Accept", "application/json");
         request.timeout = timeout;
         yield return request.SendWebRequest();
-
         callback(request.result == UnityWebRequest.Result.Success, request.error, request.downloadHandler.text);
-
-        //using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
-        //{
-        //    www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        //    www.downloadHandler = new DownloadHandlerBuffer();
-        //    www.SetRequestHeader("Content-Type", "application/json");
-        //    www.SetRequestHeader("Accept", "application/json");
-        //    www.timeout = timeout;
-
-        //    yield return www.SendWebRequest();
-
-        //    while (!www.isDone)
-        //        yield return null;
-
-        //    callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
-        //}
     }
 
     private IEnumerator DownloadImage(string url, ReqCallbackTex callback, int timeout = timeOut)
     {
-        //string savePath = string.Concat(Application.persistentDataPath, "/", DateTime.Now.ToString("yyyyMMddHHmmssfffffff"), ".jpg");
-        //DebugHelper.Log(savePath);
-
+        
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        //using (UnityWebRequest www = UnityWebRequest.Get(url))
+        
         {
-            //DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
-            //ToFileDownloadHandler texDl = new ToFileDownloadHandler(new byte[64 * 1024], savePath);
-            //www.downloadHandler = new DownloadHandlerFile(savePath);
+           
             www.timeout = timeout;
             yield return www.SendWebRequest();
 
             while (!www.isDone)
                 yield return www;
-
-            //DebugHelper.Log("www.isDone");
-
             while (!www.downloadHandler.isDone)
-                //while (!texDl.IsDone)
                 yield return null;
-
-            //DebugHelper.Log("www.downloadHandler.isDone");
-            //Texture2D tex = ImageCacheUtils.Instance.TextureFromFile(savePath);
-            //yield return new WaitForSeconds(1);
             callback(www.result == UnityWebRequest.Result.Success, www.error, ((DownloadHandlerTexture)www.downloadHandler).texture);
-            //callback(www.result == UnityWebRequest.Result.Success, www.error, tex);
+            
         }
     }
 

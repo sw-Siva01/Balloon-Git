@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     [Header("Float")]
-    public float betAmount = 1f;  // Initial bet amount
+    [SerializeField] public float betAmount = 1f;  // Initial bet amount
     public float multiplier = 0.00f;  // Initial multiplier value
     [SerializeField] float incrementRate = 1.01f;  // Increment rate
     [SerializeField] float incrementInterval = 0.2f;  // Time interval between increments in seconds
@@ -304,7 +304,8 @@ public class GameController : MonoBehaviour
         currencyType = APIController.instance.userDetails.currency_type;
         PassTxt(totalAmountTxt, APIController.instance.userDetails.currency_type);
         PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);
-        //PassTxt(Controller.BalanceAmountTxt, $"{TotalAmount:F2}" /*+ APIController.instance.userDetails.currency_type*/);
+        PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size=35>{APIController.instance.userDetails.currency_type}</size>");
+        /*PassTxt(totalAmountTxt, $"{TotalAmount:F2}" + APIController.instance.userDetails.currency_type);*/
         Debug.Log("Amount Details Subscribed");
     }
     public void InitUserDeposit()
@@ -553,7 +554,7 @@ public class GameController : MonoBehaviour
             /*API_IntitalizeBetAmount();*/
 
             // Taking the bet amount that we choose
-            TotalAmount -= betAmount;
+            //TotalAmount -= betAmount;
             totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>USD</size>");
 
             minHoldTime = UnityEngine.Random.Range(-2, 7);
@@ -630,7 +631,7 @@ public class GameController : MonoBehaviour
         // Change the text color
         multiplier = float.Parse(multiplier.ToString("0.00"));
         multiplierTxt.text = multiplier.ToString(/*"0.00"*/);
-        TotalAmount += WinAmount;
+        //TotalAmount += WinAmount;
         totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>USD</size>");
         holdButton.enabled = false;
         winPanel.SetActive(true);
@@ -649,7 +650,7 @@ public class GameController : MonoBehaviour
         sliderAutoCashNoTxt.gameObject.SetActive(false);
         slider_Anim.SetBool("isOFF", true);
 
-        /*API_Winning();*/
+        API_Winning();
 
         Winning_Animations();
 
@@ -669,13 +670,13 @@ public class GameController : MonoBehaviour
     }
     void API_IntitalizeBetAmount()
     {
-        BetInputController.Instance.CloseKeyPadPanel();
-        BetInputController.Instance.RestrictInput();
+        //BetInputController.Instance.CloseKeyPadPanel();
+        //BetInputController.Instance.RestrictInput();
+        Debug.Log(betAmount + " :::: DSFS :::: ");
 
-        APIController.instance.CheckInternetandProcess((success) =>
+        APIController.instance.CheckInternetForButtonClick((success) =>
         {
             Debug.Log("CheckInternetandProcess Betbtn");
-
             if (success)
             {
 
@@ -684,6 +685,7 @@ public class GameController : MonoBehaviour
                 {
                     Debug.Log("Calling LocalInitializeBet Calling Demo");
                     LocalInitializeBet();
+
                 }
             }
             else
@@ -705,9 +707,7 @@ public class GameController : MonoBehaviour
 
         //  APIController.instance.StartCheckInternetLoop();
 
-        string m = TotalAmount.ToString("0.00");
-        TotalAmount = float.Parse(m);
-        Debug.Log("LocalInitializeBet Controller.BetButtonclik ");
+
 
         if (betAmount <= TotalAmount)
         {
@@ -733,64 +733,62 @@ public class GameController : MonoBehaviour
 
 
         int _index = UnityEngine.Random.Range(100, 999);
-        //   Controller.BetIndex = APIController.instance.InitlizeBet((Controller.BetAmount), val);
-        BetInputController.Instance.CloseKeyPadPanel();
-        BetInputController.Instance.BetAmtInput.interactable = false;
+        ////   Controller.BetIndex = APIController.instance.InitlizeBet((Controller.BetAmount), val);
+        //BetInputController.Instance.CloseKeyPadPanel();
+        //BetInputController.Instance.BetAmtInput.interactable = false;
 
-        BetInputController.Instance.CloseKeyPadPanel();
-        BetInputController.Instance.BetAmtInput.interactable = false;
+        //BetInputController.Instance.CloseKeyPadPanel();
+        //BetInputController.Instance.BetAmtInput.interactable = false;
 
 
-        string _s = betAmount.ToString("0.00");
-        float amount = float.Parse(_s);
+        //string _s = betAmount.ToString("0.00");
+        //float amount = float.Parse(_s);
 
         TransactionMetaData val = new TransactionMetaData();
-        val.Amount = amount;
+        val.Amount = betAmount;
         val.Info = message;
 
-        Debug.Log("Checking Bet Amount 1 : " + amount + "........" + val.Amount);
+        string m = betAmount.ToString("0.00");
+        betAmount = float.Parse(m);
+        Debug.Log("LocalInitializeBet Controller.BetButtonclik ");
+        Debug.Log("BetAMount ********* " + betAmount + " " + " Balance ******* " + TotalAmount);
 
         List<string> _list = new List<string>();
         _list.Add(APIController.instance.userDetails.Id);
         //APIController.instance.AddPlayers(MatchRes.MatchToken, _list);
-        if (!APIController.instance.userDetails.isBlockApiConnection)
+        Debug.Log("isBlockApiConnection " + APIController.instance.userDetails.isBlockApiConnection);
+
+
+        //BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
+        //{
+        //    if (success)
+        //    {
+        //        Debug.Log("Bet Completed");
+        //        betID = newbetID;
+        //        MatchRes = res;
+        //        Debug.Log("Bet Initiated");
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("Bet Initiate Failed");
+        //    }
+        //});
+
+        //APIController.instance.CreateMatch();
+
+        if (APIController.instance.userDetails.isBlockApiConnection)
         {
-            Debug.Log("isBlockApiConnection " + APIController.instance.userDetails.isBlockApiConnection);
-
-            BetIndex = APIController.instance.CreateAndJoinMatch(_index, amount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
-            {
-                if (success)
-                {
-                    betID = newbetID.ToString();
-                    MatchRes = res;
-                    Debug.Log("Bet Initiated");
-                    APIController.GetUpdatedBalance();
-
-                    /*Debug.Log("Setting_index_FromAPI ");
-                    WrongBtnSetter_ByIndex.Instance.Setting_index_FromAPI();
-                    Debug.Log("Bet Completed");*/
-                    Debug.Log("Bet Completed");
-                }
-                else
-                {
-                    Debug.Log("Bet Initiate Failed");
-                }
-
-            });
+            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
+               {
+                   if (success)
+                   {
+                       Debug.Log("Bet Initiated");
+                   }
+               }, APIController.instance.userDetails.Id, false);
         }
         else
         {
-            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
-            {
-                if (success)
-                {
-                    Debug.Log("Bet Completed");
-                }
-                else
-                {
-                    Debug.Log("Bet Initiate Failed");
-                }
-            }, APIController.instance.userDetails.Id, false);
+            //BetIndex = APIController.instance.InitBetMultiplayerAPI();
         }
     }
     void API_Winning()
@@ -819,7 +817,7 @@ public class GameController : MonoBehaviour
                 }
             }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
         }
-        /*else
+        else
         {
             APIController.instance.WinningsBet(BetIndex, WinAmount, betAmount, val, (success) =>
             {
@@ -833,7 +831,7 @@ public class GameController : MonoBehaviour
 
                 }
             }, APIController.instance.userDetails.Id, false);
-        }*/
+        }
     }
     void Call_Functions()
     {
@@ -1219,8 +1217,9 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("InSufficientBalance");
             InsufficientBalance.SetActive(true);
+            return;
         }
-
+        API_IntitalizeBetAmount();
     }
     public void OnClickUp()
     {
