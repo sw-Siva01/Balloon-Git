@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour
     public bool numPad;
     public bool isBonus;
     public bool isBonus_OFF;
+    public bool makeLose;
     private bool startGame;
     private bool isPressed;
     private bool takeBetAmount;
@@ -367,6 +368,9 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
+            if (multiplier > 0.77f && makeLose)
+                Balloon_Burt();
+
             BetAmountUpdates();
 
             if (isScroll)
@@ -417,6 +421,7 @@ public class GameController : MonoBehaviour
             }
             FireButton();
             StartOfTheGame();
+            
 
             if (isPressed && isFire && !lost)
             {
@@ -434,7 +439,7 @@ public class GameController : MonoBehaviour
                     timeSinceLastIncrement = 0f; // Reset the timer
                 }
 
-                if (multiplier >= 1.01)
+                if (multiplier >= 0.80f)
                 {
                     // Increment the time button is held
                     timeHeld += Time.deltaTime;
@@ -443,23 +448,7 @@ public class GameController : MonoBehaviour
                     if (timeHeld >= UnityEngine.Random.Range(minHoldTime, maxHoldTime))
                     {
                         // Bet is lost
-
-                        ResetBets();
-                        lost = true;
-                        holdButton.enabled = false;
-                        /*TakeCashbutton.enabled = false;*/
-                        timeSinceLastIncrement = 0f; // Reset the timer
-                        timeHeld = 0f; // Reset the time button is held
-                        winCash = 0f;
-
-                        // sliderOBjs
-                        slider_Anim.SetBool("isOFF", true);
-                        slider_bg.SetActive(false);
-                        fillArea.SetActive(false);
-                        slider_txt.SetActive(false);
-                        sliderAutoCashNoTxt.gameObject.SetActive(false);
-
-                        takecashOut.SetBool("isTake", false);
+                        Balloon_Burt();
                     }
                 }
             }
@@ -477,6 +466,25 @@ public class GameController : MonoBehaviour
             }
             yield return null;
         }
+    }
+    void Balloon_Burt()
+    {
+        ResetBets();
+        lost = true;
+        holdButton.enabled = false;
+        /*TakeCashbutton.enabled = false;*/
+        timeSinceLastIncrement = 0f; // Reset the timer
+        timeHeld = 0f; // Reset the time button is held
+        winCash = 0f;
+
+        // sliderOBjs
+        slider_Anim.SetBool("isOFF", true);
+        slider_bg.SetActive(false);
+        fillArea.SetActive(false);
+        slider_txt.SetActive(false);
+        sliderAutoCashNoTxt.gameObject.SetActive(false);
+
+        takecashOut.SetBool("isTake", false);
     }
     IEnumerator Backgourn_Ballon_Fly()
     {
@@ -1009,6 +1017,7 @@ public class GameController : MonoBehaviour
         // Change the text color
         multiplierTxt.color = Color.black;
         Xtxt.color = Color.black;
+        makeLose = false;
 
         Invoke("TimeDelay", 1.5f);
     }
