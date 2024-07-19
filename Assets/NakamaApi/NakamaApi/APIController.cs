@@ -71,6 +71,8 @@ public class APIController : MonoBehaviour
     [DllImport("__Internal")]
     public static extern void DisconnectGame(string message);
     [DllImport("__Internal")]
+    public static extern void ExternalApiResponse(string data);
+    [DllImport("__Internal")]
     public static extern void GetUpdatedBalance();
     [DllImport("__Internal")]
     public static extern void FullScreen();
@@ -274,6 +276,25 @@ public class APIController : MonoBehaviour
     }
     #endregion
 
+    public void ExecuteExternalAPI(string data)
+    {
+
+#if CasinoGames
+
+        ExternalAPIRequest apiRequest = new ExternalAPIRequest();
+        apiRequest.data = data;
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ExternalAPI", apiRequest.ToJson(), (res) => {
+            JObject jsonObject = JObject.Parse(res);
+                ExternalApiResponse(jsonObject["message"].ToString());
+            
+        });
+        return;
+#endif
+    }
+    public class ExternalAPIRequest
+    {
+        public string data;
+    }
 
     public void OnClickDepositBtn()
     {
@@ -335,6 +356,8 @@ public class APIController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
             userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
         Debug.Log(JsonUtility.ToJson(userDetails));
+
+        userDetails.UserDevice = "mobile";
 #if UNITY_EDITOR
 
         //userDetails.UserDevice = "mobile";
@@ -342,10 +365,10 @@ public class APIController : MonoBehaviour
         {
             userDetails.UserDevice = "mobile";
         }
-        else
-        {
-            userDetails.UserDevice = "desktop";
-        }
+        //else
+        //{
+        //    userDetails.UserDevice = "desktop";
+        //}
         
 #endif
 #if CasinoGames

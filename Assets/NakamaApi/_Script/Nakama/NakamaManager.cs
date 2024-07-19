@@ -19,6 +19,8 @@ namespace Nakama.Helpers
     {
         public bool isCreateUser;
         public bool isSocketOpen;
+        
+
         #region FIELDS
 
         private const string UdidKey = "udid";
@@ -263,8 +265,9 @@ namespace Nakama.Helpers
                 NakamaManager.Instance.CloseSocket();
             }
         }
-      
-        public async void SendRPC(string rpc, string payload,Action<string> action)
+
+
+        /*public async void SendRPC(string rpc, string payload,Action<string> action)
         {
             try
             {
@@ -282,7 +285,44 @@ namespace Nakama.Helpers
             {
                 action.Invoke(ex.Message);
             }
+        }*/
+
+        bool isRunMaster = false;
+        public async void SendRPC(string rpc, string payload, Action<string> action)
+        {
+            try
+            {
+                if (client == null || session == null)
+                {
+                    if (!isRunMaster)
+                    {
+                        isRunMaster = true;
+                    }
+                    await MasterLogin((success) => {
+                        isRunMaster = false;
+                    });
+                    while (isRunMaster)
+                    {
+                        await UniTask.Delay(500);
+                    }
+                }
+
+
+                //                    action.Invoke(null);
+                EncryptedPayload encryptpayload = new EncryptedPayload();
+                encryptpayload.data = EncryptString(payload);
+                encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
+                var output = await client.RpcAsync(session, EncryptString(rpc), encryptpayload.ToJson(), retryConfiguration);
+                encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
+                string outputPayload = DecryptString(encryptpayload.data);
+                action.Invoke(outputPayload);
+            }
+            catch (Exception ex)
+            {
+                action.Invoke(ex.Message);
+            }
         }
+
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key
 
         public static string EncryptString(string plainText)
@@ -346,5 +386,42 @@ namespace Nakama.Helpers
             public string value;
         }
         #endregion
+
+        public async UniTask MasterLogin(Action<bool> action, bool isTryBackupServer = false)
+        {
+            try
+            {
+                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+                CustomMobileLogin("2222222222", (async (status, message) =>
+                {
+                    if (status)
+                    {
+                        await OpenSocket();
+                        action.Invoke(true);
+                    }
+                    else
+                    {
+                        if (isTryBackupServer)
+                        {
+                            Debug.Log("try backup server");
+                            action.Invoke(false);
+                        }
+                        else
+                        {
+                            AutoLogin(action, true);
+                            Debug.Log("try live server server");
+                        }
+                        Debug.Log("Status failed");
+                    }
+                }
+                ), true);
+            }
+            catch (Exception ex)
+            {
+                action.Invoke(false);
+                Debug.LogError("Error ::: " + ex.Message);
+            }
+        }
+
     }
 }

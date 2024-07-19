@@ -69,7 +69,7 @@ public class GameController : MonoBehaviour
     public bool isBonus_OFF;
     private bool startGame;
     private bool isPressed;
-    public bool takeBetAmount;
+    private bool takeBetAmount;
     private bool isSet;
     private bool isFire;
     private bool lost;
@@ -237,13 +237,13 @@ public class GameController : MonoBehaviour
     {
         takeBetAmount = true;
         button_1.gameObject.SetActive(true);
-        TakeCashImg.color = new Color32(255, 255, 255, 120);
-        TakeCashtxt.color = new Color32(255, 255, 255, 120);
+        TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(140, 140, 140, 255);
         TakeCashAnimImg.SetActive(false);
         // Set the initial multiplier text
         multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         StartCoroutine(HolidngButtons());
-        totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>USD</size>");
+        /*totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=35>USD</size>");*/
         /*TakeCashbutton.enabled = false;
         TakeCashbutton.onClick.AddListener(TakeCashOut);*/
         initialBackgroundPosition = background.localPosition;
@@ -271,7 +271,6 @@ public class GameController : MonoBehaviour
         APIController.instance.OnUserBalanceUpdate += InitAmountDetails;
         APIController.instance.OnUserDeposit += InitUserDeposit;
     }
-
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
     public void InitPlayerDetails()
     {
@@ -351,19 +350,12 @@ public class GameController : MonoBehaviour
                 sliderAutoCashNoTxt.text = countTime.ToString(" <size=45>0</size>");
 
                 slider.value = countTime;
-
-                /*if (slider.value <= 1f)
-                {
-                    timeout = true;
-                }*/
-
             }
             else if (startGame && multiplier >= 1.01 && isPressed)
             {
                 countTime = 8f;
                 slider.maxValue = 8f;
                 slider.value = 8f;
-                /*slider.gameObject.SetActive(false);*/
             }
 
 
@@ -384,7 +376,7 @@ public class GameController : MonoBehaviour
 
                 heat_Anim.SetBool("isStart", false);
                 TakeCashbutton.enabled = false;
-                TakeCashImg.color = new Color32(255, 255, 255, 120);
+                TakeCashImg.color = new Color32(140, 140, 140, 255);
             }
 
             if (lost)
@@ -404,8 +396,8 @@ public class GameController : MonoBehaviour
                 balloonParts.SetActive(false);
                 balloonShake.SetActive(false);
 
-                TakeCashImg.color = new Color32(255, 255, 255, 120);
-                TakeCashtxt.color = new Color32(255, 255, 255, 120);
+                TakeCashImg.color = new Color32(140, 140, 140, 255);
+                TakeCashtxt.color = new Color32(140, 140, 140, 255);
                 TakeCashAnimImg.SetActive(false);
             }
 
@@ -421,6 +413,7 @@ public class GameController : MonoBehaviour
 
                 balloonParts.SetActive(true);
                 balloonShake.SetActive(false);
+                TakeCashAnimImg.SetActive(false);
             }
             FireButton();
             StartOfTheGame();
@@ -507,7 +500,13 @@ public class GameController : MonoBehaviour
             holdButtonEvent.enabled = false;
             holdButton.gameObject.SetActive(false);
             holdButton_dup.gameObject.SetActive(true);
-            /*OnClickUp();*/
+            isPressed = false;
+            heat_Anim.SetBool("isEnd", false);
+            if (!lost)
+            {
+                balloonParts.SetActive(true);
+                balloonShake.SetActive(false);
+            }
         }
         if (!holdButton_dup.gameObject.activeSelf)
         {
@@ -518,7 +517,6 @@ public class GameController : MonoBehaviour
     {
         if (multiplier >= 1.01 && !lost)
         {
-            /*holdButton.enabled = true;*/
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
         }
@@ -539,7 +537,6 @@ public class GameController : MonoBehaviour
             balloonShake.SetActive(true);
 
             multiplierTxt.text = multiplier.ToString("0.00");
-            //holdButtonEvent.enabled = true;
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
 
@@ -551,11 +548,9 @@ public class GameController : MonoBehaviour
             takeBetAmount = false;
             holdButton.enabled = false;
 
-            /*API_IntitalizeBetAmount();*/
-
             // Taking the bet amount that we choose
             //TotalAmount -= betAmount;
-            totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>USD</size>");
+            totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=35>USD</size>");
 
             minHoldTime = UnityEngine.Random.Range(-2, 7);
         }
@@ -595,8 +590,8 @@ public class GameController : MonoBehaviour
         else
         {
             TakeCashbutton.enabled = false;
-            TakeCashImg.color = new Color32(255, 255, 255, 120);
-            TakeCashtxt.color = new Color32(255, 255, 255, 120);
+            TakeCashImg.color = new Color32(140, 140, 140, 255);
+            TakeCashtxt.color = new Color32(140, 140, 140, 255);
             TakeCashAnimImg.SetActive(false);
 
             takecashOut.SetBool("isTake", false);
@@ -632,15 +627,15 @@ public class GameController : MonoBehaviour
         multiplier = float.Parse(multiplier.ToString("0.00"));
         multiplierTxt.text = multiplier.ToString(/*"0.00"*/);
         //TotalAmount += WinAmount;
-        totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=30>USD</size>");
+        totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=35>USD</size>");
         holdButton.enabled = false;
         winPanel.SetActive(true);
         holdButtonEvent.enabled = false;
         /*slider.gameObject.SetActive(false);*/
         empty_holdButton.gameObject.SetActive(true);
 
-        TakeCashImg.color = new Color32(255, 255, 255, 120);
-        TakeCashtxt.color = new Color32(255, 255, 255, 120);
+        TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(140, 140, 140, 255);
         TakeCashAnimImg.SetActive(false);
 
         // sliderOBjs
@@ -650,7 +645,8 @@ public class GameController : MonoBehaviour
         sliderAutoCashNoTxt.gameObject.SetActive(false);
         slider_Anim.SetBool("isOFF", true);
 
-        API_Winning();
+        TakingCash();
+        /*API_Winning();*/
 
         Winning_Animations();
 
@@ -670,22 +666,24 @@ public class GameController : MonoBehaviour
     }
     void API_IntitalizeBetAmount()
     {
-        //BetInputController.Instance.CloseKeyPadPanel();
-        //BetInputController.Instance.RestrictInput();
-        Debug.Log(betAmount + " :::: DSFS :::: ");
+        BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
+
+        if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
+        {
+            BetInputController.Instance.CloseKeyPadPanel();
+            BetInputController.Instance.RestrictInput();
+        }
 
         APIController.instance.CheckInternetForButtonClick((success) =>
         {
             Debug.Log("CheckInternetandProcess Betbtn");
             if (success)
             {
-
                 Debug.Log("CheckInternetandProcess Betbtn Success");
                 if (APIController.instance.userDetails.isBlockApiConnection)
                 {
                     Debug.Log("Calling LocalInitializeBet Calling Demo");
                     LocalInitializeBet();
-
                 }
             }
             else
@@ -737,9 +735,6 @@ public class GameController : MonoBehaviour
         //BetInputController.Instance.CloseKeyPadPanel();
         //BetInputController.Instance.BetAmtInput.interactable = false;
 
-        //BetInputController.Instance.CloseKeyPadPanel();
-        //BetInputController.Instance.BetAmtInput.interactable = false;
-
 
         //string _s = betAmount.ToString("0.00");
         //float amount = float.Parse(_s);
@@ -758,37 +753,35 @@ public class GameController : MonoBehaviour
         //APIController.instance.AddPlayers(MatchRes.MatchToken, _list);
         Debug.Log("isBlockApiConnection " + APIController.instance.userDetails.isBlockApiConnection);
 
-
-        //BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
-        //{
-        //    if (success)
-        //    {
-        //        Debug.Log("Bet Completed");
-        //        betID = newbetID;
-        //        MatchRes = res;
-        //        Debug.Log("Bet Initiated");
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("Bet Initiate Failed");
-        //    }
-        //});
-
-        //APIController.instance.CreateMatch();
-
-        if (APIController.instance.userDetails.isBlockApiConnection)
+        if (!APIController.instance.userDetails.isBlockApiConnection)
         {
-            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
-               {
-                   if (success)
-                   {
-                       Debug.Log("Bet Initiated");
-                   }
-               }, APIController.instance.userDetails.Id, false);
+            BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
+            {
+                if (success)
+                {
+                    Debug.Log("Bet Initiated");
+                    Debug.Log("Live Mode");
+                }
+                else
+                {
+                    Debug.Log("Bet Initiate Failed");
+                }
+            });
         }
         else
         {
-            //BetIndex = APIController.instance.InitBetMultiplayerAPI();
+            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
+            {
+                if (success)
+                {
+                    Debug.Log("Bet Initiated");
+                    Debug.Log("Demo Mode");
+                }
+                else
+                {
+                    Debug.Log("Bet Initiate Failed");
+                }
+            }, APIController.instance.userDetails.Id, false);
         }
     }
     void API_Winning()
@@ -902,8 +895,8 @@ public class GameController : MonoBehaviour
             winCount = false;
         }
 
-        TakeCashImg.color = new Color32(255, 255, 255, 120);
-        TakeCashtxt.color = new Color32(255, 255, 255, 120);
+        TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(140, 140, 140, 255);
         TakeCashAnimImg.SetActive(false);
 
         winPanel.SetActive(false);
@@ -975,8 +968,8 @@ public class GameController : MonoBehaviour
         countTime = 0f;
         slider.value = 0f;
 
-        TakeCashImg.color = new Color32(255, 255, 255, 120);
-        TakeCashtxt.color = new Color32(255, 255, 255, 120);
+        TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(140, 140, 140, 255);
         TakeCashAnimImg.SetActive(false);
 
         button_1.gameObject.SetActive(false);
@@ -1051,6 +1044,11 @@ public class GameController : MonoBehaviour
 
         // Start the sequence
         sequence.Play();
+    }
+    async void TakingCash()
+    {
+        await UniTask.Delay(3000);
+        API_Winning();
     }
     async void WinTxtObj()
     {
@@ -1249,10 +1247,10 @@ public class GameController : MonoBehaviour
         heat_Anim.SetBool("isStart", true);
         StartCoroutine(Backgourn_Ballon_Fly());
 
-        for (int i = 0; i < button_Anim.Length; i++)
+        /*for (int i = 0; i < button_Anim.Length; i++)
         {
             button_Anim[i].SetActive(true);
-        }
+        }*/
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
