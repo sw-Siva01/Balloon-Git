@@ -19,8 +19,6 @@ namespace Nakama.Helpers
     {
         public bool isCreateUser;
         public bool isSocketOpen;
-        
-
         #region FIELDS
 
         private const string UdidKey = "udid";
@@ -266,7 +264,6 @@ namespace Nakama.Helpers
             }
         }
 
-
         /*public async void SendRPC(string rpc, string payload,Action<string> action)
         {
             try
@@ -286,7 +283,6 @@ namespace Nakama.Helpers
                 action.Invoke(ex.Message);
             }
         }*/
-
         bool isRunMaster = false;
         public async void SendRPC(string rpc, string payload, Action<string> action)
         {
@@ -322,7 +318,6 @@ namespace Nakama.Helpers
                 action.Invoke(ex.Message);
             }
         }
-
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key
 
         public static string EncryptString(string plainText)

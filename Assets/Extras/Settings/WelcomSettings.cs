@@ -9,7 +9,6 @@ public class WelcomSettings : MonoBehaviour
     public Toggle MusicToggle;
 
     private bool SoundActive;
-
     private void Awake()
     {
         SoundToggle.onValueChanged.RemoveAllListeners();
@@ -28,7 +27,7 @@ public class WelcomSettings : MonoBehaviour
             }
             // AudioController.Instance.BGM.Play();
 
-
+            
         }
         else
         {
@@ -38,7 +37,7 @@ public class WelcomSettings : MonoBehaviour
 
             }
             //    AudioController.Instance.BGM.Stop();
-
+            SettingsPanelHandler.Instance.MusicToggle.isOn = value;
         }
 
     }
@@ -54,6 +53,7 @@ public class WelcomSettings : MonoBehaviour
             //    AudioController.Instance.AllUiSounds[i].mute = true;
 
             //}
+            SettingsPanelHandler.Instance.SoundToggle.isOn = value;
         }
         else
         {

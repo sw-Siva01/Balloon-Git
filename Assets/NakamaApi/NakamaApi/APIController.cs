@@ -111,6 +111,26 @@ public class APIController : MonoBehaviour
 
     #endregion
 
+    public void ExecuteExternalAPI(string data)
+    {
+
+#if CasinoGames
+
+        ExternalAPIRequest apiRequest = new ExternalAPIRequest();
+        apiRequest.data = data;
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ExternalAPI", apiRequest.ToJson(), (res) => {
+            JObject jsonObject = JObject.Parse(res);
+                ExternalApiResponse(jsonObject["message"].ToString());
+            
+        });
+        return;
+#endif
+    }
+    public class ExternalAPIRequest
+    {
+        public string data;
+    }
+
     #region WebGl Response
     [ContextMenu("check json")]
     public void CheckJson()
@@ -276,25 +296,6 @@ public class APIController : MonoBehaviour
     }
     #endregion
 
-    public void ExecuteExternalAPI(string data)
-    {
-
-#if CasinoGames
-
-        ExternalAPIRequest apiRequest = new ExternalAPIRequest();
-        apiRequest.data = data;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ExternalAPI", apiRequest.ToJson(), (res) => {
-            JObject jsonObject = JObject.Parse(res);
-                ExternalApiResponse(jsonObject["message"].ToString());
-            
-        });
-        return;
-#endif
-    }
-    public class ExternalAPIRequest
-    {
-        public string data;
-    }
 
     public void OnClickDepositBtn()
     {
@@ -356,8 +357,6 @@ public class APIController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
             userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
         Debug.Log(JsonUtility.ToJson(userDetails));
-
-        userDetails.UserDevice = "mobile";
 #if UNITY_EDITOR
 
         //userDetails.UserDevice = "mobile";
@@ -365,10 +364,10 @@ public class APIController : MonoBehaviour
         {
             userDetails.UserDevice = "mobile";
         }
-        //else
-        //{
-        //    userDetails.UserDevice = "desktop";
-        //}
+        else
+        {
+            userDetails.UserDevice = "desktop";
+        }
         
 #endif
 #if CasinoGames
@@ -467,7 +466,8 @@ public class APIController : MonoBehaviour
             validateSession.Session_token = userDetails.session_token;
             validateSession.Control = "0";
             validateSession.Token = userDetails.token;
-            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
+            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+            {
                 try
                 {
                     JObject jsonObject = JObject.Parse(res);
@@ -507,9 +507,9 @@ public class APIController : MonoBehaviour
             Debug.Log("online false 3");
             isOnline = false;
         }
-
         action.Invoke(isOnline);
-        GetNetworkStatus(isOnline.ToString());
+        if (!isOnline)
+            GetNetworkStatus(isOnline.ToString());
         Debug.Log("Internet check " + isOnline);
     }
     public async void CheckSession()
