@@ -111,26 +111,6 @@ public class APIController : MonoBehaviour
 
     #endregion
 
-    public void ExecuteExternalAPI(string data)
-    {
-
-#if CasinoGames
-
-        ExternalAPIRequest apiRequest = new ExternalAPIRequest();
-        apiRequest.data = data;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ExternalAPI", apiRequest.ToJson(), (res) => {
-            JObject jsonObject = JObject.Parse(res);
-                ExternalApiResponse(jsonObject["message"].ToString());
-            
-        });
-        return;
-#endif
-    }
-    public class ExternalAPIRequest
-    {
-        public string data;
-    }
-
     #region WebGl Response
     [ContextMenu("check json")]
     public void CheckJson()
@@ -157,11 +137,36 @@ public class APIController : MonoBehaviour
             OnUserDeposit?.Invoke();
         }
     }
-     public bool isNeedToPauseWhileSwitchingTab = false;
+
+    public void ExecuteExternalAPI(string data)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        string encryptedData = Convert.ToBase64String(bytes);
+        Debug.Log("unity :: base64 is :: " + encryptedData);
+        encryptedData = Nakama.Helpers.NakamaManager.Encryptbase64String(encryptedData);
+        Debug.Log("unity :: encoded base64 is :: " + encryptedData);
+        ExternalApiResponse(encryptedData);
+        return;
+    }
+
+    public bool isNeedToPauseWhileSwitchingTab = false;
     public void GetNetworkStatus(string data)
     {
-        isOnline = data.ToLower() == "True" ? true : false;
+        Time.timeScale = 1;
+        isOnline = data.ToLower() == "true" ? true : false;
+        Debug.Log($"Calleeedddd check internet {data}   -   {isOnline}   -   {isInFocus}");
+        if (isNeedToPauseWhileSwitchingTab)
+        {
+            if (isInFocus && isOnline)
+            {
+                Time.timeScale = 1;
+            }
+            else
+            {
+                Time.timeScale = 0;
 
+            }
+        }
         OnInternetStatusChange?.Invoke(data);
 
     }
@@ -360,14 +365,14 @@ public class APIController : MonoBehaviour
 #if UNITY_EDITOR
 
         //userDetails.UserDevice = "mobile";
-        if (MobileShow)
-        {
+        //if (MobileShow)
+        //{
             userDetails.UserDevice = "mobile";
-        }
-        else
-        {
-            userDetails.UserDevice = "desktop";
-        }
+        //}
+        //else
+        //{
+        //    userDetails.UserDevice = "desktop";
+        //}
         
 #endif
 #if CasinoGames
@@ -378,15 +383,6 @@ public class APIController : MonoBehaviour
         OnUserBalanceUpdate?.Invoke();
 #endif
     }
-    public void CheckInternetForButtonClick(Action<bool> action)
-    {
-        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA, checkInternetUrl,
-                 new List<KeyValuePojo>(),
-                 (bool isSuccess, string error, string body) =>
-                 {
-                     action.Invoke(isSuccess);
-                 });
-    } public const string checkInternetUrl = "https://dev.lootrix.utwebapps.com/checkinternet.php";
 
     public bool isCheckInternet;
     public async void StopCheckInternetLoop()
@@ -450,7 +446,7 @@ public class APIController : MonoBehaviour
                 isOnline = false;
             }
             GetNetworkStatus(isOnline.ToString());
-            Debug.Log("Internet check :: isOnline.ToString() is " + isOnline.ToString());
+            Debug.Log("Internet check " + isOnline);
         }
     }
     public async void CheckInternetandProcess(Action<bool> action)
@@ -466,8 +462,7 @@ public class APIController : MonoBehaviour
             validateSession.Session_token = userDetails.session_token;
             validateSession.Control = "0";
             validateSession.Token = userDetails.token;
-            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
-            {
+            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
                 try
                 {
                     JObject jsonObject = JObject.Parse(res);
@@ -507,9 +502,9 @@ public class APIController : MonoBehaviour
             Debug.Log("online false 3");
             isOnline = false;
         }
+
         action.Invoke(isOnline);
-        if (!isOnline)
-            GetNetworkStatus(isOnline.ToString());
+        GetNetworkStatus(isOnline.ToString());
         Debug.Log("Internet check " + isOnline);
     }
     public async void CheckSession()
@@ -520,7 +515,7 @@ public class APIController : MonoBehaviour
             Runcount += 1;
             bool isrun = false;
             if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
-            {
+             {
                 isrun = true;
                 ValidateSessionReq validateSession = new ValidateSessionReq();
                 validateSession.PlayerId = userDetails.Id;
@@ -547,21 +542,25 @@ public class APIController : MonoBehaviour
                         JObject jsonObject = JObject.Parse(res);
                         if ((int)(jsonObject["code"]) == 200)
                         {
+                            Debug.Log("online true 1");
                             isOnline = true;
                         }
                         else if ((int)(jsonObject["code"]) != 200)
                         {
+                            Debug.Log("online true 2");
                             isOnline = true;
                             DisconnectGame("Session expired. Account active in another device.");
                             Debug.Log("invalide session");
                         }
                         else
                         {
+                            Debug.Log("online false 1" + res);
                             isOnline = false;
                         }
                     }
                     catch
                     {
+                        Debug.Log("online false 2");
                         isOnline = false;
                     }
                     Debug.Log("socket connected" + isOnline);
@@ -570,16 +569,26 @@ public class APIController : MonoBehaviour
             }
             else
             {
-                Debug.Log("socket not connected" + isOnline);
+                if (!Nakama.Helpers.NakamaManager.Instance.Socket.IsConnected && !Nakama.Helpers.NakamaManager.Instance.Socket.IsConnecting)
+                {
+                    await UniTask.Delay(2000);
+                    if (!Nakama.Helpers.NakamaManager.Instance.Socket.IsConnected && !Nakama.Helpers.NakamaManager.Instance.Socket.IsConnecting && Nakama.Helpers.NakamaManager.Instance.client != null)
+                    {
+                        await Nakama.Helpers.NakamaManager.Instance.OpenSocket();
+                    }
+                }
+                    Debug.Log("socket not connected" + isOnline);
             }
             int count = 0;
             await UniTask.Delay(2000);
             if (isrun && Runcount != 0)
             {
+                Debug.Log("online false 3");
                 isOnline = false;
             }
+            if(isOnline)
             GetNetworkStatus(isOnline.ToString());
-            Debug.Log("Internet check " + isOnline);
+            Debug.Log(/*GameHudManager.Instance.BetButton.interactable + */"Internet check " + isOnline);
         }
     }
 
@@ -1168,6 +1177,7 @@ return;
             Debug.Log(res);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             action?.Invoke(response != null && response.code == 200);
+            GetUpdatedBalance();
 
         });
         return;
@@ -1190,8 +1200,10 @@ return;
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.action = (success, error, body) =>
             {
+                GetUpdatedBalance();
                 if (success)
                 {
+
                     NakamaApiResponse nakamaApi = JsonUtility.FromJson<NakamaApiResponse>(body);
                     if (nakamaApi.Code == 200)
                     {
@@ -1690,6 +1702,7 @@ return;
                 _winningStatus = JsonUtility.FromJson<GameWinningStatus>(jsonObject["data"].ToString());
                 bet.BetId = _winningStatus.Id;
                 betIdAction.Invoke(_winningStatus.Id);
+                GetUpdatedBalance();
 
             }
             else
@@ -2085,6 +2098,11 @@ public class ApiResponse
     public string message;
     public string data;
     public object output;
+}
+
+public class ExternalAPIRequest
+{
+    public string data;
 }
 
 public class NakamaApiResponse

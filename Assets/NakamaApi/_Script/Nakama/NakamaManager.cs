@@ -55,11 +55,24 @@ namespace Nakama.Helpers
         #region BEHAVIORS
 
         int randomNumber;
-       
+
+        public static List<char> cryptocharacters = new List<char>();
         private void Awake()
         {
             Instance = this;
             randomNumber = UnityEngine.Random.Range(1000, 900000);
+            for (int i = 0; i < 26; i++)
+            {
+                cryptocharacters.Add((char)('a' + i));
+            }
+            for (int i = 0; i < 26; i++)
+            {
+                cryptocharacters.Add((char)('A' + i));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                cryptocharacters.Add((char)('0' + i));
+            }
         }
 
 
@@ -69,6 +82,41 @@ namespace Nakama.Helpers
             {
                 client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
                 CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
+                {
+                    if (status)
+                    {
+                        await OpenSocket();
+                        action.Invoke(true);
+                    }
+                    else
+                    {
+                        if (isTryBackupServer)
+                        {
+                            Debug.Log("try backup server");
+                            action.Invoke(false);
+                        }
+                        else
+                        {
+                            AutoLogin(action, true);
+                            Debug.Log("try live server server");
+                        }
+                        Debug.Log("Status failed");
+                    }
+                }
+                ), true);
+            }
+            catch (Exception ex)
+            {
+                action.Invoke(false);
+                Debug.LogError("Error ::: " + ex.Message);
+            }
+        }
+        public async UniTask MasterLogin(Action<bool> action, bool isTryBackupServer = false)
+        {
+            try
+            {
+                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+                CustomMobileLogin("2222222222", (async (status, message) =>
                 {
                     if (status)
                     {
@@ -145,9 +193,31 @@ namespace Nakama.Helpers
         }
     
         bool isRunWebGLGame = false;
-        public async Task OpenSocket()
+        bool isTrytoOpenSocket = false;
+        public string checkInternetUrl = "https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/";
+        public async UniTask OpenSocket()
         {
+            if (isTrytoOpenSocket)
+            {
+                return;
+            }
+            isTrytoOpenSocket = true;
             ////Debug.LogError("scoket init ");
+            ///
+            bool isOnline = false;
+            while (!isOnline)
+            {
+                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
+                   ,
+                   checkInternetUrl,
+                   new List<KeyValuePojo>(),
+                   (bool isSuccess, string error, string body) =>
+                   {
+                       isOnline = isSuccess;
+                   },3);
+                Debug.Log("checking internet for socket");
+                await UniTask.Delay(3000);
+            }
             int count = 0;
             if (socket == null)
             {
@@ -164,6 +234,7 @@ namespace Nakama.Helpers
                     await UniTask.Delay(500);
                 }
             }
+            isTrytoOpenSocket = false;
             socket.Connected -= Socket_Connected;
             Debug.Log("scoket init 1");
             socket.Closed -= CloseSocket;
@@ -217,9 +288,10 @@ namespace Nakama.Helpers
         private void Socket_Connected()
         {
             Debug.Log("socket connected");
-      
+            APIController.instance.GetNetworkStatus(true.ToString());
+
         }
- 
+
         string matchId;
 
         public async Task SendMessage(long opcode, string message, Action<bool> action = null)
@@ -263,28 +335,8 @@ namespace Nakama.Helpers
                 NakamaManager.Instance.CloseSocket();
             }
         }
-
-        /*public async void SendRPC(string rpc, string payload,Action<string> action)
-        {
-            try
-            {
-                if (client == null || session == null)
-                    action.Invoke(null);
-                EncryptedPayload encryptpayload = new EncryptedPayload();
-                encryptpayload.data = EncryptString(payload);
-                encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
-                var output = await client.RpcAsync(session, EncryptString(rpc), encryptpayload.ToJson(), retryConfiguration);
-                encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
-                string outputPayload = DecryptString(encryptpayload.data);
-                action.Invoke(outputPayload);
-            }
-            catch(Exception ex)
-            {
-                action.Invoke(ex.Message);
-            }
-        }*/
         bool isRunMaster = false;
-        public async void SendRPC(string rpc, string payload, Action<string> action)
+        public async void SendRPC(string rpc, string payload,Action<string> action)
         {
             try
             {
@@ -304,7 +356,7 @@ namespace Nakama.Helpers
                 }
 
 
-                //                    action.Invoke(null);
+//                    action.Invoke(null);
                 EncryptedPayload encryptpayload = new EncryptedPayload();
                 encryptpayload.data = EncryptString(payload);
                 encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
@@ -312,8 +364,9 @@ namespace Nakama.Helpers
                 encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
                 string outputPayload = DecryptString(encryptpayload.data);
                 action.Invoke(outputPayload);
+                
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 action.Invoke(ex.Message);
             }
@@ -368,6 +421,32 @@ namespace Nakama.Helpers
             }
             return new string(buffer);
         }
+
+        public static string Encryptbase64String(string plainText)
+        {
+            int shift = 0;
+            char[] buffer = plainText.ToCharArray();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                char c = buffer[i];
+                if (cryptocharacters.Contains(c))
+                {
+                    shift = key[i % key.Length];
+                    int value = (cryptocharacters.IndexOf(c) + cryptocharacters.IndexOf((char)shift));
+                    if (value >= cryptocharacters.Count)
+                    {
+                        value = ((value - cryptocharacters.Count));
+                    }
+                    c = cryptocharacters[value];
+                    buffer[i] = c;
+                }
+                else
+                {
+                    Debug.Log("notfound" + c);
+                }
+            }
+            return new string(buffer);
+        }
         public void LogOut()
         {
             socket.CloseAsync();
@@ -381,42 +460,5 @@ namespace Nakama.Helpers
             public string value;
         }
         #endregion
-
-        public async UniTask MasterLogin(Action<bool> action, bool isTryBackupServer = false)
-        {
-            try
-            {
-                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
-                CustomMobileLogin("2222222222", (async (status, message) =>
-                {
-                    if (status)
-                    {
-                        await OpenSocket();
-                        action.Invoke(true);
-                    }
-                    else
-                    {
-                        if (isTryBackupServer)
-                        {
-                            Debug.Log("try backup server");
-                            action.Invoke(false);
-                        }
-                        else
-                        {
-                            AutoLogin(action, true);
-                            Debug.Log("try live server server");
-                        }
-                        Debug.Log("Status failed");
-                    }
-                }
-                ), true);
-            }
-            catch (Exception ex)
-            {
-                action.Invoke(false);
-                Debug.LogError("Error ::: " + ex.Message);
-            }
-        }
-
     }
 }

@@ -161,7 +161,8 @@ public class Fill_Img : MonoBehaviour
 
             await UniTask.Delay(1300);
             scrollViewAnim.SetActive(false);
-            controller.winBonus = UnityEngine.Random.Range(10, 20);
+            //controller.winBonus = UnityEngine.Random.Range(10, 20);   // use this always
+            controller.winBonus = 3;                                    // for testing only
         }
     }
 
@@ -177,7 +178,8 @@ public class Fill_Img : MonoBehaviour
 
         await UniTask.Delay(1000);
         bonusObj.gameObject.SetActive(false);
-        controller.winBonus = UnityEngine.Random.Range(8, 15);
+        //controller.winBonus = UnityEngine.Random.Range(8, 15);    // use this always
+        controller.winBonus = 3;                                    // for testing only
     }
 
     void UpdateTimerUI()

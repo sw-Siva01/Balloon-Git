@@ -29,22 +29,10 @@ public class InternetChecking : MonoBehaviour
    
         Debug.Log("Internet Status Check ********** " + data);
 
-        if (connectionPanel.activeSelf && data.ToLower() == "true")
-        {
-            Debug.Log($"Connection Panel check network --->   {data} connection panel is == {connectionPanel.activeSelf} ");
-            if (!APIController.instance.userDetails.isBlockApiConnection)
-            {
+     
 
-                APIController.GetUpdatedBalance();
-                Debug.Log($"Updated Blaance ---> 0 ");
-            }
-            else
-            {
-                GameController.instance.InitAmountDetails();
-            }
-        }
-
-        connectionPanel.SetActive(data.ToLower() == "true" ? false : true);
+        //connectionPanel.SetActive(data.ToLower() == "true" ? false : true);
+        connectionPanel.SetActive(data.ToLower() == "false");
         if (!connectionPanel.activeSelf)
         {
             Debug.Log($"Connection Panel check network --->   {data} connection panel is == {connectionPanel.activeSelf} ");

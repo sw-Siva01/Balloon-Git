@@ -12,7 +12,7 @@ public class KeyBoardHandler : MonoBehaviour
     public Button[] NumKeys;
     public Button decimalButton, submitButton, backSpaceButton, cancelButton;
     public TMP_InputField displayText;
-    private string currentInput = "";
+    public string currentInput = "";
     private float minValue = 0.1f;
     private float maxValue = 100f;
     Action<float> OnSubmitAction, OnValurChangedAction;
