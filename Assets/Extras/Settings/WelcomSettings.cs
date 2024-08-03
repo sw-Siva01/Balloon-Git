@@ -1,11 +1,13 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WelcomSettings : MonoBehaviour
+public class WelcomSettings : UIHandler
 {
-    public Toggle SoundToggle;
+    #region
+    /*public Toggle SoundToggle;
     public Toggle MusicToggle;
 
     private bool SoundActive;
@@ -14,6 +16,7 @@ public class WelcomSettings : MonoBehaviour
         SoundToggle.onValueChanged.RemoveAllListeners();
         SoundToggle.onValueChanged.AddListener((state) => { ToggleSound(state); });
         MusicToggle.onValueChanged.AddListener((state) => { ToggleMusic(state); });
+       
     }
     public void ToggleMusic(bool value)
     {
@@ -65,5 +68,53 @@ public class WelcomSettings : MonoBehaviour
         }
         //   AudioController.Instance.AudioPlay(true, AudioController.Instance.ToggleSFX);
         //  AudioController.Instance.AudioPlay(true, AudioController.Instance.BGM);
+    }*/
+    #endregion
+    [Header("UI_Reference")]
+    [SerializeField] private RectTransform bgTrans;
+    [SerializeField] private Button popupCloseBtn, continueBtn, closeBtn;
+
+    public static WelcomSettings instance;
+    private void Awake()
+    {
+        AudioListener.volume = 0;
+        instance = this;
+        continueBtn.onClick.AddListener(() => { HideMe(); GameController.instance.Welcom_Button(); });
+        popupCloseBtn.onClick.AddListener(() => { ExitGame(); });
+        closeBtn.onClick.AddListener(() => { ExitGame(); });
     }
+
+    private void ExitGame()
+    {
+        Invoke(nameof(SetDelay), 0.5f);
+    }
+
+    private void SetDelay()
+    {
+        APIController.CloseWindow();
+    }
+
+    public void Show()
+    {
+        Invoke(nameof(ShowMe), 0.1f);
+    }
+
+    #region UI_Handler
+    public override void ShowMe()
+    {
+        base.ShowMe();
+    }
+
+    public override void HideMe()
+    {
+        GameController.instance.CanPlayAudio = true;
+        AudioListener.volume = 1;
+        base.HideMe();
+    }
+
+    public override void OnBack()
+    {
+        base.OnBack();
+    }
+    #endregion
 }

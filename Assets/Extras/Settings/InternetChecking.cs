@@ -9,7 +9,7 @@ public class InternetChecking : MonoBehaviour
     public static InternetChecking instance;
 
     public GameObject connectionPanel;
-  
+
 
     private void Start()
     {
@@ -17,7 +17,7 @@ public class InternetChecking : MonoBehaviour
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
 #endif
     }
-  
+
     #region Network Status
 
     /// <summary>
@@ -26,17 +26,17 @@ public class InternetChecking : MonoBehaviour
     /// <param name="data">String representing the network status ("true" or "false").</param>
     public void GetNetworkStatus(string data)
     {
-   
+
         Debug.Log("Internet Status Check ********** " + data);
 
-     
+
 
         //connectionPanel.SetActive(data.ToLower() == "true" ? false : true);
         connectionPanel.SetActive(data.ToLower() == "false");
+
         if (!connectionPanel.activeSelf)
         {
             Debug.Log($"Connection Panel check network --->   {data} connection panel is == {connectionPanel.activeSelf} ");
-
             if (!APIController.instance.userDetails.isBlockApiConnection)
             {
                 APIController.GetUpdatedBalance();
@@ -53,19 +53,19 @@ public class InternetChecking : MonoBehaviour
         {
             AudioListener.volume = 0;
         }
-        /*else if (RouletteGameController.Instance.IsInTab)
+        else
+        {
+            AudioListener.volume = 1;
+        }
+        if (GameController.instance.IsInTab)
         {
             if (AudioListener.volume == 0)
             {
-                if (RollController.instance.MatchStarted)
-                {
-                    MasterAudioController.instance.StopAudioPlayback(AudioEnum.BallSpin);
-                    MasterAudioController.instance.PlayAudioPlayback(AudioEnum.BallSpin);
-                }
+
             }
-            if (RouletteGameController.Instance.CanPlayAudio)
+            if (GameController.instance.CanPlayAudio)
                 AudioListener.volume = 1;
-        }*/
+        }
     }
 
     #endregion

@@ -30,6 +30,7 @@ public class InfiniteScroll : MonoBehaviour
     public int Count = 3;
     public float bfloat;
     public float BonusValue;
+    public string mValue;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -56,6 +57,8 @@ public class InfiniteScroll : MonoBehaviour
     [SerializeField] RectTransform numbCount_3;
 
     [SerializeField] Image GlowEffect;
+
+    public MasterAudioController audioController;
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -133,7 +136,7 @@ public class InfiniteScroll : MonoBehaviour
             Fill_Img.instance.CountText_Animation();
             // Shuffle the children of the content panel
             ShuffleContentChildren();
-
+            audioController.PlayAudio(AudioEnum.infiniteScrollview, true);
             StartCoroutine(AutoScrollForRandomTime());
             autoScroll = false;
         }
@@ -167,13 +170,13 @@ public class InfiniteScroll : MonoBehaviour
             }
             elapsedTime += Time.deltaTime;
 
-            
             yield return null;
         }
 
         while (scrollRect.velocity.magnitude > 0.1f)
         {
             scrollRect.velocity = Vector2.Lerp(scrollRect.velocity, Vector2.zero, Time.deltaTime * decelerationRate);
+            audioController.StopAudio(AudioEnum.infiniteScrollview);
             yield return null;
         }
 
@@ -185,9 +188,10 @@ public class InfiniteScroll : MonoBehaviour
     }
     private IEnumerator CenterOnClosestItem()
     {
+        audioController.StopAudio(AudioEnum.infiniteScrollview);
         float closestDistance = float.MaxValue;
         RectTransform closestItem = null;
-
+        
         foreach (RectTransform item in contentPanelTransform)
         {
             Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
@@ -241,7 +245,7 @@ public class InfiniteScroll : MonoBehaviour
 
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
-
+                
                 DelayFuction();
             }
         }
@@ -257,6 +261,7 @@ public class InfiniteScroll : MonoBehaviour
             await UniTask.Delay(4000); // wait for 4 seconds
             TimerDelay();
             controller.TakeCashOut();
+            Debug.Log(" ::::::::::::TakeCash ");
         }
         else if (Count > 0)
         {
@@ -266,6 +271,13 @@ public class InfiniteScroll : MonoBehaviour
             await UniTask.Delay(4000); // wait for 4 seconds
             TimeDelay();
         }
+    }
+    void TakeCash()
+    {
+        /*controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+        //takeCash = betAmount * multiplier;
+        controller.takeCash = float.Parse(controller.tString);
+        controller.takeCashWintxt.text = controller.takeCash.ToString("0.00");*/
     }
     void BounsAmount_Moves()
     {
@@ -307,10 +319,19 @@ public class InfiniteScroll : MonoBehaviour
         while (controller.multiplier < BonusValue)
         {
             controller.multiplier += BonusValue * Time.deltaTime;
-            /*controller.multiplierTxt.text = controller.multiplier.ToString("0.00");*/
+
+            string s1 = BonusValue.ToString("0.00");
+            BonusValue = float.Parse(s1);
+            string s2 = controller.multiplier.ToString("0.00");
+            controller.multiplier = float.Parse(s2);
+
+            mValue = controller.multiplier.ToString();
+
+            controller.takeCash = float.Parse(mValue);
+
             BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
 
-            //BonusMultiplier_txt
+            
             yield return null;
         }
     }

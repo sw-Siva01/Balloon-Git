@@ -48,6 +48,8 @@ public class Fill_Img : MonoBehaviour
 
     public static Fill_Img instance;
 
+    public MasterAudioController audioController;
+
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -145,8 +147,9 @@ public class Fill_Img : MonoBehaviour
             /*controller.isBonus = true;*/
             await UniTask.Delay(1300);
             scrollViewAnim.SetActive(true);
-
+            
             await UniTask.Delay(1000);
+            audioController.PlayAudio(AudioEnum.bonus);
             controller.isBonus = true;
             bonusShine.SetBool("isShine", true);
             if (controller.isBonus && controller.isScroll)
@@ -163,6 +166,8 @@ public class Fill_Img : MonoBehaviour
             scrollViewAnim.SetActive(false);
             //controller.winBonus = UnityEngine.Random.Range(10, 20);   // use this always
             controller.winBonus = 3;                                    // for testing only
+
+            
         }
     }
 
