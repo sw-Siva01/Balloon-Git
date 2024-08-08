@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     [SerializeField] float minHoldTime = 2f; // Minimum time to hold the button
     private float timeHeld = 0f;   // Timer to track time button is held
     public float takeCash;  // TakeCash
-    [SerializeField] string tString;
+    public string tString;
     public float WinAmount = 0;
     [SerializeField] float TotalAmount = 250.00f;  // Total Amount
     public float bonusTimer;

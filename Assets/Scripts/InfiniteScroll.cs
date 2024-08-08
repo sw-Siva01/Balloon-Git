@@ -238,17 +238,55 @@ public class InfiniteScroll : MonoBehaviour
                 if (float.TryParse(numericPart, out bfloat))
                 {
                     // Successfully parsed the numeric part to a float
-                    /*Debug.Log($"Parsed value: {bfloat}");*/
+                    Debug.Log($"Parsed value: {bfloat}");
                 }
                 ///
                 BonusValue = float.Parse(BonusValue.ToString("0.00"));
 
                 BonusValue += bfloat;
+
+
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
 
                 DelayFuction();
             }
+        }
+        /*while (controller.multiplier < BonusValue)
+        {
+            controller.mString = controller.multiplier.ToString("0.00");
+
+            controller.multiplier += bfloat * Time.deltaTime;
+
+            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+            controller.takeCash = float.Parse(controller.tString);
+            *//*controller.takeCash = controller.betAmount * controller.multiplier;*//*
+
+            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+
+
+            yield return null;
+        }*/
+
+    }
+
+    async void ObjDelayed()
+    {
+        await UniTask.Delay(1000);
+        if (controller.multiplier < BonusValue)
+        {
+            controller.mString = controller.multiplier.ToString("0.00");
+
+            controller.multiplier += bfloat * Time.deltaTime;
+
+            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+            controller.takeCash = float.Parse(controller.tString);
+            /*controller.takeCash = controller.betAmount * controller.multiplier;*/
+
+            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+
+
+            /*yield return null;*/
         }
     }
     async void DelayFuction()
@@ -262,7 +300,6 @@ public class InfiniteScroll : MonoBehaviour
             await UniTask.Delay(4000); // wait for 4 seconds
             TimerDelay();
             controller.TakeCashOut();
-            Debug.Log(" ::::::::::::TakeCash ");
         }
         else if (Count > 0)
         {
@@ -272,13 +309,6 @@ public class InfiniteScroll : MonoBehaviour
             await UniTask.Delay(4000); // wait for 4 seconds
             TimeDelay();
         }
-    }
-    void TakeCash()
-    {
-        /*controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
-        //takeCash = betAmount * multiplier;
-        controller.takeCash = float.Parse(controller.tString);
-        controller.takeCashWintxt.text = controller.takeCash.ToString("0.00");*/
     }
     void BounsAmount_Moves()
     {
@@ -304,6 +334,12 @@ public class InfiniteScroll : MonoBehaviour
     }
     void Object_Delay()
     {
+        Debug.Log(" ^^^^^^^^^^^^^ ");
+
+    }
+
+    public void test()
+    {
         StartCoroutine(Add_BonusValue());
         controller.BonusRewardTxt.text = null;
     }
@@ -317,20 +353,64 @@ public class InfiniteScroll : MonoBehaviour
     }
     IEnumerator Add_BonusValue()
     {
-        while (mValue < BonusValue)
+        #region
+        //while (mValue < BonusValue)
+        //{
+        #region
+        /*//controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
+
+        controller.multiplier += BonusValue * Time.deltaTime;
+
+        mValue = (float)((int)(controller.multiplier * 100)) / 100f;
+
+        controller.takeCash = controller.betAmount * BonusValue;
+
+        //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
+        //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
+
+        BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+
+
+        yield return null;*/
+        #endregion
+
+        /*//controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
+
+        controller.multiplier += BonusValue * Time.deltaTime;
+
+        mValue = (float)((int)(controller.multiplier * 100)) / 100f;
+
+        controller.takeCash = controller.betAmount * BonusValue;
+
+        //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
+        //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
+
+        BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+
+
+        yield return null;*/
+        //}
+        #endregion
+        BonusValue = float.Parse(BonusValue.ToString("0.00"));
+        controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
+
+        while (controller.multiplier < BonusValue)
         {
-            //controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
+            controller.mString = controller.multiplier.ToString("0.00");
 
-            controller.multiplier += BonusValue * Time.deltaTime;
+            /*if (controller.multiplier < BonusValue)
+                controller.multiplier += bfloat * Time.deltaTime;*/
+            if (controller.multiplier < BonusValue)
+            {
+                controller.multiplier += bfloat * Time.deltaTime;
+                controller.multiplier = Mathf.Min(controller.multiplier, BonusValue);
+            }
 
-            mValue = (float)((int)(controller.multiplier * 100)) / 100f;
+            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+            controller.takeCash = float.Parse(controller.tString);
+            /*controller.takeCash = controller.betAmount * controller.multiplier;*/
 
-            controller.takeCash = BonusValue;
-
-            //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
-            //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
-
-            BonusMultiplier_txt.text = mValue.ToString("F2");
+            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
 
 
             yield return null;
@@ -347,67 +427,6 @@ public class InfiniteScroll : MonoBehaviour
     }
     void CountText_Animation()
     {
-        #region
-        /*if (Count == 0)
-        {
-            // DoTween Text in Sequence
-            Sequence sequence = DOTween.Sequence();
-
-            // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-        }
-        else if (Count == 1)
-        {
-            // DoTween Text in Sequence
-            Sequence sequence = DOTween.Sequence();
-
-            // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                    .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
-
-            // Add a delay of 1 second
-            sequence.AppendInterval(0.01f);
-
-            // Add the second scale animation to the sequence
-            sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-        }
-        else if (Count == 2)
-        {
-            // DoTween Text in Sequence
-            Sequence sequence = DOTween.Sequence();
-
-            // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                    .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear)); 
-
-            // Add a delay of 1 second
-            sequence.AppendInterval(0.01f);
-
-            // Add the second scale animation to the sequence
-            sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-        }
-        else if (Count == 3)
-        {
-            // DoTween Text in Sequence
-            Sequence sequence = DOTween.Sequence();
-
-            // Add the first scale animation and move animation to the sequence
-            sequence.Append(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
-
-            // Add a delay of 1 second
-            sequence.AppendInterval(0.01f);
-
-            // Add the second scale animation to the sequence
-            sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                    .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-        }*/
-        #endregion
         // DoTween Text in Sequence
         Sequence sequence = DOTween.Sequence();
         switch (Count)
