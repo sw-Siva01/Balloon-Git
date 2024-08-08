@@ -15,7 +15,7 @@ public class UI_Controller : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        Welcomepop.SetActive(true);
+        //Welcomepop.SetActive(true);
         //LoadingPanel.SetActive(true);
     }
 

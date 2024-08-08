@@ -30,7 +30,8 @@ public class InfiniteScroll : MonoBehaviour
     public int Count = 3;
     public float bfloat;
     public float BonusValue;
-    public string mValue;
+    public float mValue;
+    public string Svalue;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -191,7 +192,7 @@ public class InfiniteScroll : MonoBehaviour
         audioController.StopAudio(AudioEnum.infiniteScrollview);
         float closestDistance = float.MaxValue;
         RectTransform closestItem = null;
-        
+
         foreach (RectTransform item in contentPanelTransform)
         {
             Vector3 itemPos = viewPortTransform.InverseTransformPoint(item.position);
@@ -240,12 +241,12 @@ public class InfiniteScroll : MonoBehaviour
                     /*Debug.Log($"Parsed value: {bfloat}");*/
                 }
                 ///
+                BonusValue = float.Parse(BonusValue.ToString("0.00"));
 
                 BonusValue += bfloat;
-
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
-                
+
                 DelayFuction();
             }
         }
@@ -316,22 +317,22 @@ public class InfiniteScroll : MonoBehaviour
     }
     IEnumerator Add_BonusValue()
     {
-        while (controller.multiplier < BonusValue)
+        while (mValue < BonusValue)
         {
+            //controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
+
             controller.multiplier += BonusValue * Time.deltaTime;
 
-            string s1 = BonusValue.ToString("0.00");
-            BonusValue = float.Parse(s1);
-            string s2 = controller.multiplier.ToString("0.00");
-            controller.multiplier = float.Parse(s2);
+            mValue = (float)((int)(controller.multiplier * 100)) / 100f;
 
-            mValue = controller.multiplier.ToString();
+            controller.takeCash = BonusValue;
 
-            controller.takeCash = float.Parse(mValue);
+            //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
+            //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
 
-            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
+            BonusMultiplier_txt.text = mValue.ToString("F2");
 
-            
+
             yield return null;
         }
     }

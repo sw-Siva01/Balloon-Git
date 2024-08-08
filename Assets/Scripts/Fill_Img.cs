@@ -131,7 +131,7 @@ public class Fill_Img : MonoBehaviour
     }
     public async void TimerUpdate()
     {
-        await UniTask.Delay(2500);
+        await UniTask.Delay(4500);
         fill_Meter.SetActive(true);
         bonusTimer = true;
 
@@ -144,14 +144,14 @@ public class Fill_Img : MonoBehaviour
 
         if (Timer >= 10)
         {
-            /*controller.isBonus = true;*/
-            await UniTask.Delay(1300);
             scrollViewAnim.SetActive(true);
-            
-            await UniTask.Delay(1000);
             audioController.PlayAudio(AudioEnum.bonus);
-            controller.isBonus = true;
             bonusShine.SetBool("isShine", true);
+
+            await UniTask.Delay(900);
+            
+            controller.isBonus = true;
+            
             if (controller.isBonus && controller.isScroll)
             {
                 scrollView.BonusMultiplier_txt.gameObject.SetActive(true);

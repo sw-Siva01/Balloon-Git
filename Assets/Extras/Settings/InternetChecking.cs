@@ -10,13 +10,21 @@ public class InternetChecking : MonoBehaviour
 
     public GameObject connectionPanel;
 
-
+    public bool check;
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
-#if !UNITY_EDITOR
-        APIController.instance.OnInternetStatusChange += GetNetworkStatus;
-#endif
+        APIController.instance.OnInternetStatusChange += GetNetworkStatus; 
     }
+
+  /*  private void Update()
+    {
+        GetNetworkStatus(check.ToString());
+    }*/
+
 
     #region Network Status
 
