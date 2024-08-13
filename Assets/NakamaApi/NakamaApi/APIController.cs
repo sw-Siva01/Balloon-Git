@@ -176,18 +176,7 @@ public class APIController : MonoBehaviour
         Time.timeScale = 1;
         isInFocus = data == "true" ? true : false;
         Debug.Log($"Calleeedddd switching tab {data}   -   {isOnline}   -   {isInFocus}");
-        if (isNeedToPauseWhileSwitchingTab)
-        {
-            if (isInFocus && isOnline)
-            {
-                Time.timeScale = 1;
-            }
-            else
-            {
-                Time.timeScale = 0;
 
-            }
-        }
         OnSwitchingTab?.Invoke(data.ToLower() == "true");
     }
 
@@ -367,17 +356,17 @@ public class APIController : MonoBehaviour
         //userDetails.UserDevice = "mobile";
         //if (MobileShow)
         //{
-            userDetails.UserDevice = "mobile";
+        userDetails.UserDevice = "mobile";
         //}
         //else
         //{
         //    userDetails.UserDevice = "desktop";
         //}
-        
+
 #endif
 #if CasinoGames
 
-        InitNakamaClient();    
+        InitNakamaClient();
 #else
         OnUserDetailsUpdate?.Invoke();
         OnUserBalanceUpdate?.Invoke();
@@ -405,7 +394,8 @@ public class APIController : MonoBehaviour
                 validateSession.Session_token = userDetails.session_token;
                 validateSession.Control = "0";
                 validateSession.Token = userDetails.token;
-                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
+                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+                {
                     try
                     {
                         JObject jsonObject = JObject.Parse(res);
@@ -462,7 +452,8 @@ public class APIController : MonoBehaviour
             validateSession.Session_token = userDetails.session_token;
             validateSession.Control = "0";
             validateSession.Token = userDetails.token;
-            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
+            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+            {
                 try
                 {
                     JObject jsonObject = JObject.Parse(res);
@@ -515,7 +506,7 @@ public class APIController : MonoBehaviour
             Runcount += 1;
             bool isrun = false;
             if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
-             {
+            {
                 isrun = true;
                 ValidateSessionReq validateSession = new ValidateSessionReq();
                 validateSession.PlayerId = userDetails.Id;
@@ -536,7 +527,8 @@ public class APIController : MonoBehaviour
                     }
                 }
                 validateSession.Token = userDetails.token;
-                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) => {
+                Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+                {
                     try
                     {
                         JObject jsonObject = JObject.Parse(res);
@@ -577,7 +569,7 @@ public class APIController : MonoBehaviour
                         await Nakama.Helpers.NakamaManager.Instance.OpenSocket();
                     }
                 }
-                    Debug.Log("socket not connected" + isOnline);
+                Debug.Log("socket not connected" + isOnline);
             }
             int count = 0;
             await UniTask.Delay(2000);
@@ -586,8 +578,8 @@ public class APIController : MonoBehaviour
                 Debug.Log("online false 3");
                 isOnline = false;
             }
-            if(isOnline)
-            GetNetworkStatus(isOnline.ToString());
+            if (isOnline)
+                GetNetworkStatus(isOnline.ToString());
             Debug.Log(/*GameHudManager.Instance.BetButton.interactable + */"Internet check " + isOnline);
         }
     }
@@ -596,12 +588,13 @@ public class APIController : MonoBehaviour
 
     public void InitNakamaClient()
     {
-        Nakama.Helpers.NakamaManager.Instance.AutoLogin(success => {
+        Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
+        {
             if (success)
             {
                 OnUserDetailsUpdate?.Invoke();
                 OnUserBalanceUpdate?.Invoke();
-                    CheckSession();
+                CheckSession();
             }
             else
             {
@@ -630,7 +623,7 @@ public class APIController : MonoBehaviour
     }
     private void Awake()
     {
-           instance = this;
+        instance = this;
     }
     public PlayerData GeneratePlayerDataForBot(string botAccountData)
     {
@@ -680,53 +673,53 @@ public class APIController : MonoBehaviour
 
     public int InitlizeBet(float amount, TransactionMetaData metadata, bool isAbleToCancel = false, Action<bool> action = null, string playerId = "", bool isBot = false, Action<string> betIdAction = null)
     {
-            Debug.Log("" + amount);
-            if (string.IsNullOrWhiteSpace(playerId) || playerId == userDetails.Id)
-            {
-                Debug.Log("Dummy Data" + amount);
-                userDetails.balance -= amount;
-                OnUserBalanceUpdate.Invoke();
-            }
-            else
-            {
-                Debug.Log(playerId + " __ " + userDetails.Id + "__ Dummy Data ---1" + amount);
-            }
-            action?.Invoke(true);
-            return 0;
-   
+        Debug.Log("" + amount);
+        if (string.IsNullOrWhiteSpace(playerId) || playerId == userDetails.Id)
+        {
+            Debug.Log("Dummy Data" + amount);
+            userDetails.balance -= amount;
+            OnUserBalanceUpdate.Invoke();
+        }
+        else
+        {
+            Debug.Log(playerId + " __ " + userDetails.Id + "__ Dummy Data ---1" + amount);
+        }
+        action?.Invoke(true);
+        return 0;
+
     }
 
     public void AddBet(int index, string BetId, TransactionMetaData metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
-            if (playerId == "" || playerId == userDetails.Id)
-            {
-                userDetails.balance -= amount;
-                OnUserBalanceUpdate.Invoke();
-            }
-            action?.Invoke(true);
-            return;
+        if (playerId == "" || playerId == userDetails.Id)
+        {
+            userDetails.balance -= amount;
+            OnUserBalanceUpdate.Invoke();
         }
+        action?.Invoke(true);
+        return;
+    }
 
 
     public void CancelBet(int index, string metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
 
-       {
-            if (playerId == "" || playerId == userDetails.Id)
-            {
-                userDetails.balance += amount;
-                OnUserBalanceUpdate.Invoke();
-            }
-action?.Invoke(true);
-return;
+    {
+        if (playerId == "" || playerId == userDetails.Id)
+        {
+            userDetails.balance += amount;
+            OnUserBalanceUpdate.Invoke();
         }
+        action?.Invoke(true);
+        return;
+    }
     public void FinilizeBet(int index, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
-            action?.Invoke(true);
-            return;
-        }
+        action?.Invoke(true);
+        return;
+    }
 
 
-        public void CreateMatch(string lobbyName, Action<CreateMatchResponse> action, string gamename, string operatorname, string playerId, bool isBlockAPI, string game_ID="")
+    public void CreateMatch(string lobbyName, Action<CreateMatchResponse> action, string gamename, string operatorname, string playerId, bool isBlockAPI, string game_ID = "")
     {
 
         CreateMatchResponse matchResponse = new CreateMatchResponse();
@@ -740,7 +733,8 @@ return;
         createGameReq.GameName = gamename == "" ? userDetails.game_Id.Split("_")[1] : gamename;
         createGameReq.LobbyName = lobbyName;
         createGameReq.Operator = operatorname == "" ? userDetails.game_Id.Split("_")[0] : operatorname;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_Create", createGameReq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_Create", createGameReq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             JObject jsonObject = JObject.Parse(res);
             if ((int)(jsonObject["code"]) == 200)
@@ -888,7 +882,8 @@ return;
         predictionReq.ColumnCount = columnCount.ToString();
         predictionReq.PredictionCount = predectedCount.ToString();
         predictionReq.GameName = gamename == "" ? userDetails.game_Id.Split("_")[1] : gamename;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetRandomPresiction", predictionReq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetRandomPresiction", predictionReq.ToJson(), (res) =>
+        {
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             if (response.code == 200)
             {
@@ -1037,7 +1032,8 @@ return;
         AddPlayersReq addPlayersReq = new AddPlayersReq();
         addPlayersReq.MatchToken = matchToken;
         addPlayersReq.Players = players;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_AddBet", addPlayersReq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_AddBet", addPlayersReq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             JObject jsonObject = JObject.Parse(res);
             if ((int)(jsonObject["code"]) == 200)
@@ -1130,6 +1126,33 @@ return;
         ExecuteAPI(apiRequest);
     }
 
+
+    public void GetrngwinLogic(float amount, string operatorname, string gameid, Action<string,string> canWin)
+    {
+        WinLoseRNG winlogic = new()
+        {
+            amount = amount,
+            operatorName = operatorname,
+            gameID = gameid
+        };
+
+        Debug.Log("GetRNGWinLogic ============> " + winlogic.ToJson());
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
+        {
+            Debug.Log(" Res : " + res);
+            JObject jsonObject = JObject.Parse(res);
+            canWin.Invoke(jsonObject["data"].ToString(),jsonObject["message"].ToString());
+        });
+    }
+
+    public class WinLoseRNG
+    {
+        public float amount;
+        public string operatorName;
+        public string gameID;
+    }
+
+
     /// <summary>
     /// /
     /// </summary>
@@ -1173,7 +1196,8 @@ return;
         winningBetreq.MatchToken = matchToken;
         winningBetreq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
         winningBetreq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_WinningBet", winningBetreq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_WinningBet", winningBetreq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             action?.Invoke(response != null && response.code == 200);
@@ -1355,7 +1379,8 @@ return;
         cancelBetreq.MatchToken = matchToken;
         cancelBetreq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
         cancelBetreq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CancelBet", cancelBetreq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CancelBet", cancelBetreq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             action?.Invoke(response != null && response.code == 200);
@@ -1444,7 +1469,8 @@ return;
         addBetreq.Betid = BetId;
         addBetreq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
         addBetreq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_AddBet", addBetreq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_AddBet", addBetreq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
             action?.Invoke(response != null && response.code == 200);
@@ -1552,27 +1578,28 @@ return;
         createAndJoinGameReq.Players = new List<string> { playerId == "" ? userDetails.Id : playerId };
 
         Debug.Log(createAndJoinGameReq.ToJson() + "TEST__!!!");
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CreateAndJoin", createAndJoinGameReq.ToJson(), (res) => {
-             Debug.Log(res);
-             JObject jsonObject = JObject.Parse(res);
-             if ((int)(jsonObject["code"]) == 200)
-             {
-                 JObject jsonObject1 = JObject.Parse(jsonObject["data"].ToString());
-                 matchResponse = JsonConvert.DeserializeObject<CreateMatchResponse>(jsonObject["data"].ToString());
-                 matchResponse.status = true;
-                 bet.BetId = matchResponse.Message;
-                 bet.MatchToken = matchResponse.MatchToken;
-                 action.Invoke(true, matchResponse.Message, matchResponse);
-             }
-             else
-             {
-                 matchResponse.status = false;
-                 matchResponse.Message = res;
-                 action.Invoke(false, "", matchResponse);
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CreateAndJoin", createAndJoinGameReq.ToJson(), (res) =>
+        {
+            Debug.Log(res);
+            JObject jsonObject = JObject.Parse(res);
+            if ((int)(jsonObject["code"]) == 200)
+            {
+                JObject jsonObject1 = JObject.Parse(jsonObject["data"].ToString());
+                matchResponse = JsonConvert.DeserializeObject<CreateMatchResponse>(jsonObject["data"].ToString());
+                matchResponse.status = true;
+                bet.BetId = matchResponse.Message;
+                bet.MatchToken = matchResponse.MatchToken;
+                action.Invoke(true, matchResponse.Message, matchResponse);
+            }
+            else
+            {
+                matchResponse.status = false;
+                matchResponse.Message = res;
+                action.Invoke(false, "", matchResponse);
 
-             }
+            }
 
-         });
+        });
         return index;
 #endif
 
@@ -1665,11 +1692,11 @@ return;
 
         };
         ExecuteAPI(api);
-        
+
         return bet.betId;
     }
 
- 
+
     public int InitBetMultiplayerAPI(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, Action<bool> action, string playerId, bool isBot, Action<string> betIdAction, string gameName, string operatorName, string gameID, string matchToken)
     {
         Debug.Log($"<color=orange>Initializing bet for player {playerId}, index is {index}</color>");
@@ -1694,7 +1721,8 @@ return;
         initBetReq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
         initBetReq.MatchToken = matchToken;
         initBetReq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_InitBet", initBetReq.ToJson(), (res) => {
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_InitBet", initBetReq.ToJson(), (res) =>
+        {
             Debug.Log(res);
             JObject jsonObject = JObject.Parse(res);
             if ((int)(jsonObject["code"]) == 200)
@@ -1895,7 +1923,7 @@ return;
         }
         return BetProcess.Failed;
     }
-#endregion
+    #endregion
 }
 
 [System.Serializable]
@@ -2024,7 +2052,7 @@ public class GetRandomCardReq
     public string Amount;
     public string Operator;
 }
-    public class CancelBetReq
+public class CancelBetReq
 {
     public int Index;
     public string Betid;

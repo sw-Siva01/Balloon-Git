@@ -252,22 +252,6 @@ public class InfiniteScroll : MonoBehaviour
                 DelayFuction();
             }
         }
-        /*while (controller.multiplier < BonusValue)
-        {
-            controller.mString = controller.multiplier.ToString("0.00");
-
-            controller.multiplier += bfloat * Time.deltaTime;
-
-            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
-            controller.takeCash = float.Parse(controller.tString);
-            *//*controller.takeCash = controller.betAmount * controller.multiplier;*//*
-
-            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
-
-
-            yield return null;
-        }*/
-
     }
 
     async void ObjDelayed()
@@ -333,12 +317,6 @@ public class InfiniteScroll : MonoBehaviour
         autoScroll = true;
     }
     void Object_Delay()
-    {
-        Debug.Log(" ^^^^^^^^^^^^^ ");
-
-    }
-
-    public void test()
     {
         StartCoroutine(Add_BonusValue());
         controller.BonusRewardTxt.text = null;

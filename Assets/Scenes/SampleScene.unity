@@ -10256,7 +10256,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connectionPanel: {fileID: 870076083884327943}
-  check: 1
 --- !u!4 &846987393
 Transform:
   m_ObjectHideFlags: 0
@@ -23598,12 +23597,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   betAmount: 1
   multiplier: 0
+  Mlose: 0
   mString: 
   incrementRate: 1.01
   incrementInterval: 0.2
   timeSinceLastIncrement: 0
   maxHoldTime: 20
-  minHoldTime: 3
+  minHoldTime: 1.12
+  holdHeight: 1.12
+  timeHeld: 0
+  timeHold: 
   takeCash: 0
   tString: 
   WinAmount: 0
@@ -23641,6 +23644,8 @@ MonoBehaviour:
   isBonus: 0
   isBonus_OFF: 0
   makeLose: 0
+  startGame: 0
+  gameLost: 0
   netCheck: 0
   multiplierTxt: {fileID: 1898352829}
   Xtxt: {fileID: 801902552}
@@ -23697,8 +23702,10 @@ MonoBehaviour:
   audioController: {fileID: 1165968576047954302}
   internetDisconnectPannel: {fileID: 4875346415498661686}
   IsInTab: 1
+  IsInterNet: 0
   CanPlayAudio: 0
-  ResponsePopUp: {fileID: 810832941087503655}
+  LoadingPopUp: {fileID: 810832941087503655}
+  ResponsePopUp: {fileID: 1022269645}
   settingsBtn: {fileID: 1050069827}
 --- !u!1 &1985417629
 GameObject:
@@ -26204,6 +26211,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2106518942}
   m_CullTransparentMesh: 1
+--- !u!1 &2132787033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2132787035}
+  - component: {fileID: 2132787034}
+  m_Layer: 0
+  m_Name: '[Nakama]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2132787034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132787033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c23b35d6f5f35479bb9b985f3e4348d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2132787035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132787033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2133289956
 GameObject:
   m_ObjectHideFlags: 0
@@ -41638,7 +41689,8 @@ MonoBehaviour:
   Count: 3
   bfloat: 0
   BonusValue: 0
-  mValue: 
+  mValue: 0
+  Svalue: 
   scrollSpeed: 2000
   decelerationRate: 0.1
   minScrollTime: 4
@@ -41718,8 +41770,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: CONNECTING TO SERVER
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1ace8236393f2264aa0f31bfd85f243a, type: 2}
+  m_sharedMaterial: {fileID: -253009188019548704, guid: 1ace8236393f2264aa0f31bfd85f243a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -42153,7 +42205,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connectionPanel: {fileID: 4875346415498661686}
-  check: 0
 --- !u!1 &6945688356924660393
 GameObject:
   m_ObjectHideFlags: 0
@@ -46136,3 +46187,4 @@ SceneRoots:
   - {fileID: 1165968576047954300}
   - {fileID: 7202813047221878845}
   - {fileID: 1233875017}
+  - {fileID: 2132787035}

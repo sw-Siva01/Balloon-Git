@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NakamaServer
   m_EditorClassIdentifier: 
   scheme: https
-  host: turbogames.utwebapps.com
+  host: turbogames1.utwebapps.com
   backuphost: turbogames1.utwebapps.com
   port: 7350
   serverKey: defaultkey

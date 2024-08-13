@@ -74,6 +74,7 @@ public class WelcomSettings : UIHandler
     [SerializeField] private RectTransform bgTrans;
     [SerializeField] private Button popupCloseBtn, continueBtn, closeBtn;
 
+
     public static WelcomSettings instance;
     private void Awake()
     {
@@ -109,6 +110,7 @@ public class WelcomSettings : UIHandler
     {
         GameController.instance.CanPlayAudio = true;
         AudioListener.volume = 1;
+        Debug.Log(" ^^^^^^^^^ 3 : " + AudioListener.volume);
         base.HideMe();
     }
 
