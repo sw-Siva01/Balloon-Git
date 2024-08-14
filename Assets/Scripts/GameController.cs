@@ -77,12 +77,14 @@ public class GameController : MonoBehaviour
     public bool isBonus_OFF;
     public bool makeLose;
     public bool startGame;
+    private bool pauseGame;
     private bool isPressed;
     private bool buttonPress;
     private bool takeBetAmount;
     private bool isSet;
     private bool isFire;
     private bool lost;
+    public bool gameLost;
     private bool take;
     private bool isBonus_1;
     private bool isBonus_2;
@@ -385,14 +387,14 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            if (startGame && (!InternetChecking.instance.connectionPanel.activeSelf))
+            if (startGame && !pauseGame && (!InternetChecking.instance.connectionPanel.activeSelf))
             {
-                if (startGame && multiplier < 1.01f)
+                if (!pauseGame && multiplier < 1.01f)
                 {
                     countTime += 7f * Time.deltaTime;
                     slider.value = countTime;
                 }
-                if (startGame && multiplier >= 1.01f && !isPressed)
+                if (!pauseGame && multiplier >= 1.01f && !isPressed)
                 {
                     timeSinceLastIncrement += Time.deltaTime;
 
@@ -404,7 +406,7 @@ public class GameController : MonoBehaviour
                     audioController.StopAudio(AudioEnum.startSlider);
                     slider.value = countTime;
                 }
-                else if (startGame && multiplier >= 1.01f && isPressed)
+                else if (!pauseGame && multiplier >= 1.01f && isPressed)
                 {
                     countTime = 7f;
                     slider.maxValue = 7f;
@@ -414,20 +416,6 @@ public class GameController : MonoBehaviour
             yield return null;
         }
     }
-    /*IEnumerator MakeLosePlayer()
-    {
-        while (makeLose && (multiplier > (UnityEngine.Random.Range(0.77f, 0.9f))))
-        {
-            if (makeLose && (multiplier > (UnityEngine.Random.Range(0.77f, 0.9f))))
-            {
-                lost = true;
-                Balloon_Burt();
-            }
-                
-            yield return null;
-        }
-    }*/
-
     IEnumerator HolidngButtons()
     {
         while (true)
@@ -440,7 +428,7 @@ public class GameController : MonoBehaviour
             //0.77f
             if (makeLose && (multiplier > (UnityEngine.Random.Range(0.77f, 0.9f))))
             {
-                lost = true;
+                /*gameLost = true;*/
                 Balloon_Burt();
             }
 
@@ -455,7 +443,6 @@ public class GameController : MonoBehaviour
                 TakeCashbutton.enabled = false;
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
             }
-
             if (lost)
             {
                 holdButtonEvent.enabled = false;
@@ -482,7 +469,6 @@ public class GameController : MonoBehaviour
                 takeCurrencytxt.color = new Color32(140, 140, 140, 255);
                 TakeCashAnimImg.SetActive(false);
             }
-
             if (take)
             {
                 // sliderOBjs
@@ -527,7 +513,6 @@ public class GameController : MonoBehaviour
                     if (float.Parse(timeHold) >= holdHeight)
                     {
                         // Bet is lost
-                        lost = true;
                         Balloon_Burt();
                     }
                 }
@@ -549,7 +534,9 @@ public class GameController : MonoBehaviour
     }
     void Balloon_Burt()
     {
+        gameLost = true;
         ResetBets();
+        lost = true;
         audioController.PlayAudio(AudioEnum.ballonPopOut);
         holdButton.enabled = false;
         /*TakeCashbutton.enabled = false;*/
@@ -954,12 +941,14 @@ public class GameController : MonoBehaviour
                     betID = newbetID.ToString();
                     Debug.Log("Bet Initiated");
                     Debug.Log("Live Mode");
-                    startGame = true;
+                    /*startGame = true;*/
+                    pauseGame = false;
                 }
                 else
                 {
                     Debug.Log("Bet Initiate Failed");
-                    startGame = false;
+                    /*startGame = false;*/
+                    pauseGame = true;
                 }
             });
         }
@@ -972,13 +961,15 @@ public class GameController : MonoBehaviour
                 {
                     Debug.Log("Bet Initiated");
                     Debug.Log("Demo Mode");
-                    startGame = true;
+                    /*startGame = true;*/
+                    pauseGame = false;
 
                 }
                 else
                 {
                     Debug.Log("Bet Initiate Failed");
-                    startGame = false;
+                    /*startGame = false;*/
+                    pauseGame = true;
                 }
             }, APIController.instance.userDetails.Id, false);
         }
@@ -1082,6 +1073,7 @@ public class GameController : MonoBehaviour
         holdButton.enabled = true;
         holdButtonEvent.enabled = true;
         empty_holdButton.gameObject.SetActive(false);
+        gameLost = false;
         take = false;
         lost = false;
         isNormal = false;
@@ -1146,6 +1138,7 @@ public class GameController : MonoBehaviour
         holdButton.enabled = true;
         holdButtonEvent.enabled = true;
         empty_holdButton.gameObject.SetActive(false);
+        gameLost = false;
         take = false;
         lost = false;
         isBonus_2 = false;
@@ -1412,17 +1405,17 @@ public class GameController : MonoBehaviour
                         button_Anim[i].SetActive(false);
                 }
 
-                if (!startGame)
+                if (!startGame && !gameLost)
                 {
-                   // makeLose = true;
+                    // makeLose = true;
                     APIController.instance.GetrngwinLogic(betAmount, operatorName, APIController.instance.userDetails.gameId,
 
-     (val,val1) =>
+     (val, val1) =>
      {
 
-         makeLose = int.Parse(val) <= 0;
-         Mlose = float.Parse(val1);
-         Debug.Log("GetRNGWinLogic ============> " + makeLose + "GetLoseLogic============> " + Mlose);
+         /*makeLose = int.Parse(val) <= 0;
+         holdHeight = float.Parse(val1);*/
+         Debug.Log("GetRNGWinLogic ============> " + makeLose + "GetLoseLogic============> " + holdHeight);
      });
                     API_IntitalizeBetAmount();
                 }
