@@ -326,7 +326,7 @@ public class APIController : MonoBehaviour
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 5000;
+            userDetails.balance = 1000;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
@@ -1141,6 +1141,7 @@ public class APIController : MonoBehaviour
         {
             Debug.Log(" Res : " + res);
             JObject jsonObject = JObject.Parse(res);
+            Debug.Log("Message =========>" + jsonObject["message"].ToString());
             canWin.Invoke(jsonObject["data"].ToString(),jsonObject["message"].ToString());
         });
     }
@@ -1174,11 +1175,12 @@ public class APIController : MonoBehaviour
         Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
         Debug.Log($"Request data is {JsonUtility.ToJson(request)}");
+        Debug.Log("Winning bet API : +++++" + request.BetId != betId);
         while (request.BetId != betId)
         {
             await UniTask.Delay(200);
         }
-
+        Debug.Log("Winning bet API : +++++");
 #if CasinoGames
         WinningBetReq winningBetreq = new WinningBetReq();
         winningBetreq.Amount = win_amount_with_comission;
