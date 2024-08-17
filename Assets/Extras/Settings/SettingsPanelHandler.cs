@@ -119,4 +119,12 @@ public class SettingsPanelHandler : UIHandler
             UI_Controller.instance.settingsHandler.HideMe();
         }
     }
+    public void ShowDeposit()
+    {
+#if UNITY_WEBGL
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+            APIController.instance.OnClickDepositBtn();
+#endif
+
+    }
 }

@@ -288,7 +288,6 @@ namespace Nakama.Helpers
         private void Socket_Connected()
         {
             Debug.Log("socket connected");
-
             APIController.instance.GetNetworkStatus(true.ToString());
 
         }

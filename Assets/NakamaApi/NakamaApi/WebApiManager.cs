@@ -86,7 +86,6 @@ public class WebApiManager : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Get(url + getParameters))
         {
             www.timeout = timeout;
-            //Send request
             yield return www.SendWebRequest();
 
             while (!www.isDone)
@@ -95,8 +94,7 @@ public class WebApiManager : MonoBehaviour
             while (!www.downloadHandler.isDone)
                 yield return null;
 
-            //Return result
-            callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
+             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
         }
     }
 
@@ -107,7 +105,7 @@ public class WebApiManager : MonoBehaviour
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         string getParameters = getEncodedParams(parameters);
         Debug.Log("Check $$$$$" + url + getParameters);
-       
+
 
 #if !UNITY_WEBGL || UNITY_EDITOR
         using (UnityWebRequest www = UnityWebRequest.Get(url + getParameters))
@@ -117,11 +115,8 @@ public class WebApiManager : MonoBehaviour
             yield return www.SendWebRequest();
             while (!www.isDone)
                 yield return www;
-            //while (!www.downloadHandler.isDone)
-            //    yield return null;
             Debug.Log("Check $$$$$" + www.error);
             Debug.Log("WWW check" + www.result);
-            //Return result
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
             yield break;
         }
@@ -139,20 +134,15 @@ public class WebApiManager : MonoBehaviour
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);
-            Debug.Log(items.keyId + "::" + items.value);
         }
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, bodyFormData))
         {
             www.timeout = timeout;
             yield return www.SendWebRequest();
-            
 
             while (!www.isDone)
                 yield return www;
-
-            
-           
 
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
         }
@@ -168,6 +158,7 @@ public class WebApiManager : MonoBehaviour
         }
 
         string jsonData = JsonConvert.SerializeObject(keyValuePairs);
+
         Debug.Log($"<color=magenta>{jsonData}\n{url}</color>");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
         using UnityWebRequest request = UnityWebRequest.PostWwwForm(url, "POST");
@@ -177,25 +168,30 @@ public class WebApiManager : MonoBehaviour
         request.SetRequestHeader("Accept", "application/json");
         request.timeout = timeout;
         yield return request.SendWebRequest();
+
         callback(request.result == UnityWebRequest.Result.Success, request.error, request.downloadHandler.text);
+
     }
 
     private IEnumerator DownloadImage(string url, ReqCallbackTex callback, int timeout = timeOut)
     {
-        
+
+
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        
         {
-           
+
             www.timeout = timeout;
             yield return www.SendWebRequest();
 
             while (!www.isDone)
                 yield return www;
+
             while (!www.downloadHandler.isDone)
+                //while (!texDl.IsDone)
                 yield return null;
+
+         
             callback(www.result == UnityWebRequest.Result.Success, www.error, ((DownloadHandlerTexture)www.downloadHandler).texture);
-            
         }
     }
 

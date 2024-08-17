@@ -8,7 +8,7 @@ mergeInto(LibraryManager.library, {
   DisconnectGame: function (msg) {
   Disconnect(UTF8ToString(msg));
   },
-  ExternalApiResponse: function (msg) {
+   ExternalApiResponse: function (msg) {
   ExecuteAPIResponse(UTF8ToString(msg));
   },
   GetLoginData: function () {
