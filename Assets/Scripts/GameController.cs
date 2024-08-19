@@ -79,21 +79,21 @@ public class GameController : MonoBehaviour
     public bool startGame;
     //
     private bool pauseGame;
-    private bool isPressed;
+    public bool isPressed;
     public bool buttonPress;
-    private bool takeBetAmount;
+    public bool takeBetAmount;
     private bool isSet;
     private bool isFire;
-    private bool lost;
+    public bool lost;
     public bool gameLost;
-    private bool take;
-    private bool isBonus_1;
-    private bool isBonus_2;
-    private bool isBonus_3;
-    private bool isNormal;
-    private bool touch;
-    private bool cashOut;
-    private bool stopper;
+    public bool take;
+    public bool isBonus_1;
+    public bool isBonus_2;
+    public bool isBonus_3;
+    public bool isNormal;
+    public bool touch;
+    public bool cashOut;
+    public bool stopper;
     public bool netCheck;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -253,7 +253,7 @@ public class GameController : MonoBehaviour
     private string operatorName;
     private string gameName;
     private string lobbyName;
-    private string betID;
+    public string betID;
     private int BetIndex;
     private CreateMatchResponse MatchRes;
     public GameObject internetDisconnectPannel;
@@ -447,10 +447,15 @@ public class GameController : MonoBehaviour
                 ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                 ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
+                /*balloonBlue_Start.SetActive(false);
+                balloonParts.SetActive(false);
+                ballonOut.SetActive(false);*/
+
                 heat_Anim.SetBool("isStart", false);
                 TakeCashbutton.enabled = false;
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
             }
+
             if (lost)
             {
                 holdButtonEvent.enabled = false;
@@ -477,6 +482,7 @@ public class GameController : MonoBehaviour
                 takeCurrencytxt.color = new Color32(140, 140, 140, 255);
                 TakeCashAnimImg.SetActive(false);
             }
+
             if (take)
             {
                 // sliderOBjs
@@ -490,23 +496,26 @@ public class GameController : MonoBehaviour
                 heat_Anim.SetBool("isStart", false);
 
                 balloonShake_blue.SetActive(false);
-                balloonParts.SetActive(true);
                 balloonShake.SetActive(false);
                 TakeCashAnimImg.SetActive(false);
+                balloonParts.SetActive(true);
             }
             FireButton();
             StartOfTheGame();
 
             #region
-            if ((isPressed && isFire && !lost) || (!isPressed && !isFire && !lost) || (!isPressed && isFire && !lost))
+            if (multiplier > 0)
             {
-                timeHold = multiplier.ToString("F2");
-
-                // Check if the button has been held for a random time between min and max hold time
-                if (float.Parse(timeHold) >= holdHeight)
+                if ((isPressed && isFire && !lost) || (!isPressed && !isFire && !lost) || (!isPressed && isFire && !lost))
                 {
-                    // Bet is lost
-                    Balloon_Burt();
+                    timeHold = multiplier.ToString("F2");
+
+                    // Check if the button has been held for a random time between min and max hold time
+                    if (float.Parse(timeHold) >= holdHeight)
+                    {
+                        // Bet is lost
+                        Balloon_Burt();
+                    }
                 }
             }
             #endregion
@@ -537,6 +546,7 @@ public class GameController : MonoBehaviour
                 timeSinceLastIncrement = 0f;
                 timeHeld = 0f;
             }
+
             yield return null;
         }
     }
@@ -745,39 +755,6 @@ public class GameController : MonoBehaviour
     }
     public void TakeCashOut()
     {
-        #region ________ Internet Checking ________
-        /*bool haveInternet = false;
-
-        while (!haveInternet)
-        {
-            Debug.Log("CashoutBtnFn While Loope Entered");
-
-            APIController.instance.CheckInternetandProcess((success) =>
-            {
-                Debug.Log("CashoutBtnFn While Loope CheckInternetandProcess ");
-
-                if (success)
-                {
-                    Debug.Log("CashoutBtnFn While Loope success ");
-
-                    haveInternet = true;
-                }
-                Debug.Log("Cashout Checking Internet HaveInternet " + haveInternet);
-
-            });
-            int count = 0;
-            while (!haveInternet && count < 15)
-            {
-                await UniTask.Delay(100);
-                count++;
-            }
-
-            Debug.Log("CashoutBtnFn While Loope Completed ");
-
-        }
-        Debug.Log("ShowWinnerResult 1");*/
-        #endregion
-
         #region ________ Internet Checking : 1 ________
         APIController.instance.CheckInternetandProcess((success) =>
         {
@@ -926,10 +903,10 @@ public class GameController : MonoBehaviour
         }
 
         isCreateMatchSucceess = false;
-        string message = "Bet Initiated";
 
         #region
-        /*int _index = UnityEngine.Random.Range(100, 999);
+        int _index = UnityEngine.Random.Range(100, 999);
+        string message = "Bet Initiated";
 
         TransactionMetaData val = new TransactionMetaData();
         val.Amount = betAmount;
@@ -948,27 +925,31 @@ public class GameController : MonoBehaviour
         if (!APIController.instance.userDetails.isBlockApiConnection)
         {
             //live
-            BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
-            {
-            if (success)
-            {
-                isCreateMatchSucceess = true;
-                betID = newbetID.ToString();
-                MatchRes = res;
-                APIController.GetUpdatedBalance();
-                Debug.Log("Bet Initiated");
-                Debug.Log("Live Mode");
-                    //startGame = true;
-                    pauseGame = false;
-                }
-                else
-                {
-                    Debug.Log("Bet Initiate Failed");
-                    //startGame = false;
-                    pauseGame = true;
-                }
-            });
-            Debug.Log("CreateAndJoinMatch Index : " + BetIndex);
+            #region
+            //BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, val, false, lobbyName, APIController.instance.userDetails.Id, false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
+            //{
+            //    if (success)
+            //    {
+            //        isCreateMatchSucceess = true;
+            //        betID = newbetID.ToString();
+            //        MatchRes = res;
+            //        APIController.GetUpdatedBalance();
+            //        Debug.Log("Bet Initiated");
+            //        Debug.Log("Live Mode");
+            //        //startGame = true;
+            //        pauseGame = false;
+            //    }
+            //    else
+            //    {
+            //        Debug.Log("Bet Initiate Failed");
+            //        //startGame = false;
+            //        pauseGame = true;
+            //    }
+            //});
+            //Debug.Log("CreateAndJoinMatch Index : " + BetIndex);
+            #endregion
+
+            CreateMatchAPICall();
         }
         else
         {
@@ -991,11 +972,10 @@ public class GameController : MonoBehaviour
                     pauseGame = true;
                 }
             }, APIController.instance.userDetails.Id, false);
-        }*/
+        }
         #endregion
-        CreateMatchAPICall();
-    }
 
+    }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
     {
         TransactionMetaData TransData = new();
@@ -1004,7 +984,6 @@ public class GameController : MonoBehaviour
         int _index = UnityEngine.Random.Range(100, 999);
         List<string> _list = new();
         _list.Add(APIController.instance.userDetails.Id);
-
         BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, TransData, false, lobbyName, APIController.instance.userDetails.Id,
             false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
             {
@@ -1046,19 +1025,21 @@ public class GameController : MonoBehaviour
 
             Debug.Log("WinningBetAPICalled========> 2");
             WinningBetAPICall(amount, takeCash);
-           /* APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, amount, betAmount, takeCash, val, (success) =>
-            {
-                if (success)
-                {
-                    Debug.Log("Winning Bet Initiated");
-                    APIController.GetUpdatedBalance();
-                }
-                else
-                {
-                    Debug.Log("Winning Bet Failed");
+            #region
+            /* APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, amount, betAmount, takeCash, val, (success) =>
+             {
+                 if (success)
+                 {
+                     Debug.Log("Winning Bet Initiated");
+                     APIController.GetUpdatedBalance();
+                 }
+                 else
+                 {
+                     Debug.Log("Winning Bet Failed");
 
-                }
-            }, APIController.instance.userDetails.Id, false, takeCash == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);*/
+                 }
+             }, APIController.instance.userDetails.Id, false, takeCash == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);*/
+            #endregion
         }
         else
         {
@@ -1131,6 +1112,7 @@ public class GameController : MonoBehaviour
         if (isNormal)
         {
             await UniTask.Delay(3500); // wait for 2.5 seconds
+            Debug.Log("TimeDelay =========> 1");
             TimeDelay();
         }
 
@@ -1206,6 +1188,7 @@ public class GameController : MonoBehaviour
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
         TakeCashbutton.interactable = true;
+
     }
     void TimeDelay_WinCash()
     {
@@ -1268,6 +1251,7 @@ public class GameController : MonoBehaviour
     async void BalloonDelay()
     {
         await UniTask.Delay(100);
+        Debug.Log(" Balloon Pos ============> 1 ");
         balloonParts.SetActive(true);
         balloonBlue_Start.SetActive(true);
     }
@@ -1342,6 +1326,7 @@ public class GameController : MonoBehaviour
         isBonus_3 = false;
         take = false;
         ScrollViewer();
+        Debug.Log(" Balloon Pos ============> 3 ");
     }
     async void ScrollViewer()
     {
@@ -1505,7 +1490,8 @@ public class GameController : MonoBehaviour
          
      });*/
                     #endregion
-                    RNG_APICall();
+                    if (!APIController.instance.userDetails.isBlockApiConnection)
+                        RNG_APICall();
                     minus_Anim.SetActive(false); plus_Anim.SetActive(false);
                     API_IntitalizeBetAmount();
                 }
@@ -1523,14 +1509,21 @@ public class GameController : MonoBehaviour
             return;
         }
     }
-
     public void RNG_APICall()   //RNG_APICALL CALLING METHOD
     {
-        APIController.instance.GetRNG_API(betAmount, operatorName, APIController.instance.userDetails.gameId, (_IsWin, _MaxWin) =>
+        APIController.instance.GetRNG_API(betAmount, operatorName, APIController.instance.userDetails.gameId, (_IsWin, _MaxWin, _gameCount) =>
         {
             makeLose = _IsWin;
             holdHeight = _MaxWin;
-            Debug.Log($"RNG Calculation:\n==============\n{_IsWin}  {_MaxWin}\n==============\n");
+            if (_IsWin)
+            {
+                Debug.Log($"RNG Calculation:\n==============\n RNG Value Check : randomGamePlay \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
+            }
+            else
+            {
+                Debug.Log($"RNG Calculation:\n==============\n RNG Value Check : LoseThisGame \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
+            }
+
         }, gameName, 0);
     }
     public void OnClickUp()
@@ -2115,7 +2108,6 @@ public class GameController : MonoBehaviour
         // Smoothly interpolate towards the target position over time
         background.localPosition = Vector3.Lerp(background.localPosition, targetBackgroundPosition, Time.deltaTime * smoothness);
     }
-
     void ApplyBalloonParallaxEffect(float holdButtonYPos)    // Moving Balloon Image
     {
         // Calculate the target position for the background

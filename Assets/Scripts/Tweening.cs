@@ -15,7 +15,6 @@ public class Tweening : MonoBehaviour
     {
         StopEfx();
     }
-
     public void FireEfx()
     {
         fire.transform.DOScaleY(endValue, speed)

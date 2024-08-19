@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class SettingsPanelHandler : UIHandler
 {
+    #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     public RectTransform PanelTransform;
     public float XOffPos = 700;
     public Button ExitBtn;
@@ -22,6 +23,7 @@ public class SettingsPanelHandler : UIHandler
     public Button howtoPlayBtn;
     public Toggle MusicToggle;
     public Toggle soundTogWelcome, musicTogWelcome;
+    #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
         _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });
@@ -81,7 +83,6 @@ public class SettingsPanelHandler : UIHandler
 
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
     }
-
     public override void ShowMe()
     {
         base.ShowMe();

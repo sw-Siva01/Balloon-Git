@@ -16,14 +16,12 @@ public class InternetChecking : MonoBehaviour
     {
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
     }
-
     #region Network Status
 
     /// <summary>
     /// Checks the network status and performs actions based on the status.
     /// </summary>
     /// <param name="data">String representing the network status ("true" or "false").</param>
-
     public void GetNetworkStatus(string data)
     {
         connectionPanel.SetActive(data.ToLower() == "false");
@@ -49,7 +47,6 @@ public class InternetChecking : MonoBehaviour
             }
         }
     }
-
 
     #endregion
 }

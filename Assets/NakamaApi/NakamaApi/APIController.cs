@@ -186,7 +186,7 @@ public class APIController : MonoBehaviour
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 1000;
+            userDetails.balance = 5000;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
@@ -814,49 +814,7 @@ public class APIController : MonoBehaviour
     }
 
 
-    public int InitBetMultiplayerAPI(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, Action<bool> action, string playerId, bool isBot, Action<string> betIdAction, string gameName, string operatorName, string gameID, string matchToken)
-    {
-        Debug.Log($"<color=orange>Initializing bet for player {playerId}, index is {index}</color>");
-        List<KeyValuePojo> param = new List<KeyValuePojo>();
-        BetRequest bet = new BetRequest();
-        bet.MatchToken = matchToken;
-        bet.PlayerId = playerId;
-        bet.betId = index;
-        betRequest.Add(bet);
-
-        GameWinningStatus _winningStatus;
-
-        InitBetReq initBetReq = new InitBetReq();
-        initBetReq.Amount = amount;
-        initBetReq.GameID = gameID == "" ? userDetails.gameId : gameID;
-        initBetReq.GameName = gameName == "" ? userDetails.game_Id.Split("_")[1] : gameName;
-        initBetReq.Index = index;
-        initBetReq.IsAbleToCancel = isAbleToCancel;
-        initBetReq.IsBot = isBot;
-        initBetReq.Metadata = metadata;
-        initBetReq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
-        initBetReq.MatchToken = matchToken;
-        initBetReq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_InitBet", initBetReq.ToJson(), (res) =>
-        {
-            Debug.Log(res);
-            JObject jsonObject = JObject.Parse(res);
-            if ((int)(jsonObject["code"]) == 200)
-            {
-                _winningStatus = JsonUtility.FromJson<GameWinningStatus>(jsonObject["data"].ToString());
-                bet.BetId = _winningStatus.Id;
-                betIdAction.Invoke(_winningStatus.Id);
-
-            }
-            else
-            {
-                action.Invoke(false);
-
-            }
-
-        });
-        return index;
-    }
+   
 
 
     public void WinningsBet(int index, double amount, double spend_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
@@ -890,8 +848,7 @@ public class APIController : MonoBehaviour
     }
 
 
-
-    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool,float> canWin, string gamename, float playersetmultiplier)
+    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool,float,int> canWin, string gamename, float playersetmultiplier)
     {
         WinLoseRNG winlogic = new()
         {
@@ -907,7 +864,9 @@ public class APIController : MonoBehaviour
             JObject jsonObject = JObject.Parse(res);
             userDetails.isWin = ((int.Parse(jsonObject["data"].ToString()) > 0));
             userDetails.maxWin = float.Parse(jsonObject["message"].ToString());
-            canWin.Invoke(userDetails.isWin, userDetails.maxWin);
+            int gameCount = int.Parse(jsonObject["output"].ToString());
+            Debug.Log("Rng Calculation inside GetRNG" + gameCount);
+            canWin.Invoke(userDetails.isWin, userDetails.maxWin, gameCount);
         });
     }   
 }

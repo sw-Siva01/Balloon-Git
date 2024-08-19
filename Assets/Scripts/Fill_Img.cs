@@ -43,14 +43,16 @@ public class Fill_Img : MonoBehaviour
     public bool bonus;
     public bool bonusTimer;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Animator")]
+
     public Animator fill_Close;
     public Animator bonusShine;
 
     public static Fill_Img instance;
 
     public MasterAudioController audioController;
-
-
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
 
@@ -114,13 +116,13 @@ public class Fill_Img : MonoBehaviour
     async void TimeDelay()
     {
         await UniTask.Delay(1000);
+        Debug.Log("Bonus_Delay =========> 3");
         fill_Close.SetBool("isOpen", false);
         fill_Close.SetBool("isClose", false);
         fill_Img.gameObject.SetActive(true);
         scrollView.BonusMultiplier_txt.gameObject.SetActive(false);
         this.gameObject.SetActive(false);
     }
-
     public void Bonus_Script()
     {
         bonus = true;
@@ -170,7 +172,6 @@ public class Fill_Img : MonoBehaviour
             
         }
     }
-
     async void Setting_OFF()
     {
         await UniTask.Delay(200);
@@ -186,7 +187,6 @@ public class Fill_Img : MonoBehaviour
         //controller.winBonus = UnityEngine.Random.Range(8, 15);    // use this always
         controller.winBonus = 3;                                    // for testing only
     }
-
     void UpdateTimerUI()
     {
         float fillAmount = timeRemaining / totalTime;

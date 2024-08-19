@@ -253,7 +253,6 @@ public class InfiniteScroll : MonoBehaviour
             }
         }
     }
-
     async void ObjDelayed()
     {
         await UniTask.Delay(1000);
