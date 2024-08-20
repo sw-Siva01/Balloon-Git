@@ -440,6 +440,8 @@ public class GameController : MonoBehaviour
                 Balloon_Burt();
             }*/
 
+           
+
             BetAmountUpdates();
 
             if (isScroll)
@@ -504,7 +506,7 @@ public class GameController : MonoBehaviour
             StartOfTheGame();
 
             #region
-            if (multiplier > 0)
+            if (startGame)
             {
                 if ((isPressed && isFire && !lost) || (!isPressed && !isFire && !lost) || (!isPressed && isFire && !lost))
                 {
