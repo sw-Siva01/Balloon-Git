@@ -186,7 +186,7 @@ public class APIController : MonoBehaviour
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 5000;
+            userDetails.balance = 1000;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
@@ -204,6 +204,8 @@ public class APIController : MonoBehaviour
             isWin = userDetails.isWin;
             maxWinAmount = userDetails.maxWin;
         }
+        if (userDetails.game_Id == "lootrix_default")
+            userDetails.balance = 1000;
         IsBotInGame = userDetails.hasBot;
         userDetails.bootAmount = defaultBootAmount;
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
@@ -667,6 +669,8 @@ public class APIController : MonoBehaviour
     }
     public async void CheckInternetandProcess(Action<bool> action)
     {
+        /*action.Invoke(true);
+        return;*/
         bool isrun = false;
         if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
         {

@@ -40,16 +40,17 @@ public class KeyBoardHandler : MonoBehaviour
             int j = i;
             NumKeys[i].onClick.AddListener(() => OnNumberPressed(j));
         }
-        submitButton.onClick.AddListener(() => OnSubmitInput());
+        submitButton.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnSubmitInput(); });
+        /*submitButton.onClick.AddListener(() => OnSubmitInput());*/
         backSpaceButton.onClick.AddListener(() => OnBackSpacePressed());
         decimalButton.onClick.AddListener(() => OnDecimalValuePressed());
         cancelButton.onClick.AddListener(() => OnCancelInput());
         // CoverBtn.onClick.AddListener(()=> OnCancelInput());
     }
-
     public void OnNumberPressed(int number)
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
+        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
         BetInputController.Instance.BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         BetInputController.Instance.BetAmtInput.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         int decimalIndex = currentInput.IndexOf('.');
@@ -61,6 +62,7 @@ public class KeyBoardHandler : MonoBehaviour
         }
         BetInputController.Instance.BetAmtInput.text = string.Empty;
         currentInput += number;
+
         //UpdateDisplay(!(number == 0 && currentInput.Length >= 2 && currentInput[currentInput.Length - 2] == '.'));
 
         //if (currentInput.Length >= 7)
@@ -72,7 +74,7 @@ public class KeyBoardHandler : MonoBehaviour
     void OnDecimalValuePressed()
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-
+        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
         currentInput += ".";
         UpdateDisplay(false);
 
@@ -90,11 +92,13 @@ public class KeyBoardHandler : MonoBehaviour
             else
             {
                 displayText.text = currentInput;
+                controller.betAmount = float.Parse(currentInput);
             }
         }
         else
         {
             displayText.text = currentInput;
+            MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
         }
         // float amt=float.Parse(displayText.text)
         currentInput = displayText.text;
@@ -110,13 +114,12 @@ public class KeyBoardHandler : MonoBehaviour
         {
             BetInputTextRect.localPosition = new Vector2(-((BetInputTextRect.sizeDelta.x / 2) + 20), 0);
         }
-
     }
 
     void OnBackSpacePressed()
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-
+        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
         if (currentInput.Length > 0)
         {
             currentInput = displayText.text.Substring(0, displayText.text.Length - 1);
@@ -195,7 +198,7 @@ public class KeyBoardHandler : MonoBehaviour
     {
         Debug.Log("OnCancelInput");
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-
+        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {

@@ -253,7 +253,9 @@ public class InfiniteScroll : MonoBehaviour
             }
         }
     }
-    async void ObjDelayed()
+
+    #region
+    /*async void ObjDelayed()
     {
         await UniTask.Delay(1000);
         if (controller.multiplier < BonusValue)
@@ -264,14 +266,13 @@ public class InfiniteScroll : MonoBehaviour
 
             controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
             controller.takeCash = float.Parse(controller.tString);
-            /*controller.takeCash = controller.betAmount * controller.multiplier;*/
+            *//*controller.takeCash = controller.betAmount * controller.multiplier;*//*
 
-            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
 
-
-            /*yield return null;*/
         }
-    }
+    }*/
+    #endregion
     async void DelayFuction()
     {
         if (Count == 1)
@@ -305,7 +306,7 @@ public class InfiniteScroll : MonoBehaviour
         // Add a delay of 1 second
         sequence.AppendInterval(1f);
 
-        Invoke("Object_Delay", 1.6f);
+        Invoke(nameof(Object_Delay), 1.6f);
 
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(1.0008f, 1.0008f, 1.0008f), 0.5f).SetEase(Ease.InOutSine))
                 .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 3.81f, 0f), 1f).SetEase(Ease.InOutSine))
@@ -330,44 +331,6 @@ public class InfiniteScroll : MonoBehaviour
     }
     IEnumerator Add_BonusValue()
     {
-        #region
-        //while (mValue < BonusValue)
-        //{
-        #region
-        /*//controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
-
-        controller.multiplier += BonusValue * Time.deltaTime;
-
-        mValue = (float)((int)(controller.multiplier * 100)) / 100f;
-
-        controller.takeCash = controller.betAmount * BonusValue;
-
-        //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
-        //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
-
-        BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
-
-
-        yield return null;*/
-        #endregion
-
-        /*//controller.multiplier = float.Parse(BonusValue.ToString("0.00"));
-
-        controller.multiplier += BonusValue * Time.deltaTime;
-
-        mValue = (float)((int)(controller.multiplier * 100)) / 100f;
-
-        controller.takeCash = controller.betAmount * BonusValue;
-
-        //controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
-        //BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
-
-        BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
-
-
-        yield return null;*/
-        //}
-        #endregion
         BonusValue = float.Parse(BonusValue.ToString("0.00"));
         controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
 
@@ -387,7 +350,7 @@ public class InfiniteScroll : MonoBehaviour
             controller.takeCash = float.Parse(controller.tString);
             /*controller.takeCash = controller.betAmount * controller.multiplier;*/
 
-            BonusMultiplier_txt.text = controller.multiplier.ToString("F2");
+            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
 
 
             yield return null;

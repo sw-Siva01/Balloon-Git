@@ -14,6 +14,7 @@ public class HOWTOPLAY : MonoBehaviour
 {
     [TextArea(10, 100)]
     [SerializeField] String prerequisites;
+    public Button cancelButton;
     public TMP_Text textElement;
     public float padding = 10f;
     float bulletIndent = 1.6f;
@@ -29,8 +30,13 @@ public class HOWTOPLAY : MonoBehaviour
     void Start()
     {
         FormetText();
+        cancelButton.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnCancelInput(); });
     }
 
+    void OnCancelInput()
+    {
+        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+    }
     void FormetText()
     {
         /*textElement.text = Format(prerequisites);*/
