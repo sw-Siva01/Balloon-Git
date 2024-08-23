@@ -669,7 +669,7 @@ public class APIController : MonoBehaviour
     }
     public async void CheckInternetandProcess(Action<bool> action)
     {
-        /*action.Invoke(true);
+       /* action.Invoke(true);
         return;*/
         bool isrun = false;
         if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
@@ -852,7 +852,7 @@ public class APIController : MonoBehaviour
     }
 
 
-    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool,float,int> canWin, string gamename, float playersetmultiplier)
+    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
     {
         WinLoseRNG winlogic = new()
         {
@@ -865,14 +865,14 @@ public class APIController : MonoBehaviour
 
         Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
         {
+            Debug.Log("Rng Calculation inside GetRNG 2");
             JObject jsonObject = JObject.Parse(res);
-            userDetails.isWin = ((int.Parse(jsonObject["data"].ToString()) > 0));
-            userDetails.maxWin = float.Parse(jsonObject["message"].ToString());
-            int gameCount = int.Parse(jsonObject["output"].ToString());
-            Debug.Log("Rng Calculation inside GetRNG" + gameCount);
+            userDetails.isWin = ((int.Parse(jsonObject["iswin"].ToString()) > 0));
+            userDetails.maxWin = float.Parse(jsonObject["Multiplier"].ToString());
+            int gameCount = int.Parse(jsonObject["GameCount"].ToString());
             canWin.Invoke(userDetails.isWin, userDetails.maxWin, gameCount);
         });
-    }   
+    }
 }
 
 [System.Serializable]

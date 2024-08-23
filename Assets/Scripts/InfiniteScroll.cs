@@ -338,17 +338,15 @@ public class InfiniteScroll : MonoBehaviour
         {
             controller.mString = controller.multiplier.ToString("0.00");
 
-            /*if (controller.multiplier < BonusValue)
-                controller.multiplier += bfloat * Time.deltaTime;*/
             if (controller.multiplier < BonusValue)
             {
                 controller.multiplier += bfloat * Time.deltaTime;
                 controller.multiplier = Mathf.Min(controller.multiplier, BonusValue);
             }
 
-            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+            //controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
+            controller.tString = (controller.betAmount * controller.multiplier).ToString();
             controller.takeCash = float.Parse(controller.tString);
-            /*controller.takeCash = controller.betAmount * controller.multiplier;*/
 
             BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
 

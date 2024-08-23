@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Image plusButtomImg;
     [SerializeField] Image minusButtonImg;
 
-   // [SerializeField] EventTrigger holdButtonEvent;
+    // [SerializeField] EventTrigger holdButtonEvent;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -231,6 +231,7 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject InsufficientBalance;
     [SerializeField] GameObject InsufBal_Rumblebets;
     [SerializeField] GameObject cancelButton;
+    [SerializeField] GameObject rumbleBet_cancelButton;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -323,12 +324,12 @@ public class GameController : MonoBehaviour
         APIController.instance.OnUserBalanceUpdate += InitAmountDetails;
         APIController.instance.OnUserDeposit += InitUserDeposit;
     }
-    private void Update()
+    private void LateUpdate()
     {
-        /*if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             test.gameObject.SetActive(true);
-        }*/
+        }
         Vector3 rayOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 rayDirection = Vector3.forward; // Change this to whatever direction you need
         RaycastHit hit;
@@ -340,9 +341,11 @@ public class GameController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     ISActive = true;
-                    Button_ONEnter();
-                    OnClickDown();
-
+                    if (!take && !lost && !isScroll)
+                    {
+                        Button_ONEnter();
+                        OnClickDown();
+                    }
                 }
                 if (Input.GetMouseButton(0))
                 {
@@ -355,18 +358,22 @@ public class GameController : MonoBehaviour
         if (isPressed && !ISActive)
         {
             //isPressed = false;
-            OnClickUp();
-            Button_OFFEnter();
+            if (!take && !lost && !isScroll)
+            {
+                OnClickUp();
+                Button_OFFEnter();
+            }    
         }
-
 
         if (TotalAmount <= 0.09f)
         {
             cancelButton.SetActive(false);
+            rumbleBet_cancelButton.SetActive(false);
         }
         else if (TotalAmount >= 0.10f)
         {
             cancelButton.SetActive(true);
+            rumbleBet_cancelButton.SetActive(true);
         }
     }
 
@@ -483,6 +490,7 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
+
             /*if (TotalAmount <= 0.09f)
             {
                 cancelButton.SetActive(false);
@@ -573,6 +581,7 @@ public class GameController : MonoBehaviour
             {
                 if ((isPressed && isFire && !lost) || (!isPressed && !isFire && !lost) || (!isPressed && isFire && !lost))
                 {
+                    Debug.Log(" PresseEvent ====> 1");
                     timeHold = multiplier.ToString("F2");
 
                     // Check if the button has been held for a random time between min and max hold time
@@ -649,9 +658,9 @@ public class GameController : MonoBehaviour
     {
         if (isFire)
         {
-            holdButton.gameObject.SetActive(true);
+            /*holdButton.gameObject.SetActive(true);
             //holdButtonEvent.enabled = true;
-            holdButton_dup.gameObject.SetActive(false);
+            holdButton_dup.gameObject.SetActive(false);*/
             if (isFire && multiplier >= 1.01f && !isPressed)
             {
                 if (touch)
@@ -665,9 +674,9 @@ public class GameController : MonoBehaviour
         {
             audioController.StopAudio(AudioEnum.startSlider);
             audioController.StopAudio(AudioEnum.Movement);
-           // holdButtonEvent.enabled = false;
-            holdButton.gameObject.SetActive(false);
-            holdButton_dup.gameObject.SetActive(true);
+            // holdButtonEvent.enabled = false;
+            /*holdButton.gameObject.SetActive(false);
+            holdButton_dup.gameObject.SetActive(true);*/
             isPressed = false;
             heat_Anim.SetBool("isEnd", false);
             if (!lost && !take && multiplier >= 1.01f && !isScroll)
@@ -677,10 +686,10 @@ public class GameController : MonoBehaviour
                 balloonShake.SetActive(false);
             }
         }
-        if (!holdButton_dup.gameObject.activeSelf)
+        /*if (!holdButton_dup.gameObject.activeSelf)
         {
             isSet = false;
-        }
+        }*/
 
         if (!isFire && multiplier >= 1.01f)
         {
@@ -1025,6 +1034,7 @@ public class GameController : MonoBehaviour
                     Debug.Log("Bet Initiated");
                     Debug.Log("Demo Mode");
                     //startGame = true;
+                    startGame = true;
                     pauseGame = false;
                     isCreateMatchSucceess = true;
 
@@ -1038,10 +1048,10 @@ public class GameController : MonoBehaviour
             }, APIController.instance.userDetails.Id, false);
         }
         #endregion
-
     }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
     {
+        Debug.Log("CreateMatchAPICalled========>");
         TransactionMetaData TransData = new();
         TransData.Amount = betAmount;
         TransData.Info = "InitBet";
@@ -1053,6 +1063,7 @@ public class GameController : MonoBehaviour
             {
                 if (success)
                 {
+                    startGame = true;
                     betID = newbetID.ToString();
                     MatchRes = res;
                     APIController.GetUpdatedBalance();
@@ -1489,16 +1500,17 @@ public class GameController : MonoBehaviour
     bool InternetCheck;
     public void OnClickDown()
     {
+
         #region
         APIController.instance.CheckInternetandProcess((success) =>
         {
             if (success)
             {
                 InternetCheck = true;
-
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
                 {
                     buttonPress = true;
+                    Debug.Log(" Bigger_Amount");
                 }
 
                 if (!numPad && !buttonPress && !lost)
@@ -1508,8 +1520,8 @@ public class GameController : MonoBehaviour
                     {
                         HandGestures.SetActive(false);
                     }
-                    Debug.Log(" Total Amount : " + TotalAmount);
                     isPressed = true;
+
                     audioController.StopAudio(AudioEnum.reverseSlider);
                     audioController.PlayAudio(AudioEnum.startSlider, true);
                     audioController.PlayAudio(AudioEnum.Movement, true);
@@ -1518,7 +1530,7 @@ public class GameController : MonoBehaviour
                     ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                     touch = true;
                     heat_Anim.SetBool("isEnd", true);
-                    heat_Anim_Img.SetActive(true);
+                    //heat_Anim_Img.SetActive(true);
                     takecashOut.SetBool("isTake", true);
 
                     for (int i = 0; i < button_Anim.Length; i++)
@@ -1556,9 +1568,14 @@ public class GameController : MonoBehaviour
 
                 if (!startGame && !gameLost)
                 {
-                    if (!APIController.instance.userDetails.isBlockApiConnection && (TotalAmount >= 0.10f))
+                    if (HandGestures.activeSelf)
+                    {
+                        HandGestures.SetActive(false);
+                    }
+
+                    if (!APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
                         RNG_APICall();
-                    else if (APIController.instance.userDetails.isBlockApiConnection && (TotalAmount >= 0.10f))
+                    else if (APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
                     {
                         gameCounts++;
 
@@ -1573,7 +1590,6 @@ public class GameController : MonoBehaviour
                                 gameCounts = 0;
                             }
                         }
-
                         Debug.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
                     }
                     minus_Anim.SetActive(false); plus_Anim.SetActive(false);
@@ -1623,7 +1639,7 @@ public class GameController : MonoBehaviour
                 Debug.Log(" Button ====> PressUP");
                 isPressed = false;
                 heat_Anim.SetBool("isEnd", false);
-                heat_Anim_Img.SetActive(false);
+                /*heat_Anim_Img.SetActive(false);*/
 
                 if (isFire && multiplier >= 1.01f)
                 {
@@ -1658,7 +1674,6 @@ public class GameController : MonoBehaviour
     public void Button_ONEnter()
     {
         isFire = true;
-        Debug.Log(" Button ====> OnEnter");
     }
     public void Button_OFFEnter()
     {
@@ -1669,7 +1684,6 @@ public class GameController : MonoBehaviour
             audioController.PlayAudio(AudioEnum.reverseSlider, true);
             touch = false;
         }
-        Debug.Log(" Button ====> OnExit");
     }
     public void Welcom_Button()
     {
@@ -2079,7 +2093,6 @@ public class GameController : MonoBehaviour
     }
     void BetAmountUpdates()
     {
-        Debug.Log("Entered the BetAmountUpdates");
         if (!takeBetAmount)
         {
             numPadButton.gameObject.SetActive(false);
