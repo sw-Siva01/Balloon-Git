@@ -60,6 +60,6 @@ MonoBehaviour:
     mute: 0
   - audioClip: {fileID: 8300000, guid: da3ff7ef01c96f2419fa4f8ddf4911b5, type: 3}
     audioName: 0
-    volume: 0.2
+    volume: 0.25
     pitch: 0.32
     mute: 0

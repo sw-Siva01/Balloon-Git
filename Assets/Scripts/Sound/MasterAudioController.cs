@@ -77,7 +77,7 @@ public class MasterAudioController : MonoBehaviour
         source.pitch = collection.pitch;
         source.Play();
 
-        if (audioToPlay == AudioEnum.UiButtonClick) source.volume = 0.5f;
+        if (audioToPlay == AudioEnum.buttonClick) source.volume = 0.25f;
         //if (audioToPlay == AudioEnum.Button) source.volume = 0.2f;
 
         AudioByType audioType = audiosActive.Find(x => x.audioEnum == audioToPlay);

@@ -35,7 +35,7 @@ public class HOWTOPLAY : MonoBehaviour
 
     void OnCancelInput()
     {
-        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
     }
     void FormetText()
     {

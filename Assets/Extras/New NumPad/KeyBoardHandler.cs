@@ -50,7 +50,7 @@ public class KeyBoardHandler : MonoBehaviour
     public void OnNumberPressed(int number)
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         BetInputController.Instance.BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         BetInputController.Instance.BetAmtInput.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         int decimalIndex = currentInput.IndexOf('.');
@@ -74,7 +74,7 @@ public class KeyBoardHandler : MonoBehaviour
     void OnDecimalValuePressed()
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput += ".";
         UpdateDisplay(false);
 
@@ -98,7 +98,7 @@ public class KeyBoardHandler : MonoBehaviour
         else
         {
             displayText.text = currentInput;
-            MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+            MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         }
         // float amt=float.Parse(displayText.text)
         currentInput = displayText.text;
@@ -119,7 +119,7 @@ public class KeyBoardHandler : MonoBehaviour
     void OnBackSpacePressed()
     {
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         if (currentInput.Length > 0)
         {
             currentInput = displayText.text.Substring(0, displayText.text.Length - 1);
@@ -198,7 +198,7 @@ public class KeyBoardHandler : MonoBehaviour
     {
         Debug.Log("OnCancelInput");
         /*AudioController.Instance.AudioPlay(true, AudioController.Instance.UIbtnsSFX);*/
-        MasterAudioController.instance.PlayAudio(AudioEnum.UiButtonClick);
+        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {

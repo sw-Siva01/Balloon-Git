@@ -26,7 +26,6 @@ public class Fill_Img : MonoBehaviour
     [SerializeField] float timeRemaining;    // Time remaining for the timer
     public float Timer;
 
-
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Bonus_Numb_Count")]
@@ -34,6 +33,15 @@ public class Fill_Img : MonoBehaviour
     [SerializeField] RectTransform numbCount_1;
     [SerializeField] RectTransform numbCount_2;
     [SerializeField] RectTransform numbCount_3;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Text Objects")]
+    [SerializeField] GameObject bonus_Txt;
+    [SerializeField] RectTransform bonusTxt_Img;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
 
     public RectTransform bonusObj;
     public GameObject fill_Meter;
@@ -128,12 +136,39 @@ public class Fill_Img : MonoBehaviour
         bonus = true;
         if (bonus)
         {
+            Bonus_Txt();
             TimerUpdate();
         }
     }
+    public async void Bonus_Txt()
+    {
+        await UniTask.Delay(1000);
+        bonus_Txt.SetActive(true);
+    }
+    public void BonusTxt_Animation()
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(bonusTxt_Img.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InSine));
+
+        // Add a delay of 1 second
+        sequence.AppendInterval(0.01f);
+
+        // Add the second scale animation to the sequence
+        sequence.Append(bonusTxt_Img.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.OutBounce));
+
+        sequence.AppendInterval(1f);
+
+        sequence.Append(bonusTxt_Img.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InSine));
+
+        // Add a delay of 1 second
+        sequence.AppendInterval(0.01f);
+
+        // Add the second scale animation to the sequence
+        sequence.Append(bonusTxt_Img.DOScale(new Vector3(0f, 0f, 0f), 0.5f).SetEase(Ease.InSine));
+    }
     public async void TimerUpdate()
     {
-        await UniTask.Delay(4500);
+        await UniTask.Delay(2500);
         fill_Meter.SetActive(true);
         bonusTimer = true;
 
@@ -146,14 +181,14 @@ public class Fill_Img : MonoBehaviour
 
         if (Timer >= 10)
         {
+            await UniTask.Delay(900);
             scrollViewAnim.SetActive(true);
             audioController.PlayAudio(AudioEnum.bonus);
-            bonusShine.SetBool("isShine", true);
-
-            await UniTask.Delay(900);
-            
             controller.isBonus = true;
-            
+            bonusShine.SetBool("isShine", true);
+            bonus_Txt.SetActive(false);
+            BonusTxt_Animation();
+
             if (controller.isBonus && controller.isScroll)
             {
                 scrollView.BonusMultiplier_txt.gameObject.SetActive(true);
@@ -176,6 +211,7 @@ public class Fill_Img : MonoBehaviour
     {
         await UniTask.Delay(200);
         fill_Close.SetBool("isOpen", false);
+        bonus_Txt.SetActive(false);
 
         await UniTask.Delay(200);
         fill_Close.SetBool("isClose", false);
@@ -246,7 +282,7 @@ public class Fill_Img : MonoBehaviour
             timerBar.fillAmount = 0;
             Timer = 0;
         }
-
+        bonus_Txt.SetActive(false);
         scrollViewAnim.SetActive(false);
         bonus = false;
         bonusTimer = false;

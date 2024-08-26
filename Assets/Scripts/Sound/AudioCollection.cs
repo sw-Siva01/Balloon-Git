@@ -23,7 +23,7 @@ public struct AudioDate
 
 public enum AudioEnum
 {
-    UiButtonClick,
+    buttonClick,
     winGame,
     Movement,
     ballonPopOut,
