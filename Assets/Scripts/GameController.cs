@@ -41,6 +41,10 @@ public class GameController : MonoBehaviour
     [SerializeField] Button holdButton_dup;
     [SerializeField] Button empty_holdButton;
 
+    [SerializeField] GameObject heatButton_Anim;
+    [SerializeField] Image heatButton_BG;
+    [SerializeField] TextMeshProUGUI heatTxt;
+
     //UI bet Buttons
     [Header("UI bet Buttons")]
     [SerializeField] Button button_1;
@@ -210,7 +214,6 @@ public class GameController : MonoBehaviour
 
     // Heat button
     [SerializeField] Animator heat_Anim;
-    [SerializeField] GameObject heat_Anim_Img;
 
     // slider
     [SerializeField] Animator slider_Anim;
@@ -362,7 +365,7 @@ public class GameController : MonoBehaviour
             {
                 OnClickUp();
                 Button_OFFEnter();
-            }    
+            }
         }
 
         if (TotalAmount <= 0.09f)
@@ -509,6 +512,10 @@ public class GameController : MonoBehaviour
                 heat_Anim.SetBool("isStart", false);
                 TakeCashbutton.enabled = false;
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
+
+                heatButton_Anim.SetActive(false);
+                heatButton_BG.color = new Color32(140, 140, 140, 255);
+                heatTxt.color = new Color32(63, 15, 15, 200);
             }
             if (lost)
             {
@@ -536,6 +543,9 @@ public class GameController : MonoBehaviour
                 TakeCashtxt.color = new Color32(140, 140, 140, 255);
                 takeCashWintxt.color = new Color32(140, 140, 140, 255);
                 takeCurrencytxt.color = new Color32(140, 140, 140, 255);
+                heatButton_Anim.SetActive(false);
+                heatButton_BG.color = new Color32(140, 140, 140, 255);
+                heatTxt.color = new Color32(63, 15, 15, 200);
                 TakeCashAnimImg.SetActive(false);
             }
             if (take)
@@ -555,6 +565,9 @@ public class GameController : MonoBehaviour
                 balloonShake.SetActive(false);
                 TakeCashAnimImg.SetActive(false);
                 balloonParts.SetActive(true);
+                heatButton_Anim.SetActive(false);
+                heatButton_BG.color = new Color32(140, 140, 140, 255);
+                heatTxt.color = new Color32(63, 15, 15, 200);
             }
             FireButton();
             StartOfTheGame();
@@ -828,8 +841,6 @@ public class GameController : MonoBehaviour
         //TotalAmount += WinAmount;
         /*totalAmountTxt.text = TotalAmount.ToString("0.00");*/
         holdButton.enabled = false;
-        audioController.PlayAudio(AudioEnum.winGame);
-        winPanel.SetActive(true);
         empty_holdButton.gameObject.SetActive(true);
 
         TakeCashImg.color = new Color32(140, 140, 140, 255);
@@ -837,19 +848,13 @@ public class GameController : MonoBehaviour
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
         TakeCashAnimImg.SetActive(false);
-
         // sliderOBjs
         slider_bg.SetActive(false);
         fillArea.SetActive(false);
         slider_txt.SetActive(false);
         sliderAutoCashNoTxt.gameObject.SetActive(false);
         slider_Anim.SetBool("isOFF", true);
-
-        /*ballon_Anim.enabled = true;*/
         ballon_Anim.SetBool("isTake", true);
-
-        TakingCash();
-        Winning_Animations();
 
         if (!winCount && betAmount <= 5f)
         {
@@ -862,8 +867,18 @@ public class GameController : MonoBehaviour
 
         Debug.Log(" WinCashCheck : " + winCash);
         Demo_Bonus();
+
+        if ((winCash_Demo < 10))
+        {
+            audioController.PlayAudio(AudioEnum.winGame);
+            winPanel.SetActive(true);
+            TakingCash();
+            Winning_Animations();
+        }
+
         Call_Functions();
         DelayFuction();
+
     }
 
     public bool isCreateMatchSucceess = false;
@@ -1048,6 +1063,9 @@ public class GameController : MonoBehaviour
         _metaData.Info = "Game Won";
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
+            Debug.Log("BetIndex value 0: " + BetIndex);
+            Debug.Log("BetIndex value 1: " + betID);
+
             if (success)
             {
                 Debug.Log("WinningBetAPICalled========> 4");
@@ -1080,11 +1098,18 @@ public class GameController : MonoBehaviour
     {
         if (isBonus_1)
         {
+            if (winCash_Demo == 10)
+            {
+                await UniTask.Delay(1000);
+                Bonus_Conditions();
+            }
+
             await UniTask.Delay(3000);
             winPanel.SetActive(false);
 
             await UniTask.Delay(100);
-            Bonus_Conditions();
+            if (winCash_Demo < 10)
+                Bonus_Conditions();
         }
         if (isBonus_2)
         {
@@ -1137,6 +1162,9 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
+        heatButton_Anim.SetActive(true);
+        heatButton_BG.color = new Color32(255, 255, 255, 255);
+        heatTxt.color = new Color32(63, 15, 15, 255);
         TakeCashAnimImg.SetActive(false);
 
         minus_Anim.SetActive(true); plus_Anim.SetActive(true);
@@ -1201,6 +1229,9 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
+        heatButton_Anim.SetActive(true);
+        heatButton_BG.color = new Color32(255, 255, 255, 255);
+        heatTxt.color = new Color32(63, 15, 15, 255);
         TakeCashAnimImg.SetActive(false);
 
         minus_Anim.SetActive(true); plus_Anim.SetActive(true);

@@ -156,7 +156,7 @@ public class Fill_Img : MonoBehaviour
         // Add the second scale animation to the sequence
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.OutBounce));
 
-        sequence.AppendInterval(1f);
+        sequence.AppendInterval(2f);
 
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InSine));
 
@@ -178,16 +178,19 @@ public class Fill_Img : MonoBehaviour
             fill_Close.SetBool("isClose", true);
             Setting_OFF();
         }
-
+       
         if (Timer >= 10)
         {
             await UniTask.Delay(900);
-            scrollViewAnim.SetActive(true);
             audioController.PlayAudio(AudioEnum.bonus);
-            controller.isBonus = true;
             bonusShine.SetBool("isShine", true);
             bonus_Txt.SetActive(false);
             BonusTxt_Animation();
+
+            await UniTask.Delay(900);
+            scrollViewAnim.SetActive(true);
+            controller.isBonus = true;
+            
 
             if (controller.isBonus && controller.isScroll)
             {
@@ -199,12 +202,10 @@ public class Fill_Img : MonoBehaviour
                 Timer = 0;
             }
 
-            await UniTask.Delay(1300);
+            await UniTask.Delay(3000);
             scrollViewAnim.SetActive(false);
             //controller.winBonus = UnityEngine.Random.Range(10, 20);   // use this always
             controller.winBonus = 3;                                    // for testing only
-
-            
         }
     }
     async void Setting_OFF()

@@ -248,7 +248,7 @@ public class InfiniteScroll : MonoBehaviour
 
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
-
+                //controller.BonusRewardTxt.text = $"+{textComponent.text.ToString()}";
                 DelayFuction();
             }
         }
@@ -294,7 +294,7 @@ public class InfiniteScroll : MonoBehaviour
             TimeDelay();
         }
     }
-    void BounsAmount_Moves()
+    async void BounsAmount_Moves()
     {
         Count--;
         // DoTween Text in Sequence
@@ -311,6 +311,9 @@ public class InfiniteScroll : MonoBehaviour
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(1.0008f, 1.0008f, 1.0008f), 0.5f).SetEase(Ease.InOutSine))
                 .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 3.81f, 0f), 1f).SetEase(Ease.InOutSine))
                 .Join(controller.BonusRewardTxt.DOColor(new Color32(95, 255, 0, 255), 0.01f).SetEase(Ease.Linear));
+
+        await UniTask.Delay(200);
+        controller.BonusRewardTxt.text = $"+{controller.BonusRewardTxt.text.ToString()}";
     }
     void TimeDelay()
     {
@@ -349,7 +352,6 @@ public class InfiniteScroll : MonoBehaviour
             controller.takeCash = float.Parse(controller.tString);
 
             BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
-
 
             yield return null;
         }
