@@ -603,7 +603,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000020981, y: 7.1}
+  m_AnchoredPosition: {x: -0.000020981, y: 2.7}
   m_SizeDelta: {x: 214, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &81691436
@@ -10730,7 +10730,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 277310105}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.29471734
+  m_Size: 0.2947173
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -22484,6 +22484,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1664552838}
   m_CullTransparentMesh: 1
+--- !u!1 &1666359590
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1666359591}
+  - component: {fileID: 1666359593}
+  - component: {fileID: 1666359592}
+  - component: {fileID: 1666359594}
+  m_Layer: 5
+  m_Name: Amount_Glow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1666359591
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666359590}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1818700375}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1.44, y: 0.05}
+  m_SizeDelta: {x: 424.38, y: 127.64}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1666359592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666359590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 0db4774c2233abf4aab27dba1fc3f240, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1666359593
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666359590}
+  m_CullTransparentMesh: 1
+--- !u!95 &1666359594
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666359590}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9c60440c39ba97044877def8eaff4720, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1671383604
 GameObject:
   m_ObjectHideFlags: 0
@@ -24941,6 +25038,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1666359591}
   - {fileID: 81691435}
   - {fileID: 1771205434}
   - {fileID: 1292662797}
@@ -26669,7 +26767,7 @@ MonoBehaviour:
   winTxt: {fileID: 242871634}
   totalTime: 10
   winCash: 0
-  winBonus: 3
+  winBonus: 5
   winCash_Demo: 0
   bonusObj: {fileID: 1639272519}
   ScrollViewObj: {fileID: 786631769721119296}
@@ -26679,16 +26777,15 @@ MonoBehaviour:
   BonusRewardTxt: {fileID: 4390869933089883887}
   ballon_Anim: {fileID: 2018898340}
   heat_Anim: {fileID: 922411923}
-  heat_Anim_Img: {fileID: 0}
   slider_Anim: {fileID: 1451225092}
   bonusBallon: {fileID: 1639272521}
   takecashOut: {fileID: 980784020}
-  minus_Anim: {fileID: 2078431001}
-  plus_Anim: {fileID: 1866421984}
   InsufficientBalance: {fileID: 1498631047}
   InsufBal_Rumblebets: {fileID: 289344139}
   cancelButton: {fileID: 1246606482}
   rumbleBet_cancelButton: {fileID: 1405522143}
+  HowToPlay: {fileID: 6208332247014328514}
+  AmountGlow: {fileID: 1666359590}
   HandGestures: {fileID: 381450674}
   audioController: {fileID: 1165968576047954302}
   betID: 

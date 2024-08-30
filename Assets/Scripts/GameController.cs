@@ -60,6 +60,7 @@ public class GameController : MonoBehaviour
     [SerializeField] TextMeshProUGUI takeCashWintxt;
     [SerializeField] TextMeshProUGUI takeCurrencytxt;
     [SerializeField] Image TakeCashImg;
+    //public Image AmountGlow;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -223,10 +224,6 @@ public class GameController : MonoBehaviour
     // takeCash button
     [SerializeField] Animator takecashOut;
 
-    // plus/minus UI button
-    public GameObject minus_Anim;
-    public GameObject plus_Anim;
-
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // ScrollView GameObjects
@@ -235,6 +232,10 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject InsufBal_Rumblebets;
     [SerializeField] GameObject cancelButton;
     [SerializeField] GameObject rumbleBet_cancelButton;
+    [SerializeField] GameObject HowToPlay;
+
+
+    public GameObject AmountGlow;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -274,7 +275,6 @@ public class GameController : MonoBehaviour
 
     public GameObject test;
 
-
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     private void Awake()
@@ -303,7 +303,7 @@ public class GameController : MonoBehaviour
         initialBackgroundPosition = background.localPosition;
 
         //winBonus = UnityEngine.Random.Range(3, 6);    // use this always
-        winBonus = 3;                                   // only for testing
+        winBonus = 5;                                   // only for testing
         /*ButtonSelect_Anim();*/
         // Sliders
         /*timeout = false;*/
@@ -331,7 +331,8 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            test.gameObject.SetActive(true);
+            //test.gameObject.SetActive(true);
+            //AmountColor_Glow();
         }
         Vector3 rayOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 rayDirection = Vector3.forward; // Change this to whatever direction you need
@@ -344,7 +345,7 @@ public class GameController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     ISActive = true;
-                    if (!take && !lost && !isScroll)
+                    if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf)
                     {
                         Button_ONEnter();
                         OnClickDown();
@@ -361,7 +362,7 @@ public class GameController : MonoBehaviour
         if (isPressed && !ISActive)
         {
             //isPressed = false;
-            if (!take && !lost && !isScroll)
+            if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf)
             {
                 OnClickUp();
                 Button_OFFEnter();
@@ -378,6 +379,13 @@ public class GameController : MonoBehaviour
             cancelButton.SetActive(true);
             rumbleBet_cancelButton.SetActive(true);
         }
+    }
+    public async void AmountColor_Glow()
+    {
+        AmountGlow.SetActive(false);
+        AmountGlow.SetActive(true);
+        await UniTask.Delay(350);
+        AmountGlow.SetActive(false);
     }
 
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
@@ -737,9 +745,6 @@ public class GameController : MonoBehaviour
             /*totalAmountTxt.text = TotalAmount.ToString("0.00" + " <size=35>USD</size>");*/
 
             /*API_IntitalizeBetAmount();*/
-
-            //minHoldTime = UnityEngine.Random.Range(-2, UnityEngine.Random.Range(5, 15));   // use this always
-            //minHoldTime = UnityEngine.Random.Range(0, 15);            // only for testing
         }
 
         if (startGame)
@@ -1167,7 +1172,7 @@ public class GameController : MonoBehaviour
         heatTxt.color = new Color32(63, 15, 15, 255);
         TakeCashAnimImg.SetActive(false);
 
-        minus_Anim.SetActive(true); plus_Anim.SetActive(true);
+        //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
 
         winPanel.SetActive(false);
         takeBetAmount = true;
@@ -1192,14 +1197,11 @@ public class GameController : MonoBehaviour
         TxtObjs.gameObject.SetActive(false);
         BalloonDelay();
 
-
-
         heat_Anim.SetBool("isStart", true);
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
         TakeCashbutton.interactable = true;
-
     }
     void TimeDelay_WinCash()
     {
@@ -1234,7 +1236,7 @@ public class GameController : MonoBehaviour
         heatTxt.color = new Color32(63, 15, 15, 255);
         TakeCashAnimImg.SetActive(false);
 
-        minus_Anim.SetActive(true); plus_Anim.SetActive(true);
+        //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
 
         slider_Anim.SetBool("isOFF", false);
         slider_Anim.SetBool("isON", false);
@@ -1519,7 +1521,7 @@ public class GameController : MonoBehaviour
                         }
                         Debug.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
                     }
-                    minus_Anim.SetActive(false); plus_Anim.SetActive(false);
+                    //minus_Anim.SetActive(false); plus_Anim.SetActive(false);
                     API_IntitalizeBetAmount();
                 }
             }
@@ -1618,7 +1620,7 @@ public class GameController : MonoBehaviour
         heat_Anim.SetBool("isStart", true);
         StartCoroutine(Backgourn_Ballon_Fly());
 
-        minus_Anim.SetActive(true); plus_Anim.SetActive(true);
+        //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
 
         button_1.gameObject.SetActive(true);
         ButtonSelect_Anim();
@@ -1644,11 +1646,12 @@ public class GameController : MonoBehaviour
         {
             betAmount = 1f;
             betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(true);
             button_2.gameObject.SetActive(false);
             button_5.gameObject.SetActive(false);
             button_10.gameObject.SetActive(false);
-
+            AmountColor_Glow();
             for (int i = 0; i < button_Anim.Length; i++)
             {
                 if (button_Anim[i].activeSelf)
@@ -1684,11 +1687,12 @@ public class GameController : MonoBehaviour
         {
             betAmount = 2f;
             betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(true);
             button_5.gameObject.SetActive(false);
             button_10.gameObject.SetActive(false);
-
+            AmountColor_Glow();
             for (int i = 0; i < button_Anim.Length; i++)
             {
                 if (button_Anim[i].activeSelf)
@@ -1699,7 +1703,7 @@ public class GameController : MonoBehaviour
                 button_Anim[2].SetActive(true);
                 button_Anim[3].SetActive(true);
             }
-
+            AmountColor_Glow();
             plusButton.enabled = true;
             minusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
@@ -1722,6 +1726,7 @@ public class GameController : MonoBehaviour
         {
             betAmount = 5f;
             betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
             button_5.gameObject.SetActive(true);
@@ -1737,7 +1742,7 @@ public class GameController : MonoBehaviour
                 button_Anim[1].SetActive(true);
                 button_Anim[3].SetActive(true);
             }
-
+            AmountColor_Glow();
             plusButton.enabled = true;
             minusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
@@ -1761,6 +1766,7 @@ public class GameController : MonoBehaviour
         {
             betAmount = 10f;
             betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
             button_5.gameObject.SetActive(false);
@@ -1776,7 +1782,7 @@ public class GameController : MonoBehaviour
                 button_Anim[1].SetActive(true);
                 button_Anim[2].SetActive(true);
             }
-
+            AmountColor_Glow();
             plusButton.enabled = true;
             minusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
@@ -1803,16 +1809,18 @@ public class GameController : MonoBehaviour
             {
                 betAmount += 1f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
             }
-
+            AmountColor_Glow();
             if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
@@ -1836,16 +1844,18 @@ public class GameController : MonoBehaviour
             {
                 betAmount += 2f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
             }
-
+            AmountColor_Glow();
             if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
@@ -1869,16 +1879,18 @@ public class GameController : MonoBehaviour
             {
                 betAmount += 5f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
             }
-
+            AmountColor_Glow();
             if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
@@ -1902,16 +1914,18 @@ public class GameController : MonoBehaviour
             {
                 betAmount += 10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
             }
-
+            AmountColor_Glow();
             if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
@@ -1937,7 +1951,7 @@ public class GameController : MonoBehaviour
         if (keyBoard.cancelButton.gameObject.activeSelf)
             keyBoard.OnCancelInput();
 
-        minus_Anim.SetActive(false); plus_Anim.SetActive(false);
+        //minus_Anim.SetActive(false); plus_Anim.SetActive(false);
 
         if (!startGame && !take && !isScroll)
         {
@@ -1945,14 +1959,17 @@ public class GameController : MonoBehaviour
             {
                 betAmount += 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 minusButton.enabled = true;
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
+                AmountColor_Glow();
             }
             if (betAmount > 99.90f)
             {
                 betAmount = 100f;
                 plusButton.enabled = false;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
 
@@ -1977,7 +1994,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        minus_Anim.SetActive(false); plus_Anim.SetActive(false);
+        //minus_Anim.SetActive(false); plus_Anim.SetActive(false);
 
         if (!startGame && !take && !isScroll)
         {
@@ -1985,12 +2002,15 @@ public class GameController : MonoBehaviour
             {
                 betAmount -= 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
+                AmountColor_Glow();
             }
             if (betAmount <= 0.10f)
             {
                 betAmount = 0.10f;
                 betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 120);
             }
@@ -2003,6 +2023,14 @@ public class GameController : MonoBehaviour
                 timer = true;
             }
         }
+    }
+    public void BetAmountTxt_Scaling()
+    {
+        // DoTween Sequence
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(betAmountTxt.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 0.2f).SetEase(Ease.InSine));
+        sequence.AppendInterval(0.02f);
+        sequence.Append(betAmountTxt.transform.DOScale(new Vector3(1f, 1f, 1f), 0.2f).SetEase(Ease.InOutSine));
     }
     void Button_Switch_ON()
     {
@@ -2040,7 +2068,7 @@ public class GameController : MonoBehaviour
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 120);
-            minus_Anim.SetActive(false);
+            //minus_Anim.SetActive(false);
         }
 
         if (betAmount < 100f)
@@ -2052,17 +2080,8 @@ public class GameController : MonoBehaviour
         {
             plusButton.enabled = false;
             plusButtomImg.color = new Color32(255, 255, 255, 120);
-            plus_Anim.SetActive(false);
+            //plus_Anim.SetActive(false);
         }
-
-        /*if (TotalAmount <= 0.09f)
-        {
-            cancelButton.SetActive(false);
-        }
-        else if (TotalAmount >= 0.10f)
-        {
-            cancelButton.SetActive(true);
-        }*/
     }
     void ButtonSelect_Anim()
     {

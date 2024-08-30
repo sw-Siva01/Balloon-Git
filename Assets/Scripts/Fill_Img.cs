@@ -178,7 +178,7 @@ public class Fill_Img : MonoBehaviour
             fill_Close.SetBool("isClose", true);
             Setting_OFF();
         }
-       
+
         if (Timer >= 10)
         {
             await UniTask.Delay(900);
@@ -190,7 +190,7 @@ public class Fill_Img : MonoBehaviour
             await UniTask.Delay(900);
             scrollViewAnim.SetActive(true);
             controller.isBonus = true;
-            
+
 
             if (controller.isBonus && controller.isScroll)
             {
@@ -204,8 +204,17 @@ public class Fill_Img : MonoBehaviour
 
             await UniTask.Delay(3000);
             scrollViewAnim.SetActive(false);
-            //controller.winBonus = UnityEngine.Random.Range(10, 20);   // use this always
-            controller.winBonus = 3;                                    // for testing only
+
+            if (!APIController.instance.userDetails.isBlockApiConnection)
+            {
+                controller.winBonus = UnityEngine.Random.Range(10, 20);      // use this always
+              //controller.winBonus = 3;                                    // for testing only
+            }
+            else if (APIController.instance.userDetails.isBlockApiConnection)
+            {
+                controller.winBonus = UnityEngine.Random.Range(5, 8);
+            }
+
         }
     }
     async void Setting_OFF()
@@ -221,8 +230,16 @@ public class Fill_Img : MonoBehaviour
 
         await UniTask.Delay(1000);
         bonusObj.gameObject.SetActive(false);
-        //controller.winBonus = UnityEngine.Random.Range(8, 15);    // use this always
-        controller.winBonus = 3;                                    // for testing only
+
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+        {
+            controller.winBonus = UnityEngine.Random.Range(8, 15);       // use this always
+          //controller.winBonus = 3;                                    // for testing only
+        }
+        else if (APIController.instance.userDetails.isBlockApiConnection)
+        {
+            controller.winBonus = UnityEngine.Random.Range(8, 15);
+        }
     }
     void UpdateTimerUI()
     {
