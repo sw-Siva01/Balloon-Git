@@ -51,6 +51,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Button button_2;
     [SerializeField] Button button_5;
     [SerializeField] Button button_10;
+    [SerializeField] List<Button> setected_Buttons = new List<Button>();
     public Button plusButton, minusButton;
 
     [SerializeField] GameObject[] button_Anim;
@@ -234,7 +235,6 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject rumbleBet_cancelButton;
     [SerializeField] GameObject HowToPlay;
 
-
     public GameObject AmountGlow;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -316,6 +316,11 @@ public class GameController : MonoBehaviour
         /* UpdateTimerUI(); // Initialize the UI*/
         StartCoroutine(FillImg());
 
+        setected_Buttons[0].onClick.AddListener(delegate { SelectBetButton(1); });
+        setected_Buttons[1].onClick.AddListener(delegate { SelectBetButton(2); });
+        setected_Buttons[2].onClick.AddListener(delegate { SelectBetButton(5); });
+        setected_Buttons[3].onClick.AddListener(delegate { SelectBetButton(10); });
+
         // sliderOBjs
         slider_bg.SetActive(false);
         fillArea.SetActive(false);
@@ -357,7 +362,6 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-
 
         if (isPressed && !ISActive)
         {
@@ -486,6 +490,10 @@ public class GameController : MonoBehaviour
                     Debug.Log("Internet Checking : " + InternetCheck);
                     audioController.StopAudio(AudioEnum.startSlider);
                     slider.value = countTime;
+                    if (countTime < 0)
+                    {
+                        countTime = 0;
+                    }
                 }
                 else if (!pauseGame && multiplier >= 1.01f && isPressed)
                 {
@@ -819,9 +827,55 @@ public class GameController : MonoBehaviour
 
             if (success)
             {
-
                 InternetCheck = true;
 
+
+                take = true;
+                startGame = false;
+                /*WinAmount = takeCash;*/
+                // Change the text color
+                multiplier = float.Parse(multiplier.ToString("0.00"));
+                multiplierTxt.text = multiplier.ToString();
+                //TotalAmount += WinAmount;
+                /*totalAmountTxt.text = TotalAmount.ToString("0.00");*/
+                holdButton.enabled = false;
+                empty_holdButton.gameObject.SetActive(true);
+
+                TakeCashImg.color = new Color32(140, 140, 140, 255);
+                TakeCashtxt.color = new Color32(140, 140, 140, 255);
+                takeCashWintxt.color = new Color32(140, 140, 140, 255);
+                takeCurrencytxt.color = new Color32(140, 140, 140, 255);
+                TakeCashAnimImg.SetActive(false);
+                // sliderOBjs
+                slider_bg.SetActive(false);
+                fillArea.SetActive(false);
+                slider_txt.SetActive(false);
+                sliderAutoCashNoTxt.gameObject.SetActive(false);
+                slider_Anim.SetBool("isOFF", true);
+                ballon_Anim.SetBool("isTake", true);
+
+                if (!winCount && betAmount <= 5f)
+                {
+                    winCash++;
+                }
+                else
+                {
+                    isNormal = true;
+                }
+
+                Debug.Log(" WinCashCheck : " + winCash);
+                Demo_Bonus();
+
+                if ((winCash_Demo < 10))
+                {
+                    audioController.PlayAudio(AudioEnum.winGame);
+                    winPanel.SetActive(true);
+                    TakingCash();
+                    Winning_Animations();
+                }
+
+                Call_Functions();
+                DelayFuction();
             }
             else
             {
@@ -836,54 +890,6 @@ public class GameController : MonoBehaviour
             return;
         }
         #endregion
-
-        take = true;
-        startGame = false;
-        /*WinAmount = takeCash;*/
-        // Change the text color
-        multiplier = float.Parse(multiplier.ToString("0.00"));
-        multiplierTxt.text = multiplier.ToString();
-        //TotalAmount += WinAmount;
-        /*totalAmountTxt.text = TotalAmount.ToString("0.00");*/
-        holdButton.enabled = false;
-        empty_holdButton.gameObject.SetActive(true);
-
-        TakeCashImg.color = new Color32(140, 140, 140, 255);
-        TakeCashtxt.color = new Color32(140, 140, 140, 255);
-        takeCashWintxt.color = new Color32(140, 140, 140, 255);
-        takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-        TakeCashAnimImg.SetActive(false);
-        // sliderOBjs
-        slider_bg.SetActive(false);
-        fillArea.SetActive(false);
-        slider_txt.SetActive(false);
-        sliderAutoCashNoTxt.gameObject.SetActive(false);
-        slider_Anim.SetBool("isOFF", true);
-        ballon_Anim.SetBool("isTake", true);
-
-        if (!winCount && betAmount <= 5f)
-        {
-            winCash++;
-        }
-        else
-        {
-            isNormal = true;
-        }
-
-        Debug.Log(" WinCashCheck : " + winCash);
-        Demo_Bonus();
-
-        if ((winCash_Demo < 10))
-        {
-            audioController.PlayAudio(AudioEnum.winGame);
-            winPanel.SetActive(true);
-            TakingCash();
-            Winning_Animations();
-        }
-
-        Call_Functions();
-        DelayFuction();
-
     }
 
     public bool isCreateMatchSucceess = false;
@@ -1645,7 +1651,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 1f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(true);
             button_2.gameObject.SetActive(false);
@@ -1686,7 +1692,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 2f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(true);
@@ -1725,7 +1731,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 5f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1765,7 +1771,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 10f;
-            betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1796,7 +1802,54 @@ public class GameController : MonoBehaviour
     }
 
     // Select bet buttons
-    public void SelectBetButton_1()
+    public void SelectBetButton(int s)
+    {
+        audioController.PlayAudio(AudioEnum.buttonClick);
+
+        if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
+        {
+            BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
+
+            Debug.Log("SelectBetButton_1 ==> 2");
+
+            BetInputController.Instance.BetPanel.gameObject.SetActive(false);
+            KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
+            betAmount = s;
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.gameObject.SetActive(true);
+            return;
+        }
+
+        if (!startGame && !take && !isScroll)
+        {
+            if (betAmount < 100f)
+            {
+                betAmount += s;
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                BetAmountTxt_Scaling();
+                plusButton.enabled = true;
+                minusButton.enabled = true;
+                plusButtomImg.color = new Color32(255, 255, 255, 255);
+                minusButtonImg.color = new Color32(255, 255, 255, 255);
+            }
+            AmountColor_Glow();
+            if (betAmount >= 100)
+            {
+                betAmount = 100f;
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                BetAmountTxt_Scaling();
+                plusButton.enabled = false;
+                plusButtomImg.color = new Color32(255, 255, 255, 120);
+            }
+
+            winCash = 0;
+            winCash_Demo = 0;
+            bonusTimer = 0;
+            timer = true;
+        }
+    }
+    #region
+    /*public void SelectBetButton_1()
     {
         audioController.PlayAudio(AudioEnum.buttonClick);
 
@@ -1935,7 +1988,8 @@ public class GameController : MonoBehaviour
             bonusTimer = 0;
             timer = true;
         }
-    }
+    }*/
+    #endregion
     public void PlusButton()
     {
         audioController.PlayAudio(AudioEnum.buttonClick);
@@ -1958,7 +2012,7 @@ public class GameController : MonoBehaviour
             if (betAmount < 100f)
             {
                 betAmount += 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 minusButton.enabled = true;
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
@@ -1968,7 +2022,7 @@ public class GameController : MonoBehaviour
             {
                 betAmount = 100f;
                 plusButton.enabled = false;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
             }
@@ -2001,7 +2055,7 @@ public class GameController : MonoBehaviour
             if (betAmount > 0.10f)
             {
                 betAmount -= 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
@@ -2009,7 +2063,7 @@ public class GameController : MonoBehaviour
             if (betAmount <= 0.10f)
             {
                 betAmount = 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 120);
