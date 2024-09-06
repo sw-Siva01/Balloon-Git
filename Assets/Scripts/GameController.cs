@@ -39,9 +39,10 @@ public class GameController : MonoBehaviour
     [SerializeField] Button TakeCashbutton;
     [SerializeField] Button holdButton;
     [SerializeField] Button holdButton_dup;
-    [SerializeField] Button empty_holdButton;
 
-    [SerializeField] GameObject heatButton_Anim;
+    /*[SerializeField] Button empty_holdButton;
+    [SerializeField] GameObject heatButton_Anim;*/
+
     [SerializeField] Image heatButton_BG;
     [SerializeField] TextMeshProUGUI heatTxt;
 
@@ -56,7 +57,8 @@ public class GameController : MonoBehaviour
 
     [SerializeField] GameObject[] button_Anim;
     [SerializeField] GameObject numPadButton;
-    [SerializeField] GameObject TakeCashAnimImg;
+    [SerializeField] GameObject takeCashObj;
+    /*[SerializeField] GameObject TakeCashAnimImg;*/
     [SerializeField] TextMeshProUGUI TakeCashtxt;
     [SerializeField] TextMeshProUGUI takeCashWintxt;
     [SerializeField] TextMeshProUGUI takeCurrencytxt;
@@ -223,8 +225,8 @@ public class GameController : MonoBehaviour
 
     [SerializeField] Animator bonusBallon;
 
-    // takeCash button
-    [SerializeField] Animator takecashOut;
+    /*// takeCash button
+    [SerializeField] Animator takecashOut;*/
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -240,13 +242,16 @@ public class GameController : MonoBehaviour
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
-    // ScrollView GameObjects
     [Header("HandGestures")]
     [SerializeField] GameObject HandGestures;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
-    // ScrollView GameObjects
+    [Header("MaxBet_Reached")]
+    [SerializeField] GameObject maxBet_Reached;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
     [Header("Audio Script")]
     public MasterAudioController audioController;
 
@@ -294,7 +299,8 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-        TakeCashAnimImg.SetActive(false);
+        /*TakeCashAnimImg.SetActive(false);*/
+        takeCashObj.SetActive(false);
         // Set the initial multiplier text
         multiplierTxt.text = multiplier.ToString("0.00"/* + "<size=40>X</size>"*/);
         StartCoroutine(HolidngButtons());
@@ -532,7 +538,7 @@ public class GameController : MonoBehaviour
                 TakeCashbutton.enabled = false;
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
 
-                heatButton_Anim.SetActive(false);
+                /*   heatButton_Anim.SetActive(false);*/
                 heatButton_BG.color = new Color32(140, 140, 140, 255);
                 heatTxt.color = new Color32(63, 15, 15, 200);
             }
@@ -544,7 +550,7 @@ public class GameController : MonoBehaviour
                 audioController.StopAudio(AudioEnum.reverseSlider);
                 audioController.StopAudio(AudioEnum.startSlider);
                 audioController.StopAudio(AudioEnum.Movement);
-                empty_holdButton.gameObject.SetActive(true);
+                /*    empty_holdButton.gameObject.SetActive(true);*/
                 ballon_Anim.SetBool("isOut", true);
                 // sliderOBjs
                 slider_Anim.SetBool("isOFF", true);
@@ -567,10 +573,11 @@ public class GameController : MonoBehaviour
                 TakeCashtxt.color = new Color32(140, 140, 140, 255);
                 takeCashWintxt.color = new Color32(140, 140, 140, 255);
                 takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-                heatButton_Anim.SetActive(false);
+                /*    heatButton_Anim.SetActive(false);*/
                 heatButton_BG.color = new Color32(140, 140, 140, 255);
                 heatTxt.color = new Color32(63, 15, 15, 200);
-                TakeCashAnimImg.SetActive(false);
+                /*TakeCashAnimImg.SetActive(false);*/
+                takeCashObj.SetActive(false);
             }
             if (take)
             {
@@ -589,9 +596,10 @@ public class GameController : MonoBehaviour
 
                 balloonShake_blue.SetActive(false);
                 balloonShake.SetActive(false);
-                TakeCashAnimImg.SetActive(false);
+                /*TakeCashAnimImg.SetActive(false);*/
+                takeCashObj.SetActive(false);
                 balloonParts.SetActive(true);
-                heatButton_Anim.SetActive(false);
+                /*   heatButton_Anim.SetActive(false);*/
                 heatButton_BG.color = new Color32(140, 140, 140, 255);
                 heatTxt.color = new Color32(63, 15, 15, 200);
             }
@@ -657,8 +665,8 @@ public class GameController : MonoBehaviour
         fillArea.SetActive(false);
         slider_txt.SetActive(false);
         sliderAutoCashNoTxt.gameObject.SetActive(false);
-
-        takecashOut.SetBool("isTake", false);
+        takeCashObj.SetActive(false);
+        /*takecashOut.SetBool("isTake", false);*/
     }
     IEnumerator Backgourn_Ballon_Fly()
     {
@@ -800,9 +808,10 @@ public class GameController : MonoBehaviour
             TakeCashtxt.color = new Color32(255, 255, 255, 255);
             takeCashWintxt.color = new Color32(255, 255, 255, 255);
             takeCurrencytxt.color = new Color32(255, 255, 255, 255);
-            TakeCashAnimImg.SetActive(true);
+            /*TakeCashAnimImg.SetActive(true);*/
+            takeCashObj.SetActive(true);
 
-            takecashOut.SetBool("isTake", true);
+            /*takecashOut.SetBool("isTake", true);*/
         }
         else
         {
@@ -811,9 +820,10 @@ public class GameController : MonoBehaviour
             TakeCashtxt.color = new Color32(140, 140, 140, 255);
             takeCashWintxt.color = new Color32(140, 140, 140, 255);
             takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-            TakeCashAnimImg.SetActive(false);
+            /*TakeCashAnimImg.SetActive(false);*/
+            takeCashObj.SetActive(false);
 
-            takecashOut.SetBool("isTake", false);
+            /*takecashOut.SetBool("isTake", false);*/
         }
     }
     void IncrementMultiplier()
@@ -851,13 +861,14 @@ public class GameController : MonoBehaviour
                 //TotalAmount += WinAmount;
                 /*totalAmountTxt.text = TotalAmount.ToString("0.00");*/
                 holdButton.enabled = false;
-                empty_holdButton.gameObject.SetActive(true);
+                /*   empty_holdButton.gameObject.SetActive(true);*/
 
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
                 TakeCashtxt.color = new Color32(140, 140, 140, 255);
                 takeCashWintxt.color = new Color32(140, 140, 140, 255);
                 takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-                TakeCashAnimImg.SetActive(false);
+                /*TakeCashAnimImg.SetActive(false);*/
+                takeCashObj.SetActive(false);
                 // sliderOBjs
                 slider_bg.SetActive(false);
                 fillArea.SetActive(false);
@@ -1166,7 +1177,7 @@ public class GameController : MonoBehaviour
         /*winAmountTxt.text = WinAmount.ToString("0.00");*/
         holdButton.enabled = true;
         //holdButtonEvent.enabled = true;
-        empty_holdButton.gameObject.SetActive(false);
+        /*   empty_holdButton.gameObject.SetActive(false);*/
         gameLost = false;
         take = false;
         lost = false;
@@ -1185,10 +1196,11 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-        heatButton_Anim.SetActive(true);
+        /*   heatButton_Anim.SetActive(true);*/
         heatButton_BG.color = new Color32(255, 255, 255, 255);
         heatTxt.color = new Color32(63, 15, 15, 255);
-        TakeCashAnimImg.SetActive(false);
+        /*TakeCashAnimImg.SetActive(false);*/
+        takeCashObj.SetActive(false);
 
         //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
 
@@ -1232,7 +1244,7 @@ public class GameController : MonoBehaviour
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         holdButton.enabled = true;
-        empty_holdButton.gameObject.SetActive(false);
+        /*   empty_holdButton.gameObject.SetActive(false);*/
         gameLost = false;
         take = false;
         lost = false;
@@ -1251,10 +1263,11 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-        heatButton_Anim.SetActive(true);
+        /*   heatButton_Anim.SetActive(true);*/
         heatButton_BG.color = new Color32(255, 255, 255, 255);
         heatTxt.color = new Color32(63, 15, 15, 255);
-        TakeCashAnimImg.SetActive(false);
+        /*TakeCashAnimImg.SetActive(false);*/
+        takeCashObj.SetActive(false);
 
         //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
 
@@ -1484,7 +1497,7 @@ public class GameController : MonoBehaviour
                     heat_Anim.SetBool("isPlay2", true);
                     fireObj.SetActive(true);
                     //heat_Anim_Img.SetActive(true);
-                    takecashOut.SetBool("isTake", true);
+                    /*takecashOut.SetBool("isTake", true);*/
 
                     for (int i = 0; i < button_Anim.Length; i++)
                     {
@@ -1853,15 +1866,15 @@ public class GameController : MonoBehaviour
                 minusButton.enabled = true;
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
+                AmountColor_Glow();
             }
-            AmountColor_Glow();
             if (betAmount >= 100)
             {
                 betAmount = 100f;
                 betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
-                BetAmountTxt_Scaling();
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
+                MaxBet_Object();
             }
 
             winCash = 0;
@@ -1870,148 +1883,13 @@ public class GameController : MonoBehaviour
             timer = true;
         }
     }
-    #region
-    /*public void SelectBetButton_1()
+    public async void MaxBet_Object()
     {
-        audioController.PlayAudio(AudioEnum.buttonClick);
+        maxBet_Reached.SetActive(true);
+        await UniTask.Delay(3000);
+        maxBet_Reached.SetActive(false);
 
-        if (keyBoard.cancelButton.gameObject.activeSelf)
-            keyBoard.OnCancelInput();
-
-        if (!startGame && !take && !isScroll)
-        {
-            if (betAmount < 100f)
-            {
-                betAmount += 1f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = true;
-                minusButton.enabled = true;
-                plusButtomImg.color = new Color32(255, 255, 255, 255);
-                minusButtonImg.color = new Color32(255, 255, 255, 255);
-            }
-            AmountColor_Glow();
-            if (betAmount >= 100)
-            {
-                betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = false;
-                plusButtomImg.color = new Color32(255, 255, 255, 120);
-            }
-
-            winCash = 0;
-            winCash_Demo = 0;
-            bonusTimer = 0;
-            timer = true;
-        }
     }
-    public void SelectBetButton_2()
-    {
-        audioController.PlayAudio(AudioEnum.buttonClick);
-
-        if (keyBoard.cancelButton.gameObject.activeSelf)
-            keyBoard.OnCancelInput();
-
-        if (!startGame && !take && !isScroll)
-        {
-            if (betAmount < 100f)
-            {
-                betAmount += 2f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = true;
-                minusButton.enabled = true;
-                plusButtomImg.color = new Color32(255, 255, 255, 255);
-                minusButtonImg.color = new Color32(255, 255, 255, 255);
-            }
-            AmountColor_Glow();
-            if (betAmount >= 100)
-            {
-                betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = false;
-                plusButtomImg.color = new Color32(255, 255, 255, 120);
-            }
-
-            winCash = 0;
-            winCash_Demo = 0;
-            bonusTimer = 0;
-            timer = true;
-        }
-    }
-    public void SelectBetButton_5()
-    {
-        audioController.PlayAudio(AudioEnum.buttonClick);
-
-        if (keyBoard.cancelButton.gameObject.activeSelf)
-            keyBoard.OnCancelInput();
-
-        if (!startGame && !take && !isScroll)
-        {
-            if (betAmount < 100f)
-            {
-                betAmount += 5f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = true;
-                minusButton.enabled = true;
-                plusButtomImg.color = new Color32(255, 255, 255, 255);
-                minusButtonImg.color = new Color32(255, 255, 255, 255);
-            }
-            AmountColor_Glow();
-            if (betAmount >= 100)
-            {
-                betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = false;
-                plusButtomImg.color = new Color32(255, 255, 255, 120);
-            }
-
-            winCash = 0;
-            winCash_Demo = 0;
-            bonusTimer = 0;
-            timer = true;
-        }
-    }
-    public void SelectBetButton_10()
-    {
-        audioController.PlayAudio(AudioEnum.buttonClick);
-
-        if (keyBoard.cancelButton.gameObject.activeSelf)
-            keyBoard.OnCancelInput();
-
-        if (!startGame && !take && !isScroll)
-        {
-            if (betAmount < 100f)
-            {
-                betAmount += 10f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = true;
-                minusButton.enabled = true;
-                plusButtomImg.color = new Color32(255, 255, 255, 255);
-                minusButtonImg.color = new Color32(255, 255, 255, 255);
-            }
-            AmountColor_Glow();
-            if (betAmount >= 100)
-            {
-                betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00" + " USD");
-                BetAmountTxt_Scaling();
-                plusButton.enabled = false;
-                plusButtomImg.color = new Color32(255, 255, 255, 120);
-            }
-
-            winCash = 0;
-            winCash_Demo = 0;
-            bonusTimer = 0;
-            timer = true;
-        }
-    }*/
-    #endregion
     public void PlusButton()
     {
         audioController.PlayAudio(AudioEnum.buttonClick);
@@ -2047,6 +1925,7 @@ public class GameController : MonoBehaviour
                 betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
+                MaxBet_Object();
             }
 
             if (betAmount != 100f)
