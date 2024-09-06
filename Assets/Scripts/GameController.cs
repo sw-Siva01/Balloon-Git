@@ -216,6 +216,7 @@ public class GameController : MonoBehaviour
 
     // Heat button
     [SerializeField] Animator heat_Anim;
+    [SerializeField] GameObject fireObj;
 
     // slider
     [SerializeField] Animator slider_Anim;
@@ -525,7 +526,9 @@ public class GameController : MonoBehaviour
                 ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                 ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
-                heat_Anim.SetBool("isStart", false);
+                /*heat_Anim.SetBool("isStart", false);*/
+                heat_Anim.SetBool("isPlay1", false);
+                fireObj.SetActive(false);
                 TakeCashbutton.enabled = false;
                 TakeCashImg.color = new Color32(140, 140, 140, 255);
 
@@ -539,6 +542,8 @@ public class GameController : MonoBehaviour
                 startGame = false;
                 preHeating_txt.gameObject.SetActive(false);
                 audioController.StopAudio(AudioEnum.reverseSlider);
+                audioController.StopAudio(AudioEnum.startSlider);
+                audioController.StopAudio(AudioEnum.Movement);
                 empty_holdButton.gameObject.SetActive(true);
                 ballon_Anim.SetBool("isOut", true);
                 // sliderOBjs
@@ -547,8 +552,11 @@ public class GameController : MonoBehaviour
                 fillArea.SetActive(false);
                 slider_txt.SetActive(false);
                 sliderAutoCashNoTxt.gameObject.SetActive(false);
-                heat_Anim.SetBool("isStart", false);
-                heat_Anim.SetBool("isEnd", false);
+                /*heat_Anim.SetBool("isStart", false);
+                heat_Anim.SetBool("isEnd", false);*/
+                heat_Anim.SetBool("isPlay1", false);
+                heat_Anim.SetBool("isPlay2", false);
+                fireObj.SetActive(false);
 
                 ballonOut.gameObject.SetActive(true);
                 balloonParts.SetActive(false);
@@ -575,7 +583,9 @@ public class GameController : MonoBehaviour
                 fillArea.SetActive(false);
                 slider_txt.SetActive(false);
                 sliderAutoCashNoTxt.gameObject.SetActive(false);
-                heat_Anim.SetBool("isStart", false);
+                /*heat_Anim.SetBool("isStart", false);*/
+                heat_Anim.SetBool("isPlay1", false);
+                fireObj.SetActive(false);
 
                 balloonShake_blue.SetActive(false);
                 balloonShake.SetActive(false);
@@ -677,7 +687,9 @@ public class GameController : MonoBehaviour
             audioController.StopAudio(AudioEnum.startSlider);
             audioController.StopAudio(AudioEnum.Movement);
             isPressed = false;
-            heat_Anim.SetBool("isEnd", false);
+            /*heat_Anim.SetBool("isEnd", false);*/
+            heat_Anim.SetBool("isPlay2", false);
+            fireObj.SetActive(false);
             if (!lost && !take && multiplier >= 1.01f && !isScroll)
             {
                 balloonShake_blue.SetActive(true);
@@ -1203,7 +1215,9 @@ public class GameController : MonoBehaviour
         TxtObjs.gameObject.SetActive(false);
         BalloonDelay();
 
-        heat_Anim.SetBool("isStart", true);
+        /*heat_Anim.SetBool("isStart", true);*/
+        heat_Anim.SetBool("isPlay1", true);
+        fireObj.SetActive(false);
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
@@ -1259,7 +1273,9 @@ public class GameController : MonoBehaviour
         TxtObjs.gameObject.SetActive(false);
         BalloonDelay();
 
-        heat_Anim.SetBool("isStart", true);
+        /*heat_Anim.SetBool("isStart", true);*/
+        heat_Anim.SetBool("isPlay1", true);
+        fireObj.SetActive(false);
 
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
@@ -1464,7 +1480,9 @@ public class GameController : MonoBehaviour
                     balloonParts.SetActive(false);
                     ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                     touch = true;
-                    heat_Anim.SetBool("isEnd", true);
+                    /*heat_Anim.SetBool("isEnd", true);*/
+                    heat_Anim.SetBool("isPlay2", true);
+                    fireObj.SetActive(true);
                     //heat_Anim_Img.SetActive(true);
                     takecashOut.SetBool("isTake", true);
 
@@ -1525,7 +1543,7 @@ public class GameController : MonoBehaviour
                                 gameCounts = 0;
                             }
                         }
-                        Debug.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
+                        //Debug.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
                     }
                     //minus_Anim.SetActive(false); plus_Anim.SetActive(false);
                     API_IntitalizeBetAmount();
@@ -1573,7 +1591,9 @@ public class GameController : MonoBehaviour
 
                 Debug.Log(" Button ====> PressUP");
                 isPressed = false;
-                heat_Anim.SetBool("isEnd", false);
+                /*heat_Anim.SetBool("isEnd", false);*/
+                heat_Anim.SetBool("isPlay2", false);
+                fireObj.SetActive(false);
                 /*heat_Anim_Img.SetActive(false);*/
 
                 if (isFire && multiplier >= 1.01f)
@@ -1623,7 +1643,9 @@ public class GameController : MonoBehaviour
     public void Welcom_Button()
     {
         audioController.PlayAudio(AudioEnum.buttonClick);
-        heat_Anim.SetBool("isStart", true);
+        /*heat_Anim.SetBool("isStart", true);*/
+        heat_Anim.SetBool("isPlay1", true);
+        fireObj.SetActive(false);
         StartCoroutine(Backgourn_Ballon_Fly());
 
         //minus_Anim.SetActive(true); plus_Anim.SetActive(true);

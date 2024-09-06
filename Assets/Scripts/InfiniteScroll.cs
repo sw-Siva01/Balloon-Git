@@ -302,7 +302,8 @@ public class InfiniteScroll : MonoBehaviour
 
         sequence.Append(controller.BonusRewardTxt.transform.DOScale(new Vector3(3f, 3f, 3f), 0.5f).SetEase(Ease.InOutSine))
                 .Join(controller.BonusRewardTxt.transform.DOMove(new Vector3(0f, 0.4f, 0f), 1f).SetEase(Ease.InOutSine))
-                .Join(controller.BonusRewardTxt.DOColor(new Color32(255, 255, 0, 255), 0.01f).SetEase(Ease.Linear));
+                /*.Join(controller.BonusRewardTxt.DOColor(new Color32(255, 255, 0, 255), 0.01f).SetEase(Ease.Linear));*/
+                .Join(controller.BonusRewardTxt.DOColor(new Color32(110, 0, 0, 255), 0.01f).SetEase(Ease.Linear));
         // Add a delay of 1 second
         sequence.AppendInterval(1f);
 
