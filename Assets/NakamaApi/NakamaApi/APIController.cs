@@ -186,7 +186,7 @@ public class APIController : MonoBehaviour
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 1000;
+            userDetails.balance = 80;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();

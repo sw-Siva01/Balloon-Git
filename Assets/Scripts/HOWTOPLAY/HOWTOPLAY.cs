@@ -4,42 +4,26 @@ using System.Collections.Generic;
 using System.Data;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-#if UNITY_EDITOR
 [ExecuteInEditMode]
-#endif
-
 public class HOWTOPLAY : MonoBehaviour
 {
     [TextArea(10, 100)]
     [SerializeField] String prerequisites;
-    public Button cancelButton;
     public TMP_Text textElement;
     public float padding = 10f;
     float bulletIndent = 1.6f;
     float leftMargin = 1f;
     public bool isInEditMode;
 
-    public ScrollRect viewPort;
-    private void OnEnable()
-    {
-        viewPort.verticalNormalizedPosition = 1;
-    }
-
     void Start()
     {
         FormetText();
-        cancelButton.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnCancelInput(); });
     }
 
-    void OnCancelInput()
-    {
-        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
-    }
     void FormetText()
     {
-        /*textElement.text = Format(prerequisites);*/
+        textElement.text = Format(prerequisites);
         if (textElement != null)
         {
             float textHeight = textElement.preferredHeight;
@@ -67,11 +51,11 @@ public class HOWTOPLAY : MonoBehaviour
         bool isInSemiBold = false;
         bool isinbulletDetail = false;
 
-        string _formatedText = $"<margin-left={leftMargin}em><alpha=#90>";
+        string _formatedText = $"<margin-left={leftMargin}em>";
         string bulletIndentLeftTag = $"<indent={bulletIndent}em>", bulletindentRightTag = "</indent>";
-        string boldStyleLeft = "<size=40><b><alpha=#FF><color=#FB9718>", boldStylRight = "</b></color></size><alpha=#90>";
-        string semiBoldStyleLeft = "<size=35><b><alpha=#FF>", semiBoldStyleRight = "</b></size><alpha=#90>";
-     
+        //string boldStyleLeft = "<size=40><b><alpha=#FF>", boldStylRight = "</b></size><alpha=#70>";
+        string semiBoldStyleLeft = "<size=32><b><alpha=#FF>", semiBoldStyleRight = "</b></size><alpha=#70>";
+        string boldStyleLeft = "<size=40><b><alpha=#FF><color=#FB9718>", boldStylRight = "</b></color></size>";
         foreach (char c in rawText)
         {
 

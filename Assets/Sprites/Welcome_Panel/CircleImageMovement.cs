@@ -13,7 +13,7 @@ public class CircleImageMovement : MonoBehaviour
     private void Start()
     {
         // Initialize the positions of the images in a circle
-        InitializeCircle();
+        /*InitializeCircle();*/
         // Start the movement sequence
         StartCoroutine(MoveImagesInCircle());
     }
@@ -21,13 +21,13 @@ public class CircleImageMovement : MonoBehaviour
     private void InitializeCircle()
     {
         int count = images.Length;
-        /*float angleStep = 360f / count;
+        float angleStep = 360f / count;
         for (int i = 0; i < count; i++)
         {
             float angle = i * angleStep;
             Vector2 position = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad) * radius, Mathf.Sin(angle * Mathf.Deg2Rad) * radius);
             images[i].anchoredPosition = position;
-        }*/
+        }
     }
 
     private IEnumerator MoveImagesInCircle()
