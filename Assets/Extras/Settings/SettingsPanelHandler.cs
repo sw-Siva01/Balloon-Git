@@ -102,6 +102,16 @@ public class SettingsPanelHandler : UIHandler
         SwapSpriteSequence?.Invoke();
         emptySpaceObj.SetActive(false);
     }
+    public void Welcomebtn_OFF()
+    {
+        Debug.Log("Welcome button OFF ");
+        PanelTransform?.DOKill();
+        PanelTransform.DOAnchorPosX(-1000f, 0.3f);
+        PanelTransform.GetComponent<CanvasGroup>().DOFade(0, 0.3f).OnComplete(() => { gameObject.SetActive(false); PanelTransform.gameObject.SetActive(false); });
+        SwapSpriteSequence?.Invoke();
+        emptySpaceObj.SetActive(false);
+    }
+
     public void OnExitBtnClick()
     {
         UI_Controller.instance.ExitWebGL();

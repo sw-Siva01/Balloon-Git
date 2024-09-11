@@ -198,6 +198,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 10374125}
   m_CullTransparentMesh: 1
+--- !u!1 &15170613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 15170614}
+  m_Layer: 5
+  m_Name: HandGestures_betAmount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &15170614
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15170613}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.7882908, y: 0.7882908, z: 0.7882908}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2059085013}
+  m_Father: {fileID: 955534109}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 165, y: -106.00006}
+  m_SizeDelta: {x: 197, y: 195.97}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &15842328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1920,7 +1956,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.919, y: 0.5}
   m_AnchorMax: {x: 0.92100006, y: 0.5}
-  m_AnchoredPosition: {x: -0.00024414062, y: 0.0501709}
+  m_AnchoredPosition: {x: -0.00048828125, y: 0.0501709}
   m_SizeDelta: {x: 98, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &167218626
@@ -5701,7 +5737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 381450675}
   m_Layer: 5
-  m_Name: HandGestures
+  m_Name: HandGestures_start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5716,7 +5752,7 @@ RectTransform:
   m_GameObject: {fileID: 381450674}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7882908, y: 0.7882908, z: 0.7882908}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2053887543}
@@ -5724,7 +5760,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16, y: 122}
+  m_AnchoredPosition: {x: -27, y: 126}
   m_SizeDelta: {x: 197, y: 195.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &382359486
@@ -6351,12 +6387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022#Players must decide when to cash out before the balloon
-    bursts. If they cash out in time, their bet is multiplied by the current multiplier
-    value. If the balloon bursts before cashing out, the player loses their bet."
-  textElement: {fileID: 396392134}
-  padding: 10
-  isInEditMode: 1
 --- !u!1 &405718778
 GameObject:
   m_ObjectHideFlags: 0
@@ -6655,11 +6685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022#As the balloon ascends, the multiplier increases, which
-    can go from 1x upwards, potentially reaching very high values."
-  textElement: {fileID: 409303358}
-  padding: 10
-  isInEditMode: 1
 --- !u!1 &420961021
 GameObject:
   m_ObjectHideFlags: 0
@@ -6862,11 +6887,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022#Players start by placing a bet before the balloon takes
-    off. They can place single bet in a single round and then heat up the balloon."
-  textElement: {fileID: 449809499}
-  padding: 10
-  isInEditMode: 1
 --- !u!1 &450549416
 GameObject:
   m_ObjectHideFlags: 0
@@ -10699,7 +10719,6 @@ GameObject:
   - component: {fileID: 704416875}
   - component: {fileID: 704416874}
   - component: {fileID: 704416873}
-  - component: {fileID: 704416876}
   - component: {fileID: 704416877}
   m_Layer: 5
   m_Name: Heat_button
@@ -10816,27 +10835,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704416870}
   m_CullTransparentMesh: 1
---- !u!65 &704416876
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704416870}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 200, y: 200, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &704416877
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13800,7 +13798,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 6.5, y: -292.90002}
+  m_AnchoredPosition: {x: 6.5, y: -292.9004}
   m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &891561711
@@ -14703,6 +14701,7 @@ RectTransform:
   - {fileID: 704416871}
   - {fileID: 1819168687}
   - {fileID: 381450675}
+  - {fileID: 15170614}
   m_Father: {fileID: 949693156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -20801,7 +20800,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 166.20001, y: -2.2}
+  m_AnchoredPosition: {x: 166.2002, y: -2.2}
   m_SizeDelta: {x: 240, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1348018351
@@ -23276,10 +23275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022#Simply tap or Hold             button to boost your multiplier."
-  textElement: {fileID: 1511832803}
-  padding: 10
-  isInEditMode: 1
 --- !u!1 &1529629079
 GameObject:
   m_ObjectHideFlags: 0
@@ -30224,7 +30219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c259b483cb9d514fb37e7209016d266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  betAmount: 1
+  betAmount: 0
   multiplier: 0
   Mlose: 0
   mString: 
@@ -30339,7 +30334,9 @@ MonoBehaviour:
   rumbleBet_cancelButton: {fileID: 1405522143}
   HowToPlay: {fileID: 6208332247014328514}
   AmountGlow: {fileID: 1666359590}
-  HandGestures: {fileID: 381450674}
+  HandGestures_start: {fileID: 381450674}
+  HandGestures_btAmt: {fileID: 15170613}
+  heatbtnCollider: {fileID: 704416877}
   maxBet_Reached: {fileID: 629583619}
   audioController: {fileID: 1165968576047954302}
   betID: 
@@ -30517,12 +30514,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022#They can pause the flight of the balloon and decide to 
-    continue or cash out. This gives them the ability to control the round's outcome
-    more precisely."
-  textElement: {fileID: 1985417632}
-  padding: 10
-  isInEditMode: 1
 --- !u!1 &1989684463
 GameObject:
   m_ObjectHideFlags: 0
@@ -31915,6 +31906,103 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054416077}
+  m_CullTransparentMesh: 1
+--- !u!1 &2059085012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2059085013}
+  - component: {fileID: 2059085016}
+  - component: {fileID: 2059085015}
+  - component: {fileID: 2059085014}
+  m_Layer: 5
+  m_Name: HandGestures_Img
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2059085013
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059085012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 15170614}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 124, y: -69}
+  m_SizeDelta: {x: 212, y: 212}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &2059085014
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059085012}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 15d5e99bd6dd4564c9c3a17b46320572, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2059085015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059085012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: b0e44cfce98eb6545a7d069817de827c, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2059085016
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059085012}
   m_CullTransparentMesh: 1
 --- !u!1 &2077586488
 GameObject:
@@ -48256,16 +48344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d20f648f991ce4aa3e733b5e0fd1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: '~Gameplay:
-
-'
-  cancelButton: {fileID: 167218626}
-  textElement: {fileID: 0}
-  padding: 10
-  bulletIndent: 1.6
-  leftMargin: 1
-  isInEditMode: 0
-  viewPort: {fileID: 2106518944}
 --- !u!114 &6208332247014328519
 MonoBehaviour:
   m_ObjectHideFlags: 0

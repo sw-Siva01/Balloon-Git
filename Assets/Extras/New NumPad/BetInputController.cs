@@ -308,6 +308,7 @@ public class BetInputController : MonoBehaviour
         controller.AmountColor_Glow();
         controller.BetAmountTxt_Scaling();
         Debug.Log(" Done  Done");
+        controller.HandGesture();
 
     }
 

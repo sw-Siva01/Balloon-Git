@@ -205,7 +205,7 @@ public class APIController : MonoBehaviour
             maxWinAmount = userDetails.maxWin;
         }
         if (userDetails.game_Id == "lootrix_default")
-            userDetails.balance = 1000;
+            userDetails.balance = 80;
         IsBotInGame = userDetails.hasBot;
         userDetails.bootAmount = defaultBootAmount;
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
@@ -687,6 +687,8 @@ public class APIController : MonoBehaviour
                 try
                 {
                     JObject jsonObject = JObject.Parse(res);
+
+
                     if ((int)(jsonObject["code"]) == 200)
                     {
                         Debug.Log("Network Check :::: online true 1 b");

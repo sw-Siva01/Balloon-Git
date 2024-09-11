@@ -245,7 +245,9 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("HandGestures")]
-    [SerializeField] GameObject HandGestures;
+    [SerializeField] GameObject HandGestures_start;
+    [SerializeField] GameObject HandGestures_btAmt;
+    [SerializeField] Collider heatbtnCollider;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -436,7 +438,8 @@ public class GameController : MonoBehaviour
     }
     private void OnSwitchTab(bool isFocus)
     {
-        if (APIController.instance.isInFocus && isFocus && APIController.instance.isOnline)
+        #region
+        /*if (APIController.instance.isInFocus && isFocus && APIController.instance.isOnline)
         {
             Debug.Log("Switch Sounds 1 = " + isFocus);
             if (!InternetChecking.instance.connectionPanel.activeSelf && !ResponsePopUp.activeSelf)
@@ -450,11 +453,13 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("Switch Sounds 3 = " + isFocus);
             AudioListener.volume = 0;
-            /*if (isFire)
-            {
-                Button_OFFEnter();
-            }*/
-        }
+        }*/
+        #endregion
+
+        Debug.Log($"SwitchTab Status Check ********** {isFocus} || IsinFocus = {APIController.instance.isInFocus} || IsOnline {APIController.instance.isOnline}");
+        if (CanPlayAudio)
+            AudioListener.volume = (isFocus && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
+        IsInTab = isFocus;
 
     }
     public void InitUserDeposit()
@@ -528,6 +533,20 @@ public class GameController : MonoBehaviour
                 preHeating_txt.gameObject.SetActive(false);
             }
             BetAmountUpdates();
+
+            if (buttonPress == true)
+            {
+                if (APIController.instance.userDetails.isBlockApiConnection)
+                {
+                    InsufficientBalance.SetActive(true);
+                    InsufBal_Rumblebets.SetActive(false);
+                }
+                else
+                {
+                    InsufficientBalance.SetActive(false);
+                    InsufBal_Rumblebets.SetActive(true);
+                }
+            }
 
             if (isScroll)
             {
@@ -639,6 +658,7 @@ public class GameController : MonoBehaviour
             else if (timeSinceLastIncrement >= 6f)
             {
                 // Automatically take cash
+                heatbtnCollider.enabled = false;
                 TakeCashOut();
                 holdButton.enabled = false;
                 TakeCashbutton.enabled = false;
@@ -904,7 +924,7 @@ public class GameController : MonoBehaviour
                     DelayFuction();
                     isWin = true;
                 }
-                
+
             }
             else
             {
@@ -1192,7 +1212,7 @@ public class GameController : MonoBehaviour
         ballon_Anim.SetBool("isOut", false);
         background.localPosition = initialBackgroundPosition;
         bg.localPosition = iniBackgroundPos;
-
+        heatbtnCollider.enabled = true;
         if (winCount == true)
         {
             winCount = false;
@@ -1263,6 +1283,7 @@ public class GameController : MonoBehaviour
         ButtonSelect_Anim();
         winPanel.SetActive(false);
         takeBetAmount = true;
+        heatbtnCollider.enabled = true;
         Button_Switch_ON();
         countTime = 0f;
         slider.value = 0f;
@@ -1471,6 +1492,7 @@ public class GameController : MonoBehaviour
 
     #region ::::::::::::::::::::::::::: Event Trigger Buttons :::::::::::::::::::::::::::
     bool InternetCheck;
+    bool isAbleToPlay;
     public void OnClickDown()
     {
         #region
@@ -1488,9 +1510,9 @@ public class GameController : MonoBehaviour
                 if (!numPad && !buttonPress && !lost)
                 {
                     Debug.Log(" Button ====> PressDown");
-                    if (HandGestures.activeSelf)
+                    if (HandGestures_start.activeSelf)
                     {
-                        HandGestures.SetActive(false);
+                        HandGestures_start.SetActive(false);
                     }
                     isPressed = true;
 
@@ -1501,11 +1523,9 @@ public class GameController : MonoBehaviour
                     balloonParts.SetActive(false);
                     ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                     touch = true;
-                    /*heat_Anim.SetBool("isEnd", true);*/
                     heat_Anim.SetBool("isPlay2", true);
                     fireObj.SetActive(true);
                     //heat_Anim_Img.SetActive(true);
-                    /*takecashOut.SetBool("isTake", true);*/
 
                     for (int i = 0; i < button_Anim.Length; i++)
                     {
@@ -1542,9 +1562,9 @@ public class GameController : MonoBehaviour
 
                 if (!startGame && !gameLost && !isBegin)
                 {
-                    if (HandGestures.activeSelf)
+                    if (HandGestures_start.activeSelf)
                     {
-                        HandGestures.SetActive(false);
+                        HandGestures_start.SetActive(false);
                     }
 
                     if (!APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
@@ -1665,21 +1685,16 @@ public class GameController : MonoBehaviour
     }
     public void Welcom_Button()
     {
-        /*audioController.PlayAudio(AudioEnum.buttonClick);*/
-        /*heat_Anim.SetBool("isStart", true);*/
-        heat_Anim.SetBool("isPlay1", true);
         fireObj.SetActive(false);
         StartCoroutine(Backgourn_Ballon_Fly());
 
-        //minus_Anim.SetActive(true); plus_Anim.SetActive(true);
-
-        button_1.gameObject.SetActive(true);
+        heatbtnCollider.enabled = false;
         ButtonSelect_Anim();
-        HandGestures.SetActive(true);
+        HandGestures_btAmt.SetActive(true);
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
-        UI_Controller.instance.settingsHandler.HideMe();
+        UI_Controller.instance.settingsHandler.Welcomebtn_OFF();
     }
     #endregion
 
@@ -1724,6 +1739,8 @@ public class GameController : MonoBehaviour
             winCash_Demo = 0;
             bonusTimer = 0;
             timer = true;
+
+            HandGesture();
         }
     }
     public void BetButton_2()
@@ -1763,6 +1780,8 @@ public class GameController : MonoBehaviour
             winCash_Demo = 0;
             bonusTimer = 0;
             timer = true;
+
+            HandGesture();
         }
     }
     public void BetButton_5()
@@ -1803,6 +1822,8 @@ public class GameController : MonoBehaviour
             winCash_Demo = 0;
             bonusTimer = 0;
             timer = true;
+
+            HandGesture();
         }
     }
     public void BetButton_10()
@@ -1843,6 +1864,14 @@ public class GameController : MonoBehaviour
             winCash_Demo = 0;
             bonusTimer = 0;
             timer = true;
+
+            if (HandGestures_btAmt.activeSelf)
+            {
+                HandGestures_btAmt.SetActive(false);
+                HandGestures_start.SetActive(true);
+                heatbtnCollider.enabled = true;
+                heat_Anim.SetBool("isPlay1", true);
+            }
         }
     }
 
@@ -1945,6 +1974,8 @@ public class GameController : MonoBehaviour
                 bonusTimer = 0;
                 timer = true;
             }
+
+            HandGesture();
         }
     }
     public void MinusButton()
@@ -2079,6 +2110,16 @@ public class GameController : MonoBehaviour
                 button_Anim[3].SetActive(false);
                 button_Anim[0].SetActive(true); button_Anim[1].SetActive(true); button_Anim[2].SetActive(true);
             }
+        }
+    }
+    public void HandGesture()
+    {
+        if (HandGestures_btAmt.activeSelf)
+        {
+            HandGestures_btAmt.SetActive(false);
+            HandGestures_start.SetActive(true);
+            heatbtnCollider.enabled = true;
+            heat_Anim.SetBool("isPlay1", true);
         }
     }
     public void Insufficient_OFF()
