@@ -52,6 +52,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Button button_2;
     [SerializeField] Button button_5;
     [SerializeField] Button button_10;
+
     [SerializeField] List<Button> setected_Buttons = new List<Button>();
     public Button plusButton, minusButton;
 
@@ -89,9 +90,9 @@ public class GameController : MonoBehaviour
     //
     private bool isBegin;
     private bool pauseGame;
-    public bool isPressed;
+    private bool isPressed;
     private bool buttonPress;
-    public bool takeBetAmount;
+    private bool takeBetAmount;
     private bool isSet;
     private bool isFire;
     private bool lost;
@@ -103,9 +104,7 @@ public class GameController : MonoBehaviour
     private bool isBonus_3;
     private bool isNormal;
     private bool touch;
-    private bool cashOut;
     private bool stopper;
-    public bool netCheck;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -1531,7 +1530,7 @@ public class GameController : MonoBehaviour
                     {
                         button_Anim[i].SetActive(false);
                     }
-                    cashOut = true;
+
                     TakeCashbutton.enabled = false;
                     //sliderTxt.text = null;
                     //sliderAutoCashNoTxt.gameObject.SetActive(false);
@@ -1874,6 +1873,7 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
 
     // Select bet buttons
     public void SelectBetButton(int s)

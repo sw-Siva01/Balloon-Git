@@ -795,7 +795,7 @@ public class APIController : MonoBehaviour
                         Debug.Log("Network Check :::: online false 2");
                         isOnline = false;
                     }
-                    if (isOnline)
+                    if (!isOnline)
                         GetNetworkStatus(isOnline.ToString());
                     Debug.Log("Network Check :::: socket connected 1 " + isOnline);
                     isrun = false;
