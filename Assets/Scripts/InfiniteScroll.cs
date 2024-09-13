@@ -283,7 +283,8 @@ public class InfiniteScroll : MonoBehaviour
 
             await UniTask.Delay(4000); // wait for 4 seconds
             TimerDelay();
-            controller.TakeCashOut();
+            Debug.Log(" PrintedValue ====> 1");
+            controller.TakeBonusMoney();
         }
         else if (Count > 0)
         {

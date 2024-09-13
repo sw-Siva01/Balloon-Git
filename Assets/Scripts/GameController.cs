@@ -946,7 +946,78 @@ public class GameController : MonoBehaviour
         }
         #endregion
     }
- 
+    public void TakeBonusMoney()
+    {
+        #region ________ Internet Checking : 1 ________
+        APIController.instance.CheckInternetandProcess((success) =>
+        {
+            if (success)
+            {
+                InternetCheck = true;
+
+                take = true;
+                startGame = false;
+                /*WinAmount = takeCash;*/
+                // Change the text color
+                multiplier = float.Parse(multiplier.ToString("0.00"));
+                multiplierTxt.text = multiplier.ToString();
+                //TotalAmount += WinAmount;
+                /*totalAmountTxt.text = TotalAmount.ToString("0.00");*/
+                holdButton.enabled = false;
+                /*   empty_holdButton.gameObject.SetActive(true);*/
+
+                TakeCashImg.color = new Color32(140, 140, 140, 255);
+                TakeCashtxt.color = new Color32(140, 140, 140, 255);
+                takeCashWintxt.color = new Color32(140, 140, 140, 255);
+                takeCurrencytxt.color = new Color32(140, 140, 140, 255);
+                /*TakeCashAnimImg.SetActive(false);*/
+                takeCashObj.SetActive(false);
+                // sliderOBjs
+                slider_bg.SetActive(false);
+                fillArea.SetActive(false);
+                slider_txt.SetActive(false);
+                sliderAutoCashNoTxt.gameObject.SetActive(false);
+                slider_Anim.SetBool("isOFF", true);
+                ballon_Anim.SetBool("isTake", true);
+
+                if (!winCount && betAmount <= 5f)
+                {
+                    winCash++;
+                }
+                else
+                {
+                    isNormal = true;
+                }
+
+                Debug.Log(" WinCashCheck : " + winCash);
+                Demo_Bonus();
+
+                if ((winCash_Demo < 10))
+                {
+                    audioController.PlayAudio(AudioEnum.winGame);
+                    winPanel.SetActive(true);
+                    TakingCash();
+                    Winning_Animations();
+                }
+
+                Call_Functions();
+                DelayFuction();
+            }
+            else
+            {
+                InternetCheck = false;
+                Debug.Log("CheckInternetandProcess ============>  down" + success);
+                return;
+            }
+        });
+
+        if (!InternetCheck)
+        {
+            return;
+        }
+        #endregion
+    }
+
     public bool isCreateMatchSucceess = false;
     void API_IntitalizeBetAmount()
     {
@@ -1194,6 +1265,7 @@ public class GameController : MonoBehaviour
             await UniTask.Delay(3000); // wait for 2.5 seconds
             Bonus_Delay();
         }
+
     }
     void TimeDelay()
     {
