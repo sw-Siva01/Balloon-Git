@@ -105,6 +105,7 @@ public class GameController : MonoBehaviour
     private bool isNormal;
     private bool touch;
     private bool stopper;
+    private bool timerCount = true;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -483,8 +484,9 @@ public class GameController : MonoBehaviour
     }
     IEnumerator TimerCount()
     {
-        while (true)
+        while (timerCount)
         {
+            Debug.Log(" ^^^^^^^^^^^^^^========> ");
             if (startGame && !pauseGame && (!InternetChecking.instance.connectionPanel.activeSelf))
             {
                 if (!pauseGame && multiplier < 1.01f)
@@ -515,7 +517,13 @@ public class GameController : MonoBehaviour
                     slider.value = 7f;
                 }
             }
-            yield return null;
+            //yield return null;
+            yield return new WaitForSeconds(0.1f);
+            if (!startGame)
+            {
+                timerCount = false;
+            }
+
         }
     }
     IEnumerator HolidngButtons()
@@ -1873,7 +1881,6 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
 
     // Select bet buttons
     public void SelectBetButton(int s)
