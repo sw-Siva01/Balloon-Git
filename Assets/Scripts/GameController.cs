@@ -484,7 +484,7 @@ public class GameController : MonoBehaviour
     }
     IEnumerator TimerCount()
     {
-        while (timerCount)
+        while (true)
         {
             Debug.Log(" ^^^^^^^^^^^^^^========> ");
             if (startGame && !pauseGame && (!InternetChecking.instance.connectionPanel.activeSelf))
@@ -517,8 +517,7 @@ public class GameController : MonoBehaviour
                     slider.value = 7f;
                 }
             }
-            //yield return null;
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
             if (!startGame)
             {
                 timerCount = false;
@@ -947,7 +946,7 @@ public class GameController : MonoBehaviour
         }
         #endregion
     }
-
+ 
     public bool isCreateMatchSucceess = false;
     void API_IntitalizeBetAmount()
     {
