@@ -1497,7 +1497,7 @@ public class GameController : MonoBehaviour
         #region
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            if (success)
+            if (success && !InternetChecking.instance.connectionPanel.activeSelf)
             {
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))

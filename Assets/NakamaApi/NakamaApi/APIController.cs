@@ -478,9 +478,6 @@ public class APIController : MonoBehaviour
             action?.Invoke(response != null && response.code == 200);
 
         });
-
-
-
     }
     public async void CancelBetMultiplayerAPI(int betIndex, string betId, double amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, string matchToken)
     {
@@ -795,8 +792,8 @@ public class APIController : MonoBehaviour
                         Debug.Log("Network Check :::: online false 2");
                         isOnline = false;
                     }
-                    if (!isOnline)
-                        GetNetworkStatus(isOnline.ToString());
+                    /*if (isOnline)
+                        GetNetworkStatus(isOnline.ToString());*/
                     Debug.Log("Network Check :::: socket connected 1 " + isOnline);
                     isrun = false;
                 });

@@ -217,8 +217,8 @@ public class BetInputController : MonoBehaviour
                  controller.betAmountTxt.gameObject.SetActive(true);
                  Debug.Log("Done " + controller.betAmount);
 
-                 controller.AmountColor_Glow();
-                 controller.BetAmountTxt_Scaling();
+                 /*controller.AmountColor_Glow();*/
+                 /*controller.BetAmountTxt_Scaling();*/
              },
              (value) =>
              {
@@ -305,8 +305,8 @@ public class BetInputController : MonoBehaviour
 
         EnableBetInput();
         Debug.Log("CloseKeyPadPanel Done ");
-        controller.AmountColor_Glow();
-        controller.BetAmountTxt_Scaling();
+        /*controller.AmountColor_Glow();*/
+        /*controller.BetAmountTxt_Scaling();*/
         Debug.Log(" Done  Done");
         controller.HandGesture();
 
