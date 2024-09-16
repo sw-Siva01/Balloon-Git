@@ -248,31 +248,10 @@ public class InfiniteScroll : MonoBehaviour
 
                 controller.BonusRewardTxt.text = textComponent.text.ToString();
                 controller.BonusRewardTxt.color = Color.green;
-                //controller.BonusRewardTxt.text = $"+{textComponent.text.ToString()}";
                 DelayFuction();
             }
         }
     }
-
-    #region
-    /*async void ObjDelayed()
-    {
-        await UniTask.Delay(1000);
-        if (controller.multiplier < BonusValue)
-        {
-            controller.mString = controller.multiplier.ToString("0.00");
-
-            controller.multiplier += bfloat * Time.deltaTime;
-
-            controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
-            controller.takeCash = float.Parse(controller.tString);
-            *//*controller.takeCash = controller.betAmount * controller.multiplier;*//*
-
-            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
-
-        }
-    }*/
-    #endregion
     async void DelayFuction()
     {
         if (Count == 1)
@@ -283,8 +262,7 @@ public class InfiniteScroll : MonoBehaviour
 
             await UniTask.Delay(4000); // wait for 4 seconds
             TimerDelay();
-            Debug.Log(" PrintedValue ====> 1");
-            controller.TakeBonusMoney();
+            controller.TakeCashOut();
         }
         else if (Count > 0)
         {
@@ -333,6 +311,8 @@ public class InfiniteScroll : MonoBehaviour
         controller.BonusRewardTxt.text = null;
         NumbCountSet_OFF();
         Count = 3;
+        controller.isWin = false;
+        controller.bonusCount = true;
     }
     IEnumerator Add_BonusValue()
     {
