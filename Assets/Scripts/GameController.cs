@@ -230,8 +230,7 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject cancelButton;
     [SerializeField] GameObject rumbleBet_cancelButton;
     [SerializeField] GameObject HowToPlay;
-
-    public GameObject AmountGlow;
+    [SerializeField] GameObject AmountGlow;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -1102,9 +1101,9 @@ public class GameController : MonoBehaviour
         take = false;
         lost = false;
         isNormal = false;
-        #region Try (((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        #region Try ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
         isBonus_2 = false;
-        #endregion end (((((((((((((((((((((((((((((((((((())))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        #endregion end (((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 
         ballonOut.gameObject.SetActive(false);
         ballon_Anim.SetBool("isOut", false);
@@ -1116,7 +1115,6 @@ public class GameController : MonoBehaviour
             winCount = false;
         }
         Button_Switch_ON();
-
         //colors
         TakeCashImg.color = new Color32(140, 140, 140, 255);
         TakeCashtxt.color = new Color32(140, 140, 140, 255);

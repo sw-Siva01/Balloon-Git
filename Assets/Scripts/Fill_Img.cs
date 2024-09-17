@@ -41,13 +41,16 @@ public class Fill_Img : MonoBehaviour
     [SerializeField] RectTransform bonusTxt_Img;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+    
+    [Header("GameObject")]
+    [SerializeField] RectTransform bonusObj;
+    [SerializeField] GameObject fill_Meter;
+    [SerializeField] GameObject numb_Objs;
+    [SerializeField] GameObject scrollViewAnim;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
-    public RectTransform bonusObj;
-    public GameObject fill_Meter;
-    public GameObject numb_Objs;
-    public GameObject scrollViewAnim;
-
+    [Header("Bool")]
     public bool bonus;
     public bool bonusTimer;
 
@@ -55,8 +58,8 @@ public class Fill_Img : MonoBehaviour
 
     [Header("Animator")]
 
-    public Animator fill_Close;
-    public Animator bonusShine;
+    [SerializeField] Animator fill_Close;
+    [SerializeField] Animator bonusShine;
 
     public static Fill_Img instance;
 
@@ -74,8 +77,6 @@ public class Fill_Img : MonoBehaviour
     }
     void Update()
     {
-        /*Timer = controller.bonusTimer;*/
-
         if (controller.timer)
         {
             timeRemaining = 0f;
@@ -84,10 +85,9 @@ public class Fill_Img : MonoBehaviour
             controller.timer = false;
         }
 
-        if (/*bonusObj.gameObject.activeSelf*/ bonus)
+        if (bonus)
         {
             Timer = controller.bonusTimer;
-            /*TimerUpdate();*/
         }
 
         if (bonusTimer)
@@ -124,7 +124,6 @@ public class Fill_Img : MonoBehaviour
     async void TimeDelay()
     {
         await UniTask.Delay(1000);
-        Debug.Log("Bonus_Delay =========> 3");
         fill_Close.SetBool("isOpen", false);
         fill_Close.SetBool("isClose", false);
         fill_Img.gameObject.SetActive(true);
@@ -149,20 +148,16 @@ public class Fill_Img : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence();
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InSine));
-
         // Add a delay of 1 second
         sequence.AppendInterval(0.01f);
-
         // Add the second scale animation to the sequence
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.OutBounce));
-
+        // Add a delay of 1 second
         sequence.AppendInterval(2f);
-
+        // Add the second scale animation to the sequence
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InSine));
-
         // Add a delay of 1 second
         sequence.AppendInterval(0.01f);
-
         // Add the second scale animation to the sequence
         sequence.Append(bonusTxt_Img.DOScale(new Vector3(0f, 0f, 0f), 0.5f).SetEase(Ease.InSine));
     }
@@ -191,7 +186,6 @@ public class Fill_Img : MonoBehaviour
             scrollViewAnim.SetActive(true);
             controller.isBonus = true;
 
-
             if (controller.isBonus && controller.isScroll)
             {
                 scrollView.BonusMultiplier_txt.gameObject.SetActive(true);
@@ -207,14 +201,12 @@ public class Fill_Img : MonoBehaviour
 
             if (!APIController.instance.userDetails.isBlockApiConnection)
             {
-                controller.winBonus = UnityEngine.Random.Range(10, 20);      // use this always
-              //controller.winBonus = 3;                                    // for testing only
+                controller.winBonus = UnityEngine.Random.Range(10, 25);      // use this always
             }
             else if (APIController.instance.userDetails.isBlockApiConnection)
             {
-                controller.winBonus = UnityEngine.Random.Range(5, 8);
+                controller.winBonus = UnityEngine.Random.Range(8, 15);
             }
-
         }
     }
     async void Setting_OFF()
