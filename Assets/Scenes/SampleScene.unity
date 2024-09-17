@@ -16285,7 +16285,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092166072}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ed81cc60b27486c4cb8b1f68eb6e0efe, type: 2}
   m_CullingMode: 0
@@ -23407,7 +23407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1579756310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29456,7 +29456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   betAmount: 0
   multiplier: 0
-  Mlose: 0
   mString: 
   incrementRate: 1.01
   incrementInterval: 0.2
@@ -29468,7 +29467,6 @@ MonoBehaviour:
   timeHold: 
   takeCash: 0
   tString: 
-  WinAmount: 0
   gameCounts: 0
   TotalAmount: 5000
   bonusTimer: 0
@@ -29508,8 +29506,9 @@ MonoBehaviour:
   numPad: 0
   isBonus: 0
   isBonus_OFF: 0
-  makeLose: 0
   startGame: 0
+  isWin: 0
+  bonusCount: 0
   multiplierTxt: {fileID: 1898352829}
   Xtxt: {fileID: 801902552}
   takeCashTxt: {fileID: 1173034790}
@@ -29553,7 +29552,6 @@ MonoBehaviour:
   ScrollViewObj: {fileID: 786631769721119296}
   CenterBack_Img: {fileID: 1639984530}
   BonusRewardValue: 
-  BonusRewardfloatValue: 0
   BonusRewardTxt: {fileID: 4390869933089883887}
   ballon_Anim: {fileID: 2018898340}
   heat_Anim: {fileID: 360439646}
@@ -29571,15 +29569,10 @@ MonoBehaviour:
   heatbtnCollider: {fileID: 704416877}
   maxBet_Reached: {fileID: 629583619}
   audioController: {fileID: 1165968576047954302}
-  betID: 
-  internetDisconnectPannel: {fileID: 4875346415498661686}
-  IsInTab: 1
-  IsInterNet: 0
   CanPlayAudio: 0
   LoadingPopUp: {fileID: 810832941087503655}
   ResponsePopUp: {fileID: 1022269645}
   inputField: {fileID: 2524193267929683899}
-  test: {fileID: 4875346415498661686}
   isCreateMatchSucceess: 0
   settingsBtn: {fileID: 1050069827}
 --- !u!1 &1985417629

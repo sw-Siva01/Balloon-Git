@@ -786,7 +786,7 @@ public class GameController : MonoBehaviour
             takeCashTxt.text = takeCash.ToString("0.00");
         }
     }
-    public void TakeCashOut()
+    public void TakeCashOut() // TakeCash button
     {
         #region ________ Internet Checking : 1 ________
         APIController.instance.CheckInternetandProcess((success) =>
@@ -839,20 +839,6 @@ public class GameController : MonoBehaviour
                     DelayFuction();
                     isWin = true;
                 }
-                #endregion
-
-                #region
-                /*if (!isWin)
-                {
-                    TakeCashAmount();
-                    isWin = true;
-                }
-                else if (!isScroll && winCount && isWin)
-                {
-                    TakeCashAmount();
-                    bonusCount = false;
-                    Debug.Log("Checking ============ > 3");
-                }*/
                 #endregion
             }
             else
