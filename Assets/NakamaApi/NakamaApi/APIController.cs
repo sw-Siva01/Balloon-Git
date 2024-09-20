@@ -186,7 +186,7 @@ public class APIController : MonoBehaviour
         if (data.Length < 30)
         {
             userDetails = new UserGameData();
-            userDetails.balance = 80;
+            userDetails.balance = 5000;
             userDetails.currency_type = "USD";
             userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
             userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
@@ -205,7 +205,7 @@ public class APIController : MonoBehaviour
             maxWinAmount = userDetails.maxWin;
         }
         if (userDetails.game_Id == "lootrix_default")
-            userDetails.balance = 80;
+            userDetails.balance = 5000;
         IsBotInGame = userDetails.hasBot;
         userDetails.bootAmount = defaultBootAmount;
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
