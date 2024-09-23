@@ -198,20 +198,20 @@ public class Fill_Img : MonoBehaviour
 
             await UniTask.Delay(3000);
             scrollViewAnim.SetActive(false);
-
-            if (!APIController.instance.userDetails.isBlockApiConnection)
+            controller.winBonus = 3;
+            /*if (!APIController.instance.userDetails.isBlockApiConnection)
             {
-                controller.winBonus = UnityEngine.Random.Range(10, 25);      // use this always
+                controller.winBonus = UnityEngine.Random.Range(10, 25);
             }
             else if (APIController.instance.userDetails.isBlockApiConnection)
             {
                 controller.winBonus = UnityEngine.Random.Range(8, 15);
-            }
+            }*/
         }
     }
     async void Setting_OFF()
     {
-        await UniTask.Delay(200);
+        await UniTask.Delay(200); 
         fill_Close.SetBool("isOpen", false);
         bonus_Txt.SetActive(false);
 
@@ -222,16 +222,15 @@ public class Fill_Img : MonoBehaviour
 
         await UniTask.Delay(1000);
         bonusObj.gameObject.SetActive(false);
-
-        if (!APIController.instance.userDetails.isBlockApiConnection)
+        controller.winBonus = 3;
+        /*if (!APIController.instance.userDetails.isBlockApiConnection)
         {
-            controller.winBonus = UnityEngine.Random.Range(8, 15);       // use this always
-          //controller.winBonus = 3;                                    // for testing only
+            controller.winBonus = UnityEngine.Random.Range(8, 15);      //  for testing only
         }
         else if (APIController.instance.userDetails.isBlockApiConnection)
         {
             controller.winBonus = UnityEngine.Random.Range(8, 15);
-        }
+        }*/
     }
     void UpdateTimerUI()
     {

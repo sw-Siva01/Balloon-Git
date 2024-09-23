@@ -11941,6 +11941,7 @@ GameObject:
   - component: {fileID: 837645578}
   - component: {fileID: 837645580}
   - component: {fileID: 837645579}
+  - component: {fileID: 837645581}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -11989,8 +11990,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: RESPONSIBLE GAMING
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c9c8347c5081c144688b5ada898c1085, type: 2}
-  m_sharedMaterial: {fileID: -253009188019548704, guid: c9c8347c5081c144688b5ada898c1085, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1ace8236393f2264aa0f31bfd85f243a, type: 2}
+  m_sharedMaterial: {fileID: -253009188019548704, guid: 1ace8236393f2264aa0f31bfd85f243a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12064,6 +12065,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 837645577}
   m_CullTransparentMesh: 1
+--- !u!114 &837645581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837645577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &839230538
 GameObject:
   m_ObjectHideFlags: 0
@@ -28224,7 +28238,7 @@ MonoBehaviour:
   winTxt: {fileID: 242871634}
   totalTime: 10
   winCash: 0
-  winBonus: 5
+  winBonus: 3
   winCash_Demo: 0
   bonusObj: {fileID: 1639272519}
   ScrollViewObj: {fileID: 786631769721119296}
