@@ -294,7 +294,7 @@ public class GameController : MonoBehaviour
         StartCoroutine(HolidngButtons());
         initialBackgroundPosition = background.localPosition;
 
-        winBonus = 5;
+        winBonus = 3;
         slider.maxValue = 7f;
         slider.minValue = 1f;
         StartCoroutine(nameof(TimerCount));
@@ -432,6 +432,8 @@ public class GameController : MonoBehaviour
         _txt.text = _passingValue;
     }
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
+
+    #region { ::::::::::::::::::::::::: Coroutine ::::::::::::::::::::::::: }
     IEnumerator FillImg()
     {
         while (true)
@@ -634,6 +636,15 @@ public class GameController : MonoBehaviour
         //}
         StartCoroutine(nameof(HolidngButtons));
     }
+    IEnumerator Backgourn_Ballon_Fly()
+    {
+        while (true)
+        {
+            ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
+            yield return null;
+        }
+    }
+    #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     void Balloon_Burt()
     {
         Debug.Log(" GameProcess ===> GameLose");
@@ -652,14 +663,6 @@ public class GameController : MonoBehaviour
         slider_txt.SetActive(false);
         sliderAutoCashNoTxt.gameObject.SetActive(false);
         takeCashObj.SetActive(false);
-    }
-    IEnumerator Backgourn_Ballon_Fly()
-    {
-        while (true)
-        {
-            ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
-            yield return null;
-        }
     }
     void FireButton()
     {
