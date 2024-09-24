@@ -37,7 +37,6 @@ public class GameController : MonoBehaviour
     [SerializeField] Button TakeCashbutton;
     [SerializeField] Button holdButton;
     [SerializeField] Button holdButton_dup;
-    [SerializeField] Image heatButton_BG;
     [SerializeField] TextMeshProUGUI heatTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -58,6 +57,12 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject[] button_Anim;
     [SerializeField] GameObject numPadButton;
     [SerializeField] GameObject takeCashObj;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("UI GameObjects")]
+    [SerializeField] GameObject unPress;
+    [SerializeField] GameObject pressed;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -280,6 +285,9 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         APIController.instance.OnSwitchingTab += OnSwitchTab;
+
+        unPress.SetActive(true);
+        pressed.SetActive(false);
 
         touch = true;
         // takeCash buttons & colors
@@ -526,7 +534,6 @@ public class GameController : MonoBehaviour
             fireObj.SetActive(false);
             TakeCashbutton.enabled = false;
             TakeCashImg.color = new Color32(140, 140, 140, 255);
-            heatButton_BG.color = new Color32(140, 140, 140, 255);
             heatTxt.color = new Color32(63, 15, 15, 200);
         }
         // Game Lose
@@ -558,7 +565,6 @@ public class GameController : MonoBehaviour
             TakeCashtxt.color = new Color32(140, 140, 140, 255);
             takeCashWintxt.color = new Color32(140, 140, 140, 255);
             takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-            heatButton_BG.color = new Color32(140, 140, 140, 255);
             heatTxt.color = new Color32(63, 15, 15, 200);
             takeCashObj.SetActive(false);
         }
@@ -581,7 +587,6 @@ public class GameController : MonoBehaviour
             balloonShake.SetActive(false);
             takeCashObj.SetActive(false);
             balloonParts.SetActive(true);
-            heatButton_BG.color = new Color32(140, 140, 140, 255);
             heatTxt.color = new Color32(63, 15, 15, 200);
         }
 
@@ -1209,7 +1214,6 @@ public class GameController : MonoBehaviour
         TakeCashtxt.color = new Color32(140, 140, 140, 255);
         takeCashWintxt.color = new Color32(140, 140, 140, 255);
         takeCurrencytxt.color = new Color32(140, 140, 140, 255);
-        heatButton_BG.color = new Color32(255, 255, 255, 255);
         heatTxt.color = new Color32(63, 15, 15, 255);
 
         takeCashObj.SetActive(false);
@@ -1424,6 +1428,10 @@ public class GameController : MonoBehaviour
                 {
                     Debug.Log(" GameProcess ===> GameStart");
                     Debug.Log(" Button ====> PressDown");
+
+                    unPress.SetActive(false);
+                    pressed.SetActive(true);
+
                     if (HandGestures_start.activeSelf)
                     {
                         HandGestures_start.SetActive(false);
@@ -1538,6 +1546,8 @@ public class GameController : MonoBehaviour
             if (success)
             {
                 InternetCheck = true;
+                unPress.SetActive(true);
+                pressed.SetActive(false);
                 Debug.Log(" Button ====> PressUP");
                 isPressed = false;
                 heat_Anim.SetBool("isPlay2", false);
