@@ -220,7 +220,9 @@ public class GameController : MonoBehaviour
     [SerializeField] Animator ballon_Anim;
     // Heat button
     [SerializeField] Animator heat_Anim;
+    [SerializeField] Animator heat_IdleAnim;
     [SerializeField] GameObject fireObj;
+    [SerializeField] GameObject fireIdleObj;
     // slider
     [SerializeField] Animator slider_Anim;
     // bonus Balloon
@@ -531,7 +533,9 @@ public class GameController : MonoBehaviour
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
             heat_Anim.SetBool("isPlay1", false);
+            heat_IdleAnim.SetBool("isPlay1", false);
             fireObj.SetActive(false);
+            fireIdleObj.SetActive(false);
             TakeCashbutton.enabled = false;
             TakeCashImg.color = new Color32(140, 140, 140, 255);
             heatTxt.color = new Color32(63, 15, 15, 200);
@@ -554,7 +558,9 @@ public class GameController : MonoBehaviour
             //heat button
             heat_Anim.SetBool("isPlay1", false);
             heat_Anim.SetBool("isPlay2", false);
+            heat_IdleAnim.SetBool("isPlay1", false);
             fireObj.SetActive(false);
+            fireIdleObj.SetActive(false);
             //balloon parts
             ballonOut.gameObject.SetActive(true);
             balloonParts.SetActive(false);
@@ -582,7 +588,9 @@ public class GameController : MonoBehaviour
             sliderAutoCashNoTxt.gameObject.SetActive(false);
             //balloon, takeCash & heat button
             heat_Anim.SetBool("isPlay1", false);
+            heat_IdleAnim.SetBool("isPlay1", false);
             fireObj.SetActive(false);
+            fireIdleObj.SetActive(false);
             balloonShake_blue.SetActive(false);
             balloonShake.SetActive(false);
             takeCashObj.SetActive(false);
@@ -1240,6 +1248,7 @@ public class GameController : MonoBehaviour
         BalloonDelay();
         heat_Anim.SetBool("isPlay1", true);
         fireObj.SetActive(false);
+        fireIdleObj.SetActive(true);
 
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
@@ -1444,8 +1453,11 @@ public class GameController : MonoBehaviour
                     balloonParts.SetActive(false);
                     ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
                     touch = true;
+                    heat_Anim.SetBool("isPlay1", true);
                     heat_Anim.SetBool("isPlay2", true);
+                    heat_IdleAnim.SetBool("isPlay1", false);
                     fireObj.SetActive(true);
+                    fireIdleObj.SetActive(false);
                     //heat_Anim_Img.SetActive(true);
 
                     for (int i = 0; i < button_Anim.Length; i++)
@@ -1551,7 +1563,9 @@ public class GameController : MonoBehaviour
                 Debug.Log(" Button ====> PressUP");
                 isPressed = false;
                 heat_Anim.SetBool("isPlay2", false);
+                heat_IdleAnim.SetBool("isPlay1", true);
                 fireObj.SetActive(false);
+                fireIdleObj.SetActive(true);
 
                 if (isFire && multiplier >= 1.01f)
                 {
@@ -1597,6 +1611,7 @@ public class GameController : MonoBehaviour
     public void Welcom_Button()
     {
         fireObj.SetActive(false);
+        fireIdleObj.SetActive(true);
         StartCoroutine(Backgourn_Ballon_Fly());
         heatbtnCollider.enabled = false;
         ButtonSelect_Anim();
@@ -1780,7 +1795,8 @@ public class GameController : MonoBehaviour
                 HandGestures_btAmt.SetActive(false);
                 HandGestures_start.SetActive(true);
                 heatbtnCollider.enabled = true;
-                heat_Anim.SetBool("isPlay1", true);
+                /*heat_Anim.SetBool("isPlay1", true);*/
+                heat_IdleAnim.SetBool("isPlay1", true);
             }
         }
     }
@@ -2025,7 +2041,8 @@ public class GameController : MonoBehaviour
             HandGestures_btAmt.SetActive(false);
             HandGestures_start.SetActive(true);
             heatbtnCollider.enabled = true;
-            heat_Anim.SetBool("isPlay1", true);
+            /*heat_Anim.SetBool("isPlay1", true);*/
+            heat_IdleAnim.SetBool("isPlay1", true);
         }
     }
     public void Insufficient_OFF()
