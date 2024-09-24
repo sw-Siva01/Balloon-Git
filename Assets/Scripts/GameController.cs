@@ -1203,6 +1203,7 @@ public class GameController : MonoBehaviour
         take = false;
         lost = false;
         isNormal = false;
+        heat_IdleAnim.SetBool("isPlay1", true);
         #region Try ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
         isBonus_2 = false;
         #endregion end (((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -1611,7 +1612,7 @@ public class GameController : MonoBehaviour
     public void Welcom_Button()
     {
         fireObj.SetActive(false);
-        fireIdleObj.SetActive(true);
+        fireIdleObj.SetActive(false);
         StartCoroutine(Backgourn_Ballon_Fly());
         heatbtnCollider.enabled = false;
         ButtonSelect_Anim();
@@ -2042,6 +2043,7 @@ public class GameController : MonoBehaviour
             HandGestures_start.SetActive(true);
             heatbtnCollider.enabled = true;
             /*heat_Anim.SetBool("isPlay1", true);*/
+            fireIdleObj.SetActive(true);
             heat_IdleAnim.SetBool("isPlay1", true);
         }
     }
