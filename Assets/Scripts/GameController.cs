@@ -869,7 +869,7 @@ public class GameController : MonoBehaviour
                         Winning_Animations();
                     }
                     Call_Functions();
-                    if (APIController.instance.userDetails.isBlockApiConnection)
+                   /* if (APIController.instance.userDetails.isBlockApiConnection)*/
                         DelayFuction();
                     isWin = true;
                 }
@@ -1096,7 +1096,7 @@ public class GameController : MonoBehaviour
                 Debug.Log("WinningBetAPIfailed========>");
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
-        DemoAPIReset();
+       /* DemoAPIReset();*/
     }
     void Call_Functions()
     {
@@ -1114,6 +1114,7 @@ public class GameController : MonoBehaviour
     }
     async void DelayFuction()
     {
+        Debug.Log("DemoAPIReset ===> Demo  ");
         if (isBonus_1)
         {
             if (winCash_Demo == 10)
@@ -1149,7 +1150,7 @@ public class GameController : MonoBehaviour
     }
     async void DemoAPIReset()
     {
-        Debug.Log("DemoAPIReset 0  ");
+        Debug.Log("DemoAPIReset ===> Live  ");
         if (isBonus_1)
         {
             if (winCash_Demo == 10)
@@ -1271,6 +1272,8 @@ public class GameController : MonoBehaviour
         multiplierTxt.color = Color.black;
         Xtxt.color = Color.black;
         makeLose = false;
+        unPress.SetActive(true);
+        pressed.SetActive(false);
         Invoke("TimeDelay", 1.5f);
     }
     void Winning_Animations()
