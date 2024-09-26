@@ -94,7 +94,7 @@ public class WebApiManager : MonoBehaviour
             while (!www.downloadHandler.isDone)
                 yield return null;
 
-             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
+            callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
         }
     }
 
@@ -161,7 +161,7 @@ public class WebApiManager : MonoBehaviour
 
         Debug.Log($"<color=magenta>{jsonData}\n{url}</color>");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-        using UnityWebRequest request = UnityWebRequest.PostWwwForm(url, "POST");
+        using UnityWebRequest request = UnityWebRequest.Post(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -190,7 +190,7 @@ public class WebApiManager : MonoBehaviour
                 //while (!texDl.IsDone)
                 yield return null;
 
-         
+
             callback(www.result == UnityWebRequest.Result.Success, www.error, ((DownloadHandlerTexture)www.downloadHandler).texture);
         }
     }
