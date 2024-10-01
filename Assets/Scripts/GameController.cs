@@ -295,6 +295,9 @@ public class GameController : MonoBehaviour
         // takeCash buttons & colors
         takeBetAmount = true;
         TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(194, 236, 166, 120);
+        takeCashWintxt.color = new Color32(194, 236, 166, 120);
+        takeCurrencytxt.color = new Color32(194, 236, 166, 120);
         takeCashObj.SetActive(false);
         // Set the initial multiplier text
         multiplierTxt.text = multiplier.ToString("0.00");
@@ -536,6 +539,9 @@ public class GameController : MonoBehaviour
             fireIdleObj.SetActive(false);
             TakeCashbutton.enabled = false;
             TakeCashImg.color = new Color32(140, 140, 140, 255);
+            TakeCashtxt.color = new Color32(194, 236, 166, 120);
+            takeCashWintxt.color = new Color32(194, 236, 166, 120);
+            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
             heatTxt.color = new Color32(63, 15, 15, 200);
         }
         // Game Lose
@@ -566,6 +572,9 @@ public class GameController : MonoBehaviour
             balloonShake_blue.SetActive(false);
             //takeCash & heat button 
             TakeCashImg.color = new Color32(140, 140, 140, 255);
+            TakeCashtxt.color = new Color32(194, 236, 166, 120);
+            takeCashWintxt.color = new Color32(194, 236, 166, 120);
+            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
             heatTxt.color = new Color32(63, 15, 15, 200);
             takeCashObj.SetActive(false);
         }
@@ -784,12 +793,18 @@ public class GameController : MonoBehaviour
         {
             TakeCashbutton.enabled = true;
             TakeCashImg.color = new Color32(255, 255, 255, 255);
+            TakeCashtxt.color = new Color32(194, 236, 166, 255);
+            takeCashWintxt.color = new Color32(194, 236, 166, 255);
+            takeCurrencytxt.color = new Color32(194, 236, 166, 255);
             takeCashObj.SetActive(true);
         }
         else
         {
             TakeCashbutton.enabled = false;
             TakeCashImg.color = new Color32(140, 140, 140, 255);
+            TakeCashtxt.color = new Color32(194, 236, 166, 120);
+            takeCashWintxt.color = new Color32(194, 236, 166, 120);
+            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
             takeCashObj.SetActive(false);
         }
     }
@@ -826,6 +841,9 @@ public class GameController : MonoBehaviour
                     holdButton.enabled = false;
                     // TakeCash
                     TakeCashImg.color = new Color32(140, 140, 140, 255);
+                    TakeCashtxt.color = new Color32(194, 236, 166, 120);
+                    takeCashWintxt.color = new Color32(194, 236, 166, 120);
+                    takeCurrencytxt.color = new Color32(194, 236, 166, 120);
                     takeCashObj.SetActive(false);
                     // sliderOBjs
                     slider_bg.SetActive(false);
@@ -1208,6 +1226,9 @@ public class GameController : MonoBehaviour
         Button_Switch_ON();
         //colors
         TakeCashImg.color = new Color32(140, 140, 140, 255);
+        TakeCashtxt.color = new Color32(194, 236, 166, 120);
+        takeCashWintxt.color = new Color32(194, 236, 166, 120);
+        takeCurrencytxt.color = new Color32(194, 236, 166, 120);
         heatTxt.color = new Color32(63, 15, 15, 255);
 
         takeCashObj.SetActive(false);

@@ -212,7 +212,7 @@ public class BetInputController : MonoBehaviour
                  string _s = controller.betAmount.ToString("0.00");
                  controller.betAmount = float.Parse(_s);
                  /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " " + APIController.instance.userDetails.currency_type;*/
-                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=35>" + APIController.instance.userDetails.currency_type + "</size>";
+                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
                  Debug.Log("Done " + controller.betAmount);
@@ -232,7 +232,7 @@ public class BetInputController : MonoBehaviour
                  string _s = controller.betAmount.ToString("0.00");
                  controller.betAmount = float.Parse(_s);
                  /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " " + APIController.instance.userDetails.currency_type;*/
-                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=35>" + APIController.instance.userDetails.currency_type + "</size>";
+                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
                  Debug.Log("Done " + controller.betAmount);
@@ -341,7 +341,7 @@ public class BetInputController : MonoBehaviour
         string _s = controller.betAmount.ToString("0.00");
         controller.betAmount = float.Parse(_s);
         /*controller.betAmountTxt.text = controller.betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type;*/
-        controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=35>" + APIController.instance.userDetails.currency_type + "</size>";
+        controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
 
         Debug.Log("EnableBetInput Called");
 
