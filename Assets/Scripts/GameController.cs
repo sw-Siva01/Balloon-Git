@@ -178,8 +178,8 @@ public class GameController : MonoBehaviour
     // DoTween Win_Images 
     [Header("DoTween Win_Images")]
     [SerializeField] GameObject winPanel;
-    [SerializeField] RectTransform winObj;
-    [SerializeField] Image winImg;
+   /* [SerializeField] RectTransform winObj;
+    [SerializeField] Image winImg;*/
     [SerializeField] TextMeshProUGUI winTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
