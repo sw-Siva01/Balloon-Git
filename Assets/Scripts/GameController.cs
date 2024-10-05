@@ -120,6 +120,7 @@ public class GameController : MonoBehaviour
     [Header("TextMeshProUGUI")]
     public TextMeshProUGUI multiplierTxt;
     [SerializeField] TextMeshProUGUI Xtxt;
+    public TextMeshProUGUI multiplierTxt_Shadow;
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI totalAmountTxt;
     [SerializeField] TextMeshProUGUI takeCurrenyType;
@@ -301,6 +302,7 @@ public class GameController : MonoBehaviour
         takeCashObj.SetActive(false);
         // Set the initial multiplier text
         multiplierTxt.text = multiplier.ToString("0.00");
+        multiplierTxt_Shadow.text = multiplier.ToString("0.00");
         StartCoroutine(HolidngButtons());
         initialBackgroundPosition = background.localPosition;
 
@@ -740,6 +742,7 @@ public class GameController : MonoBehaviour
             multiplier += Time.deltaTime;
             multiplier = Mathf.Min(multiplier);
             multiplierTxt.text = multiplier.ToString("0.00");
+            multiplierTxt_Shadow.text = multiplier.ToString("0.00");
             balloonBlue_Start.SetActive(false);
             ballon_Anim.SetBool("isJump", true);
             balloon_Objs();
@@ -750,6 +753,7 @@ public class GameController : MonoBehaviour
             balloonParts.SetActive(false);
             balloonShake.SetActive(true);
             multiplierTxt.text = multiplier.ToString("0.00");
+            multiplierTxt_Shadow.text = multiplier.ToString("0.00");
             takeCash = betAmount * multiplier;
             takeCashTxt.text = takeCash.ToString("0.00");
             // Increment the timer by the time elapsed since the last frame
@@ -816,6 +820,7 @@ public class GameController : MonoBehaviour
             multiplier *= incrementRate;
             // Update the multiplier text
             multiplierTxt.text = multiplier.ToString("0.00");
+            multiplierTxt_Shadow.text = multiplier.ToString("0.00");
 
             // Calculate the win amount
             takeCash = betAmount * multiplier;
@@ -838,6 +843,7 @@ public class GameController : MonoBehaviour
                     startGame = false;
                     multiplier = float.Parse(multiplier.ToString("0.00"));
                     multiplierTxt.text = multiplier.ToString();
+                    multiplierTxt_Shadow.text = multiplier.ToString();
                     holdButton.enabled = false;
                     // TakeCash
                     TakeCashImg.color = new Color32(140, 140, 140, 255);
@@ -1200,6 +1206,7 @@ public class GameController : MonoBehaviour
         Xtxt.color = Color.white;
         multiplier = 0f;
         multiplierTxt.text = multiplier.ToString("0.00");
+        multiplierTxt_Shadow.text = multiplier.ToString("0.00");
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         holdButton.enabled = true;
@@ -1273,6 +1280,7 @@ public class GameController : MonoBehaviour
         isPressed = false;
         startGame = false;
         multiplierTxt.text = multiplier.ToString("0.00");
+        multiplierTxt_Shadow.text = multiplier.ToString("0.00");
         // Change the text color
         multiplierTxt.color = Color.black;
         Xtxt.color = Color.black;
@@ -1335,6 +1343,7 @@ public class GameController : MonoBehaviour
         Xtxt.color = Color.white;
         multiplier = 0f;
         multiplierTxt.text = multiplier.ToString("0.00");
+        multiplierTxt_Shadow.text = multiplier.ToString("0.00");
         takeCash = 0f;
         takeCashTxt.text = takeCash.ToString("0.00");
         isBonus_3 = false;

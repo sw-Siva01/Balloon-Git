@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 155a7f43f2573c444abaad00774162c1
+guid: 667d796435c78544e98a0ec7e1eb6dca
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Project Sans
+  - Inter
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
