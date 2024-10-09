@@ -8,7 +8,6 @@ public class PostBuildProcessor
     public static void OnPostProcessBuild(BuildTarget target, string pathToBuiltProject)
     {
         return;
-
         if (target == BuildTarget.WebGL)
         {
             // Path to the index.html file

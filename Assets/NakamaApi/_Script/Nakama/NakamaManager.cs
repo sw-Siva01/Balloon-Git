@@ -23,6 +23,7 @@ namespace Nakama.Helpers
 
         private const string UdidKey = "udid";
         public string masterID;
+        public string connectedHost;
         [SerializeField] private NakamaConnectionData connectionData = null;
 
         public IClient client = null;
@@ -74,38 +75,13 @@ namespace Nakama.Helpers
                 cryptocharacters.Add((char)('0' + i));
             }
         }
-        public static string Encryptbase64String(string plainText)
-        {
-            int shift = 0;
-            char[] buffer = plainText.ToCharArray();
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                char c = buffer[i];
-                if (cryptocharacters.Contains(c))
-                {
-                    shift = key[i % key.Length];
-                    int value = (cryptocharacters.IndexOf(c) + cryptocharacters.IndexOf((char)shift));
-                    if (value >= cryptocharacters.Count)
-                    {
-                        value = ((value - cryptocharacters.Count));
-                    }
-                    c = cryptocharacters[value];
-                    buffer[i] = c;
-                }
-                else
-                {
-                    Debug.Log("notfound" + c);
-                }
-            }
-            return new string(buffer);
-        }
 
 
-        //public string backupServer = "turbogames.utwebapps.com";
         public async void AutoLogin(Action<bool> action, bool isTryBackupServer = false)
         {
             try
             {
+                connectedHost = isTryBackupServer ? connectionData.backupHost : connectionData.Host;
                 client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
                 CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
                 {
@@ -138,34 +114,6 @@ namespace Nakama.Helpers
             }
         }
 
-
-        //public async void AutoLogin(Action<bool> action)
-        //{
-        //    try
-        //    {
-        //        client = new Client(connectionData.Scheme, connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
-        //        CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
-        //        {
-        //            if (status)
-        //            {
-        //                await OpenSocket();
-        //                action.Invoke(true);
-        //            }
-        //            else
-        //            {
-        //                action.Invoke(false);
-        //                Debug.Log("Status failed");
-        //            }
-        //        }
-        //        ), true);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        action.Invoke(false);
-        //        Debug.LogError("Error ::: "+ex.Message);
-        //    }
-
-        //}
 
 
 
@@ -246,6 +194,7 @@ namespace Nakama.Helpers
                 {
                     Destroy(go);
                 }
+
                 socket = client.NewSocket(true);
                 while (socket.IsConnecting)
                 {
@@ -261,7 +210,8 @@ namespace Nakama.Helpers
             socket.Connected += Socket_Connected;
             Debug.Log("scoket init 1");
             socket.Closed += CloseSocket;
-            socket.ReceivedError += (err) => {
+            socket.ReceivedError += (err) =>
+            {
                 Debug.Log("socket error " + err.Message);
             };
             Debug.Log("scoket init 2");
@@ -307,8 +257,8 @@ namespace Nakama.Helpers
         private void Socket_Connected()
         {
             Debug.Log("socket connected");
-            APIController.instance.StartSession();
             APIController.instance.GetNetworkStatus(true.ToString());
+
         }
 
         string matchId;
@@ -354,7 +304,6 @@ namespace Nakama.Helpers
                 NakamaManager.Instance.CloseSocket();
             }
         }
-
         public async UniTask MasterLogin(Action<bool> action, bool isTryBackupServer = false)
         {
             try
@@ -452,7 +401,8 @@ namespace Nakama.Helpers
                     {
                         isRunMaster = true;
                     }
-                    await MasterLogin((success) => {
+                    await MasterLogin((success) =>
+                    {
                         isRunMaster = false;
                     });
                     while (isRunMaster)
@@ -469,7 +419,7 @@ namespace Nakama.Helpers
                     isNeedTOCheck = true;
                     ValidateRPC(rpc, payload, action);
                 }
-                Debug.Log(rpc + " send ::_" + payload);
+                Debug.Log(rpc + " send ::_" + payload + "============> " + encryptpayload.ToJson());
                 var output = await client.RpcAsync(session, EncryptString(rpc),
                 encryptpayload.ToJson(), retryConfiguration);
                 if (rpc == "rpc_CreateAndJoin")
@@ -478,18 +428,16 @@ namespace Nakama.Helpers
                 }
                 encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
                 string outputPayload = DecryptString(encryptpayload.data);
-                Debug.Log(rpc + " recived ::_" + outputPayload);
+                Debug.Log(rpc + " recived ::_" + outputPayload + "Encrypted data : " + encryptpayload.data);
                 action.Invoke(outputPayload);
-#if UNITY_WEBGL && !UNITY_EDITOR
-                APIController.GetUpdatedBalance();
-#endif
+                if (!APIController.instance.userDetails.isBlockApiConnection)
+                    APIController.GetUpdatedBalance();
             }
             catch (Exception ex)
             {
                 action.Invoke(ex.Message);
             }
         }
-
 
 
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key
@@ -542,6 +490,32 @@ namespace Nakama.Helpers
             }
             return new string(buffer);
         }
+
+        public static string Encryptbase64String(string plainText)
+        {
+            int shift = 0;
+            char[] buffer = plainText.ToCharArray();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                char c = buffer[i];
+                if (cryptocharacters.Contains(c))
+                {
+                    shift = key[i % key.Length];
+                    int value = (cryptocharacters.IndexOf(c) + cryptocharacters.IndexOf((char)shift));
+                    if (value >= cryptocharacters.Count)
+                    {
+                        value = ((value - cryptocharacters.Count));
+                    }
+                    c = cryptocharacters[value];
+                    buffer[i] = c;
+                }
+                else
+                {
+                    Debug.Log("notfound" + c);
+                }
+            }
+            return new string(buffer);
+        }
         public void LogOut()
         {
             socket.CloseAsync();
@@ -554,6 +528,6 @@ namespace Nakama.Helpers
             public string data;
             public string value;
         }
-#endregion
+        #endregion
     }
 }

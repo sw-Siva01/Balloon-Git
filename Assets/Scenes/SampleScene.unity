@@ -1761,6 +1761,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 6208332247014328519}
+        m_TargetAssemblyTypeName: ScrollController, Assembly-CSharp
+        m_MethodName: PlayingAudio
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 6208332247014328514}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -3048,7 +3060,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.7226939}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -8.499878}
+  m_AnchoredPosition: {x: 0, y: -8.5}
   m_SizeDelta: {x: 30, y: 73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &277310106
@@ -4813,8 +4825,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8190,8 +8202,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9402,12 +9414,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!114 &674228586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10771,12 +10777,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!114 &766651698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11329,12 +11329,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 351efeb5036019f448da8bf11dfaf20c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!1 &810288820
 GameObject:
   m_ObjectHideFlags: 0
@@ -12112,10 +12106,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 846987391}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00eeff6a180ec4b4cbf69c9fa5f91c76, type: 3}
+  m_Script: {fileID: 11500000, guid: b1cc7985aa64ac347a1800c97fcab696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectionPanel: {fileID: 870076083884327943}
+  ConnectionPanel: {fileID: 4875346415498661686}
 --- !u!4 &846987393
 Transform:
   m_ObjectHideFlags: 0
@@ -13572,8 +13566,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -14581,12 +14575,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!114 &991449613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15857,8 +15845,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -17377,12 +17365,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!1 &1213436258
 GameObject:
   m_ObjectHideFlags: 0
@@ -21244,7 +21226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1436550783
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21531,8 +21513,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -22870,8 +22852,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -24004,8 +23986,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -24888,7 +24870,8 @@ MonoBehaviour:
   isCreateUser: 0
   isSocketOpen: 0
   masterID: 
-  connectionData: {fileID: 11400000, guid: 093242b2cf05246028012b8073fc79c1, type: 2}
+  connectedHost: 
+  connectionData: {fileID: 11400000, guid: d6ac2cf1929514cfb97802a377e02ba1, type: 2}
   checkInternetUrl: https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
   lastCalledTime: 0
   message: 
@@ -27137,8 +27120,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -28043,12 +28026,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 351efeb5036019f448da8bf11dfaf20c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  shadowColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
 --- !u!1 &1905961928
 GameObject:
   m_ObjectHideFlags: 0
@@ -28139,8 +28116,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -30879,8 +30856,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.81568635, g: 0.8431373, b: 0.8705883, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -31680,8 +31657,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1358954495
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+    rgba: 4292794320
+  m_fontColor: {r: 0.8156863, g: 0.84313726, b: 0.87058824, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -46799,6 +46776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Scroll: {fileID: 2106518944}
+  ExitBtn: {fileID: 167218626}
 --- !u!114 &6210835745913554973
 MonoBehaviour:
   m_ObjectHideFlags: 0

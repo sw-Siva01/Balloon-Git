@@ -179,8 +179,6 @@ public class GameController : MonoBehaviour
     // DoTween Win_Images 
     [Header("DoTween Win_Images")]
     [SerializeField] GameObject winPanel;
-   /* [SerializeField] RectTransform winObj;
-    [SerializeField] Image winImg;*/
     [SerializeField] TextMeshProUGUI winTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -342,7 +340,7 @@ public class GameController : MonoBehaviour
                 {
                     ISActive = true;
                     if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.connectionPanel.activeSelf))
+                        (!InternetChecking.instance.ConnectionPanel.activeSelf))
                     {
                         Button_ONEnter();
                         OnClickDown();
@@ -366,7 +364,7 @@ public class GameController : MonoBehaviour
         {
             //isPressed = false;
             if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.connectionPanel.activeSelf))
+                        (!InternetChecking.instance.ConnectionPanel.activeSelf))
             {
                 OnClickUp();
                 Button_OFFEnter();
@@ -463,7 +461,7 @@ public class GameController : MonoBehaviour
     {
         //while (true)
         //{
-        if (startGame && !pauseGame && (!InternetChecking.instance.connectionPanel.activeSelf))
+        if (startGame && !pauseGame && (!InternetChecking.instance.ConnectionPanel.activeSelf))
         {
             if (!pauseGame && multiplier < 1.01f)
             {
@@ -646,7 +644,7 @@ public class GameController : MonoBehaviour
             isPressed = false;
         }
 
-        if (bonusCount && APIController.instance.isOnline && !InternetChecking.instance.connectionPanel.activeSelf)
+        if (bonusCount && APIController.instance.isOnline && !InternetChecking.instance.ConnectionPanel.activeSelf)
         {
             TakeCashOut();
             bonusCount = false;
@@ -833,7 +831,7 @@ public class GameController : MonoBehaviour
         #region ________ Internet Checking : 1 ________
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            if (success && !InternetChecking.instance.connectionPanel.activeSelf)
+            if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
             {
                 InternetCheck = true;
                 #region
@@ -1014,7 +1012,7 @@ public class GameController : MonoBehaviour
             {
                 if (success)
                 {
-                    /*if (!InternetChecking.instance.connectionPanel.activeSelf)*/
+                    /*if (!InternetChecking.instance.ConnectionPanel.activeSelf)*/
                     /*startGame = true;*/
                     betID = newbetID.ToString();
                     MatchRes = res;
@@ -1082,7 +1080,7 @@ public class GameController : MonoBehaviour
         {
             APIController.instance.CheckInternetandProcess(async (success) =>
             {
-                if (success && !InternetChecking.instance.connectionPanel.activeSelf)
+                if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
                 {
                     checking = true;
                 }
@@ -1307,7 +1305,7 @@ public class GameController : MonoBehaviour
             winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
         else
         {
-            winTxt.text = takeCash.ToString("0.00" + " <size=70>EUR</size>");
+            winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
         }
         winTxt.color = Color.green;
     }
@@ -1442,7 +1440,7 @@ public class GameController : MonoBehaviour
         #region
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            if (success && !InternetChecking.instance.connectionPanel.activeSelf)
+            if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
             {
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
@@ -1507,7 +1505,7 @@ public class GameController : MonoBehaviour
                         button_Anim[i].SetActive(false);
                 }
 
-                if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.connectionPanel.activeSelf)
+                if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.ConnectionPanel.activeSelf)
                 {
                     if (HandGestures_start.activeSelf)
                     {
@@ -1654,7 +1652,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 1f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(true);
             button_2.gameObject.SetActive(false);
@@ -1697,7 +1695,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 2f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(true);
@@ -1738,7 +1736,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 5f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1780,7 +1778,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 10f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1833,7 +1831,7 @@ public class GameController : MonoBehaviour
             BetInputController.Instance.BetPanel.gameObject.SetActive(false);
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
             betAmount = s;
-            betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
             betAmountTxt.gameObject.SetActive(true);
             return;
         }
@@ -1843,7 +1841,7 @@ public class GameController : MonoBehaviour
             if (betAmount < 100f)
             {
                 betAmount += s;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
@@ -1854,7 +1852,7 @@ public class GameController : MonoBehaviour
             if (betAmount >= 100)
             {
                 betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
                 MaxBet_Object();
@@ -1893,7 +1891,7 @@ public class GameController : MonoBehaviour
             if (betAmount < 100f)
             {
                 betAmount += 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 minusButton.enabled = true;
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
@@ -1903,7 +1901,7 @@ public class GameController : MonoBehaviour
             {
                 betAmount = 100f;
                 plusButton.enabled = false;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 100);
                 MaxBet_Object();
@@ -1937,7 +1935,7 @@ public class GameController : MonoBehaviour
             if (betAmount > 0.10f)
             {
                 betAmount -= 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType/*" <size=30>" + currencyType + "</size>"*/);
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
@@ -1945,7 +1943,7 @@ public class GameController : MonoBehaviour
             if (betAmount <= 0.20f)
             {
                 betAmount = 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + " <size=30>" + currencyType + "</size>");
+                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
                 BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 100);
