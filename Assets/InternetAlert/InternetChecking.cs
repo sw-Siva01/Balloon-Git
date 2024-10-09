@@ -3,6 +3,7 @@ using UnityEngine;
 public class InternetChecking : MonoBehaviour
 {
     public GameObject ConnectionPanel;
+    public GameObject ServerMaintancePopup;
     public static InternetChecking instance;
 
     private void Start()
@@ -22,7 +23,7 @@ public class InternetChecking : MonoBehaviour
             }
             else
             {
-
+                ServerMaintancePopup.SetActive(true);
             }
         }
         else

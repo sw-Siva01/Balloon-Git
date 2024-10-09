@@ -502,37 +502,6 @@ public class APIController : MonoBehaviour
                  }, 2);
     }
 
-    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
-    {
-        WinLoseRNG winlogic = new()
-        {
-            amount = amount,
-            operatorName = operatorname,
-            gameID = gameid,
-            gameName = gamename,
-            playerSetMultiplier = playersetmultiplier
-        };
-
-        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
-        {
-            Debug.Log("Rng Calculation inside GetRNG 2");
-            JObject jsonObject = JObject.Parse(res);
-            userDetails.isWin = ((int.Parse(jsonObject["iswin"].ToString()) > 0));
-            userDetails.maxWin = float.Parse(jsonObject["Multiplier"].ToString());
-            int gameCount = int.Parse(jsonObject["GameCount"].ToString());
-            canWin.Invoke(userDetails.isWin, userDetails.maxWin, gameCount);
-        });
-    }
-
-    public class WinLoseRNG
-    {
-        public double amount;
-        public string operatorName;
-        public string gameID;
-        public string gameName;
-        public double playerSetMultiplier;
-
-    }
 
     public async void CheckInternetandProcess(Action<bool> action)
     {
@@ -593,8 +562,12 @@ public class APIController : MonoBehaviour
         GetNetworkStatus(isOnline.ToString());
         Debug.Log("Internet check " + isOnline);
     }
+
     public bool IsAbleToPlayGame()
     {
+        if (userDetails.isBlockApiConnection)
+            return true;
+
         if (string.IsNullOrEmpty(PlayNextGameMsg))
         {
             return true;
@@ -605,8 +578,43 @@ public class APIController : MonoBehaviour
             return false;
         }
     }
+    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
+    {
+        WinLoseRNG winlogic = new()
+        {
+            amount = amount,
+            operatorName = operatorname,
+            gameID = gameid,
+            gameName = gamename,
+            playerSetMultiplier = playersetmultiplier
+        };
+
+        Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
+        {
+            Debug.Log("Rng Calculation inside GetRNG 2");
+            JObject jsonObject = JObject.Parse(res);
+            userDetails.isWin = ((int.Parse(jsonObject["iswin"].ToString()) > 0));
+            userDetails.maxWin = float.Parse(jsonObject["Multiplier"].ToString());
+            int gameCount = int.Parse(jsonObject["GameCount"].ToString());
+            canWin.Invoke(userDetails.isWin, userDetails.maxWin, gameCount);
+        });
+    }
+
+    public class WinLoseRNG
+    {
+        public double amount;
+        public string operatorName;
+        public string gameID;
+        public string gameName;
+        public double playerSetMultiplier;
+
+    }
+
     public async void CheckSession()
     {
+#if UNITY_EDITOR
+        return;
+#endif
         int Runcount = 0;
         while (true)
         {
