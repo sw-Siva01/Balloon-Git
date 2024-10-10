@@ -932,8 +932,8 @@ public class GameController : MonoBehaviour
             if (TotalAmount >= .1f)
             {
                 // Controller.BetAmount = 5;
-                /*PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);*/
-                PassTxt(betAmountTxt, $"{betAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");
+                PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);
+                /*PassTxt(betAmountTxt, $"{betAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");*/
             }
             else
             {
@@ -1652,7 +1652,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 1f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(true);
             button_2.gameObject.SetActive(false);
@@ -1695,7 +1695,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 2f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(true);
@@ -1736,7 +1736,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 5f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1778,7 +1778,7 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll)
         {
             betAmount = 10f;
-            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
             BetAmountTxt_Scaling();
             button_1.gameObject.SetActive(false);
             button_2.gameObject.SetActive(false);
@@ -1831,7 +1831,7 @@ public class GameController : MonoBehaviour
             BetInputController.Instance.BetPanel.gameObject.SetActive(false);
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
             betAmount = s;
-            betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+            betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
             betAmountTxt.gameObject.SetActive(true);
             return;
         }
@@ -1841,7 +1841,7 @@ public class GameController : MonoBehaviour
             if (betAmount < 100f)
             {
                 betAmount += s;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 plusButton.enabled = true;
                 minusButton.enabled = true;
@@ -1852,7 +1852,7 @@ public class GameController : MonoBehaviour
             if (betAmount >= 100)
             {
                 betAmount = 100f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
                 MaxBet_Object();
@@ -1891,7 +1891,7 @@ public class GameController : MonoBehaviour
             if (betAmount < 100f)
             {
                 betAmount += 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = true;
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
@@ -1901,7 +1901,7 @@ public class GameController : MonoBehaviour
             {
                 betAmount = 100f;
                 plusButton.enabled = false;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 100);
                 MaxBet_Object();
@@ -1935,7 +1935,7 @@ public class GameController : MonoBehaviour
             if (betAmount > 0.10f)
             {
                 betAmount -= 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType/*" <size=30>" + currencyType + "</size>"*/);
+                betAmountTxt.text = betAmount.ToString("0.00" + /*currencyType*/" <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
@@ -1943,7 +1943,7 @@ public class GameController : MonoBehaviour
             if (betAmount <= 0.20f)
             {
                 betAmount = 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00 " + currencyType);
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 100);

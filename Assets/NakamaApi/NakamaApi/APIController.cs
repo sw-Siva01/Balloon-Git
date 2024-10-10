@@ -10,6 +10,7 @@ using UnityEngine;
 using Nakama;
 using Nakama.TinyJson;
 using static WebApiManager;
+using Nakama.Helpers;
 
 [Serializable]
 public class BetRequest
@@ -188,15 +189,34 @@ public class APIController : MonoBehaviour
                  (bool isSuccess, string error, string body) =>
                  {
                  }, 2);
-                    OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+                    CheckServer();
                 }
                 else
                     OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
             });
+
         }
 
     }
-
+    public void CheckServer()
+    {
+        CheckInternetForButtonClick((status) =>
+        {
+            if (status)
+            {
+                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
+             ,
+             "https://" + NakamaManager.Instance.connectedHost + ":7350",
+             new List<KeyValuePojo>() { new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Message", value = "Server connection issue " + Nakama.Helpers.NakamaManager.Instance.connectedHost } },
+             (bool isSuccess, string error, string body) =>
+             {
+                 OnInternetStatusChange?.Invoke(NetworkStatus.Active);
+             }, 2);
+            }
+            else
+                OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+        });
+    }
     public void OnSwitchingTabs(string data)
     {
         Time.timeScale = 1;
@@ -485,7 +505,8 @@ public class APIController : MonoBehaviour
                 Debug.Log("online false 3");
                 isOnline = false;
             }
-            GetNetworkStatus(isOnline.ToString());
+            if (!isOnline)
+                GetNetworkStatus(isOnline.ToString());
             Debug.Log("Internet check " + isOnline);
         }
     }
@@ -559,7 +580,8 @@ public class APIController : MonoBehaviour
         }
 
         action.Invoke(isOnline);
-        GetNetworkStatus(isOnline.ToString());
+        if (!isOnline)
+            GetNetworkStatus(isOnline.ToString());
         Debug.Log("Internet check " + isOnline);
     }
 
@@ -691,8 +713,8 @@ public class APIController : MonoBehaviour
                 Debug.Log("online false 3");
                 isOnline = false;
             }
-            if (isOnline)
-                GetNetworkStatus(isOnline.ToString());
+            //if (isOnline)
+            //    GetNetworkStatus(isOnline.ToString());
             Debug.Log("Internet check " + isOnline);
         }
     }
@@ -707,7 +729,7 @@ public class APIController : MonoBehaviour
             {
                 OnUserDetailsUpdate?.Invoke();
                 OnUserBalanceUpdate?.Invoke();
-                if(!userDetails.isBlockApiConnection)
+                if (!userDetails.isBlockApiConnection)
                     CheckSession();
             }
             else

@@ -31,9 +31,7 @@ public class BetInputController : MonoBehaviour
     }
     void Start()
     {
-       // BetAmtInput.onSelect.AddListener(delegate { OpenKeyPadPanel(); });
         Done.onClick.AddListener(delegate { CloseKeyPadPanel(); });
-        //  Coverimg.onClick.AddListener(delegate { CloseKeyPadPanel(); });
         BetAmtInput.text = "1.00";
 
     }
@@ -69,33 +67,15 @@ public class BetInputController : MonoBehaviour
         {
             return;
         }
-
-        //if (clickCount == 0)
-        //{
-        //     BetPanel.DOAnchorPosY(1050f, .2f);
         BetPanel.gameObject.SetActive(true);
-        //    TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(false);
         if (KeyBoardHandler.instance != null)
         {
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(true);
             DisableBetInput();
         }
-
-
-        // clickCount++;
-        // }
     }
     public void OnBetAmountEdit()
     {
-        /*Debug.Log("OnBetAmountEdit");*/
-
-        //if (APIController.instance.userDetails.UserDevice == "mobile")
-        //{
-        //    return;
-
-        //}
-
-        //  BetAmtInput.textViewport.gameObject.SetActive(true);
         string pattern = @"^\d*(\.\d{0,2})?$";
         if (Regex.IsMatch(BetAmtInput.text, pattern))
         {
@@ -106,30 +86,10 @@ public class BetInputController : MonoBehaviour
 
             BetAmtInput.text = BetAmtInput.text.Substring(0, BetAmtInput.text.Length - 1);
         }
-
-        // Move the caret to the end of the text
-        //     BetAmtInput.caretPosition = BetAmtInput.text.Length;
-        //float amount = float.Parse(BetAmtInput.text);
-        //amount = Mathf.Clamp(amount, 0.1f, 100);
-        //double val = double.Parse(BetAmtInput.text);
-
-        //TowerGameController.Instance.BetAmount = amount;
-        //string _s = TowerGameController.Instance.BetAmount.ToString("0.00");
-        //TowerGameController.Instance.BetAmount=double.Parse(_s);
-        //BetAmtInput.text = val > 100 ? "100.00" : BetAmtInput.text;
-        //  BetAmtInput.text = val < 0.10f ? "0.10" : BetAmtInput.text;
     }
     public void OnEndEditBetAmount(float amount)
     {
-        //    IsEmptyInput = false;
         Debug.Log("OnEndEditBetAmount");
-
-        //if (APIController.instance.userDetails.UserDevice == "mobile")
-        //{
-        //    return;
-
-        //}
-        //  BetAmtInput.textViewport.gameObject.SetActive(false);
         if (APIController.instance.userDetails.UserDevice == "desktop")
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
@@ -162,10 +122,6 @@ public class BetInputController : MonoBehaviour
         }
         if (APIController.instance.userDetails.UserDevice == "desktop")
         {
-            /*TowerGameController.Instance.BetAmount = amount;
-            string _s = TowerGameController.Instance.BetAmount.ToString("0.00");
-            TowerGameController.Instance.BetAmount = float.Parse(_s);*/
-
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
             controller.betAmount  = float.Parse(_s);
@@ -216,9 +172,6 @@ public class BetInputController : MonoBehaviour
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
                  Debug.Log("Done " + controller.betAmount);
-
-                 /*controller.AmountColor_Glow();*/
-                 /*controller.BetAmountTxt_Scaling();*/
              },
              (value) =>
              {
@@ -236,17 +189,9 @@ public class BetInputController : MonoBehaviour
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
                  Debug.Log("Done " + controller.betAmount);
-
-
-
              });
             Debug.Log(" Done  ");
         }
-
-
-        
-
-        // otherBetHandler.gameObject.SetActive(false);
     }
     public void RestrictInput()
     {
@@ -255,12 +200,10 @@ public class BetInputController : MonoBehaviour
             Debug.Log("Closing +");
 
             IsEmptyInput = true;
-            /*TowerGameController.Instance.BetAmount = 0.1f;*/
             controller.betAmount = 0.1f;
         }
         else
         {
-            /*float amount=(float)TowerGameController.Instance.BetAmount;*/
             float amount = (float)controller.betAmount;
             if (BetAmtInput.text == ".")
             {
@@ -280,15 +223,10 @@ public class BetInputController : MonoBehaviour
             }
             amount = Mathf.Clamp(amount, 0.10f, 100.00f);
             IsEmptyInput = false;
-            /*TowerGameController.Instance.BetAmount = amount;
-            string _s = TowerGameController.Instance.BetAmount.ToString("0.00");
-            TowerGameController.Instance.BetAmount = float.Parse(_s);*/
 
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
             controller.betAmount = float.Parse(_s);
-            //  TowerGameController.Instance.BettingAmountTxt.text = TowerGameController.Instance.BetAmount.ToString("F2") + " " + APIController.instance.userDetails.currency_type;
-
         }
     }
     public void CloseKeyPadPanel()
@@ -297,7 +235,7 @@ public class BetInputController : MonoBehaviour
         Debug.Log("CloseKeyPadPanel ");
         BetPanel.gameObject.SetActive(false);
         RestrictInput();
-        //  BetPanel.DOAnchorPosY(178f, .2f);
+
         if (KeyBoardHandler.instance != null)
         {
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
@@ -306,9 +244,6 @@ public class BetInputController : MonoBehaviour
 
         EnableBetInput();
         Debug.Log("CloseKeyPadPanel Done ");
-        /*controller.AmountColor_Glow();*/
-        /*controller.BetAmountTxt_Scaling();*/
-        Debug.Log(" Done  Done");
         controller.HandGesture();
 
     }
@@ -316,32 +251,27 @@ public class BetInputController : MonoBehaviour
     public void EnableBetInput()
     {
         Debug.Log("EnableBetInput");
-       // if (APIController.instance.userDetails.UserDevice == "desktop") BetAmtInput.textViewport.gameObject.SetActive(false);
+
         BetAmtInput.interactable = true;
         if (APIController.instance.userDetails.UserDevice == "mobile")
         {
             if (APIController.instance.userDetails.UserDevice == "mobile")
             {
-                /*TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(true);*/
                 controller.betAmountTxt.gameObject.SetActive(true);
 
             }
             else
             {
-                 /*TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(false);*/
                 controller.betAmountTxt.gameObject.SetActive(false);
 
             }
         }
 
-        /*string _s = TowerGameController.Instance.BetAmount.ToString("0.00") ;
-        TowerGameController.Instance.BetAmount = float.Parse(_s);
-        TowerGameController.Instance.BettingAmountTxt.text = TowerGameController.Instance.BetAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type;*/
-
         string _s = controller.betAmount.ToString("0.00");
         controller.betAmount = float.Parse(_s);
         /*controller.betAmountTxt.text = controller.betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type;*/
         controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
+        /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + APIController.instance.userDetails.currency_type;*/
 
         Debug.Log("EnableBetInput Called");
 
@@ -350,12 +280,6 @@ public class BetInputController : MonoBehaviour
     public void DisableBetInput()
     {
         Debug.Log("DisableBetInput");
-
-        /*TowerGameController.Instance.BettingAmountTxt.gameObject.SetActive(false);
-        BetAmtInput.text = TowerGameController.Instance.BetAmount.ToString("0.00");
-        string _s = TowerGameController.Instance.BetAmount.ToString("0.00");
-        TowerGameController.Instance.BetAmount = float.Parse(_s);*/
-
         controller.betAmountTxt.gameObject.SetActive(false);
         BetAmtInput.text = controller.betAmount.ToString("0.00");
         string _s = controller.betAmount.ToString("0.00");
