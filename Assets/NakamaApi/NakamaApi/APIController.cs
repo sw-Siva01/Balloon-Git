@@ -721,6 +721,23 @@ public class APIController : MonoBehaviour
 
 #if CasinoGames
 
+    /* public void InitNakamaClient()
+     {
+         Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
+         {
+             if (success)
+             {
+                 OnUserDetailsUpdate?.Invoke();
+                 OnUserBalanceUpdate?.Invoke();
+                 if (!userDetails.isBlockApiConnection)
+                     CheckSession();
+             }
+             else
+             {
+                 Debug.LogError("Check nakama server");
+             }
+         });
+     }*/
     public void InitNakamaClient()
     {
         Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
@@ -735,6 +752,13 @@ public class APIController : MonoBehaviour
             else
             {
                 Debug.LogError("Check nakama server");
+                CheckInternetForButtonClick((IsInternet) =>
+                {
+                    if (IsInternet)
+                    {
+                        OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+                    }
+                });
             }
         });
     }

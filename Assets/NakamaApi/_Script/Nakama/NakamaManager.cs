@@ -159,7 +159,7 @@ namespace Nakama.Helpers
             }
 
         }
-
+        double TimerToCheckServerDown = 0;
         bool isRunWebGLGame = false;
         bool isTrytoOpenSocket = false;
         public string checkInternetUrl = "https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/";
@@ -175,6 +175,7 @@ namespace Nakama.Helpers
             bool isOnline = false;
             while (!isOnline)
             {
+                TimerToCheckServerDown++;
                 WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
                    ,
                    checkInternetUrl,
@@ -183,8 +184,15 @@ namespace Nakama.Helpers
                    {
                        isOnline = isSuccess;
                    }, 3);
-                Debug.Log("checking internet for socket");
+                Debug.Log("checking internet for socket" + TimerToCheckServerDown);
                 await UniTask.Delay(3000);
+                if(TimerToCheckServerDown > 3)
+                {
+                    InternetChecking.instance.ServerMaintancePopup.SetActive(true);
+                    InternetChecking.instance.ConnectionPanel.SetActive(false);
+
+                    break;
+                }
             }
             int count = 0;
             if (socket == null)
@@ -257,6 +265,7 @@ namespace Nakama.Helpers
         private void Socket_Connected()
         {
             Debug.Log("socket connected");
+            TimerToCheckServerDown = 0;
             APIController.instance.GetNetworkStatus(true.ToString());
 
         }

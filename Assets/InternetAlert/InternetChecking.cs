@@ -26,7 +26,7 @@ public class InternetChecking : MonoBehaviour
             }
             else if (!ConnectionPanel.activeSelf)
             {
-                ServerMaintancePopup.SetActive(true);
+               // ServerMaintancePopup.SetActive(true);
             }
         }
         else
@@ -34,7 +34,7 @@ public class InternetChecking : MonoBehaviour
             if (ConnectionPanel.activeSelf || ServerMaintancePopup.activeSelf)
             {
                 lastupdate = DateTime.Now;
-                ServerMaintancePopup.SetActive(false);
+                //ServerMaintancePopup.SetActive(false);
                 ConnectionPanel.SetActive(false);
             }
         }
