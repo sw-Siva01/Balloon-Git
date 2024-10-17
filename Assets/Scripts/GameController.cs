@@ -340,7 +340,7 @@ public class GameController : MonoBehaviour
                 {
                     ISActive = true;
                     if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.ConnectionPanel.activeSelf))
+                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
                     {
                         Button_ONEnter();
                         OnClickDown();
@@ -364,7 +364,7 @@ public class GameController : MonoBehaviour
         {
             //isPressed = false;
             if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.ConnectionPanel.activeSelf))
+                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
             {
                 OnClickUp();
                 Button_OFFEnter();
@@ -461,7 +461,7 @@ public class GameController : MonoBehaviour
     {
         //while (true)
         //{
-        if (startGame && !pauseGame && (!InternetChecking.instance.ConnectionPanel.activeSelf))
+        if (startGame && !pauseGame && (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
         {
             if (!pauseGame && multiplier < 1.01f)
             {
@@ -644,7 +644,7 @@ public class GameController : MonoBehaviour
             isPressed = false;
         }
 
-        if (bonusCount && APIController.instance.isOnline && !InternetChecking.instance.ConnectionPanel.activeSelf)
+        if (bonusCount && APIController.instance.isOnline && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
         {
             TakeCashOut();
             bonusCount = false;
@@ -831,7 +831,7 @@ public class GameController : MonoBehaviour
         #region ________ Internet Checking : 1 ________
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
+            if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
             {
                 InternetCheck = true;
                 #region
@@ -1080,7 +1080,7 @@ public class GameController : MonoBehaviour
         {
             APIController.instance.CheckInternetandProcess(async (success) =>
             {
-                if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
+                if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
                 {
                     checking = true;
                 }
@@ -1440,7 +1440,7 @@ public class GameController : MonoBehaviour
         #region
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            if (success && !InternetChecking.instance.ConnectionPanel.activeSelf)
+            if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
             {
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
@@ -1505,7 +1505,7 @@ public class GameController : MonoBehaviour
                         button_Anim[i].SetActive(false);
                 }
 
-                if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.ConnectionPanel.activeSelf)
+                if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
                 {
                     if (HandGestures_start.activeSelf)
                     {

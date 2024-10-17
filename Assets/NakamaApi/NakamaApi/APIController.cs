@@ -10,7 +10,8 @@ using UnityEngine;
 using Nakama;
 using Nakama.TinyJson;
 using static WebApiManager;
-using Nakama.Helpers;
+using System.Net;
+using System.Net.NetworkInformation;
 
 [Serializable]
 public class BetRequest
@@ -49,6 +50,8 @@ public class APIController : MonoBehaviour
     public Action<bool> OnDepositCancelAction;
 
     public Action<NetworkStatus> OnInternetStatusChange;
+    public Action<NetworkStatus> ServerAction;
+
     public Action<bool> OnSwitchingTab;
     public bool isWin = false;
     public bool IsBotInGame = true;
@@ -155,11 +158,12 @@ public class APIController : MonoBehaviour
 #endif
     }
     public bool isNeedToPauseWhileSwitchingTab = false;
+
     public void GetNetworkStatus(string data)
     {
         Time.timeScale = 1;
         isOnline = data.ToLower() == "true" ? true : false;
-        Debug.Log($"Calleeedddd check internet {data}   -   {isOnline}   -   {isInFocus}");
+        Debug.Log($"CHECK API INTERNET {data}   -   {isOnline}   -   {isInFocus}");
         if (isNeedToPauseWhileSwitchingTab)
         {
             if (isInFocus && isOnline)
@@ -174,13 +178,14 @@ public class APIController : MonoBehaviour
         }
         if (isOnline)
         {
+            Debug.Log($"CHECK API INTERNET ONLINE {data}   -   {isOnline}   -   {isInFocus}");
             OnInternetStatusChange?.Invoke(NetworkStatus.Active);
         }
         else
         {
-            CheckInternetForButtonClick((status) =>
-            {
-                if (status)
+            Debug.Log($"CHECK API INTERNET NOT  ONLINE {data}   -   {isOnline}   -   {isInFocus}");
+            CheckNakamaServer((hasnetwork, hasserver) => {
+                if (hasnetwork && !hasserver)
                 {
                     WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
                  ,
@@ -189,33 +194,49 @@ public class APIController : MonoBehaviour
                  (bool isSuccess, string error, string body) =>
                  {
                  }, 2);
-                    CheckServer();
+
+                    OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+
+                }
+                else if(hasnetwork && hasserver && Nakama.Helpers.NakamaManager.Instance.isSocketOpen)
+                {
+                    OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                 }
                 else
+                {
                     OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
-            });
+                }
 
+            });
         }
 
     }
-    public void CheckServer()
+    public void CheckNakamaServer(Action<bool,bool> action)
     {
-        CheckInternetForButtonClick((status) =>
-        {
-            if (status)
+        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
+                    ,
+                    "https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/",
+                    new List<KeyValuePojo>(),
+                    (bool isSuccess, string error, string body) =>
+                    {
+                        if (isSuccess)
+                        {
+                            WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD
+            ,
+            "https://" + Nakama.Helpers.NakamaManager.Instance.connectedHost + ":7350",
+            new List<KeyValuePojo>(),
+            (bool isSuccess1, string error1, string body1) =>
             {
-                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
-             ,
-             "https://" + NakamaManager.Instance.connectedHost + ":7350",
-             new List<KeyValuePojo>() { new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Message", value = "Server connection issue " + Nakama.Helpers.NakamaManager.Instance.connectedHost } },
-             (bool isSuccess, string error, string body) =>
-             {
-                 OnInternetStatusChange?.Invoke(NetworkStatus.Active);
-             }, 2);
-            }
-            else
-                OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
-        });
+                Debug.Log($"nakama server true {isSuccess1.ToString()} error {error1} body {body1}");
+                action.Invoke(isSuccess, isSuccess1);
+            }, 20);
+                        }
+                        else
+                        {
+                            Debug.Log("nakama server false false");
+                            action.Invoke(false, false);
+                        }
+                    }, 2);
     }
     public void OnSwitchingTabs(string data)
     {
@@ -511,6 +532,7 @@ public class APIController : MonoBehaviour
         }
     }
 
+
     public async void CheckInternetForButtonClick(Action<bool> action)
     {
         WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
@@ -519,7 +541,7 @@ public class APIController : MonoBehaviour
                  new List<KeyValuePojo>(),
                  (bool isSuccess, string error, string body) =>
                  {
-                     action.Invoke(isSuccess);
+                 action.Invoke(isSuccess);
                  }, 2);
     }
 
@@ -578,7 +600,6 @@ public class APIController : MonoBehaviour
             Debug.Log("online false 3");
             isOnline = false;
         }
-
         action.Invoke(isOnline);
         if (!isOnline)
             GetNetworkStatus(isOnline.ToString());
@@ -634,7 +655,7 @@ public class APIController : MonoBehaviour
 
     public async void CheckSession()
     {
-#if UNITY_EDITOR
+#if !UNITY_WEBGL
         return;
 #endif
         int Runcount = 0;
@@ -713,56 +734,73 @@ public class APIController : MonoBehaviour
                 Debug.Log("online false 3");
                 isOnline = false;
             }
-            //if (isOnline)
-            //    GetNetworkStatus(isOnline.ToString());
             Debug.Log("Internet check " + isOnline);
         }
     }
 
 #if CasinoGames
 
-    /* public void InitNakamaClient()
-     {
-         Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
-         {
-             if (success)
-             {
-                 OnUserDetailsUpdate?.Invoke();
-                 OnUserBalanceUpdate?.Invoke();
-                 if (!userDetails.isBlockApiConnection)
-                     CheckSession();
-             }
-             else
-             {
-                 Debug.LogError("Check nakama server");
-             }
-         });
-     }*/
+    public async UniTask CheckandConnectWithNakama()
+    {
+        Debug.Log("InitNakamaClient ... 4");
+
+        while (!isOnline)
+        {
+            Debug.Log("InitNakamaClient ... 5");
+
+            CheckInternetForButtonClick((status) => {
+                if (status)
+                {
+                    Debug.Log("InitNakamaClient ... 6");
+                    InitNakamaClient();
+                }
+                    });
+            await UniTask.Delay(5000);
+        }
+    }
+
     public void InitNakamaClient()
     {
-        Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
-        {
-            if (success)
+        Debug.Log("InitNakamaClient ... 1");
+        CheckNakamaServer((hasnetwork, hasserver) => {
+
+            if (hasnetwork && hasserver)
             {
-                OnUserDetailsUpdate?.Invoke();
-                OnUserBalanceUpdate?.Invoke();
-                if (!userDetails.isBlockApiConnection)
-                    CheckSession();
+                Nakama.Helpers.NakamaManager.Instance.AutoLogin(success =>
+                {
+
+
+                    if (success)
+                    {
+                        OnUserDetailsUpdate?.Invoke();
+                        OnUserBalanceUpdate?.Invoke();
+                        if (!userDetails.isBlockApiConnection)
+                            CheckSession();
+                    }
+                    else
+                    {
+                        Debug.LogError("Check nakama server");
+                    }
+                });
+            }else if (!hasnetwork)
+            {
+                Debug.Log("InitNakamaClient ... 2");
+                isOnline = false;
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                CheckandConnectWithNakama();
+               
             }
             else
             {
-                Debug.LogError("Check nakama server");
-                CheckInternetForButtonClick((IsInternet) =>
-                {
-                    if (IsInternet)
-                    {
-                        OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
-                    }
-                });
+                Debug.Log("InitNakamaClient ... 3");
+                OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+
             }
         });
     }
 #endif
+
+
     public void GetLoginDataResponseFromWebGL(string data)
     {
     }
@@ -773,10 +811,12 @@ public class APIController : MonoBehaviour
 
     void Start()
     {
-        CheckInternetForButtonClick((status) =>
-        {
-            Debug.Log("check internet init " + status);
-        });
+        /*var ping = new System.Net.NetworkInformation.Ping();
+        var reply = ping.Send("google.com", 60 * 1000); // 1 minute time out (in ms)
+        Debug.Log("ping replay is " + JsonUtility.ToJson(reply));                               // or...
+        reply = ping.Send("test.gameservers.utwebapps.com");
+        Debug.Log("ping replay is " + JsonUtility.ToJson(reply));                               // or...*/
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();
 #elif UNITY_EDITOR

@@ -74,6 +74,7 @@ namespace Nakama.Helpers
             {
                 cryptocharacters.Add((char)('0' + i));
             }
+            connectedHost = connectionData.Host;
         }
 
 
@@ -131,6 +132,8 @@ namespace Nakama.Helpers
             //GameController.Instance.Loading.gameObject.SetActive(true);
             try
             {
+
+
                 Debug.Log("try register" + mobileNo);
                 string DisplayName;
                 session = await client.AuthenticateCustomAsync(mobileNo, mobileNo, isCreate, null, retryConfiguration);
@@ -159,10 +162,13 @@ namespace Nakama.Helpers
             }
 
         }
-        double TimerToCheckServerDown = 0;
+
         bool isRunWebGLGame = false;
         bool isTrytoOpenSocket = false;
         public string checkInternetUrl = "https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/";
+
+        public int TimeToCheckIfInternetNotThereorServer = 0;
+
         public async UniTask OpenSocket()
         {
             if (isTrytoOpenSocket)
@@ -175,7 +181,7 @@ namespace Nakama.Helpers
             bool isOnline = false;
             while (!isOnline)
             {
-                TimerToCheckServerDown++;
+                TimeToCheckIfInternetNotThereorServer++;
                 WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
                    ,
                    checkInternetUrl,
@@ -184,16 +190,16 @@ namespace Nakama.Helpers
                    {
                        isOnline = isSuccess;
                    }, 3);
-                Debug.Log("checking internet for socket" + TimerToCheckServerDown);
-                await UniTask.Delay(3000);
-                if(TimerToCheckServerDown > 3)
+                Debug.Log("checking internet for socket" + TimeToCheckIfInternetNotThereorServer);
+                if (TimeToCheckIfInternetNotThereorServer > 3)
                 {
-                    InternetChecking.instance.ServerMaintancePopup.SetActive(true);
-                    InternetChecking.instance.ConnectionPanel.SetActive(false);
-
+                    APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
                     break;
                 }
+                await UniTask.Delay(3000);
+
             }
+
             int count = 0;
             if (socket == null)
             {
@@ -225,6 +231,7 @@ namespace Nakama.Helpers
             Debug.Log("scoket init 2");
             //Debug.LogError("scoket init ... " + socket.IsConnecting);
             Debug.Log("scoket init ... end");
+
             try
             {
                 Debug.Log("scoket init try");
@@ -264,8 +271,10 @@ namespace Nakama.Helpers
 
         private void Socket_Connected()
         {
+            isSocketOpen = true;
             Debug.Log("socket connected");
-            TimerToCheckServerDown = 0;
+            TimeToCheckIfInternetNotThereorServer = 0;
+            Debug.Log("GetInternet Status Check Socket connected ");
             APIController.instance.GetNetworkStatus(true.ToString());
 
         }

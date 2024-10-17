@@ -136,6 +136,7 @@ public class WebApiManager : MonoBehaviour
         if (!parameters.Exists(x => x.keyId == "DateTime"))
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         WWWForm bodyFormData = new WWWForm();
+        Debug.Log("network call using post method :: "+url);
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);

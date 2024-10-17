@@ -12109,8 +12109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1cc7985aa64ac347a1800c97fcab696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConnectionPanel: {fileID: 4875346415498661686}
-  ServerMaintancePopup: {fileID: 162215318493873955}
+  InternetDisconnectedPopup: {fileID: 4875346415498661686}
+  ServerMaintenancePopup: {fileID: 162215318493873955}
 --- !u!4 &846987393
 Transform:
   m_ObjectHideFlags: 0
@@ -25008,8 +25008,9 @@ MonoBehaviour:
   isSocketOpen: 0
   masterID: 
   connectedHost: 
-  connectionData: {fileID: 11400000, guid: d6ac2cf1929514cfb97802a377e02ba1, type: 2}
+  connectionData: {fileID: 11400000, guid: 093242b2cf05246028012b8073fc79c1, type: 2}
   checkInternetUrl: https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
+  TimeToCheckIfInternetNotThereorServer: 0
   lastCalledTime: 0
   message: 
 --- !u!1 &1694880661

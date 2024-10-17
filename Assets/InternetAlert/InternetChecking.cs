@@ -1,44 +1,43 @@
-using System;
 using UnityEngine;
 
 public class InternetChecking : MonoBehaviour
 {
-    public GameObject ConnectionPanel;
-    DateTime lastupdate = new DateTime();
-    public GameObject ServerMaintancePopup;
+    public GameObject InternetDisconnectedPopup;
+    public GameObject ServerMaintenancePopup;
     public static InternetChecking instance;
-
-    private void Start()
+    private void Awake()
     {
         instance = this;
+    }
+    private void Start()
+    {
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
-        lastupdate = DateTime.Now;
     }
 
     public void GetNetworkStatus(NetworkStatus data)
     {
-        Debug.Log($"NetworkStatus ==> {data.ToString()}");
-        if (data != NetworkStatus.Active && (DateTime.Now > lastupdate.AddSeconds(4)))
+        if (data != NetworkStatus.Active)
         {
             if (data == NetworkStatus.NetworkIssue)
             {
-                ConnectionPanel.SetActive(true);
+                InternetDisconnectedPopup.SetActive(true);
+                Debug.Log($"Internet Status ===> {data.ToString()}....Enabling Internet Popup");
             }
-            else if (!ConnectionPanel.activeSelf)
+            else if (data == NetworkStatus.ServerIssue)
             {
-               // ServerMaintancePopup.SetActive(true);
+                ServerMaintenancePopup.SetActive(true);
+                Debug.Log($"Internet Status ===> {data.ToString()}....Enabling Server Maintenance Popup");
             }
         }
         else
         {
-            if (ConnectionPanel.activeSelf || ServerMaintancePopup.activeSelf)
+            Debug.Log($"NetworkStatus ==> {data.ToString()}");
+            if (InternetDisconnectedPopup.activeSelf || ServerMaintenancePopup.activeSelf)
             {
-                lastupdate = DateTime.Now;
-                //ServerMaintancePopup.SetActive(false);
-                ConnectionPanel.SetActive(false);
+                InternetDisconnectedPopup.SetActive(false);
+                ServerMaintenancePopup.SetActive(false);
             }
         }
-
-        AudioListener.volume = (GameController.instance.CanPlayAudio && data == NetworkStatus.Active && !ConnectionPanel.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
+        AudioListener.volume = (GameController.instance.CanPlayAudio && data == NetworkStatus.Active && !InternetDisconnectedPopup.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
     }
 }
