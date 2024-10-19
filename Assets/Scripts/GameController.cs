@@ -281,6 +281,7 @@ public class GameController : MonoBehaviour
     {
         instance = this;
         CanPlayAudio = false;
+        ResponsePopUp.gameObject.SetActive(false);
         settingsBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.CallingSettingPanel());
     }
     private void Start()

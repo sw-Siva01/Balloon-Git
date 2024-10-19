@@ -15039,7 +15039,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1022269646
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25008,7 +25008,7 @@ MonoBehaviour:
   isSocketOpen: 0
   masterID: 
   connectedHost: 
-  connectionData: {fileID: 11400000, guid: d6ac2cf1929514cfb97802a377e02ba1, type: 2}
+  connectionData: {fileID: 11400000, guid: 093242b2cf05246028012b8073fc79c1, type: 2}
   checkInternetUrl: https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
   TimeToCheckIfInternetNotThereorServer: 0
   lastCalledTime: 0

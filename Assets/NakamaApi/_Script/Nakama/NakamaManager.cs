@@ -191,11 +191,11 @@ namespace Nakama.Helpers
                        isOnline = isSuccess;
                    }, 3);
                 Debug.Log("checking internet for socket" + TimeToCheckIfInternetNotThereorServer);
-                if (TimeToCheckIfInternetNotThereorServer > 3)
-                {
-                    APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
-                    break;
-                }
+                //if (TimeToCheckIfInternetNotThereorServer > 3)
+                //{
+                //    APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+                //    break;
+                //}
                 await UniTask.Delay(3000);
 
             }
@@ -386,7 +386,7 @@ namespace Nakama.Helpers
                     }
                     Debug.Log(rpc + "ValidateRPC Checking Internet HaveInternet " + haveInternet);
 
-                });
+                }, true);
                 //int count = 0;
                 //while (!haveInternet && count < 15)
                 //{

@@ -59,6 +59,7 @@ public class APIController : MonoBehaviour
     public UserGameData userDetails;
     public List<BetDetails> betDetails = new List<BetDetails>();
     public List<BetRequest> betRequest = new List<BetRequest>();
+    public BackendAPI BackendAPIURL = new BackendAPI();
     public bool isPlayByDummyData;
     public double maxWinAmount;
     public bool isClickDeopsit = false;
@@ -78,7 +79,7 @@ public class APIController : MonoBehaviour
     [DllImport("__Internal")]
     public static extern void ExternalApiResponse(string data);
     [DllImport("__Internal")]
-    public static extern void GetUpdatedBalance();
+    public static extern void GetUpdatedBalance ();
     [DllImport("__Internal")]
     public static extern void FullScreen();
     [DllImport("__Internal")]
@@ -546,7 +547,7 @@ public class APIController : MonoBehaviour
     }
 
 
-    public async void CheckInternetandProcess(Action<bool> action)
+    /*public async void CheckInternetandProcess(Action<bool> action)
     {
         bool isrun = false;
         if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
@@ -602,6 +603,65 @@ public class APIController : MonoBehaviour
         }
         action.Invoke(isOnline);
         if (!isOnline)
+            GetNetworkStatus(isOnline.ToString());
+        Debug.Log("Internet check " + isOnline);
+    }*/
+    public async void CheckInternetandProcess(Action<bool> action, bool isLooping = false)
+    {
+        bool isrun = false;
+        if (Nakama.Helpers.NakamaManager.Instance.socket != null && Nakama.Helpers.NakamaManager.Instance.socket.IsConnected)
+        {
+            isrun = true;
+            ValidateSessionReq validateSession = new ValidateSessionReq();
+            validateSession.PlayerId = userDetails.Id;
+            validateSession.GameName = userDetails.game_Id.Split("_")[1];
+            validateSession.Operator = userDetails.game_Id.Split("_")[0];
+            validateSession.Session_token = userDetails.session_token;
+            validateSession.Control = "0";
+            validateSession.Token = userDetails.token;
+            Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
+            {
+                try
+                {
+                    JObject jsonObject = JObject.Parse(res);
+                    if ((int)(jsonObject["code"]) == 200)
+                    {
+                        Debug.Log("online true 1");
+                        isOnline = true;
+                    }
+                    else
+                    {
+                        Debug.Log("online false 1" + res);
+                        isOnline = false;
+                    }
+                }
+                catch
+                {
+                    Debug.Log("online false 2");
+                    isOnline = false;
+                }
+                Debug.Log("socket connected" + isOnline);
+                isrun = false;
+            });
+        }
+        else
+        {
+            isOnline = false;
+            Debug.Log("socket not connected" + isOnline);
+        }
+        for (int i = 0; i < defaultDelay * 10; i++)
+        {
+            if (!isrun)
+                break;
+            await UniTask.Delay(100);
+        }
+        if (isrun)
+        {
+            Debug.Log("online false 3");
+            isOnline = false;
+        }
+        action.Invoke(isOnline);
+        if (/*!isOnline && */!isLooping)
             GetNetworkStatus(isOnline.ToString());
         Debug.Log("Internet check " + isOnline);
     }
@@ -817,6 +877,8 @@ public class APIController : MonoBehaviour
         reply = ping.Send("test.gameservers.utwebapps.com");
         Debug.Log("ping replay is " + JsonUtility.ToJson(reply));                               // or...*/
 
+        GetLambdaURL(true); //true for live false for dev
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();
 #elif UNITY_EDITOR
@@ -843,6 +905,27 @@ public class APIController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+    }
+
+    public void GetLambdaURL(bool isLive)
+    {
+        ApiRequest apiRequest = new ApiRequest();///?requestType=GetGameServer&game_name=carrom
+        apiRequest.url = "https://qllb52jc5pxturffykekbtewn40osanl.lambda-url.ap-south-1.on.aws/";
+        List<KeyValuePojo> param = new List<KeyValuePojo>();
+        param.Add(new KeyValuePojo { keyId = "LoginType", value = isLive ? "1" : "0" });
+        apiRequest.param = param;
+        apiRequest.action = (success, error, body) =>
+        {
+            if (success)
+            {
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(body);
+                if (response.code == 200)
+                {
+                    BackendAPIURL = JsonUtility.FromJson<BackendAPI>(response.message);
+                }
+            }
+        };
+        ExecuteAPI(apiRequest);
     }
     public PlayerData GeneratePlayerDataForBot(string botAccountData)
     {
@@ -2201,4 +2284,22 @@ public enum NetworkStatus
     Active = 0,
     NetworkIssue = 1,
     ServerIssue = 2
+}
+
+[System.Serializable]
+public class BackendAPI
+{
+    //dev https://b465kezbry2ssew2w6w56x3jhi0ennyi.lambda-url.ap-south-1.on.aws/
+    //live https://56ebdif5s4aqltb74xhkvnnrai0sxaey.lambda-url.ap-south-1.on.aws/
+    public string LootrixMatchAPI = "https://b465kezbry2ssew2w6w56x3jhi0ennyi.lambda-url.ap-south-1.on.aws/";
+    //live https://xpxpmhpjldqvjulexwx34z7jca0kdxzf.lambda-url.ap-south-1.on.aws/
+    //dev https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/
+    public string LootrixTransactionAPI = "https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/";
+    //live https://htatuqjumsb7qhv3yvmfx6jlza0pdwyg.lambda-url.ap-south-1.on.aws/
+    public string LootrixGetServerAPI = "https://htatuqjumsb7qhv3yvmfx6jlza0pdwyg.lambda-url.ap-south-1.on.aws/";
+    // https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
+    public string LootrixInternetCheckAPI = "https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/";
+    // https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/
+    public string LootrixValidateServerAPI = "https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/";
+    public string LootrixServerInactiveAPI = "https://waekhvdxviqdmzdzo6hisjqsli0bvajw.lambda-url.ap-south-1.on.aws/?requestType=ServerInactive&Id&Message";
 }
