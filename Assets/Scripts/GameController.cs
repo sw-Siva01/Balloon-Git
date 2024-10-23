@@ -878,8 +878,8 @@ public class GameController : MonoBehaviour
                         Winning_Animations();
                     }
                     Call_Functions();
-                   /* if (APIController.instance.userDetails.isBlockApiConnection)*/
-                        DelayFuction();
+                    /* if (APIController.instance.userDetails.isBlockApiConnection)*/
+                    DelayFuction();
                     isWin = true;
                 }
                 #endregion
@@ -1017,7 +1017,7 @@ public class GameController : MonoBehaviour
                     /*startGame = true;*/
                     betID = newbetID.ToString();
                     MatchRes = res;
-                    APIController.GetUpdatedBalance();
+                    /*APIController.GetUpdatedBalance();*/
                     pauseGame = false;
                     isCreateMatchSucceess = true;
                     Debug.Log("CreateMatchAPICalled========>");
@@ -1099,14 +1099,14 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("3 WinningBetAPI Call Success========> ");
 
-                APIController.GetUpdatedBalance();
+                /*APIController.GetUpdatedBalance();*/
             }
             else
             {
                 Debug.Log("WinningBetAPIfailed========>");
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
-       /* DemoAPIReset();*/
+        /* DemoAPIReset();*/
     }
     void Call_Functions()
     {
@@ -1438,11 +1438,20 @@ public class GameController : MonoBehaviour
     bool InternetCheck;
     public void OnClickDown()
     {
+        bool isAbleToPlay = false;
+        APIController.instance.GetBalance((balance) =>
+            {
+                isAbleToPlay = true;
+            });
         #region
-        APIController.instance.CheckInternetandProcess((success) =>
+        APIController.instance.CheckInternetandProcess(async (success) =>
         {
             if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
             {
+                while (!isAbleToPlay)
+                {
+                    await UniTask.Delay(100);
+                }
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
                 {

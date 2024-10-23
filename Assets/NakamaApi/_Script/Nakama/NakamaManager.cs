@@ -359,9 +359,9 @@ namespace Nakama.Helpers
         }
 
 
-
+        public int ValidateId = 0;
         bool isRunMaster = false;
-        public async void ValidateRPC(string rpc, string payload, Action<string> action)
+        /*public async void ValidateRPC(string rpc, string payload, Action<string> action)
         {
             Debug.Log(rpc + "start validation ... 1");
             await UniTask.Delay(7000);
@@ -407,9 +407,46 @@ namespace Nakama.Helpers
                 Debug.Log("start validation ... 5");
 
             }
+        }*/
+        public async void ValidateRPC(string rpc, string payload, int id, Action<string> action)
+        {
+            Debug.Log(rpc + "start validation ... 1");
+            await UniTask.Delay(7000);
+            bool haveInternet = false;
+            while (!haveInternet)
+            {
+                Debug.Log(rpc + "ValidateRPC While Loop Entered");
+
+                APIController.instance.CheckInternetandProcess((success) =>
+                {
+                    Debug.Log(rpc + "ValidateRPC While Loope CheckInternetandProcess ");
+
+                    if (success)
+                    {
+                        Debug.Log(rpc + "ValidateRPC While Loope success ");
+                        haveInternet = true;
+                    }
+                    else
+                    {
+                        haveInternet = false;
+                    }
+                    Debug.Log(rpc + "ValidateRPC Checking Internet HaveInternet " + haveInternet);
+
+                }, true);
+                await UniTask.Delay(100);
+                Debug.Log("CashoutBtnFn While Loope Completed ");
+            }
+            Debug.Log("start validation ... 3");
+            if (isNeedTOCheck && ValidateId == id)
+            {
+                Debug.Log("start validation ... 4");
+                Debug.Log($"SEND RPC ACTION INVOKE 2 ==> SendRPC _ {payload}");
+                SendRPC("rpc_ValidateMatch", payload, action);
+                Debug.Log("start validation ... 5");
+            }
         }
         bool isNeedTOCheck = false;
-        public async void SendRPC(string rpc, string payload, Action<string> action)
+        /*public async void SendRPC(string rpc, string payload, Action<string> action)
         {
             try
             {
@@ -455,8 +492,57 @@ namespace Nakama.Helpers
             {
                 action.Invoke(ex.Message);
             }
-        }
+        }*/
+        public async void SendRPC(string rpc, string payload, Action<string> action)
+        {
+            try
+            {
+                if (client == null || session == null)
+                {
+                    if (!isRunMaster)
+                    {
+                        isRunMaster = true;
+                    }
+                    await MasterLogin((success) =>
+                    {
+                        isRunMaster = false;
+                    });
+                    while (isRunMaster)
+                    {
+                        await UniTask.Delay(500);
+                    }
+                }
+                EncryptedPayload encryptpayload = new EncryptedPayload();
+                encryptpayload.data = EncryptString(payload);
+                encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
+                if (rpc == "rpc_CreateAndJoin")
+                {
+                    ValidateId++;
+                    isNeedTOCheck = true;
+                    ValidateRPC(rpc, payload, ValidateId, action);
+                }
+                Debug.Log(rpc + " send ::_" + payload + "============> " + encryptpayload.ToJson());
+                var output = await client.RpcAsync(session, EncryptString(rpc),
+                encryptpayload.ToJson(), retryConfiguration);
+                if (rpc == "rpc_CreateAndJoin")
+                {
+                    isNeedTOCheck = false;
+                }
+                encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
 
+                string outputPayload = DecryptString(encryptpayload.data);
+
+                Debug.Log(rpc + " recived ::_" + outputPayload + "Encrypted data : " + encryptpayload.data);
+
+                Debug.Log($"SEND RPC ACTION INVOKE 1 ==> SendRPC _ {outputPayload}");
+
+                action.Invoke(outputPayload);
+            }
+            catch (Exception ex)
+            {
+                action.Invoke(ex.Message);
+            }
+        }
 
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key
 
