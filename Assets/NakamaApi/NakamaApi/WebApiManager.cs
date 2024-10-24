@@ -126,7 +126,7 @@ public class WebApiManager : MonoBehaviour
             yield break;
         }
 #else
-            APIController.instance.SendApiRequest(url + getParameters,callback);
+            APIController.instance.SendApiRequest(url + getParameters,callback,timeout);
 #endif
     }
 

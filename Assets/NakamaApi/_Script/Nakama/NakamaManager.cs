@@ -124,7 +124,7 @@ namespace Nakama.Helpers
                 socket.CloseAsync();
         }
 
-        public RetryConfiguration retryConfiguration = new RetryConfiguration(1000, 1);
+        public RetryConfiguration retryConfiguration = new RetryConfiguration(1000, 0);
 
 
         public async void CustomMobileLogin(string mobileNo, Action<bool, string> action, bool isCreate = true)
@@ -193,7 +193,11 @@ namespace Nakama.Helpers
                 Debug.Log("checking internet for socket" + TimeToCheckIfInternetNotThereorServer);
                 //if (TimeToCheckIfInternetNotThereorServer > 3)
                 //{
+                //    Debug.Log(" 0 Checking ServerIssue " + TimeToCheckIfInternetNotThereorServer);
+
                 //    APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
+                //    Debug.Log(" 1 Checking ServerIssue " + TimeToCheckIfInternetNotThereorServer);
+
                 //    break;
                 //}
                 await UniTask.Delay(3000);
@@ -268,13 +272,17 @@ namespace Nakama.Helpers
             //}
             await OpenSocket();
         }
-
+        public static Action OnInternetCheckSuccess;
         private void Socket_Connected()
         {
+            APIController.instance.isOnline = true;
             isSocketOpen = true;
+            // APIController.instance.InternetCallBack?.Invoke(true);
+            OnInternetCheckSuccess?.Invoke();
             Debug.Log("socket connected");
             TimeToCheckIfInternetNotThereorServer = 0;
             Debug.Log("GetInternet Status Check Socket connected ");
+            APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.Active);
             APIController.instance.GetNetworkStatus(true.ToString());
 
         }
@@ -359,84 +367,53 @@ namespace Nakama.Helpers
         }
 
 
-        public int ValidateId = 0;
+
         bool isRunMaster = false;
-        /*public async void ValidateRPC(string rpc, string payload, Action<string> action)
+        bool checking = false;
+        void OnInternetCheckSuccessRespose()
         {
-            Debug.Log(rpc + "start validation ... 1");
-            await UniTask.Delay(7000);
-            bool haveInternet = false;
-            while (!haveInternet)
-            {
-                Debug.Log(rpc + "ValidateRPC While Loop Entered");
+            checking = true;
+            OnInternetCheckSuccess -= OnInternetCheckSuccessRespose;
+        }
 
-                APIController.instance.CheckInternetandProcess((success) =>
-                {
-                    Debug.Log(rpc + "ValidateRPC While Loope CheckInternetandProcess ");
-
-                    if (success)
-                    {
-                        Debug.Log(rpc + "ValidateRPC While Loope success ");
-
-                        haveInternet = true;
-                    }
-                    else
-                    {
-                        haveInternet = false;
-                    }
-                    Debug.Log(rpc + "ValidateRPC Checking Internet HaveInternet " + haveInternet);
-
-                }, true);
-                //int count = 0;
-                //while (!haveInternet && count < 15)
-                //{
-                //    await UniTask.Delay(100);
-                //    count++;
-                //}
-
-                await UniTask.Delay(100);
-
-                Debug.Log("CashoutBtnFn While Loope Completed ");
-
-            }
-            Debug.Log("start validation ... 3");
-            if (isNeedTOCheck)
-            {
-                Debug.Log("start validation ... 4");
-                SendRPC("rpc_ValidateMatch", payload, action);
-                Debug.Log("start validation ... 5");
-
-            }
-        }*/
         public async void ValidateRPC(string rpc, string payload, int id, Action<string> action)
         {
             Debug.Log(rpc + "start validation ... 1");
             await UniTask.Delay(7000);
             bool haveInternet = false;
-            while (!haveInternet)
-            {
                 Debug.Log(rpc + "ValidateRPC While Loop Entered");
+            NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccessRespose;
+            NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccessRespose;
 
-                APIController.instance.CheckInternetandProcess((success) =>
-                {
-                    Debug.Log(rpc + "ValidateRPC While Loope CheckInternetandProcess ");
-
-                    if (success)
-                    {
-                        Debug.Log(rpc + "ValidateRPC While Loope success ");
-                        haveInternet = true;
-                    }
-                    else
-                    {
-                        haveInternet = false;
-                    }
-                    Debug.Log(rpc + "ValidateRPC Checking Internet HaveInternet " + haveInternet);
-
-                }, true);
-                await UniTask.Delay(100);
-                Debug.Log("CashoutBtnFn While Loope Completed ");
+            while(!checking)
+            {
+                await UniTask.Delay(500);
             }
-            Debug.Log("start validation ... 3");
+
+
+            //APIController.instance.StartCheckInternetLoop((success) =>
+            //    {
+            //        Debug.Log(rpc + "ValidateRPC While Loope CheckInternetandProcess ");
+
+            //        if (success)
+            //        {
+            //            Debug.Log(rpc + "ValidateRPC While Loope success ");
+            //            haveInternet = true;
+            //            APIController.instance.StopCheckInternetLoop();
+            //        }
+            //        else
+            //        {
+            //            haveInternet = false;
+            //        }
+            //        Debug.Log(rpc + "ValidateRPC Checking Internet HaveInternet " + haveInternet);
+
+            //    });
+            //while (!haveInternet)
+            //{
+            //    await UniTask.Delay(500);
+            //    Debug.Log("CashoutBtnFn While Loope Completed ");
+            //}
+            Debug.Log("start validation ... 3" + isNeedTOCheck + "VslifstrID" + ValidateId + "ID"+ id);
             if (isNeedTOCheck && ValidateId == id)
             {
                 Debug.Log("start validation ... 4");
@@ -446,53 +423,54 @@ namespace Nakama.Helpers
             }
         }
         bool isNeedTOCheck = false;
-        /*public async void SendRPC(string rpc, string payload, Action<string> action)
-        {
-            try
-            {
-                if (client == null || session == null)
-                {
-                    if (!isRunMaster)
-                    {
-                        isRunMaster = true;
-                    }
-                    await MasterLogin((success) =>
-                    {
-                        isRunMaster = false;
-                    });
-                    while (isRunMaster)
-                    {
-                        await UniTask.Delay(500);
-                    }
-                }
-                //                    action.Invoke(null);
-                EncryptedPayload encryptpayload = new EncryptedPayload();
-                encryptpayload.data = EncryptString(payload);
-                encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
-                if (rpc == "rpc_CreateAndJoin")
-                {
-                    isNeedTOCheck = true;
-                    ValidateRPC(rpc, payload, action);
-                }
-                Debug.Log(rpc + " send ::_" + payload + "============> " + encryptpayload.ToJson());
-                var output = await client.RpcAsync(session, EncryptString(rpc),
-                encryptpayload.ToJson(), retryConfiguration);
-                if (rpc == "rpc_CreateAndJoin")
-                {
-                    isNeedTOCheck = false;
-                }
-                encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
-                string outputPayload = DecryptString(encryptpayload.data);
-                Debug.Log(rpc + " recived ::_" + outputPayload + "Encrypted data : " + encryptpayload.data);
-                action.Invoke(outputPayload);
-                if (!APIController.instance.userDetails.isBlockApiConnection)
-                    APIController.GetUpdatedBalance();
-            }
-            catch (Exception ex)
-            {
-                action.Invoke(ex.Message);
-            }
-        }*/
+        //public async void SendRPC(string rpc, string payload, Action<string> action)
+        //{
+        //    try
+        //    {
+        //        if (client == null || session == null)
+        //        {
+        //            if (!isRunMaster)
+        //            {
+        //                isRunMaster = true;
+        //            }
+        //            await MasterLogin((success) =>
+        //            {
+        //                isRunMaster = false;
+        //            });
+        //            while (isRunMaster)
+        //            {
+        //                await UniTask.Delay(500);
+        //            }
+        //        }
+        //        //                    action.Invoke(null);
+        //        EncryptedPayload encryptpayload = new EncryptedPayload();
+        //        encryptpayload.data = EncryptString(payload);
+        //        encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
+        //        if (rpc == "rpc_CreateAndJoin")
+        //        {
+        //            isNeedTOCheck = true;
+        //            ValidateRPC(rpc, payload, action);
+        //        }
+        //        Debug.Log(rpc + " send ::_" + payload + "============> " + encryptpayload.ToJson());
+        //        var output = await client.RpcAsync(session, EncryptString(rpc),
+        //        encryptpayload.ToJson(), retryConfiguration);
+        //        if (rpc == "rpc_CreateAndJoin")
+        //        {
+        //            isNeedTOCheck = false;
+        //        }
+        //        encryptpayload = JsonConvert.DeserializeObject<EncryptedPayload>(output.Payload);
+        //        string outputPayload = DecryptString(encryptpayload.data);
+        //        Debug.Log(rpc + " recived ::_" + outputPayload + "Encrypted data : " + encryptpayload.data);
+        //        action.Invoke(outputPayload);
+        //        if (!APIController.instance.userDetails.isBlockApiConnection)
+        //            APIController.GetUpdatedBalance();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        action.Invoke(ex.Message);
+        //    }
+        //}
+        public int ValidateId = 0;
         public async void SendRPC(string rpc, string payload, Action<string> action)
         {
             try
@@ -543,6 +521,7 @@ namespace Nakama.Helpers
                 action.Invoke(ex.Message);
             }
         }
+
 
         private static readonly string key = "Hs9INfoebjwQwtrGRMD1hPaNAMrvGXxX"; // Replace with your key
 

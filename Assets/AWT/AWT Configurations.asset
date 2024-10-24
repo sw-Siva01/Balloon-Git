@@ -71,7 +71,7 @@ MonoBehaviour:
   _playPongButtonFontSize: 13px
   _watchVideoButtonYoutubeLink: https://www.youtube.com/watch?v=FIpZ1h7LEos
   _disableMobileWarning: 1
-  _targetPath: C:/Users/Sivaprasath/Desktop/Builds/23-10-2024/4/balloon
+  _targetPath: C:/Users/Sivaprasath/Desktop/Builds/24-10-2024/1/balloon
   _s11: "\n    &&& title2019start &&&<title>%UNITY_WEB_NAME%</title>&&& title2019end
     &&&\n    &&& title2020start &&&<title>HILOWWEB</title>&&& title2020end &&&\n   
     &&& UnityLoader1 &&& <script src=\"%UNITY_WEBGL_LOADER_URL%\"></script> &&& UnityLoader2
