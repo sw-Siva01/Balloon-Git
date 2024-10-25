@@ -883,6 +883,10 @@ public class GameController : MonoBehaviour
             await UniTask.Delay(100);
         }
 
+        while (InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        {
+            await UniTask.Delay(100);
+        }
 
 
         InternetCheck = true;
