@@ -67,7 +67,7 @@ public class APIController : MonoBehaviour
     public Action OnUserBalanceUpdate;
     public Action OnUserDeposit;
     public Action<bool> OnDepositCancelAction;
-   
+
     public Action<NetworkStatus> OnInternetStatusChange;
     public Action<NetworkStatus> ServerAction;
     public Action<bool> OnSwitchingTab;
@@ -264,7 +264,7 @@ public class APIController : MonoBehaviour
                 }
                 else if (hasnetwork && hasserver && Nakama.Helpers.NakamaManager.Instance.isSocketOpen)
                 {
-                   // OnInternetStatusChange?.Invoke(NetworkStatus.Active);
+                    // OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                     InternetCallBack?.Invoke(true);
                 }
                 else
@@ -309,7 +309,7 @@ public class APIController : MonoBehaviour
 
     public void CheckNakamaServer(Action<bool, bool> action)
     {
-       
+
         var param = new List<KeyValuePojo>();
         param.Add(new KeyValuePojo { keyId = "requestType", value = "CheckMirrorServer" });
         param.Add(new KeyValuePojo { keyId = "host", value = Nakama.Helpers.NakamaManager.Instance.connectedHost });
@@ -325,7 +325,7 @@ public class APIController : MonoBehaviour
                 Debug.Log("Nakama Server check ==========> IsACTIVE " + response.code + "**************" + response.message);
                 if (response.code == 200)
                 {
-                   
+
                     action.Invoke(true, true);
                 }
                 else
@@ -335,14 +335,14 @@ public class APIController : MonoBehaviour
             }
             else
             {
-                if (Time.time - lastUpdatedTime < 3f) 
+                if (Time.time - lastUpdatedTime < 3f)
                     return;
                 lastUpdatedTime = Time.time;
                 Debug.Log("Nakama Server check ==========> " + " Not IsACTIVE");
                 //if (!NakamaManager.Instance.socket.IsConnected)
-                    action.Invoke(false, false);
+                action.Invoke(false, false);
             }
-        },defaultDelay);
+        }, defaultDelay);
     }
     public void OnSwitchingTabs(string data)
     {
@@ -488,7 +488,7 @@ public class APIController : MonoBehaviour
         betRequest.RemoveAll(x => x.BetId.Equals(betID));
     }
 
-    public void SendApiRequest(string url, ReqCallback callback,int timeout)
+    public void SendApiRequest(string url, ReqCallback callback, int timeout)
     {
 
         byte[] bytesToEncode = Encoding.UTF8.GetBytes(url);
@@ -500,7 +500,7 @@ public class APIController : MonoBehaviour
         ExecuteExternalUrl(base64EncodedString, timeout);
 #endif
 
-        CheckAPICallBack(base64EncodedString,timeout);
+        CheckAPICallBack(base64EncodedString, timeout);
 
     }
     public bool MobileShow;
@@ -591,7 +591,7 @@ public class APIController : MonoBehaviour
         ExecuteAPI(apiRequest);
     }
 
-   // public bool isCheckInternet;
+    // public bool isCheckInternet;
 
     //public async void StopCheckInternetLoop()
     //{
@@ -663,7 +663,7 @@ public class APIController : MonoBehaviour
     //    }
     //}
     public Action<bool> InternetCallBack;
-    
+
     //public async void StartCheckInternetLoop(Action<bool> action = null)
     //{
     //    isCheckInternet = true;
@@ -877,7 +877,7 @@ public class APIController : MonoBehaviour
                 validateSession.Operator = userDetails.game_Id.Split("_")[0];
                 validateSession.Session_token = userDetails.session_token;
                 validateSession.Control = Runcount == 1 ? "1" : "0";
-                
+
                 validateSession.Token = userDetails.token;
                 Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
                 {
@@ -939,9 +939,10 @@ public class APIController : MonoBehaviour
                         }
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     Debug.Log("Nakama.Helpers.NakamaManager.Instance.Socket.IsConnected Error Fix");
+                    isOnline = false;
                 }
                 Debug.Log("socket not connected" + isOnline);
             }
@@ -953,7 +954,7 @@ public class APIController : MonoBehaviour
             }
 
             Debug.Log("Internet check action Count --> " + NakamaManager.OnInternetCheckSuccess != null);
-            if (!isOnline  && NakamaManager.OnInternetCheckSuccess!= null)
+            if (!isOnline && NakamaManager.OnInternetCheckSuccess != null)
             {
                 Debug.Log("Internet failed need to retry.... without minimal delay");
                 GetNetworkStatus(isOnline.ToString());
@@ -1325,10 +1326,10 @@ public class APIController : MonoBehaviour
         apiRequestList.RemoveAll(x => x.url == url);
     }
 
-    public async void CheckAPICallBack(string url,int timeout)
+    public async void CheckAPICallBack(string url, int timeout)
     {
-         Debug.Log($"API_ Response :-  URL{url} -- timeout check");
-        await UniTask.Delay(timeout*1000);
+        Debug.Log($"API_ Response :-  URL{url} -- timeout check");
+        await UniTask.Delay(timeout * 1000);
         Debug.Log($"API_ Response :-  URL{url} -- timeout..");
 
         foreach (var item in apiRequestList)

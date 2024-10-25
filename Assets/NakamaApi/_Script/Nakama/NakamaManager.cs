@@ -379,6 +379,7 @@ namespace Nakama.Helpers
         public async void ValidateRPC(string rpc, string payload, int id, Action<string> action)
         {
             Debug.Log(rpc + "start validation ... 1");
+            checking = false;
             await UniTask.Delay(7000);
             bool haveInternet = false;
                 Debug.Log(rpc + "ValidateRPC While Loop Entered");
