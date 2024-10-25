@@ -47,6 +47,7 @@ public class BackendAPI
     // https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/
     public string LootrixValidateServerAPI = "https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/";
     public string LootrixServerInactiveAPI = "https://waekhvdxviqdmzdzo6hisjqsli0bvajw.lambda-url.ap-south-1.on.aws/?requestType=ServerInactive&Id&Message";
+    public string LootrixHost = "turbogames.utwebapps.com";
 }
 
 public class APIController : MonoBehaviour
@@ -335,6 +336,12 @@ public class APIController : MonoBehaviour
             }
             else
             {
+                if (Time.time <= 3)
+                {
+                    Debug.Log("Nakama Server check ==========> " + " IsACTIVE");
+                    action.Invoke(true, false);
+                    return;
+                }
                 if (Time.time - lastUpdatedTime < 3f)
                     return;
                 lastUpdatedTime = Time.time;
@@ -576,6 +583,7 @@ public class APIController : MonoBehaviour
         apiRequest.url = "https://qllb52jc5pxturffykekbtewn40osanl.lambda-url.ap-south-1.on.aws/";
         List<KeyValuePojo> param = new List<KeyValuePojo>();
         param.Add(new KeyValuePojo { keyId = "LoginType", value = isLive ? "1" : "0" });
+        param.Add(new KeyValuePojo { keyId = "GameName", value = defaultGameName });
         apiRequest.param = param;
         apiRequest.action = (success, error, body) =>
         {
@@ -585,6 +593,7 @@ public class APIController : MonoBehaviour
                 if (response.code == 200)
                 {
                     BackendAPIURL = JsonUtility.FromJson<BackendAPI>(response.message);
+                    NakamaManager.Instance.connectedHost = BackendAPIURL.LootrixHost;
                 }
             }
         };
@@ -1008,6 +1017,7 @@ public class APIController : MonoBehaviour
                     else
                     {
                         Debug.LogError("Check nakama server");
+                        OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
                     }
                 });
             }

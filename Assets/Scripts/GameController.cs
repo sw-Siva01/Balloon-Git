@@ -831,7 +831,6 @@ public class GameController : MonoBehaviour
     public void OnInternetCheckSuccess()
     {
         checking = true;
-       
         Debug.Log("Process Final Winnings Changed");
         NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
     }
@@ -855,8 +854,9 @@ public class GameController : MonoBehaviour
                 {
                     if (success)
                     {
+                        Debug.Log("checkingInternet");
                         checkingInternet = false;
-                        //akamaManager.OnInternetCheckSuccess?.Invoke();
+                        //NakamaManager.OnInternetCheckSuccess?.Invoke();
                     }
                 });
 
@@ -866,8 +866,6 @@ public class GameController : MonoBehaviour
 
                     await UniTask.Delay(100);
                 }
-
-
             }
         }
         else

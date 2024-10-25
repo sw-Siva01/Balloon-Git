@@ -5159,6 +5159,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
+      propertyPath: defaultGameName
+      value: balloon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: userDetails.isBlockApiConnection
       value: 0
       objectReference: {fileID: 0}
@@ -28907,7 +28911,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 47.900024, y: 0.00030517578}
+  m_AnchoredPosition: {x: 47.899902, y: 0.00030517578}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1983724681
@@ -29552,7 +29556,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -45.799988, y: 0.00030517578}
+  m_AnchoredPosition: {x: -45.80005, y: 0.00030517578}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2008433232

@@ -82,8 +82,9 @@ namespace Nakama.Helpers
         {
             try
             {
-                connectedHost = isTryBackupServer ? connectionData.backupHost : connectionData.Host;
-                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+                /*connectedHost = isTryBackupServer ? connectionData.backupHost : connectionData.Host;
+                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);*/
+                client = new Client(connectionData.Scheme, connectedHost, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
                 CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
                 {
                     if (status)
