@@ -8,6 +8,7 @@ using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading.Tasks;
+using Nakama.Helpers;
 
 public class GameController : MonoBehaviour
 {
@@ -827,75 +828,126 @@ public class GameController : MonoBehaviour
             takeCashTxt.text = takeCash.ToString("0.00");
         }
     }
-    public void TakeCashOut() // TakeCash button
+    public void OnInternetCheckSuccess()
+    {
+        checking = true;
+       
+        Debug.Log("Process Final Winnings Changed");
+        NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
+    }
+    bool checking = false;
+
+    public async void TakeCashOut() // TakeCash button
     {
         #region ________ Internet Checking : 1 ________
-        APIController.instance.CheckInternetandProcess((success) =>
+        //APIController.instance.CheckInternetandProcess((success) =>
+        //{
+        //    if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        //    {
+        checking = false;
+
+        if (APIController.instance.userDetails.isBlockApiConnection)
         {
-            if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+            bool checkingInternet = true;
+            while (checkingInternet)
             {
-                InternetCheck = true;
-                #region
-                if (!isWin)
+                APIController.instance.CheckInternetandProcess((success) =>
                 {
-                    take = true;
-                    startGame = false;
-                    multiplier = float.Parse(multiplier.ToString("0.00"));
-                    multiplierTxt.text = multiplier.ToString();
-                    multiplierTxt_Shadow.text = multiplier.ToString();
-                    holdButton.enabled = false;
-                    // TakeCash
-                    TakeCashImg.color = new Color32(140, 140, 140, 255);
-                    TakeCashtxt.color = new Color32(194, 236, 166, 120);
-                    takeCashWintxt.color = new Color32(194, 236, 166, 120);
-                    takeCurrencytxt.color = new Color32(194, 236, 166, 120);
-                    takeCashObj.SetActive(false);
-                    // sliderOBjs
-                    slider_bg.SetActive(false);
-                    fillArea.SetActive(false);
-                    slider_txt.SetActive(false);
-                    sliderAutoCashNoTxt.gameObject.SetActive(false);
-                    slider_Anim.SetBool("isOFF", true);
-                    ballon_Anim.SetBool("isTake", true);
-                    //winCount
-                    if (!winCount && betAmount <= 5f)
+                    if (success)
                     {
-                        winCash++;
+                        checkingInternet = false;
+                        //akamaManager.OnInternetCheckSuccess?.Invoke();
                     }
-                    else
-                    {
-                        isNormal = true;
-                    }
+                });
 
-                    Debug.Log(" WinCashCheck : " + winCash);
-                    Demo_Bonus();
+                for (int i = 0; i < 30; i++)
+                {
+                    if (!checkingInternet) break;
 
-                    if ((winCash_Demo < 10))
-                    {
-                        audioController.PlayAudio(AudioEnum.winGame);
-                        winPanel.SetActive(true);
-                        TakingCash();
-                        Winning_Animations();
-                    }
-                    Call_Functions();
-                    /* if (APIController.instance.userDetails.isBlockApiConnection)*/
-                    DelayFuction();
-                    isWin = true;
+                    await UniTask.Delay(100);
                 }
-                #endregion
+
+
+            }
+        }
+        else
+        {
+            NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
+            NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccess;
+
+            while (!checking)
+            {
+                Debug.Log("Process Final Winnings Loading");
+                await UniTask.Delay(100);
+            }
+            await UniTask.Delay(100);
+        }
+
+
+
+        InternetCheck = true;
+
+        #region
+        if (!isWin)
+        {
+            take = true;
+            startGame = false;
+            multiplier = float.Parse(multiplier.ToString("0.00"));
+            multiplierTxt.text = multiplier.ToString();
+            multiplierTxt_Shadow.text = multiplier.ToString();
+            holdButton.enabled = false;
+            // TakeCash
+            TakeCashImg.color = new Color32(140, 140, 140, 255);
+            TakeCashtxt.color = new Color32(194, 236, 166, 120);
+            takeCashWintxt.color = new Color32(194, 236, 166, 120);
+            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
+            takeCashObj.SetActive(false);
+            // sliderOBjs
+            slider_bg.SetActive(false);
+            fillArea.SetActive(false);
+            slider_txt.SetActive(false);
+            sliderAutoCashNoTxt.gameObject.SetActive(false);
+            slider_Anim.SetBool("isOFF", true);
+            ballon_Anim.SetBool("isTake", true);
+            //winCount
+            if (!winCount && betAmount <= 5f)
+            {
+                winCash++;
             }
             else
             {
-                InternetCheck = false;
-                Debug.Log("CheckInternetandProcess ============>  down" + success);
-                return;
+                isNormal = true;
             }
-        });
 
-        if (!InternetCheck)
-        {
-            return;
+            Debug.Log(" WinCashCheck : " + winCash);
+            Demo_Bonus();
+
+            if ((winCash_Demo < 10))
+            {
+                audioController.PlayAudio(AudioEnum.winGame);
+                winPanel.SetActive(true);
+                TakingCash();
+                Winning_Animations();
+            }
+            Call_Functions();
+            /* if (APIController.instance.userDetails.isBlockApiConnection)*/
+            DelayFuction();
+            isWin = true;
         }
+        #endregion
+        //    }
+        //    else
+        //    {
+        //        InternetCheck = false;
+        //        Debug.Log("CheckInternetandProcess ============>  down" + success);
+        //        return;
+        //    }
+        //});
+
+        //if (!InternetCheck)
+        //{
+        //    return;
+        //}
         #endregion
     }
 
@@ -1076,20 +1128,60 @@ public class GameController : MonoBehaviour
         _metaData.Info = "Game Won";
         Debug.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
 
-        bool checking = false;
-        while (!checking)
+        //bool checking = false;
+        //while (!checking)
+        //{
+        //    APIController.instance.CheckInternetandProcess(async (success) =>
+        //    {
+        //        if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        //        {
+        //            checking = true;
+        //        }
+        //        await UniTask.Delay(1000);
+        //    });
+        //    await UniTask.Delay(1000);
+        //}
+        //await UniTask.Delay(100);
+        checking = false;
+
+        if (APIController.instance.userDetails.isBlockApiConnection)
         {
-            APIController.instance.CheckInternetandProcess(async (success) =>
+            bool checkingInternet = true;
+            while (checkingInternet)
             {
-                if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+                APIController.instance.CheckInternetandProcess((success) =>
                 {
-                    checking = true;
+                    if (success)
+                    {
+                        checkingInternet = false;
+                        //akamaManager.OnInternetCheckSuccess?.Invoke();
+                    }
+                });
+
+                for (int i = 0; i < 30; i++)
+                {
+                    if (!checkingInternet) break;
+
+                    await UniTask.Delay(100);
                 }
-                await UniTask.Delay(1000);
-            });
-            await UniTask.Delay(1000);
+
+
+            }
         }
-        await UniTask.Delay(100);
+        else
+        {
+            NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
+            NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccess;
+
+            while (!checking)
+            {
+                Debug.Log("WinningBetAPICall Final Winnings Loading");
+                await UniTask.Delay(100);
+            }
+            await UniTask.Delay(100);
+        }
+
+
         Debug.Log(" WinningBetAPI , Checking Internet" + checking);
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
