@@ -48,6 +48,7 @@ public class BackendAPI
     public string LootrixValidateServerAPI = "https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/";
     public string LootrixServerInactiveAPI = "https://waekhvdxviqdmzdzo6hisjqsli0bvajw.lambda-url.ap-south-1.on.aws/?requestType=ServerInactive&Id&Message";
     public string LootrixHost = "turbogames.utwebapps.com";
+    public bool isGetData = false;
 }
 
 public class APIController : MonoBehaviour
@@ -577,7 +578,7 @@ public class APIController : MonoBehaviour
 #endif
     }
 
-    public void GetLambdaURL(bool isLive)
+    /*public void GetLambdaURL(bool isLive)
     {
         ApiRequest apiRequest = new ApiRequest();///?requestType=GetGameServer&game_name=carrom
         apiRequest.url = "https://qllb52jc5pxturffykekbtewn40osanl.lambda-url.ap-south-1.on.aws/";
@@ -598,6 +599,38 @@ public class APIController : MonoBehaviour
             }
         };
         ExecuteAPI(apiRequest);
+    }*/
+
+    public async void GetLambdaURL(bool isLive)
+    {
+        bool success = false;
+        while (!success)
+        {
+            ApiRequest apiRequest = new ApiRequest();///?requestType=GetGameServer&game_name=carrom
+            apiRequest.url = "https://qllb52jc5pxturffykekbtewn40osanl.lambda-url.ap-south-1.on.aws/";
+            List<KeyValuePojo> param = new List<KeyValuePojo>();
+            param.Add(new KeyValuePojo { keyId = "LoginType", value = isLive ? "1" : "0" });
+            param.Add(new KeyValuePojo { keyId = "GameName", value = defaultGameName });
+            apiRequest.param = param;
+            apiRequest.callType = NetworkCallType.GET_METHOD;
+            apiRequest.action = (success1, error, body) =>
+            {
+                success = success1;
+                if (success1)
+                {
+                    ApiResponse response = JsonUtility.FromJson<ApiResponse>(body);
+                    if (response.code == 200)
+                    {
+                        BackendAPIURL = JsonUtility.FromJson<BackendAPI>(response.message);
+                        BackendAPIURL.isGetData = true;
+                        NakamaManager.Instance.connectedHost = BackendAPIURL.LootrixHost;
+                        Debug.Log(NakamaManager.Instance.connectedHost + "DSFSDFSDF");
+                    }
+                }
+            };
+            ExecuteAPI(apiRequest, 3);
+            await UniTask.Delay(3000);
+        }
     }
 
     // public bool isCheckInternet;
@@ -995,9 +1028,14 @@ public class APIController : MonoBehaviour
         }
     }
 
-    public void InitNakamaClient()
+    public async void InitNakamaClient()
     {
         Debug.Log("InitNakamaClient ... 1");
+        while (!BackendAPIURL.isGetData)
+        {
+            Debug.Log("waiting for api");
+            await UniTask.Delay(200);
+        }
         CheckNakamaServer((hasnetwork, hasserver) =>
         {
 
