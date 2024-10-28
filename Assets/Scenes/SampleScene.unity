@@ -9378,7 +9378,6 @@ GameObject:
   - component: {fileID: 674228584}
   - component: {fileID: 674228587}
   - component: {fileID: 674228586}
-  - component: {fileID: 674228585}
   m_Layer: 5
   m_Name: Text (Shadow)
   m_TagString: Untagged
@@ -9406,18 +9405,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &674228585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 674228583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &674228586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14638,7 +14625,6 @@ GameObject:
   - component: {fileID: 991449611}
   - component: {fileID: 991449614}
   - component: {fileID: 991449613}
-  - component: {fileID: 991449612}
   m_Layer: 5
   m_Name: Text (Shadow)
   m_TagString: Untagged
@@ -14667,18 +14653,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -4.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &991449612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 991449610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02aa639ca2f90d4489cfc95b9efd7402, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &991449613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35895,7 +35869,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1785610711040410706}
   - component: {fileID: 288824185401239962}
-  - component: {fileID: 6927066491787161335}
   m_Layer: 5
   m_Name: No_Internet
   m_TagString: Untagged
@@ -49190,18 +49163,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8771877537632154633}
   m_CullTransparentMesh: 1
---- !u!114 &6927066491787161335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 870076083884327943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00eeff6a180ec4b4cbf69c9fa5f91c76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &6966200972989138324
 RectTransform:
   m_ObjectHideFlags: 0
