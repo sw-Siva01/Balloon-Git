@@ -10208,19 +10208,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 724588684}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1982060467}
-        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-        m_MethodName: BetButton_2
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &724588684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22006,19 +21994,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1476830448}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1982060467}
-        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-        m_MethodName: BetButton_1
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1476830448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22429,19 +22405,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1530640537}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1982060467}
-        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-        m_MethodName: BetButton_5
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1530640537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25344,19 +25308,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711556428}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1982060467}
-        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-        m_MethodName: BetButton_10
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1711556428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28752,11 +28704,17 @@ MonoBehaviour:
   button_2: {fileID: 218082884}
   button_5: {fileID: 2077586490}
   button_10: {fileID: 708757071}
+  amounts: 0100000002000000050000000a000000
   setected_Buttons:
   - {fileID: 1348018351}
   - {fileID: 218082884}
   - {fileID: 2077586490}
   - {fileID: 708757071}
+  pressed_Buttons:
+  - {fileID: 1476830447}
+  - {fileID: 724588683}
+  - {fileID: 1530640536}
+  - {fileID: 1711556427}
   plusButton: {fileID: 1292662798}
   minusButton: {fileID: 1771205435}
   button_Anim:

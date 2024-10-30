@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Button button_10;
 
     [SerializeField] List<Button> setected_Buttons = new List<Button>();
+    [SerializeField] List<Button> pressed_Buttons = new List<Button>();
     [SerializeField] Button plusButton, minusButton;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -314,10 +315,18 @@ public class GameController : MonoBehaviour
         timeRemaining = 0f; // Start the timer at 0
         StartCoroutine(FillImg());
         // button
-        setected_Buttons[0].onClick.AddListener(delegate { SelectBetButton(1); });
-        setected_Buttons[1].onClick.AddListener(delegate { SelectBetButton(2); });
-        setected_Buttons[2].onClick.AddListener(delegate { SelectBetButton(5); });
-        setected_Buttons[3].onClick.AddListener(delegate { SelectBetButton(10); });
+        setected_Buttons[0].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[0]); });
+        setected_Buttons[1].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[1]); });
+        setected_Buttons[2].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[2]); });
+        setected_Buttons[3].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[3]); });
+
+        // Use amounts array to pass the values dynamically
+        pressed_Buttons[0].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[0]));
+        pressed_Buttons[1].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[1]));
+        pressed_Buttons[2].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[2]));
+        pressed_Buttons[3].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[3]));
+
+        // Bet Press Buttons
         // sliderOBjs
         slider_bg.SetActive(false);
         fillArea.SetActive(false);
@@ -515,6 +524,12 @@ public class GameController : MonoBehaviour
             preHeating_txt.gameObject.SetActive(false);
         }
         BetAmountUpdates();
+
+        if (betAmount <= APIController.instance.userDetails.betAmountDetails.MinBetValue)
+        {
+            minusButton.enabled = false;
+            minusButtonImg.color = new Color32(255, 255, 255, 100);
+        }
 
         if (buttonPress == true)
         {
@@ -1745,7 +1760,9 @@ public class GameController : MonoBehaviour
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
     public Button settingsBtn;
-    public void BetButton_1()
+
+    #region ::::::::::::::::::::::::: Buttons :::::::::::::::::::::::::
+    /*public void BetButton_1()
     {
         if (takeBetAmount)
             audioController.PlayAudio(AudioEnum.buttonClick);
@@ -1780,12 +1797,7 @@ public class GameController : MonoBehaviour
             minusButtonImg.color = new Color32(255, 255, 255, 255);
 
 
-            winCash = 0;
-            winCash_Demo = 0;
-            bonusTimer = 0;
-            timer = true;
-
-            HandGesture();
+           
         }
     }
     public void BetButton_2()
@@ -1915,10 +1927,63 @@ public class GameController : MonoBehaviour
                 HandGestures_btAmt.SetActive(false);
                 HandGestures_start.SetActive(true);
                 heatbtnCollider.enabled = true;
-                /*heat_Anim.SetBool("isPlay1", true);*/
+                *//*heat_Anim.SetBool("isPlay1", true);*//*
                 heat_IdleAnim.SetBool("isPlay1", true);
             }
         }
+    }*/
+    #endregion
+
+    public void BetButtonPressed(int betValue)
+    {
+        if (takeBetAmount)
+            audioController.PlayAudio(AudioEnum.buttonClick);
+
+        if (keyBoard.cancelButton.gameObject.activeSelf)
+            keyBoard.OnCancelInput();
+
+        if (!startGame && !take && !isScroll)
+        {
+            // Set the bet amount
+            betAmount = (float)betValue;
+            betAmountTxt.text = $"{betAmount:0.00} <size=30>{currencyType}</size>";
+            BetAmountTxt_Scaling();
+
+            // Set buttons' active state based on bet amount
+            SetBetButtonsActiveState(betValue);
+
+            AmountColor_Glow();
+            UpdateButtonAnimations();
+
+            plusButton.enabled = true;
+            minusButton.enabled = true;
+            plusButtomImg.color = new Color32(255, 255, 255, 255);
+            minusButtonImg.color = new Color32(255, 255, 255, 255);
+
+            winCash = 0;
+            winCash_Demo = 0;
+            bonusTimer = 0;
+            timer = true;
+
+            HandGesture();
+        }
+    }
+    private void SetBetButtonsActiveState(int activeBet)
+    {
+        button_1.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[0]);
+        button_2.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[1]);
+        button_5.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[2]);
+        button_10.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[3]);
+    }
+    private void UpdateButtonAnimations()
+    {
+        for (int i = 0; i < button_Anim.Length; i++)
+        {
+            button_Anim[i].SetActive(false);
+        }
+        button_Anim[1].SetActive(true);
+        button_Anim[2].SetActive(true);
+        button_Anim[3].SetActive(true);
     }
 
     // Select bet buttons
@@ -1942,7 +2007,7 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount < 100f)
+            if (betAmount < APIController.instance.userDetails.betAmountDetails.MaxBetValue)
             {
                 betAmount += s;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
@@ -1953,9 +2018,9 @@ public class GameController : MonoBehaviour
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
             }
-            if (betAmount >= 100)
+            if (betAmount >= APIController.instance.userDetails.betAmountDetails.MaxBetValue)
             {
-                betAmount = 100f;
+                betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
@@ -1992,18 +2057,19 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount < 100f)
+            if (betAmount < APIController.instance.userDetails.betAmountDetails.MaxBetValue)
             {
-                betAmount += 0.10f;
+                betAmount += APIController.instance.userDetails.betAmountDetails.IncrementValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = true;
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
             }
-            if (betAmount > 99.99f)
+            /*if (betAmount > 99.99f)*/
+            if (betAmount >= APIController.instance.userDetails.betAmountDetails.MaxBetValue)
             {
-                betAmount = 100f;
+                betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
                 plusButton.enabled = false;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
@@ -2011,7 +2077,7 @@ public class GameController : MonoBehaviour
                 MaxBet_Object();
             }
 
-            if (betAmount != 100f)
+            if (betAmount != APIController.instance.userDetails.betAmountDetails.MaxBetValue)
             {
                 winCash = 0;
                 winCash_Demo = 0;
@@ -2036,24 +2102,26 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount > 0.10f)
+            if (betAmount > APIController.instance.userDetails.betAmountDetails.MinBetValue)
             {
-                betAmount -= 0.10f;
-                betAmountTxt.text = betAmount.ToString("0.00" + /*currencyType*/" <size=30>" + currencyType + "</size>");
+                betAmount -= APIController.instance.userDetails.betAmountDetails.DecrementValue;
+                betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
+                Debug.Log("Minimum BetAmount ===>$.....");
             }
-            if (betAmount <= 0.20f)
+            /*if (betAmount <= 0.20f)*/
+            if (betAmount <= APIController.instance.userDetails.betAmountDetails.MinBetValue)
             {
-                betAmount = 0.10f;
+                betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 100);
             }
 
-            if (betAmount != 0.10f)
+            if (betAmount != APIController.instance.userDetails.betAmountDetails.MinBetValue)
             {
                 winCash = 0;
                 winCash_Demo = 0;
@@ -2097,23 +2165,23 @@ public class GameController : MonoBehaviour
             inputField.raycastTarget = true;
         }
 
-        if (betAmount <= 0.10f)
+        if (betAmount <= (int)APIController.instance.userDetails.betAmountDetails.IncrementValue)
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
         }
-        else if (betAmount > 0.10f)
+        else if (betAmount > (int)APIController.instance.userDetails.betAmountDetails.IncrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
 
-        if (betAmount < 100f)
+        if (betAmount < (int)APIController.instance.userDetails.betAmountDetails.MaxBetValue)
         {
             plusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
         }
-        else if (betAmount >= 100f)
+        else if (betAmount >= (int)APIController.instance.userDetails.betAmountDetails.MaxBetValue)
         {
             plusButton.enabled = false;
             plusButtomImg.color = new Color32(255, 255, 255, 100);

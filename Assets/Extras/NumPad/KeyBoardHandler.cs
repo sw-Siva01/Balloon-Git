@@ -13,8 +13,8 @@ public class KeyBoardHandler : MonoBehaviour
     public Button decimalButton, submitButton, backSpaceButton, cancelButton;
     public TMP_InputField displayText;
     public string currentInput = "";
-    private float minValue = 0.1f;
-    private float maxValue = 100f;
+    private float minValue = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+    private float maxValue = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
     Action<float> OnSubmitAction, OnValurChangedAction;
     Action<float> OnCancelAction;
     public CanvasGroup canvasGroup;
@@ -142,14 +142,14 @@ public class KeyBoardHandler : MonoBehaviour
             float f;
             try
             {
-                f = Mathf.Clamp(float.Parse(currentInput), 0.10f, 100.00f);
+                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
                 OnSubmitAction?.Invoke(f);
             }
             catch
             {
                 Debug.Log("Cant Convert Too lengthy");
-                OnSubmitAction?.Invoke(100.00f);
-                controller.betAmount = 100;
+                OnSubmitAction?.Invoke(APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
             }
             Debug.Log("KeyPad Input WIth Some Values");
         }
@@ -187,14 +187,14 @@ public class KeyBoardHandler : MonoBehaviour
             float f;
             try
             {
-                f = Mathf.Clamp(float.Parse(currentInput), 0.10f, 100.00f);
+                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
                 OnSubmitAction?.Invoke(f);
             }
             catch
             {
                 Debug.Log("Cant Convert Too lengthy");
-                OnSubmitAction?.Invoke(100.00f);
-                controller.betAmount = 100;
+                OnSubmitAction?.Invoke(APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
             }
 
             Debug.Log("KeyPad Input WIth Some Values");

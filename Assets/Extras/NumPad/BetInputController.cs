@@ -96,12 +96,12 @@ public class BetInputController : MonoBehaviour
             {
                 if (BetAmtInput.text == ".")
                 {
-                    amount = 0.1f;
+                    amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
 
                 }
                 try
                 {
-                    amount = Mathf.Clamp((float)amount, 0.10f, 100.00f);
+                    amount = Mathf.Clamp((float)amount, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
                 }
                 catch 
                 {
@@ -112,7 +112,7 @@ public class BetInputController : MonoBehaviour
             {
                 if (APIController.instance.userDetails.UserDevice == "desktop")
                 {
-                    amount = 0.1f;
+                    amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
 
                 }
                 Debug.Log("eMPTY iNPUT eNDeDIT");
@@ -207,21 +207,21 @@ public class BetInputController : MonoBehaviour
             float amount = (float)controller.betAmount;
             if (BetAmtInput.text == ".")
             {
-                amount = 0.1f;
+                amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
 
             }
             else
             {
                 if (BetAmtInput.text.Length > 15)
                 {
-                    amount = 100f;
+                    amount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
                 }
                 else
                 {
                     amount = float.Parse(BetAmtInput.text);
                 }
             }
-            amount = Mathf.Clamp(amount, 0.10f, 100.00f);
+            amount = Mathf.Clamp(amount, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
             IsEmptyInput = false;
 
             controller.betAmount = amount;

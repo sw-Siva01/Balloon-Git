@@ -539,7 +539,6 @@ public class APIController : MonoBehaviour
                 userDetails.hasBot = true;
                 userDetails.game_Id = "demo_" + defaultGameName;
                 userDetails.isBlockApiConnection = true;
-
             }
             //userDetails.commission = 0.2f;
         }
@@ -555,6 +554,32 @@ public class APIController : MonoBehaviour
         userDetails.bootAmount = defaultBootAmount;
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
             userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
+
+        if (userDetails.betAmountDetails.BetValues.Length == 0)
+        {
+            if (userDetails.currency_type == "USD" || userDetails.currency_type == "EUR")
+            {
+                userDetails.betAmountDetails = new BetAmountDetails()
+                {
+                    BetValues = new float[] { 1, 2, 5, 10 },
+                    MaxBetValue = 100f,
+                    MinBetValue = 1f,
+                    IncrementValue = 0.10f,
+                    DecrementValue = 0.10f
+                };
+            }
+            else
+            {
+                userDetails.betAmountDetails = new BetAmountDetails()
+                {
+                    BetValues = new float[] { 10, 100, 150, 250 },
+                    MaxBetValue = 500f,
+                    MinBetValue = 10f,
+                    IncrementValue = 1f,
+                    DecrementValue = 1f
+                };
+            }
+        }
         Debug.Log(JsonUtility.ToJson(userDetails));
 #if UNITY_EDITOR
 
@@ -2362,6 +2387,7 @@ public class UserGameData
     public bool hasMusic;
     public string operatorDomainUrl;
     public string UserDevice;
+    public BetAmountDetails betAmountDetails;
 }
 
 [System.Serializable]
@@ -2561,4 +2587,14 @@ public enum NetworkStatus
     Active = 0,
     NetworkIssue = 1,
     ServerIssue = 2
+}
+
+[Serializable]
+public class BetAmountDetails
+{
+    public float[] BetValues;
+    public float MaxBetValue;
+    public float MinBetValue;
+    public float IncrementValue;
+    public float DecrementValue;
 }
