@@ -13,8 +13,8 @@ public class KeyBoardHandler : MonoBehaviour
     public Button decimalButton, submitButton, backSpaceButton, cancelButton;
     public TMP_InputField displayText;
     public string currentInput = "";
-    private float minValue = APIController.instance.userDetails.betAmountDetails.MinBetValue;
-    private float maxValue = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+    /*private float minValue = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+    private float maxValue = APIController.instance.userDetails.betAmountDetails.MaxBetValue;*/
     Action<float> OnSubmitAction, OnValurChangedAction;
     Action<float> OnCancelAction;
     public CanvasGroup canvasGroup;
@@ -69,7 +69,7 @@ public class KeyBoardHandler : MonoBehaviour
         {
             if (clampValue)
             {
-                result = Mathf.Clamp(result, minValue, maxValue);
+                result = Mathf.Clamp(result, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
                 displayText.text = result.ToString();
             }
             else
@@ -125,15 +125,15 @@ public class KeyBoardHandler : MonoBehaviour
         if (string.IsNullOrWhiteSpace(currentInput))
         {
             Debug.Log("KeyPad Input WIthout Value");
-            controller.betAmount = minValue;
+            controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
             OnSubmitAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
         }
         else
         {
             if (displayText.text == ".")
             {
-                currentInput = minValue.ToString();
-                controller.betAmount = minValue;
+                currentInput = APIController.instance.userDetails.betAmountDetails.MinBetValue.ToString();
+                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
             }
             else
             {
@@ -169,7 +169,7 @@ public class KeyBoardHandler : MonoBehaviour
             BetInputController.Instance.IsEmptyInput = true;
 
             Debug.Log("KeyPad Input WIthout Value");
-            controller.betAmount = minValue;
+            controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
 
             OnCancelAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
         }
@@ -177,8 +177,8 @@ public class KeyBoardHandler : MonoBehaviour
         {
             if (displayText.text == ".")
             {
-                currentInput = minValue.ToString();
-                controller.betAmount = minValue;
+                currentInput = APIController.instance.userDetails.betAmountDetails.MinBetValue.ToString();
+                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
             }
             else
             {

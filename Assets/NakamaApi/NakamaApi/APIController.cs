@@ -2387,7 +2387,7 @@ public class UserGameData
     public bool hasMusic;
     public string operatorDomainUrl;
     public string UserDevice;
-    public BetAmountDetails betAmountDetails;
+    public BetAmountDetails betAmountDetails = new();
 }
 
 [System.Serializable]
@@ -2592,7 +2592,7 @@ public enum NetworkStatus
 [Serializable]
 public class BetAmountDetails
 {
-    public float[] BetValues;
+    public float[] BetValues = new float[] { };
     public float MaxBetValue;
     public float MinBetValue;
     public float IncrementValue;
