@@ -39,6 +39,8 @@ public class GameController : MonoBehaviour
     [SerializeField] Button holdButton;
     [SerializeField] Button holdButton_dup;
     [SerializeField] TextMeshProUGUI heatTxt;
+    [SerializeField] TMP_Text[] unSelectedBtnTxt;
+    [SerializeField] TMP_Text[] SelectedBtnTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -326,6 +328,7 @@ public class GameController : MonoBehaviour
         pressed_Buttons[2].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[2]));
         pressed_Buttons[3].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[3]));
 
+
         // Bet Press Buttons
         // sliderOBjs
         slider_bg.SetActive(false);
@@ -421,6 +424,12 @@ public class GameController : MonoBehaviour
         lobbyName = "Room : " + DateTime.UtcNow + UnityEngine.Random.Range(100, 999);
         if (GameController.instance.LoadingPopUp.activeSelf)
             GameController.instance.LoadingPopUp.SetActive(false);
+
+        for (int i = 0; i < 4; i++)
+        {
+            unSelectedBtnTxt[i].text = APIController.instance.userDetails.betAmountDetails.BetValues[i].ToString();
+            SelectedBtnTxt[i].text = APIController.instance.userDetails.betAmountDetails.BetValues[i].ToString();
+        }
 
         GameController.instance.ResponsePopUp.SetActive(true);
         Debug.Log("Player Details Subscribed");

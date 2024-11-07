@@ -5166,6 +5166,10 @@ PrefabInstance:
       propertyPath: userDetails.isBlockApiConnection
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
+      propertyPath: userDetails.betAmountDetails.BetValues.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
 --- !u!1 &405718778
@@ -28700,11 +28704,20 @@ MonoBehaviour:
   holdButton: {fileID: 704416873}
   holdButton_dup: {fileID: 2103580144}
   heatTxt: {fileID: 2004977744}
+  unSelectedBtnTxt:
+  - {fileID: 1593792686}
+  - {fileID: 1875534904}
+  - {fileID: 2134986606}
+  - {fileID: 152545863}
+  SelectedBtnTxt:
+  - {fileID: 522794117}
+  - {fileID: 279283512}
+  - {fileID: 336152165}
+  - {fileID: 561108686}
   button_1: {fileID: 1348018351}
   button_2: {fileID: 218082884}
   button_5: {fileID: 2077586490}
   button_10: {fileID: 708757071}
-  amounts: 0100000002000000050000000a000000
   setected_Buttons:
   - {fileID: 1348018351}
   - {fileID: 218082884}

@@ -253,7 +253,8 @@ public class APIController : MonoBehaviour
                 //GotResult = gotResult;
                 if (hasnetwork && !hasserver)
                 {
-                    WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA
+                    /*WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_FORMDATA*/
+                    WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD
                          ,
                           BackendAPIURL.LootrixServerInactiveAPI,
                          new List<KeyValuePojo>() { new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Host", value = Nakama.Helpers.NakamaManager.Instance.connectedHost } },
@@ -572,7 +573,7 @@ public class APIController : MonoBehaviour
             {
                 userDetails.betAmountDetails = new BetAmountDetails()
                 {
-                    BetValues = new float[] { 10, 100, 150, 250 },
+                    BetValues = new float[] { 10, 20, 50, 100 },
                     MaxBetValue = 500f,
                     MinBetValue = 10f,
                     IncrementValue = 1f,
@@ -1080,6 +1081,13 @@ public class APIController : MonoBehaviour
                     else
                     {
                         Debug.LogError("Check nakama server");
+                        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD
+                         ,
+                          BackendAPIURL.LootrixServerInactiveAPI,
+                         new List<KeyValuePojo>() { new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Host", value = Nakama.Helpers.NakamaManager.Instance.connectedHost } },
+                         (bool isSuccess, string error, string body) =>
+                         {
+                         }, 2);
                         OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
                     }
                 });
@@ -1095,6 +1103,13 @@ public class APIController : MonoBehaviour
             else
             {
                 Debug.Log("InitNakamaClient ... 3");
+                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD
+                         ,
+                          BackendAPIURL.LootrixServerInactiveAPI,
+                         new List<KeyValuePojo>() { new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Host", value = Nakama.Helpers.NakamaManager.Instance.connectedHost } },
+                         (bool isSuccess, string error, string body) =>
+                         {
+                         }, 2);
                 OnInternetStatusChange?.Invoke(NetworkStatus.ServerIssue);
 
             }
