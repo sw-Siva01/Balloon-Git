@@ -82,8 +82,6 @@ namespace Nakama.Helpers
         {
             try
             {
-                /*connectedHost = isTryBackupServer ? connectionData.backupHost : connectionData.Host;
-                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);*/
                 client = new Client(connectionData.Scheme, connectedHost, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
                 CustomMobileLogin(APIController.instance.userDetails.Id + randomNumber, (async (status, message) =>
                 {
@@ -335,7 +333,7 @@ namespace Nakama.Helpers
         {
             try
             {
-                client = new Client(connectionData.Scheme, isTryBackupServer ? connectionData.backupHost : connectionData.Host, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
+                client = new Client(connectionData.Scheme, connectedHost, connectionData.Port, connectionData.ServerKey, UnityWebRequestAdapter.Instance);
                 CustomMobileLogin("2222222222", (async (status, message) =>
                 {
                     if (status)
@@ -380,7 +378,6 @@ namespace Nakama.Helpers
         public async void ValidateRPC(string rpc, string payload, int id, Action<string> action)
         {
             Debug.Log(rpc + "start validation ... 1");
-            checking = false;
             await UniTask.Delay(7000);
             bool haveInternet = false;
                 Debug.Log(rpc + "ValidateRPC While Loop Entered");
@@ -492,6 +489,7 @@ namespace Nakama.Helpers
                         await UniTask.Delay(500);
                     }
                 }
+                Debug.Log(client.Host);
                 EncryptedPayload encryptpayload = new EncryptedPayload();
                 encryptpayload.data = EncryptString(payload);
                 encryptpayload.value = EncryptString(string.IsNullOrWhiteSpace(APIController.instance.userDetails.operatorDomainUrl) ? "" : APIController.instance.userDetails.operatorDomainUrl);
@@ -512,7 +510,7 @@ namespace Nakama.Helpers
 
                 string outputPayload = DecryptString(encryptpayload.data);
 
-                Debug.Log(rpc + " recived ::_" + outputPayload + "Encrypted data : " + encryptpayload.data);
+                Debug.Log(rpc + " recived ::_" + client.Host + "_" + outputPayload + "Encrypted data : " + encryptpayload.data);
 
                 Debug.Log($"SEND RPC ACTION INVOKE 1 ==> SendRPC _ {outputPayload}");
 
