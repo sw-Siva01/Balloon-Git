@@ -200,7 +200,7 @@ public class BetInputController : MonoBehaviour
             Debug.Log("Closing +");
 
             IsEmptyInput = true;
-            controller.betAmount = 0.1f;
+            controller.betAmount = /*0.1f*/APIController.instance.userDetails.betAmountDetails.MinBetValue;
         }
         else
         {

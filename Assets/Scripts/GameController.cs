@@ -354,7 +354,8 @@ public class GameController : MonoBehaviour
                 {
                     ISActive = true;
                     if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
+                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+                        && betAmount >= APIController.instance.userDetails.betAmountDetails.MinBetValue)
                     {
                         Button_ONEnter();
                         OnClickDown();
@@ -378,7 +379,8 @@ public class GameController : MonoBehaviour
         {
             //isPressed = false;
             if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf &&
-                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
+                        (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+                        && betAmount >= APIController.instance.userDetails.betAmountDetails.MinBetValue)
             {
                 OnClickUp();
                 Button_OFFEnter();

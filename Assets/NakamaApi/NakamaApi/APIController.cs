@@ -105,6 +105,8 @@ public class APIController : MonoBehaviour
     public static extern void FullScreen();
     [DllImport("__Internal")]
     private static extern void ShowDeposit();
+    [DllImport("__Internal")]
+    private static extern void UpdateBalance();
 
     [DllImport("__Internal")]
     public static extern void CloseWindow();
@@ -579,7 +581,13 @@ public class APIController : MonoBehaviour
             SetUserData("");
             return;
         }
-            while (!BackendAPIURL.isGetData)
+        authentication = JsonUtility.FromJson<AuthenticationData>(data);
+        if (authentication.operatorname == "demo")
+        {
+            SetUserData(data);
+            return;
+        }
+        while (!BackendAPIURL.isGetData)
         {
             await UniTask.Delay(500);
         }
@@ -664,17 +672,18 @@ public class APIController : MonoBehaviour
                                     };
                                 }
                             }
+                            userDetails.UserDevice = "mobile";
 #if UNITY_EDITOR
 
                             //userDetails.UserDevice = "mobile";
-                            if (MobileShow)
+                            /*if (MobileShow)
                             {
                                 userDetails.UserDevice = "mobile";
                             }
                             else
                             {
                                 userDetails.UserDevice = "desktop";
-                            }
+                            }*/
 
 #endif
 #if CasinoGames
@@ -752,7 +761,6 @@ public class APIController : MonoBehaviour
                 isPlayByDummyData = true;
                 userDetails.hasBot = true;
                 userDetails.game_Id = "demo_" + defaultGameName;
-                userDetails.isBlockApiConnection = true;
                 userDetails.betAmountDetails = new BetAmountDetails()
                 {
                     BetValues = new float[] { 1, 2, 5, 10 },
@@ -768,10 +776,19 @@ public class APIController : MonoBehaviour
         else
         {
             userDetails = JsonUtility.FromJson<UserGameData>(data);
-            isPlayByDummyData = userDetails.isBlockApiConnection;
+            /*isPlayByDummyData = userDetails.isBlockApiConnection;
             isWin = userDetails.isWin;
-            maxWinAmount = userDetails.maxWin;
+            maxWinAmount = userDetails.maxWin;*/
+            isWin = true;
+            maxWinAmount = 500;
+            userDetails.balance = 5000;
+            userDetails.name = "User_" + UnityEngine.Random.Range(100, 999);
+            isPlayByDummyData = true;
+            userDetails.hasBot = true;
+            userDetails.game_Id = "demo_" + defaultGameName;
+
         }
+        userDetails.isBlockApiConnection = true;
         IsBotInGame = userDetails.hasBot;
         //if (userDetails.bootAmount == 0)
         userDetails.bootAmount = defaultBootAmount;
@@ -806,17 +823,18 @@ public class APIController : MonoBehaviour
                 };
             }
         }
+        userDetails.UserDevice = "mobile";
 #if UNITY_EDITOR
 
         //userDetails.UserDevice = "mobile";
-        if (MobileShow)
+        /*if (MobileShow)
         {
             userDetails.UserDevice = "mobile";
         }
         else
         {
             userDetails.UserDevice = "desktop";
-        }
+        }*/
 
 #endif
 #if CasinoGames
@@ -1337,7 +1355,7 @@ public class APIController : MonoBehaviour
         GetLoginData();
 #elif UNITY_EDITOR
         // SetUserData("");
-        StartAuthentication(DummyData);
+        StartAuthentication("");
 #endif
     }
     public async void GetBalance(Action<double> action)
@@ -1864,6 +1882,7 @@ public class APIController : MonoBehaviour
             double userbalance = (double)json["balance"];
             UpdateBalanceResponse(userbalance);
             //            GetUpdatedBalance();
+            UpdateBalance();
 
         });
         return;
@@ -1886,7 +1905,8 @@ public class APIController : MonoBehaviour
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.action = (success, error, body) =>
             {
-                GetUpdatedBalance();
+                /*GetUpdatedBalance();*/
+                UpdateBalance();
                 if (success)
                 {
 
@@ -2052,6 +2072,7 @@ public class APIController : MonoBehaviour
             JObject json = JObject.Parse(response.message);
             double userbalance = (double)json["balance"];
             UpdateBalanceResponse(userbalance);
+            UpdateBalance();
 
         });
         return;
@@ -2431,7 +2452,8 @@ public class APIController : MonoBehaviour
                 Debug.Log("CreateAndJoinMatch 2 => " + bet.BetId + " ... " + bet.MatchToken);
                 Debug.Log($"BetRequest JSON Temp After Response: {bet.ToJson()}");
                 IsInitBetSucceeded = true;
-              //  GetUpdatedBalance();
+                //  GetUpdatedBalance();
+                UpdateBalance();
             }
             else
             {
@@ -2486,7 +2508,8 @@ public class APIController : MonoBehaviour
                 _winningStatus = JsonUtility.FromJson<GameWinningStatus>(jsonObject["data"].ToString());
                 bet.BetId = _winningStatus.Id;
                 betIdAction.Invoke(_winningStatus.Id);
-                GetUpdatedBalance();
+                /*GetUpdatedBalance();*/
+                UpdateBalance();
 
             }
             else

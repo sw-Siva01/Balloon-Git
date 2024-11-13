@@ -2,7 +2,7 @@ mergeInto(LibraryManager.library, {
   CloseWindow: function () {
   ExitGame();
   },
-  GetUpdatedBalance: function () {
+  UpdateBalance: function () {
   GetBalance();
   },
   DisconnectGame: function (msg) {
