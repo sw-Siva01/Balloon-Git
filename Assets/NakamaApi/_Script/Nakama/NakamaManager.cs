@@ -379,6 +379,7 @@ namespace Nakama.Helpers
         {
             Debug.Log(rpc + "start validation ... 1");
             await UniTask.Delay(7000);
+            checking = false;
             bool haveInternet = false;
                 Debug.Log(rpc + "ValidateRPC While Loop Entered");
             NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccessRespose;
