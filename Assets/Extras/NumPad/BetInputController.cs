@@ -20,14 +20,14 @@ public class BetInputController : MonoBehaviour
     public RectTransform BetPanel;
 
     public static BetInputController Instance;
-    public bool IsEmptyInput=false;
+    public bool IsEmptyInput = false;
 
     [SerializeField] GameController controller;
     private void Awake()
     {
         Instance = this;
         BetAmtInput.onValueChanged.AddListener(delegate { OnBetAmountEdit(); });
-        BetAmtInput.onEndEdit.AddListener(delegate { OnEndEditBetAmount(BetAmtInput.text.Length<15?100f:(float.Parse(BetAmtInput.text))); });
+        BetAmtInput.onEndEdit.AddListener(delegate { OnEndEditBetAmount(BetAmtInput.text.Length < 15 ? 100f : (float.Parse(BetAmtInput.text))); });
     }
     void Start()
     {
@@ -37,26 +37,29 @@ public class BetInputController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (BetPanel.gameObject.activeSelf)
         {
-            Debug.Log("Enter key was pressed!");
-            CloseKeyPadPanel();
-            if (APIController.instance.userDetails.UserDevice == "mobile")
+            if (Input.GetKeyDown(KeyCode.Return))
             {
+                Debug.Log("Enter key was pressed!");
+                CloseKeyPadPanel();
+                if (APIController.instance.userDetails.UserDevice == "mobile")
+                {
 
-                BetAmtInput.textViewport.gameObject.SetActive(false);
+                    BetAmtInput.textViewport.gameObject.SetActive(false);
+                }
             }
-        }
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            Debug.Log("Enter key was pressed!");
-            CloseKeyPadPanel();
-            if (APIController.instance.userDetails.UserDevice == "mobile")
+            if (Input.GetKeyDown(KeyCode.KeypadEnter))
             {
+                Debug.Log("Enter key was pressed!");
+                CloseKeyPadPanel();
+                if (APIController.instance.userDetails.UserDevice == "mobile")
+                {
 
-                BetAmtInput.textViewport.gameObject.SetActive(false);
+                    BetAmtInput.textViewport.gameObject.SetActive(false);
+                }
+
             }
-
         }
     }
     public void OpenKeyPadPanel()
@@ -103,10 +106,10 @@ public class BetInputController : MonoBehaviour
                 {
                     amount = Mathf.Clamp((float)amount, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
                 }
-                catch 
+                catch
                 {
                     Debug.Log("Cant convert Too Lengthy OnEndEditBetAmount");
-                }       
+                }
             }
             else
             {
@@ -124,7 +127,7 @@ public class BetInputController : MonoBehaviour
         {
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
-            controller.betAmount  = float.Parse(_s);
+            controller.betAmount = float.Parse(_s);
 
             EnableBetInput();
             BetAmtInput.interactable = false;
@@ -150,12 +153,12 @@ public class BetInputController : MonoBehaviour
         {
             string val = controller.betAmount.ToString("F2");
             BetAmtInput.text = val;
-           DisableBetInput();
+            DisableBetInput();
         }
         else
         {
             Debug.Log("OnEditInput ELse");
-            
+
             controller.numPad = true;
             OpenKeyPadPanel();
 

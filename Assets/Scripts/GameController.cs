@@ -224,8 +224,10 @@ public class GameController : MonoBehaviour
     // Heat button
     [SerializeField] Animator heat_Anim;
     [SerializeField] Animator heat_IdleAnim;
+    [SerializeField] GameObject takeCash_Anim;
     [SerializeField] GameObject fireObj;
     [SerializeField] GameObject fireIdleObj;
+    [SerializeField] List<Animator> unsetected_Buttons = new List<Animator>();
     // slider
     [SerializeField] Animator slider_Anim;
     // bonus Balloon
@@ -241,12 +243,15 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject rumbleBet_cancelButton;
     [SerializeField] GameObject HowToPlay;
     [SerializeField] GameObject AmountGlow;
+    [SerializeField] GameObject InsufficientCancelBtn;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("HandGestures")]
     [SerializeField] GameObject HandGestures_start;
     [SerializeField] GameObject HandGestures_btAmt;
+    [SerializeField] GameObject HandGestures_start_Img;
+    [SerializeField] GameObject HandGestures_btAmt_Img;
     [SerializeField] Collider heatbtnCollider;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -394,15 +399,24 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (TotalAmount <= 0.09f)
+        if (TotalAmount <= /*0.09f*/APIController.instance.userDetails.betAmountDetails.MinBetValue)
         {
             cancelButton.SetActive(false);
             rumbleBet_cancelButton.SetActive(false);
         }
-        else if (TotalAmount >= 0.10f)
+        else if (TotalAmount >= /*0.10f*/APIController.instance.userDetails.betAmountDetails.MinBetValue)
         {
             cancelButton.SetActive(true);
             rumbleBet_cancelButton.SetActive(true);
+        }
+
+        if (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        {
+            Animation_Play();
+        }
+        else if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        {
+            Animation_Pause();
         }
     }
     public async void AmountColor_Glow()
@@ -555,6 +569,8 @@ public class GameController : MonoBehaviour
                 InsufBal_Rumblebets.SetActive(true);
             }
         }
+
+
         // Bonus Scroll View
         if (isScroll)
         {
@@ -861,6 +877,35 @@ public class GameController : MonoBehaviour
         NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
     }
     bool checking = false;
+
+    public ImageSequencer imageSequencer;
+
+    public void Animation_Pause()
+    {
+        heat_IdleAnim.SetBool("isPlay1", false);
+        imageSequencer.enabled = false;
+        for (int i = 0; i < unsetected_Buttons.Count; i++)
+        {
+            unsetected_Buttons[i].enabled = false;
+        }
+        HandGestures_start_Img.SetActive(false);
+        HandGestures_btAmt_Img.SetActive(false);
+        takeCash_Anim.SetActive(false);
+        balloonShake_blue.GetComponent<ImageSequencer>().enabled = false;
+    }
+    public void Animation_Play()
+    {
+        heat_IdleAnim.SetBool("isPlay1", true);
+        imageSequencer.enabled = true;
+        for (int i = 0; i < unsetected_Buttons.Count; i++)
+        {
+            unsetected_Buttons[i].enabled = true;
+        }
+        HandGestures_start_Img.SetActive(true);
+        HandGestures_btAmt_Img.SetActive(true);
+        takeCash_Anim.SetActive(true);
+        balloonShake_blue.GetComponent<ImageSequencer>().enabled = true;
+    }
 
     public async void TakeCashOut() // TakeCash button
     {
@@ -1208,7 +1253,12 @@ public class GameController : MonoBehaviour
             }
             await UniTask.Delay(100);
         }
+        if (!APIController.instance.userDetails.isBlockApiConnection)
+        {
 
+            APIController.UpdateBalance();
+            APIController.instance.GetUpdatedBalance();
+        }
 
         Debug.Log(" WinningBetAPI , Checking Internet" + checking);
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
@@ -1426,8 +1476,21 @@ public class GameController : MonoBehaviour
             winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
         else
         {
-            winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
+            /*winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");*/
+            if (APIController.instance.userDetails.currency_type == "USD")
+            {
+                winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
+            }
+            else if (APIController.instance.userDetails.currency_type == "EUR")
+            {
+                winTxt.text = takeCash.ToString("0.00" + " <size=70>EUR</size>");
+            }
+            else if (APIController.instance.userDetails.currency_type == "INR")
+            {
+                winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
+            }
         }
+
         winTxt.color = Color.green;
     }
     async void balloon_Objs()
@@ -1964,7 +2027,7 @@ public class GameController : MonoBehaviour
             SetBetButtonsActiveState(betValue);
 
             AmountColor_Glow();
-            UpdateButtonAnimations();
+            UpdateButtonAnimations(betValue);
 
             plusButton.enabled = true;
             minusButton.enabled = true;
@@ -1986,15 +2049,52 @@ public class GameController : MonoBehaviour
         button_5.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[2]);
         button_10.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[3]);
     }
-    private void UpdateButtonAnimations()
+    private void UpdateButtonAnimations(int betValue)
     {
-        for (int i = 0; i < button_Anim.Length; i++)
+        if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[0])
         {
-            button_Anim[i].SetActive(false);
+            for (int i = 0; i < button_Anim.Length; i++)
+            {
+                button_Anim[i].SetActive(false);
+            }
+            button_Anim[0].SetActive(false);
+            button_Anim[1].SetActive(true);
+            button_Anim[2].SetActive(true);
+            button_Anim[3].SetActive(true);
         }
-        button_Anim[1].SetActive(true);
-        button_Anim[2].SetActive(true);
-        button_Anim[3].SetActive(true);
+        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[1])
+        {
+            for (int i = 0; i < button_Anim.Length; i++)
+            {
+                button_Anim[i].SetActive(false);
+            }
+            button_Anim[1].SetActive(false);
+            button_Anim[0].SetActive(true);
+            button_Anim[2].SetActive(true);
+            button_Anim[3].SetActive(true);
+        }
+        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[2])
+        {
+            for (int i = 0; i < button_Anim.Length; i++)
+            {
+                button_Anim[i].SetActive(false);
+            }
+            button_Anim[2].SetActive(false);
+            button_Anim[0].SetActive(true);
+            button_Anim[1].SetActive(true);
+            button_Anim[3].SetActive(true);
+        }
+        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[3])
+        {
+            for (int i = 0; i < button_Anim.Length; i++)
+            {
+                button_Anim[i].SetActive(false);
+            }
+            button_Anim[3].SetActive(false);
+            button_Anim[0].SetActive(true);
+            button_Anim[1].SetActive(true);
+            button_Anim[2].SetActive(true);
+        }
     }
 
     // Select bet buttons

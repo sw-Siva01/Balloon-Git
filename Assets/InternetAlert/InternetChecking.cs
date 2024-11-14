@@ -34,6 +34,12 @@ public class InternetChecking : MonoBehaviour
             Debug.Log($"NetworkStatus ==> {data.ToString()}");
             if (InternetDisconnectedPopup.activeSelf || ServerMaintenancePopup.activeSelf)
             {
+                if (!APIController.instance.userDetails.isBlockApiConnection)
+                {
+
+                    APIController.UpdateBalance();
+                    APIController.instance.GetUpdatedBalance();
+                }
                 InternetDisconnectedPopup.SetActive(false);
                 ServerMaintenancePopup.SetActive(false);
             }

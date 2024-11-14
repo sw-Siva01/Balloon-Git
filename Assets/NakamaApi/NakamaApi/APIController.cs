@@ -106,7 +106,7 @@ public class APIController : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void ShowDeposit();
     [DllImport("__Internal")]
-    private static extern void UpdateBalance();
+    public static extern void UpdateBalance();
 
     [DllImport("__Internal")]
     public static extern void CloseWindow();

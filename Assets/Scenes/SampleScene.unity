@@ -26545,7 +26545,7 @@ GameObject:
   - component: {fileID: 1782075447}
   - component: {fileID: 1782075449}
   m_Layer: 5
-  m_Name: Image
+  m_Name: takeCash_Anim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28804,8 +28804,14 @@ MonoBehaviour:
   ballon_Anim: {fileID: 2018898340}
   heat_Anim: {fileID: 360439646}
   heat_IdleAnim: {fileID: 145684699}
+  takeCash_Anim: {fileID: 1782075445}
   fireObj: {fileID: 912674359}
   fireIdleObj: {fileID: 579672294}
+  unsetected_Buttons:
+  - {fileID: 1397149730}
+  - {fileID: 836427387}
+  - {fileID: 685306288}
+  - {fileID: 913367060}
   slider_Anim: {fileID: 1984203356}
   bonusBallon: {fileID: 1639272521}
   InsufficientBalance: {fileID: 1498631047}
@@ -28814,8 +28820,11 @@ MonoBehaviour:
   rumbleBet_cancelButton: {fileID: 1405522143}
   HowToPlay: {fileID: 6208332247014328514}
   AmountGlow: {fileID: 1666359590}
+  InsufficientCancelBtn: {fileID: 1246606482}
   HandGestures_start: {fileID: 381450674}
   HandGestures_btAmt: {fileID: 15170613}
+  HandGestures_start_Img: {fileID: 2053887542}
+  HandGestures_btAmt_Img: {fileID: 2059085012}
   heatbtnCollider: {fileID: 704416877}
   maxBet_Reached: {fileID: 629583619}
   audioController: {fileID: 1165968576047954302}
@@ -28823,6 +28832,7 @@ MonoBehaviour:
   LoadingPopUp: {fileID: 6905155583552021386}
   ResponsePopUp: {fileID: 1022269645}
   inputField: {fileID: 2524193267929683899}
+  imageSequencer: {fileID: 579672296}
   isCreateMatchSucceess: 0
   settingsBtn: {fileID: 1050069827}
 --- !u!1 &1983724679
