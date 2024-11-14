@@ -28756,6 +28756,7 @@ MonoBehaviour:
   isBonus: 0
   isBonus_OFF: 0
   startGame: 0
+  pauseGame: 0
   isWin: 0
   bonusCount: 0
   multiplierTxt: {fileID: 1898352829}
@@ -28832,6 +28833,7 @@ MonoBehaviour:
   LoadingPopUp: {fileID: 6905155583552021386}
   ResponsePopUp: {fileID: 1022269645}
   inputField: {fileID: 2524193267929683899}
+  needToCancelBet: 0
   imageSequencer: {fileID: 579672296}
   isCreateMatchSucceess: 0
   settingsBtn: {fileID: 1050069827}

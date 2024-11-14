@@ -71,7 +71,7 @@ public class APIController : MonoBehaviour
     public Action OnUserBalanceUpdate;
     public Action OnUserDeposit;
     public Action<bool> OnDepositCancelAction;
-   
+
     public Action<NetworkStatus> OnInternetStatusChange;
     public Action<NetworkStatus> ServerAction;
     public Action<bool> OnSwitchingTab;
@@ -146,6 +146,7 @@ public class APIController : MonoBehaviour
         {
             OnUserDeposit?.Invoke();
         }
+        UpdateBalance();
     }
 
     public void ExecuteExternalAPI(string data)
@@ -268,7 +269,7 @@ public class APIController : MonoBehaviour
                 }
                 else if (hasnetwork && hasserver && Nakama.Helpers.NakamaManager.Instance.isSocketOpen)
                 {
-                   // OnInternetStatusChange?.Invoke(NetworkStatus.Active);
+                    // OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                     InternetCallBack?.Invoke(true);
                 }
                 else
@@ -313,7 +314,7 @@ public class APIController : MonoBehaviour
 
     public void CheckNakamaServer(Action<bool, bool> action)
     {
-       
+
         var param = new List<KeyValuePojo>();
         param.Add(new KeyValuePojo { keyId = "requestType", value = "CheckMirrorServer" });
         param.Add(new KeyValuePojo { keyId = "host", value = Nakama.Helpers.NakamaManager.Instance.connectedHost });
@@ -329,7 +330,7 @@ public class APIController : MonoBehaviour
                 Debug.Log("Nakama Server check ==========> IsACTIVE " + response.code + "**************" + response.message);
                 if (response.code == 200)
                 {
-                   
+
                     action.Invoke(true, true);
                 }
                 else
@@ -352,9 +353,9 @@ public class APIController : MonoBehaviour
                 lastUpdatedTime = Time.time;
                 Debug.Log("Nakama Server check ==========> " + " Not IsACTIVE");
                 //if (!NakamaManager.Instance.socket.IsConnected)
-                    action.Invoke(false, false);
+                action.Invoke(false, false);
             }
-        },defaultDelay);
+        }, defaultDelay);
     }
     public void OnSwitchingTabs(string data)
     {
@@ -499,7 +500,7 @@ public class APIController : MonoBehaviour
         await UniTask.Delay(defaultDelay * 2000);
         betRequest.RemoveAll(x => x.BetId.Equals(betID));
     }
-        public void SendApiRequest(string url, ReqCallback callback,int timeout)
+    public void SendApiRequest(string url, ReqCallback callback, int timeout)
     {
 
         byte[] bytesToEncode = Encoding.UTF8.GetBytes(url);
@@ -511,13 +512,14 @@ public class APIController : MonoBehaviour
         ExecuteExternalUrl(base64EncodedString, timeout);
 #endif
 
-        CheckAPICallBack(base64EncodedString,timeout);
+        CheckAPICallBack(base64EncodedString, timeout);
 
     }
 
-    public void GetUpdatedBalance()
+    /*public void GetUpdatedBalance()
     {
-        NakamaManager.Instance.SendRPC("rpc_PlayerInfo", JsonUtility.ToJson(authentication), (res) => {
+        NakamaManager.Instance.SendRPC("rpc_PlayerInfo", JsonUtility.ToJson(authentication), (res) =>
+        {
             ApiResponse apiResponse = JsonUtility.FromJson<ApiResponse>(res);
             Debug.Log("authentication response is : " + res);
             Debug.Log("authentication response is : " + apiResponse.code);
@@ -570,6 +572,64 @@ public class APIController : MonoBehaviour
 
         });
 
+    }*/
+
+    bool checkBalance;
+    public void GetUpdatedBalance()
+    {
+        if (!checkBalance)
+            return;
+        NakamaManager.Instance.SendRPC("rpc_PlayerInfo", JsonUtility.ToJson(authentication), (res) =>
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            Debug.Log("authentication response is : " + res);
+            Debug.Log("authentication response is : " + apiResponse.code);
+            try
+            {
+                apiResponse = JsonUtility.FromJson<ApiResponse>(res);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+            checkBalance = false;
+            if (apiResponse.code == 200)
+            {
+                try
+                {
+                    if (apiResponse.code == 200)
+                    {
+                        JObject json = JObject.Parse(apiResponse.message);
+                        if ((int)json["code"] == 200)
+                        {
+                            JObject json1 = JObject.Parse(apiResponse.output);
+                            authentication.balance = (float)json["data"]["balance"];
+                            userDetails.balance = authentication.balance;
+                            UpdateBalanceResponse(authentication.balance);
+                        }
+                        else
+                        {
+                            DisconnectGame((string)json["message"]);
+                        }
+                    }
+                    else
+                    {
+                        DisconnectGame("Illigal Access");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("check 1" + ex.Message);
+                    DisconnectGame("Illigal Access");
+                }
+            }
+            else
+            {
+                GameController.instance.needToCancelBet = true;
+                Debug.Log("check 1.1" + apiResponse.code);
+            }
+            Debug.Log("check 2");
+        });
     }
 
     public AuthenticationData authentication = new AuthenticationData();
@@ -591,7 +651,8 @@ public class APIController : MonoBehaviour
         {
             await UniTask.Delay(500);
         }
-        NakamaManager.Instance.SendRPC("rpc_Authentication", data, (res) => {
+        NakamaManager.Instance.SendRPC("rpc_Authentication", data, (res) =>
+        {
             authentication = JsonUtility.FromJson<AuthenticationData>(data);
             Debug.Log("authentication response is : " + res);
             ApiResponse apiResponse = JsonUtility.FromJson<ApiResponse>(res);
@@ -601,10 +662,10 @@ public class APIController : MonoBehaviour
             {
                 try
                 {
-                    if(apiResponse.code == 200)
+                    if (apiResponse.code == 200)
                     {
                         JObject json = JObject.Parse(apiResponse.message);
-                        if((int)json["code"] == 200)
+                        if ((int)json["code"] == 200)
                         {
                             JObject json1 = JObject.Parse(apiResponse.output);
                             authentication.session_token = (string)json1["session_token"];
@@ -714,8 +775,9 @@ public class APIController : MonoBehaviour
 #endif       
                     }
                 }
-                catch (Exception ex) {
-                    Debug.Log("check 1"+ex.Message);
+                catch (Exception ex)
+                {
+                    Debug.Log("check 1" + ex.Message);
 #if !UNITY_EDITOR
 
                             DisconnectGame("Illigal Access");
@@ -726,10 +788,10 @@ public class APIController : MonoBehaviour
             }
             else
             {
-                Debug.Log("check 1.1"+apiResponse.code);
+                Debug.Log("check 1.1" + apiResponse.code);
             }
             Debug.Log("check 2");
-            
+
         });
     }
 
@@ -740,16 +802,16 @@ public class APIController : MonoBehaviour
         Debug.Log("Response from webgl ::::: " + data);
         if (data.Length < 30)
         {
-//#if UNITY_EDITOR
-//            if (IsTestLiveGamesinEditor && DummyData.Length > 30)
-//            {
-//                userDetails = JsonUtility.FromJson<UserGameData>(DummyData);
-//                isPlayByDummyData = userDetails.isBlockApiConnection;
-//                isWin = userDetails.isWin;
-//                maxWinAmount = userDetails.maxWin;
-//            }
-//            else
-//#endif
+            //#if UNITY_EDITOR
+            //            if (IsTestLiveGamesinEditor && DummyData.Length > 30)
+            //            {
+            //                userDetails = JsonUtility.FromJson<UserGameData>(DummyData);
+            //                isPlayByDummyData = userDetails.isBlockApiConnection;
+            //                isWin = userDetails.isWin;
+            //                maxWinAmount = userDetails.maxWin;
+            //            }
+            //            else
+            //#endif
             {
                 userDetails = new UserGameData();
                 userDetails.balance = 5000;
@@ -792,7 +854,7 @@ public class APIController : MonoBehaviour
         IsBotInGame = userDetails.hasBot;
         //if (userDetails.bootAmount == 0)
         userDetails.bootAmount = defaultBootAmount;
-       
+
         if (string.IsNullOrWhiteSpace(userDetails.gameId))
             userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
         Debug.Log("Check this once !!!!!!!!!!!!!" + userDetails.betAmountDetails.BetValues.Length);
@@ -874,12 +936,12 @@ public class APIController : MonoBehaviour
                     }
                 }
             };
-            ExecuteAPI(apiRequest,3);
+            ExecuteAPI(apiRequest, 3);
             await UniTask.Delay(3000);
         }
     }
 
-   // public bool isCheckInternet;
+    // public bool isCheckInternet;
 
     //public async void StopCheckInternetLoop()
     //{
@@ -951,7 +1013,7 @@ public class APIController : MonoBehaviour
     //    }
     //}
     public Action<bool> InternetCallBack;
-    
+
     //public async void StartCheckInternetLoop(Action<bool> action = null)
     //{
     //    isCheckInternet = true;
@@ -1166,7 +1228,7 @@ public class APIController : MonoBehaviour
                 validateSession.Operator = userDetails.game_Id.Split("_")[0];
                 validateSession.Session_token = userDetails.session_token;
                 validateSession.Control = Runcount == 1 ? "1" : "0";
-                
+
                 validateSession.Token = userDetails.token;
                 Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_ValidateSession", validateSession.ToJson(), (res) =>
                 {
@@ -1228,7 +1290,7 @@ public class APIController : MonoBehaviour
                         }
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     isOnline = false;
                     Debug.Log("Nakama.Helpers.NakamaManager.Instance.Socket.IsConnected Error Fix");
@@ -1243,7 +1305,7 @@ public class APIController : MonoBehaviour
             }
 
             Debug.Log("Internet check action Count --> " + NakamaManager.OnInternetCheckSuccess != null);
-            if (!isOnline  && NakamaManager.OnInternetCheckSuccess!= null)
+            if (!isOnline && NakamaManager.OnInternetCheckSuccess != null)
             {
                 Debug.Log("Internet failed need to retry.... without minimal delay");
                 GetNetworkStatus(isOnline.ToString());
@@ -1351,6 +1413,7 @@ public class APIController : MonoBehaviour
     void Start()
     {
         GetLambdaURL(false);
+        InvokeRepeating(nameof(GetUpdatedBalance), 0, 3);
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();
 #elif UNITY_EDITOR
@@ -1367,7 +1430,7 @@ public class APIController : MonoBehaviour
         else
         {
             OnUserDepositTrigger = action;
-
+            checkBalance = true;
             GetUpdatedBalance();
         }
     }
@@ -1643,10 +1706,10 @@ public class APIController : MonoBehaviour
         apiRequestList.RemoveAll(x => x.url == url);
     }
 
-    public async void CheckAPICallBack(string url,int timeout)
+    public async void CheckAPICallBack(string url, int timeout)
     {
-         Debug.Log($"API_ Response :-  URL{url} -- timeout check");
-        await UniTask.Delay(timeout*1000);
+        Debug.Log($"API_ Response :-  URL{url} -- timeout check");
+        await UniTask.Delay(timeout * 1000);
         Debug.Log($"API_ Response :-  URL{url} -- timeout..");
 
         foreach (var item in apiRequestList)
@@ -1872,18 +1935,22 @@ public class APIController : MonoBehaviour
         winningBetreq.session_token = authentication.session_token;
         winningBetreq.platform = authentication.platform;
         winningBetreq.currency = authentication.currency_type;
-        
+
         Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_WinningBet", winningBetreq.ToJson(), (res) =>
         {
             Debug.Log(res);
-            ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
-            action?.Invoke(response != null && response.code == 200);
-            JObject json = JObject.Parse(response.message);
-            double userbalance = (double)json["balance"];
-            UpdateBalanceResponse(userbalance);
-            //            GetUpdatedBalance();
-            UpdateBalance();
-
+            try
+            {
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
+                action?.Invoke(response != null && response.code == 200);
+                JObject json = JObject.Parse(response.message);
+                double userbalance = (double)json["balance"];
+                UpdateBalanceResponse(userbalance);
+            }
+            catch (Exception ex)
+            {
+                action?.Invoke(false);
+            }
         });
         return;
 #endif
@@ -1905,8 +1972,8 @@ public class APIController : MonoBehaviour
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.action = (success, error, body) =>
             {
-                /*GetUpdatedBalance();*/
-                UpdateBalance();
+                /*GetUpdatedBalance();
+                UpdateBalance();*/
                 if (success)
                 {
 
@@ -2072,7 +2139,7 @@ public class APIController : MonoBehaviour
             JObject json = JObject.Parse(response.message);
             double userbalance = (double)json["balance"];
             UpdateBalanceResponse(userbalance);
-            UpdateBalance();
+            /*UpdateBalance();*/
 
         });
         return;
@@ -2453,7 +2520,7 @@ public class APIController : MonoBehaviour
                 Debug.Log($"BetRequest JSON Temp After Response: {bet.ToJson()}");
                 IsInitBetSucceeded = true;
                 //  GetUpdatedBalance();
-                UpdateBalance();
+                /* UpdateBalance();*/
             }
             else
             {
@@ -2498,7 +2565,7 @@ public class APIController : MonoBehaviour
 
         Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_InitBet", initBetReq.ToJson(), (res) =>
         {
-            Debug.Log(res + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+ " Inti Bet Response");
+            Debug.Log(res + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + " Inti Bet Response");
             JObject jsonObject = JObject.Parse(res);
             if ((int)(jsonObject["code"]) == 200)
             {
@@ -2509,7 +2576,7 @@ public class APIController : MonoBehaviour
                 bet.BetId = _winningStatus.Id;
                 betIdAction.Invoke(_winningStatus.Id);
                 /*GetUpdatedBalance();*/
-                UpdateBalance();
+                /*UpdateBalance();*/
 
             }
             else
@@ -2668,7 +2735,7 @@ public class UserGameData
 
 
 
-    public double bootAmount; 
+    public double bootAmount;
     public bool isWin; //lootrix
     public bool hasBot;
     public float commission;

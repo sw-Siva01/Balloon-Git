@@ -381,11 +381,11 @@ namespace Nakama.Helpers
             await UniTask.Delay(7000);
             checking = false;
             bool haveInternet = false;
-                Debug.Log(rpc + "ValidateRPC While Loop Entered");
+            Debug.Log(rpc + "ValidateRPC While Loop Entered");
             NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccessRespose;
             NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccessRespose;
 
-            while(!checking)
+            while (!checking)
             {
                 await UniTask.Delay(500);
             }
@@ -413,7 +413,7 @@ namespace Nakama.Helpers
             //    await UniTask.Delay(500);
             //    Debug.Log("CashoutBtnFn While Loope Completed ");
             //}
-            Debug.Log("start validation ... 3" + isNeedTOCheck + "VslifstrID" + ValidateId + "ID"+ id);
+            Debug.Log("start validation ... 3" + isNeedTOCheck + "VslifstrID" + ValidateId + "ID" + id);
             if (isNeedTOCheck && ValidateId == id)
             {
                 Debug.Log("start validation ... 4");
@@ -471,8 +471,19 @@ namespace Nakama.Helpers
         //    }
         //}
         public int ValidateId = 0;
+
+        public void ShowInternetDisconnection()
+        {
+            APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+        }
+
         public async void SendRPC(string rpc, string payload, Action<string> action)
         {
+            if (rpc != "rpc_ValidateSession")
+            {
+                CancelInvoke(nameof(ShowInternetDisconnection));
+                Invoke(nameof(ShowInternetDisconnection), 3);
+            }
             try
             {
                 if (client == null || session == null)
@@ -503,6 +514,8 @@ namespace Nakama.Helpers
                 Debug.Log(rpc + " send ::_" + payload + "============> " + encryptpayload.ToJson());
                 var output = await client.RpcAsync(session, EncryptString(rpc),
                 encryptpayload.ToJson(), retryConfiguration);
+                CancelInvoke(nameof(ShowInternetDisconnection));
+                APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                 if (rpc == "rpc_CreateAndJoin")
                 {
                     isNeedTOCheck = false;

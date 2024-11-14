@@ -37,8 +37,8 @@ public class InternetChecking : MonoBehaviour
                 if (!APIController.instance.userDetails.isBlockApiConnection)
                 {
 
-                    APIController.UpdateBalance();
-                    APIController.instance.GetUpdatedBalance();
+                    /*APIController.UpdateBalance();
+                    APIController.instance.GetUpdatedBalance();*/
                 }
                 InternetDisconnectedPopup.SetActive(false);
                 ServerMaintenancePopup.SetActive(false);
