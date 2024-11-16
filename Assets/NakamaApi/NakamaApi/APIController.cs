@@ -1418,7 +1418,7 @@ public class APIController : MonoBehaviour
     public bool IsLive = true;
     void Start()
     {
-        GetLambdaURL(false);
+        GetLambdaURL(true);
         InvokeRepeating(nameof(GetUpdatedBalance), 0, 3);
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();

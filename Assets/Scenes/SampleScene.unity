@@ -5160,7 +5160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: IsLive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -25153,7 +25153,7 @@ MonoBehaviour:
   isSocketOpen: 0
   masterID: 
   connectedHost: 
-  connectionData: {fileID: 11400000, guid: d6ac2cf1929514cfb97802a377e02ba1, type: 2}
+  connectionData: {fileID: 11400000, guid: 093242b2cf05246028012b8073fc79c1, type: 2}
   checkInternetUrl: https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
   TimeToCheckIfInternetNotThereorServer: 0
   lastCalledTime: 0
