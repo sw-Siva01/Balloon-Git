@@ -40,6 +40,12 @@ public class InternetChecking : MonoBehaviour
                     /*APIController.UpdateBalance();
                     APIController.instance.GetUpdatedBalance();*/
                 }
+                if (GameController.instance._balanceUpdate)
+                {
+                    APIController.instance.GetBalance((data) => { });
+                    GameController.instance._balanceUpdate = false;
+
+                }
                 InternetDisconnectedPopup.SetActive(false);
                 ServerMaintenancePopup.SetActive(false);
             }

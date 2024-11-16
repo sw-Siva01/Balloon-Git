@@ -479,10 +479,11 @@ namespace Nakama.Helpers
 
         public async void SendRPC(string rpc, string payload, Action<string> action)
         {
-            if (rpc != "rpc_ValidateSession")
+            Debug.Log("rpc name " + rpc);
+            if (rpc != "rpc_ValidateSession" && rpc != "rpc_Authentication")
             {
                 CancelInvoke(nameof(ShowInternetDisconnection));
-                Invoke(nameof(ShowInternetDisconnection), 3);
+                Invoke(nameof(ShowInternetDisconnection), 5 );
             }
             try
             {

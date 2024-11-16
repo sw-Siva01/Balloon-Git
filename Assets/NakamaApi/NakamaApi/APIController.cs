@@ -276,6 +276,7 @@ public class APIController : MonoBehaviour
                 {
 
                     OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                    Debug.Log("rpc name 1");
                     InternetCallBack?.Invoke(false);
                 }
             });
@@ -592,9 +593,14 @@ public class APIController : MonoBehaviour
             {
                 return;
             }
-            checkBalance = false;
+
+            /*GameController.instance.needToCancelBet = true;
+            Debug.Log("check 1.1" + apiResponse.code);
+            return;*/
+
             if (apiResponse.code == 200)
             {
+                checkBalance = false;
                 try
                 {
                     if (apiResponse.code == 200)
@@ -1431,7 +1437,9 @@ public class APIController : MonoBehaviour
         {
             OnUserDepositTrigger = action;
             checkBalance = true;
+            GameController.instance.pauseGame = false;
             GetUpdatedBalance();
+
         }
     }
 
@@ -1904,6 +1912,15 @@ public class APIController : MonoBehaviour
     /// <param name="gameName"></param> <param name="Operator"></param> game name must be APIController.instance.userDetails.game_Id. Get that from client side and stored that into server side. (or) manualy give that in serverside. ex : APIController.instance.userDetails.game_Id = rumbblebets_aviator
     /// <param name="gameId"></param> Get that from client side and stored that into server side. APIController.instance.userDetails.gameId
 
+    public void UpdateBalanceTrigger()
+    {
+        Debug.Log("UpdateBalanceTrigger ==>  ");
+        //GetBalance
+        isClickDeopsit = false;
+        APIController.instance.GetBalance((balance) =>
+        {
+        });
+    }
 
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, double win_amount_with_comission, double spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
