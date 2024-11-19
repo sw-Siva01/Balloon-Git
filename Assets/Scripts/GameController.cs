@@ -374,6 +374,11 @@ public class GameController : MonoBehaviour
                             BetInputController.Instance.RestrictInput();
                         }
                     }
+                    else if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf && isPressed)
+                    {
+                        isPressed = false;
+                        Button_OFFEnter();
+                    }
                 }
                 if (Input.GetMouseButton(0))
                 {
@@ -539,8 +544,6 @@ public class GameController : MonoBehaviour
     }
     IEnumerator HolidngButtons()
     {
-        //Debug.Log("mStringValue =====> " + float.Parse(mString) + holdHeight);
-
         if (isPressed && multiplier < 1.01f)
         {
             preHeating_txt.gameObject.SetActive(true);
@@ -551,6 +554,12 @@ public class GameController : MonoBehaviour
             preHeating_txt.gameObject.SetActive(false);
         }
         BetAmountUpdates();
+
+        if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf && isPressed)
+        {
+            isPressed = false;
+            Button_OFFEnter();
+        }
 
         if (betAmount <= APIController.instance.userDetails.betAmountDetails.MinBetValue)
         {
@@ -658,9 +667,6 @@ public class GameController : MonoBehaviour
 
         if (startGame && !takeBetAmount)
         {
-            //(MathF.Floor(multiplier * 100)) / 100f)
-            //timeHold = multiplier.ToString() ; 
-
             if (multiplier >= holdHeight)
             {
                 Debug.Log("mStringValue =====> " + float.Parse(mString) + holdHeight);
