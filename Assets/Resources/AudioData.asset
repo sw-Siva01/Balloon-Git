@@ -13,53 +13,53 @@ MonoBehaviour:
   m_Name: AudioData
   m_EditorClassIdentifier: 
   audioData:
-  - audioClip: {fileID: 8300000, guid: 272a943c250d0fd45ab4efde9bf16d28, type: 3}
+  - audioClip: {fileID: 8300000, guid: c515d961f8707b946bdcd03acc0d92a8, type: 3}
     audioName: 1
-    volume: 0.25
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: 3d0d8ca4821dfbd4e8da95f3c4a21626, type: 3}
+  - audioClip: {fileID: 8300000, guid: c1c1690ffbc5eb2448a0515ae64c0868, type: 3}
     audioName: 2
-    volume: 0.3
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: 8bf60190327740743b58634159d57602, type: 3}
+  - audioClip: {fileID: 8300000, guid: 030c720b32e59034bb9d1034f24ca580, type: 3}
     audioName: 3
-    volume: 0.3
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: c522be38b52262041869c222a5409371, type: 3}
+  - audioClip: {fileID: 8300000, guid: 8dc87201bbdd38c4ba3accbb0b869150, type: 3}
     audioName: 4
     volume: 1
-    pitch: 0.8
+    pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: f619af8773b4fea48ae1af6a13394220, type: 3}
+  - audioClip: {fileID: 8300000, guid: dc3179048af371949a1f621b630ab9a6, type: 3}
     audioName: 5
     volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: 04f9cfebadbe9d74188fda7078c077b2, type: 3}
+  - audioClip: {fileID: 8300000, guid: 3a10c5dc01b55294fab7466f9b96c0b8, type: 3}
     audioName: 6
-    volume: 0.2
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: 103a9dfd71246674dba8d9acb08f8f03, type: 3}
+  - audioClip: {fileID: 8300000, guid: fe783df366865f94fbbf1e88ef6c5f1b, type: 3}
     audioName: 7
-    volume: 0.03
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: ba3eb255ea549d34e90564c89de8dcd2, type: 3}
+  - audioClip: {fileID: 8300000, guid: 127df30d9af0b8b43a494a345117531c, type: 3}
     audioName: 8
-    volume: 0.1
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: 887d0bd6c1fccb147a79ce09003833c6, type: 3}
+  - audioClip: {fileID: 8300000, guid: da19d65ce234f414bbf381164a0f00a0, type: 3}
     audioName: 9
-    volume: 0.25
+    volume: 1
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: da3ff7ef01c96f2419fa4f8ddf4911b5, type: 3}
+  - audioClip: {fileID: 8300000, guid: 2e42113decfb4834bbfd44acef0839bf, type: 3}
     audioName: 0
-    volume: 0.25
-    pitch: 0.32
+    volume: 1
+    pitch: 1
     mute: 0
