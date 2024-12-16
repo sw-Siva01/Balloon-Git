@@ -42,7 +42,7 @@ public class InternetChecking : MonoBehaviour
                 }
                 if (GameController.instance._balanceUpdate)
                 {
-                    APIController.instance.GetBalance((data) => { });
+                    /*APIController.instance.GetBalance((data) => { });*/
                     GameController.instance._balanceUpdate = false;
 
                 }

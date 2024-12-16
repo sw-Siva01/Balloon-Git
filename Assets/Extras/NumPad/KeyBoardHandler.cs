@@ -13,8 +13,8 @@ public class KeyBoardHandler : MonoBehaviour
     public Button decimalButton, submitButton, backSpaceButton, cancelButton;
     public TMP_InputField displayText;
     public string currentInput = "";
-    /*private float minValue = APIController.instance.userDetails.betAmountDetails.MinBetValue;
-    private float maxValue = APIController.instance.userDetails.betAmountDetails.MaxBetValue;*/
+    /*private float minValue = APIController.instance.authentication.entryAmountDetails.minBetValue;
+    private float maxValue = APIController.instance.authentication.entryAmountDetails.maxBetValue;*/
     Action<float> OnSubmitAction, OnValurChangedAction;
     Action<float> OnCancelAction;
     public CanvasGroup canvasGroup;
@@ -69,7 +69,7 @@ public class KeyBoardHandler : MonoBehaviour
         {
             if (clampValue)
             {
-                result = Mathf.Clamp(result, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                result = Mathf.Clamp(result, APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 displayText.text = result.ToString();
             }
             else
@@ -87,7 +87,7 @@ public class KeyBoardHandler : MonoBehaviour
         currentInput = displayText.text;
         decimalButton.interactable = !currentInput.Contains(".");
         controller.betAmountTxt.gameObject.SetActive(false);
-        if (APIController.instance.userDetails.UserDevice == "mobile")
+        if (APIController.instance.authentication.platform == "mobile")
         {
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(true);
         }
@@ -125,15 +125,15 @@ public class KeyBoardHandler : MonoBehaviour
         if (string.IsNullOrWhiteSpace(currentInput))
         {
             Debug.Log("KeyPad Input WIthout Value");
-            controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+            controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
             OnSubmitAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
         }
         else
         {
             if (displayText.text == ".")
             {
-                currentInput = APIController.instance.userDetails.betAmountDetails.MinBetValue.ToString();
-                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                currentInput = APIController.instance.authentication.entryAmountDetails.minBetValue.ToString();
+                controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
             }
             else
             {
@@ -142,14 +142,14 @@ public class KeyBoardHandler : MonoBehaviour
             float f;
             try
             {
-                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 OnSubmitAction?.Invoke(f);
             }
             catch
             {
                 Debug.Log("Cant Convert Too lengthy");
-                OnSubmitAction?.Invoke(APIController.instance.userDetails.betAmountDetails.MaxBetValue);
-                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+                OnSubmitAction?.Invoke(APIController.instance.authentication.entryAmountDetails.maxBetValue);
+                controller.betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
             }
             Debug.Log("KeyPad Input WIth Some Values");
         }
@@ -169,7 +169,7 @@ public class KeyBoardHandler : MonoBehaviour
             BetInputController.Instance.IsEmptyInput = true;
 
             Debug.Log("KeyPad Input WIthout Value");
-            controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+            controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
             OnCancelAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
         }
@@ -177,8 +177,8 @@ public class KeyBoardHandler : MonoBehaviour
         {
             if (displayText.text == ".")
             {
-                currentInput = APIController.instance.userDetails.betAmountDetails.MinBetValue.ToString();
-                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                currentInput = APIController.instance.authentication.entryAmountDetails.minBetValue.ToString();
+                controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
             }
             else
             {
@@ -187,14 +187,14 @@ public class KeyBoardHandler : MonoBehaviour
             float f;
             try
             {
-                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 OnSubmitAction?.Invoke(f);
             }
             catch
             {
                 Debug.Log("Cant Convert Too lengthy");
-                OnSubmitAction?.Invoke(APIController.instance.userDetails.betAmountDetails.MaxBetValue);
-                controller.betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+                OnSubmitAction?.Invoke(APIController.instance.authentication.entryAmountDetails.maxBetValue);
+                controller.betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
             }
 
             Debug.Log("KeyPad Input WIth Some Values");

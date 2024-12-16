@@ -282,7 +282,7 @@ namespace Nakama.Helpers
             TimeToCheckIfInternetNotThereorServer = 0;
             Debug.Log("GetInternet Status Check Socket connected ");
             APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.Active);
-            APIController.instance.GetNetworkStatus(true.ToString());
+            /*APIController.instance.GetNetworkStatus(true.ToString());*/
 
         }
 

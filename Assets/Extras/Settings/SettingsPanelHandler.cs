@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class SettingsPanelHandler : UIHandler
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
+    public static SettingsPanelHandler instance;
     public RectTransform PanelTransform;
     public float XOffPos = 700;
     public Button ExitBtn;
@@ -23,9 +24,11 @@ public class SettingsPanelHandler : UIHandler
     public Button howtoPlayBtn;
     public Toggle MusicToggle;
     public Toggle soundTogWelcome, musicTogWelcome;
+    public GameObject RedirectingPanel;
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
+        instance = this;
         _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });
 
         howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
@@ -72,6 +75,9 @@ public class SettingsPanelHandler : UIHandler
         }
         if (SoundToggle.isOn)
             MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
+
+        CancelInvoke(nameof(UpdateMusic));
+        Invoke(nameof(UpdateMusic), 0.5f);
     }
     public void SetMusicVolume(bool _state)
     {
@@ -82,6 +88,9 @@ public class SettingsPanelHandler : UIHandler
         musicTogWelcome.isOn = _state;
 
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
+
+        CancelInvoke(nameof(UpdateMusic));
+        Invoke(nameof(UpdateMusic), 0.5f);
     }
     public override void ShowMe()
     {
@@ -137,5 +146,30 @@ public class SettingsPanelHandler : UIHandler
             APIController.instance.OnClickDepositBtn();
 #endif
 
+    }
+    private void UpdateMusic()
+    {
+        if (APIController.instance.userDetails.isBlockApiConnection) return;
+
+        APIController.instance.authentication.sound = SoundToggle.isOn;
+        APIController.instance.authentication.music = MusicToggle.isOn;
+
+        APIController.instance.CheckInternetandProcess(async (success) =>
+        {
+            if (success)
+            {
+                APIController.instance.UpdateAudioSettings();
+            }
+            else
+            {
+                Invoke(nameof(UpdateMusic), 0.5f);
+            }
+        });
+    }
+
+    public void SetToggleValueFromAPI(bool sound, bool music)
+    {
+        SoundToggle.isOn = sound;
+        MusicToggle.isOn = music;
     }
 }

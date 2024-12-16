@@ -2,7 +2,7 @@ mergeInto(LibraryManager.library, {
   CloseWindow: function () {
   ExitGame();
   },
-  UpdateBalance: function () {
+  GetUpdatedBalance: function () {
   GetBalance();
   },
   DisconnectGame: function (msg) {
@@ -11,7 +11,12 @@ mergeInto(LibraryManager.library, {
   ExternalApiResponse: function (msg) {
   ExecuteAPIResponse(UTF8ToString(msg));
   },
-
+  SetAudio: function (sound,music) {
+  SetGameAudio(sound,music);
+  },
+  UpdateBalance: function () {
+    GetBalance();
+  },
   GetLoginData: function () {
   GetLoginDetails("game");
   },

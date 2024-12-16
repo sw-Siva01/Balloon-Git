@@ -43,7 +43,7 @@ public class BetInputController : MonoBehaviour
             {
                 Debug.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
-                if (APIController.instance.userDetails.UserDevice == "mobile")
+                if (APIController.instance.authentication.platform == "mobile")
                 {
 
                     BetAmtInput.textViewport.gameObject.SetActive(false);
@@ -53,7 +53,7 @@ public class BetInputController : MonoBehaviour
             {
                 Debug.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
-                if (APIController.instance.userDetails.UserDevice == "mobile")
+                if (APIController.instance.authentication.platform == "mobile")
                 {
 
                     BetAmtInput.textViewport.gameObject.SetActive(false);
@@ -65,8 +65,8 @@ public class BetInputController : MonoBehaviour
     public void OpenKeyPadPanel()
     {
         controller.numPad = true;
-        Debug.Log(" TOwer UserDevice ::" + APIController.instance.userDetails.UserDevice);
-        if (APIController.instance.userDetails.UserDevice == "desktop")
+        Debug.Log(" TOwer UserDevice ::" + APIController.instance.authentication.platform);
+        if (APIController.instance.authentication.platform == "desktop")
         {
             return;
         }
@@ -93,18 +93,18 @@ public class BetInputController : MonoBehaviour
     public void OnEndEditBetAmount(float amount)
     {
         Debug.Log("OnEndEditBetAmount");
-        if (APIController.instance.userDetails.UserDevice == "desktop")
+        if (APIController.instance.authentication.platform == "desktop")
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
             {
                 if (BetAmtInput.text == ".")
                 {
-                    amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                    amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
                 }
                 try
                 {
-                    amount = Mathf.Clamp((float)amount, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+                    amount = Mathf.Clamp((float)amount, APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 }
                 catch
                 {
@@ -113,9 +113,9 @@ public class BetInputController : MonoBehaviour
             }
             else
             {
-                if (APIController.instance.userDetails.UserDevice == "desktop")
+                if (APIController.instance.authentication.platform == "desktop")
                 {
-                    amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                    amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
                 }
                 Debug.Log("eMPTY iNPUT eNDeDIT");
@@ -123,7 +123,7 @@ public class BetInputController : MonoBehaviour
 
             }
         }
-        if (APIController.instance.userDetails.UserDevice == "desktop")
+        if (APIController.instance.authentication.platform == "desktop")
         {
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
@@ -137,7 +137,7 @@ public class BetInputController : MonoBehaviour
 
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
-            if (APIController.instance.userDetails.UserDevice == "desktop")
+            if (APIController.instance.authentication.platform == "desktop")
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
             }
@@ -149,7 +149,7 @@ public class BetInputController : MonoBehaviour
     public void OnEditInput()
     {
 
-        if (APIController.instance.userDetails.UserDevice == "desktop")
+        if (APIController.instance.authentication.platform == "desktop")
         {
             string val = controller.betAmount.ToString("F2");
             BetAmtInput.text = val;
@@ -203,28 +203,28 @@ public class BetInputController : MonoBehaviour
             Debug.Log("Closing +");
 
             IsEmptyInput = true;
-            controller.betAmount = /*0.1f*/APIController.instance.userDetails.betAmountDetails.MinBetValue;
+            controller.betAmount = /*0.1f*/APIController.instance.authentication.entryAmountDetails.minBetValue;
         }
         else
         {
             float amount = (float)controller.betAmount;
             if (BetAmtInput.text == ".")
             {
-                amount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
             }
             else
             {
                 if (BetAmtInput.text.Length > 15)
                 {
-                    amount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+                    amount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
                 }
                 else
                 {
                     amount = float.Parse(BetAmtInput.text);
                 }
             }
-            amount = Mathf.Clamp(amount, APIController.instance.userDetails.betAmountDetails.MinBetValue, APIController.instance.userDetails.betAmountDetails.MaxBetValue);
+            amount = Mathf.Clamp(amount, APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
             IsEmptyInput = false;
 
             controller.betAmount = amount;
@@ -256,9 +256,9 @@ public class BetInputController : MonoBehaviour
         Debug.Log("EnableBetInput");
 
         BetAmtInput.interactable = true;
-        if (APIController.instance.userDetails.UserDevice == "mobile")
+        if (APIController.instance.authentication.platform == "mobile")
         {
-            if (APIController.instance.userDetails.UserDevice == "mobile")
+            if (APIController.instance.authentication.platform == "mobile")
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
 
@@ -289,7 +289,7 @@ public class BetInputController : MonoBehaviour
         controller.betAmount = float.Parse(_s);
 
         BetAmtInput.textViewport.gameObject.SetActive(true);
-        //  if (APIController.instance.userDetails.UserDevice == "mobile") BetAmtInput.interactable = false;
+        //  if (APIController.instance.authentication.platform == "mobile") BetAmtInput.interactable = false;
         Debug.Log("DisableBetInput");
 
     }

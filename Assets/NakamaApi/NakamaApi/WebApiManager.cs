@@ -57,6 +57,14 @@ public class WebApiManager : MonoBehaviour
 
         GetNetWorkCall(callType, uri, bodyJsonString, parameters, callback, timeout);
     }
+    /*************  ✨ Codeium Command ⭐  *************/
+    /// <summary>
+    /// Downloads an image from a given URI and calls the callback method with the Texture2D of the image.
+    /// </summary>
+    /// <param name="uri">The URI of the image to download.</param>
+    /// <param name="callback">The method to call with the Texture2D of the image.</param>
+    /// <param name="timeout">The timeout for the download in seconds. Defaults to 20.</param>
+    /******  1d464ed6-c748-4b09-9f4a-ce2e9f899968  *******/
     public void GetDownloadImage(string uri, ReqCallbackTex callback, int timeout = timeOut)
     {
         StartCoroutine(DownloadImage(uri, callback, timeout));
@@ -64,7 +72,7 @@ public class WebApiManager : MonoBehaviour
 
     private void GetNetWorkCall(NetworkCallType callType, string uri, string bodyJsonString, List<KeyValuePojo> parameters, ReqCallback callback, int timeout = timeOut)
     {
-        Debug.Log($"<color=aqua>GetNetworkCall called with call type {callType}</color>");
+        Debug.Log($"<color=aqua>GetNetworkCall called with call type {callType} url {uri}</color>");
         switch (callType)
         {
             case NetworkCallType.GET_METHOD:
@@ -107,9 +115,6 @@ public class WebApiManager : MonoBehaviour
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         string getParameters = getEncodedParams(parameters);
         Debug.Log("Check $$$$$" + url + getParameters);
-       
-
-#if !UNITY_WEBGL || UNITY_EDITOR
         using (UnityWebRequest www = UnityWebRequest.Get(url + getParameters))
         {
             www.timeout = timeout;
@@ -125,9 +130,6 @@ public class WebApiManager : MonoBehaviour
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
             yield break;
         }
-#else
-            APIController.instance.SendApiRequest(url + getParameters,callback,timeout);
-#endif
     }
 
 
@@ -136,7 +138,7 @@ public class WebApiManager : MonoBehaviour
         if (!parameters.Exists(x => x.keyId == "DateTime"))
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         WWWForm bodyFormData = new WWWForm();
-        Debug.Log("network call using post method :: "+url);
+        Debug.Log("network call using post method :: " + url);
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);
@@ -147,13 +149,13 @@ public class WebApiManager : MonoBehaviour
         {
             www.timeout = timeout;
             yield return www.SendWebRequest();
-            
+
 
             while (!www.isDone)
                 yield return www;
 
-            
-           
+
+
 
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
         }
@@ -183,11 +185,11 @@ public class WebApiManager : MonoBehaviour
 
     private IEnumerator DownloadImage(string url, ReqCallbackTex callback, int timeout = timeOut)
     {
-        
+
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        
+
         {
-           
+
             www.timeout = timeout;
             yield return www.SendWebRequest();
 
@@ -196,7 +198,7 @@ public class WebApiManager : MonoBehaviour
             while (!www.downloadHandler.isDone)
                 yield return null;
             callback(www.result == UnityWebRequest.Result.Success, www.error, ((DownloadHandlerTexture)www.downloadHandler).texture);
-            
+
         }
     }
 

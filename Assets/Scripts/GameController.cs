@@ -30,7 +30,12 @@ public class GameController : MonoBehaviour
     [SerializeField] int gameCounts;
     [SerializeField] float TotalAmount = 250.00f;  // Total Amount
     public float bonusTimer;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Script")]
     [SerializeField] KeyBoardHandler keyBoard;
+    [SerializeField] SettingsPanelHandler settingsPanelHandler;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -281,7 +286,7 @@ public class GameController : MonoBehaviour
     private bool IsInTab = true;
     public bool CanPlayAudio;
     [SerializeField] GameObject LoadingPopUp;
-    [SerializeField] GameObject ResponsePopUp;
+    /*[SerializeField] GameObject ResponsePopUp;*/
     [SerializeField] Image inputField;
     public bool needToCancelBet;
     public static GameController instance;
@@ -292,7 +297,7 @@ public class GameController : MonoBehaviour
     {
         instance = this;
         CanPlayAudio = false;
-        ResponsePopUp.gameObject.SetActive(false);
+        /*ResponsePopUp.gameObject.SetActive(false);*/
         settingsBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.CallingSettingPanel());
     }
     private void Start()
@@ -324,16 +329,16 @@ public class GameController : MonoBehaviour
         timeRemaining = 0f; // Start the timer at 0
         StartCoroutine(FillImg());
         // button
-        setected_Buttons[0].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[0]); });
-        setected_Buttons[1].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[1]); });
-        setected_Buttons[2].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[2]); });
-        setected_Buttons[3].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.userDetails.betAmountDetails.BetValues[3]); });
+        setected_Buttons[0].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.authentication.entryAmountDetails.betValues[0]); });
+        setected_Buttons[1].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.authentication.entryAmountDetails.betValues[1]); });
+        setected_Buttons[2].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.authentication.entryAmountDetails.betValues[2]); });
+        setected_Buttons[3].onClick.AddListener(delegate { SelectBetButton((int)APIController.instance.authentication.entryAmountDetails.betValues[3]); });
 
         // Use amounts array to pass the values dynamically
-        pressed_Buttons[0].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[0]));
-        pressed_Buttons[1].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[1]));
-        pressed_Buttons[2].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[2]));
-        pressed_Buttons[3].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.userDetails.betAmountDetails.BetValues[3]));
+        pressed_Buttons[0].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.authentication.entryAmountDetails.betValues[0]));
+        pressed_Buttons[1].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.authentication.entryAmountDetails.betValues[1]));
+        pressed_Buttons[2].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.authentication.entryAmountDetails.betValues[2]));
+        pressed_Buttons[3].onClick.AddListener(() => BetButtonPressed((int)APIController.instance.authentication.entryAmountDetails.betValues[3]));
 
 
         // Bet Press Buttons
@@ -360,9 +365,9 @@ public class GameController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     ISActive = true;
-                    if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf &&
+                    if (!take && !lost && !isScroll && !HowToPlay.activeSelf /*&& !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf */&&
                         (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !pauseGame)
-                        && betAmount >= APIController.instance.userDetails.betAmountDetails.MinBetValue)
+                        && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                     {
                         Button_ONEnter();
                         OnClickDown();
@@ -390,9 +395,9 @@ public class GameController : MonoBehaviour
         if (isPressed && !ISActive)
         {
             //isPressed = false;
-            if (!take && !lost && !isScroll && !HowToPlay.activeSelf && !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf &&
+            if (!take && !lost && !isScroll && !HowToPlay.activeSelf /*&& !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf */&&
                         (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !pauseGame)
-                        && betAmount >= APIController.instance.userDetails.betAmountDetails.MinBetValue)
+                        && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
                 OnClickUp();
                 Button_OFFEnter();
@@ -406,12 +411,12 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (TotalAmount <= /*0.09f*/APIController.instance.userDetails.betAmountDetails.MinBetValue)
+        if (TotalAmount <= /*0.09f*/APIController.instance.authentication.entryAmountDetails.minBetValue)
         {
             cancelButton.SetActive(false);
             rumbleBet_cancelButton.SetActive(false);
         }
-        else if (TotalAmount >= /*0.10f*/APIController.instance.userDetails.betAmountDetails.MinBetValue)
+        else if (TotalAmount >= /*0.10f*/APIController.instance.authentication.entryAmountDetails.minBetValue)
         {
             cancelButton.SetActive(true);
             rumbleBet_cancelButton.SetActive(true);
@@ -438,7 +443,7 @@ public class GameController : MonoBehaviour
     public void InitPlayerDetails()
     {
         Debug.Log("UserDetails" + APIController.instance.userDetails.Id + " player ID " + playerID);
-
+        
         playerID = APIController.instance.userDetails.Id;
         playerName = APIController.instance.userDetails.name;
         UI_Controller.instance.settingsHandler.playerNameTxt.text = playerName;
@@ -446,16 +451,28 @@ public class GameController : MonoBehaviour
         gameName = APIController.instance.userDetails.game_Id.Split("_")[1].ToString();
         lobbyName = "Room : " + DateTime.UtcNow + UnityEngine.Random.Range(100, 999);
         if (GameController.instance.LoadingPopUp.activeSelf)
+        {
             GameController.instance.LoadingPopUp.SetActive(false);
+            Welcom_Button();
+        }
 
         for (int i = 0; i < 4; i++)
         {
-            unSelectedBtnTxt[i].text = APIController.instance.userDetails.betAmountDetails.BetValues[i].ToString();
-            SelectedBtnTxt[i].text = APIController.instance.userDetails.betAmountDetails.BetValues[i].ToString();
+            unSelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
+            SelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
         }
 
-        GameController.instance.ResponsePopUp.SetActive(true);
+        /*GameController.instance.ResponsePopUp.SetActive(true);*/
         Debug.Log("Player Details Subscribed");
+
+        if (APIController.instance.userDetails.isBlockApiConnection)
+        {
+            settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
+        }
+        else
+        {
+            settingsPanelHandler.SetToggleValueFromAPI(true, true);
+        }
     }
     public void InitAmountDetails()
     {
@@ -561,7 +578,7 @@ public class GameController : MonoBehaviour
             Button_OFFEnter();
         }
 
-        if (betAmount <= APIController.instance.userDetails.betAmountDetails.MinBetValue)
+        if (betAmount <= APIController.instance.authentication.entryAmountDetails.minBetValue)
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
@@ -728,7 +745,7 @@ public class GameController : MonoBehaviour
             balloonBlue_Start.gameObject.SetActive(false);
         }
     }
-    
+
     void Balloon_Burt()
     {
         Debug.Log(" GameProcess ===> GameLose");
@@ -1135,7 +1152,7 @@ public class GameController : MonoBehaviour
                 {
                     Debug.Log("Bet Initiated");
                     Debug.Log("Demo Mode");
-                    startGame = true;
+                    /*startGame = true;*/
                     pauseGame = false;
                     Debug.Log("CheckPauseCondition ====> 1 " + pauseGame);
                     isCreateMatchSucceess = true;
@@ -1159,25 +1176,46 @@ public class GameController : MonoBehaviour
         int _index = UnityEngine.Random.Range(100, 999);
         List<string> _list = new();
         _list.Add(APIController.instance.userDetails.Id);
-        BetIndex = APIController.instance.CreateAndJoinMatch(_index, betAmount, TransData, false, lobbyName, APIController.instance.userDetails.Id,
-            false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list, (success, newbetID, res) =>
-            {
-                if (success)
-                {
-                    betID = newbetID.ToString();
-                    MatchRes = res;
-                    pauseGame = false;
-                    Debug.Log("CheckPauseCondition ====> 2 " + pauseGame);
-                    isCreateMatchSucceess = true;
-                    Debug.Log("CreateMatchAPICalled========>");
-                    Debug.Log(" GameProcess ===> GameStart_1");
-                }
-                else
-                {
-                    pauseGame = true;
-                    Debug.Log("CreateMatchAPIFailed========>");
-                }
-            });
+        APIController.instance.CreateAndJoinMatch(_index, betAmount, TransData, false, lobbyName, APIController.instance.userDetails.Id,
+               false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list,
+               /*(success, newbetID, res) =>
+               {
+                   if (success)
+                   {
+                       betID = newbetID.ToString();
+                       MatchRes = res;
+                       pauseGame = false;
+                       Debug.Log("CheckPauseCondition ====> 2 " + pauseGame);
+                       isCreateMatchSucceess = true;
+                       Debug.Log("CreateMatchAPICalled========>");
+                       Debug.Log(" GameProcess ===> GameStart_1");
+                   }
+                   else
+                   {
+                       pauseGame = true;
+                       Debug.Log("CreateMatchAPIFailed========>");
+                   }
+               }*/
+               (initialized) =>
+               {
+
+               },
+     (betIndex, response) =>
+     {
+         BetIndex = betIndex;
+         MatchRes = response;
+         betID = response.Message;
+         /*DeckScript.DSInstance.IsApiWin = true; // Set RNG to Random Game Play.....*/
+         //css.Deal();
+         startGame = true;
+     },
+     (failed) =>
+     {
+         // Resetting all game Data......
+         ResetBets();
+     }
+
+               );
     }
     async void API_Winning()
     {
@@ -1221,7 +1259,7 @@ public class GameController : MonoBehaviour
     public async void WinningBetAPICall(double WinAmount, double PotAmount)   //WINNINGBETAPI CALLING METHOD
     {
         TransactionMetaData _metaData = new TransactionMetaData();
-        _metaData.Amount = WinAmount;
+        _metaData.Amount = (float)WinAmount;
         _metaData.Info = "Game Won";
         Debug.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
 
@@ -1285,7 +1323,7 @@ public class GameController : MonoBehaviour
         }
 
         Debug.Log(" WinningBetAPI , Checking Internet" + checking);
-        APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
+        APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, (float)WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
             Debug.Log($"2 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}  && bet index {BetIndex} , My Bet Amount {betAmount}");
 
@@ -1646,21 +1684,21 @@ public class GameController : MonoBehaviour
     bool InternetCheck;
     public void OnClickDown()
     {
-        bool isAbleToPlay = false;
+        /*bool isAbleToPlay = false;
         if (!APIController.instance.userDetails.isBlockApiConnection)
         {
             APIController.instance.GetBalance((balance) =>
             {
                 isAbleToPlay = true;
             });
-        }
-       
+        }*/
+
         #region
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
-            if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+            if (success/* && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf*/)
             {
-                if (!APIController.instance.userDetails.isBlockApiConnection)
+                /*if (!APIController.instance.userDetails.isBlockApiConnection)
                 {
                     while (!isAbleToPlay)
                     {
@@ -1675,7 +1713,7 @@ public class GameController : MonoBehaviour
                         }
                         await UniTask.Delay(100);
                     }
-                }
+                }*/
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
                 {
@@ -1746,9 +1784,11 @@ public class GameController : MonoBehaviour
                         HandGestures_start.SetActive(false);
                     }
 
-                    if (!APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
+                    /*if (!APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
                         RNG_APICall();
-                    else if (APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
+                    else */
+                    makeLose = true;
+                    if (APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
                     {
                         gameCounts++;
 
@@ -1869,7 +1909,7 @@ public class GameController : MonoBehaviour
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
         Slider_Objs();
-        UI_Controller.instance.settingsHandler.Welcomebtn_OFF();
+        //UI_Controller.instance.settingsHandler.Welcomebtn_OFF();
     }
     #endregion
 
@@ -1911,14 +1951,14 @@ public class GameController : MonoBehaviour
     }
     private void SetBetButtonsActiveState(int activeBet)
     {
-        button_1.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[0]);
-        button_2.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[1]);
-        button_5.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[2]);
-        button_10.gameObject.SetActive(activeBet == (int)APIController.instance.userDetails.betAmountDetails.BetValues[3]);
+        button_1.gameObject.SetActive(activeBet == (int)APIController.instance.authentication.entryAmountDetails.betValues[0]);
+        button_2.gameObject.SetActive(activeBet == (int)APIController.instance.authentication.entryAmountDetails.betValues[1]);
+        button_5.gameObject.SetActive(activeBet == (int)APIController.instance.authentication.entryAmountDetails.betValues[2]);
+        button_10.gameObject.SetActive(activeBet == (int)APIController.instance.authentication.entryAmountDetails.betValues[3]);
     }
     private void UpdateButtonAnimations(int betValue)
     {
-        if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[0])
+        if (betValue == APIController.instance.authentication.entryAmountDetails.betValues[0])
         {
             for (int i = 0; i < button_Anim.Length; i++)
             {
@@ -1929,7 +1969,7 @@ public class GameController : MonoBehaviour
             button_Anim[2].SetActive(true);
             button_Anim[3].SetActive(true);
         }
-        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[1])
+        else if (betValue == APIController.instance.authentication.entryAmountDetails.betValues[1])
         {
             for (int i = 0; i < button_Anim.Length; i++)
             {
@@ -1940,7 +1980,7 @@ public class GameController : MonoBehaviour
             button_Anim[2].SetActive(true);
             button_Anim[3].SetActive(true);
         }
-        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[2])
+        else if (betValue == APIController.instance.authentication.entryAmountDetails.betValues[2])
         {
             for (int i = 0; i < button_Anim.Length; i++)
             {
@@ -1951,7 +1991,7 @@ public class GameController : MonoBehaviour
             button_Anim[1].SetActive(true);
             button_Anim[3].SetActive(true);
         }
-        else if (betValue == APIController.instance.userDetails.betAmountDetails.BetValues[3])
+        else if (betValue == APIController.instance.authentication.entryAmountDetails.betValues[3])
         {
             for (int i = 0; i < button_Anim.Length; i++)
             {
@@ -1985,7 +2025,7 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount < APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+            if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)
             {
                 betAmount += s;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
@@ -1996,9 +2036,9 @@ public class GameController : MonoBehaviour
                 minusButtonImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
             }
-            if (betAmount >= APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+            if (betAmount >= APIController.instance.authentication.entryAmountDetails.maxBetValue)
             {
-                betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+                betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 plusButton.enabled = false;
                 plusButtomImg.color = new Color32(255, 255, 255, 120);
@@ -2035,9 +2075,9 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount < APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+            if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)
             {
-                betAmount += APIController.instance.userDetails.betAmountDetails.IncrementValue;
+                betAmount += APIController.instance.authentication.entryAmountDetails.incrementValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = true;
@@ -2045,9 +2085,9 @@ public class GameController : MonoBehaviour
                 AmountColor_Glow();
             }
             /*if (betAmount > 99.99f)*/
-            if (betAmount >= APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+            if (betAmount >= APIController.instance.authentication.entryAmountDetails.maxBetValue)
             {
-                betAmount = APIController.instance.userDetails.betAmountDetails.MaxBetValue;
+                betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
                 plusButton.enabled = false;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
@@ -2055,7 +2095,7 @@ public class GameController : MonoBehaviour
                 MaxBet_Object();
             }
 
-            if (betAmount != APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+            if (betAmount != APIController.instance.authentication.entryAmountDetails.maxBetValue)
             {
                 winCash = 0;
                 winCash_Demo = 0;
@@ -2080,9 +2120,9 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll)
         {
-            if (betAmount > APIController.instance.userDetails.betAmountDetails.MinBetValue)
+            if (betAmount > APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
-                betAmount -= APIController.instance.userDetails.betAmountDetails.DecrementValue;
+                betAmount -= APIController.instance.authentication.entryAmountDetails.decrementValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
@@ -2090,16 +2130,16 @@ public class GameController : MonoBehaviour
                 Debug.Log("Minimum BetAmount ===>$.....");
             }
             /*if (betAmount <= 0.20f)*/
-            if (betAmount <= APIController.instance.userDetails.betAmountDetails.MinBetValue)
+            if (betAmount <= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
-                betAmount = APIController.instance.userDetails.betAmountDetails.MinBetValue;
+                betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
                 betAmountTxt.text = betAmount.ToString("0.00" + " <size=30>" + currencyType + "</size>");
                 BetAmountTxt_Scaling();
                 minusButton.enabled = false;
                 minusButtonImg.color = new Color32(255, 255, 255, 100);
             }
 
-            if (betAmount != APIController.instance.userDetails.betAmountDetails.MinBetValue)
+            if (betAmount != APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
                 winCash = 0;
                 winCash_Demo = 0;
@@ -2143,23 +2183,23 @@ public class GameController : MonoBehaviour
             inputField.raycastTarget = true;
         }
 
-        if (betAmount <= (int)APIController.instance.userDetails.betAmountDetails.IncrementValue)
+        if (betAmount <= (int)APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
         }
-        else if (betAmount > (int)APIController.instance.userDetails.betAmountDetails.IncrementValue)
+        else if (betAmount > (int)APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
 
-        if (betAmount < (int)APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+        if (betAmount < (int)APIController.instance.authentication.entryAmountDetails.maxBetValue)
         {
             plusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
         }
-        else if (betAmount >= (int)APIController.instance.userDetails.betAmountDetails.MaxBetValue)
+        else if (betAmount >= (int)APIController.instance.authentication.entryAmountDetails.maxBetValue)
         {
             plusButton.enabled = false;
             plusButtomImg.color = new Color32(255, 255, 255, 100);

@@ -46,9 +46,16 @@ public class UI_Controller : MonoBehaviour
     #region EXIT GAME
     public void ExitWebGL()
     {
-        APIController.CloseWindow();
+        /*APIController.CloseWindow();*/
+        SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
+        InvokeRepeating(nameof(ShowCloseWindow), 1f, 5f);
     }
     #endregion
+
+    void ShowCloseWindow()
+    {
+        APIController.CloseWindow();
+    }
 
     #region Sound Properties
     public bool IsSoundOn()
