@@ -62,6 +62,7 @@ public class UI_Controller : MonoBehaviour
     {
         return settingsHandler.SoundToggle.isOn;
     }
+
     public void PlayButtonSound()
     {
         MasterAudioController.instance.StopAudio(AudioEnum.buttonClick);

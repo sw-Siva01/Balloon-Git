@@ -90,10 +90,18 @@ public class WSClient : MonoBehaviour
         _webSocket.OnMessage += (bytes) =>
         {
             var message = Encoding.UTF8.GetString(bytes);
-            if (message.Contains("error"))
-                Debug.LogError(message);
-            else
+            try
+            {
                 ParseMessage(Cryptography.DecryptStr(message));
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Parsing Error: {ex.Message}");
+                Debug.LogError(message);
+                //string error = "{\"requestID\":\"1734356995159\",\"payload\":{\"OpCode\":\"LambdaResponse\",\"Message\":\"{\\\"code\\\":502,\\\"message\\\":\\\"{ message: \\\\\\\"Internal server error\\\\\\\"}\\\"}\"}}";
+                //ParseMessage(error);
+                //ParseMessage();
+            }
         };
 
         try
@@ -149,6 +157,17 @@ public class WSClient : MonoBehaviour
         }
     }
 
+    /*************  ✨ Codeium Command ⭐  *************/
+    /// <summary>
+    /// Sends a message to the connected WebSocket server.
+    /// </summary>
+    /// <param name="message">The message to send.</param>
+    /// <returns>A UniTask that completes when the message has been sent.</returns>
+    /// <remarks>
+    /// If the connection is not established, it will attempt to reconnect
+    /// and then send the message.
+    /// </remarks>
+    /******  2768293f-1097-4b49-bb44-daf85de939b8  *******/
     public async UniTask Send(WSMessage message)
     {
         if (!_isConnected)
@@ -240,6 +259,7 @@ public class WSClient : MonoBehaviour
             OnError?.Invoke(ex);
         }
     }
+
 
     private IEnumerator SendHeartbeat()
     {

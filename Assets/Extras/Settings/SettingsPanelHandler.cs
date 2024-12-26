@@ -142,14 +142,13 @@ public class SettingsPanelHandler : UIHandler
     public void ShowDeposit()
     {
 #if UNITY_WEBGL
-        if (!APIController.instance.userDetails.isBlockApiConnection)
+        if (!GameController.instance.demo)
             APIController.instance.OnClickDepositBtn();
 #endif
 
     }
     private void UpdateMusic()
     {
-        if (APIController.instance.userDetails.isBlockApiConnection) return;
 
         APIController.instance.authentication.sound = SoundToggle.isOn;
         APIController.instance.authentication.music = MusicToggle.isOn;

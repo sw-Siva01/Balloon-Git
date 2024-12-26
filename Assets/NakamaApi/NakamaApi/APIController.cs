@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +11,6 @@ using UnityEngine;
 
 public class APIController : MonoBehaviour
 {
-
     public static APIController instance;
 
     [Header("Response from webGL json")]
@@ -21,6 +21,7 @@ public class APIController : MonoBehaviour
 
     [Header("==============================================")]
 
+    public Action OnAuthDataUpdate;
     public Action OnUserDetailsUpdate;
     public Action OnUserBalanceUpdate;
     public Action OnUserDeposit;
@@ -89,7 +90,7 @@ public class APIController : MonoBehaviour
         Debug.Log("UpdateBalanceTrigger ==>  ");
         OnUserDeposit?.Invoke();
         isClickDeopsit = false;
-        if (!userDetails.isBlockApiConnection)
+        if (!GameController.instance.demo)
             GetUpdatedBalance();
     }
 
@@ -131,7 +132,6 @@ public class APIController : MonoBehaviour
                 item.callback(false, "timeout", "timeout");
             }
         }
-
         apiRequestList.RemoveAll(x => x.url == url);
     }
 
@@ -150,7 +150,6 @@ public class APIController : MonoBehaviour
         ShowDeposit();
     }
 #endif
-
 
     public async void GetUpdatedBalance()
     {
@@ -210,13 +209,13 @@ public class APIController : MonoBehaviour
     {
         Debug.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
-        if (data.Length < 30 || (authentication != null && authentication.operatorname == "demo"))
-        {
-            SetUserData("");
-            return;
-        }
+        // if (data.Length < 30 || (authentication != null && authentication.operatorname == "demo"))
+        // {
+        //     SetUserData(data);
+        //     return;
+        // }
         bool ignoreAuthdata = true;
-
+        AWS_SocketController.instance.ConnectWebSocket(authentication.environment);
         try
         {
             JObject apiResponse = JObject.Parse(data);
@@ -236,8 +235,7 @@ public class APIController : MonoBehaviour
             ignoreAuthdata = false;
         }
 
-
-
+        OnAuthDataUpdate?.Invoke();
         AWS_SocketController.instance.WSS_Authentication(
 
            (initaitedres) =>
@@ -250,41 +248,35 @@ public class APIController : MonoBehaviour
                Debug.Log("authentication response is : " + successRes);
                JObject apiResponse = JObject.Parse(successRes);
                Debug.Log("authentication response is : " + (int)apiResponse["code"]);
-               /*
-               {
-                "code": 200,
-                "message": "Success",
-                "data": "{\"user_id\":\"f1e0a9e7-dd42-415a-a572-80c3efb99714\",\"username\":\"THALA\",\"balance\":\"5343.68\",\"currency\":\"INR\"}",
-                "output": "{\"session_token\":\"67bd004a-a124-0e3f-0cca-a9cf0e6f2eba\",\"gameid\":\"0d1b08db-5a4d-4a73-b050-ee616402912a\"}"
-                }
-               */
+              
+
                Debug.Log("Auth response  => " + apiResponse.ToString());
                if ((int)apiResponse["code"] == 200)
                {
-                   JObject json = JObject.Parse(apiResponse["data"].ToString());
-                   JObject json1 = JObject.Parse(apiResponse["output"].ToString());
-                   authentication.session_token = (string)json1["session_token"];
-                   authentication.name = (string)json["username"];
-                   authentication.balance = (float)json["balance"];
+                   JObject data = JObject.Parse(apiResponse["data"].ToString());
+                   JObject output = JObject.Parse(apiResponse["output"].ToString());
+                   authentication.session_token = (string)output["session_token"];
+                   authentication.name = (string)data["username"];
+                   authentication.balance = (float)data["balance"];
                    Debug.Log("Auth response 1 => " + authentication.balance);
                    if (!ignoreAuthdata)
                    {
                        authentication.entryAmountDetails = new();
-                       authentication.entryAmountDetails.SetEntryAmount(json1["game_data"].ToString(), authentication.currency_type);
+                       authentication.entryAmountDetails.SetEntryAmount(output["game_data"].ToString(), authentication.currency_type);
                    }
                    //authentication.music = (string)json1["music"].ToString();
 
                    Debug.Log("authentication  is : " + JsonUtility.ToJson(authentication));
                    userDetails.Id = authentication.Id;
                    userDetails.game_Id = authentication.operatorname + "_" + authentication.gamename;
-                   userDetails.isBlockApiConnection = authentication.operatorname == "demo";
+                   //userDetails.isBlockApiConnection = authentication.operatorname == "demo";
                    userDetails.name = authentication.name;
                    userDetails.session_token = authentication.session_token;
                    userDetails.token = authentication.token;
                    userDetails.platform = authentication.platform;
                    userDetails.operatorDomainUrl = authentication.operatorDomainUrl;
                    userDetails.currency_type = authentication.currency_type;
-                   userDetails.gameId = (string)json1["gameid"];
+                   userDetails.gameId = (string)output["gameid"];
                    userDetails.hasBot = true;
                    userDetails.balance = authentication.balance;
                    userDetails.maxWin = 0;
@@ -293,6 +285,14 @@ public class APIController : MonoBehaviour
                    userDetails.bootAmount = 25;
                    IsBotInGame = userDetails.hasBot;
                    userDetails.bootAmount = defaultBootAmount;
+
+                   string musics = LocalStorage.Load("Lootrix_music");
+                   string sounds = LocalStorage.Load("Lootrix_sound");
+                   bool music = (string.IsNullOrEmpty(musics) || musics == "true") ? true : false;
+                   bool sound = (string.IsNullOrEmpty(sounds) || sounds == "true") ? true : false;
+                   authentication.sound = sound;
+                   authentication.music = music;
+
                    if (string.IsNullOrWhiteSpace(userDetails.gameId))
                        userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
                    Debug.Log("Check this once !!!!!!!!!!!!!" + JsonUtility.ToJson(userDetails));
@@ -324,7 +324,6 @@ public class APIController : MonoBehaviour
                OnUserDetailsUpdate?.Invoke();
            },
 
-
            (errorRes) =>
            {
                Debug.Log("Authentication Failed " + errorRes);
@@ -332,52 +331,17 @@ public class APIController : MonoBehaviour
        );
     }
 
-    public void SetUserData(string data)
-    {
-        Debug.Log("Response from webgl ::::: " + data);
-        if (data.Length < 30)
-        {
-            userDetails = new UserGameData();
-            userDetails.balance = 5000;
-            userDetails.currency_type = "USD";
-            authentication = new();
-            authentication.entryAmountDetails.SetDefaultAmount(userDetails.currency_type);
-            userDetails.Id = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
-            userDetails.token = UnityEngine.Random.Range(5000, 500000) + SystemInfo.deviceUniqueIdentifier.ToGuid().ToString();
-            userDetails.name = "User_" + UnityEngine.Random.Range(100, 999);
-            isPlayByDummyData = true;
-            userDetails.hasBot = true;
-            userDetails.game_Id = "demo_" + defaultGameName;
-            userDetails.isBlockApiConnection = true;
-        }
-        else
-        {
-            userDetails = JsonUtility.FromJson<UserGameData>(data);
-            isPlayByDummyData = userDetails.isBlockApiConnection;
-            isWin = userDetails.isWin;
-            maxWinAmount = userDetails.maxWin;
-        }
-        authentication.entryAmountDetails.SetDefaultAmount(userDetails.currency_type);
-        IsBotInGame = userDetails.hasBot;
-        userDetails.bootAmount = defaultBootAmount;
-        //MiniRouletteUIController.instance.SettingsPanel.UpdateToggle(authentication.sound, authentication.music);
-        AudioListener.volume = 1;
-        if (string.IsNullOrWhiteSpace(userDetails.gameId))
-            userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
-#if UNITY_EDITOR
-        if (MobileShow)
-        {
-            userDetails.platform = "mobile";
-        }
-        else
-        {
-            userDetails.platform = "desktop";
-        }
-
-#endif
-        OnUserBalanceUpdate?.Invoke();
-        OnUserDetailsUpdate?.Invoke();
-    }
+    // public void GetRandomCard()
+    // {
+    //     Dictionary<string, string> bodyDict = new Dictionary<string, string>
+    //     {
+    //         { "env", "dev" },
+    //         { "betAmount", UnityEngine.Random.Range(10,50).ToString() },
+    //         { "CardData",JsonConvert.SerializeObject(GameController.Instance.CardListToServer) }
+    //     };
+    //     string payload = JsonConvert.SerializeObject(bodyDict);
+    //     _wsClient.FetchGameResponse(gameID, "getballposition", payload);
+    // }
 
     public async void CheckInternetForButtonClick(Action<bool> action)
     {
@@ -441,7 +405,7 @@ public class APIController : MonoBehaviour
 
     public void WinningsBet(int index, float amount, double spend_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
-
+        Debug.Log("Winning Bet Data **********" + isPlayByDummyData);
 
         if (isPlayByDummyData)
         {
@@ -507,7 +471,7 @@ public class APIController : MonoBehaviour
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
         winningBetCalled = true;
-        // Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
+         Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
         // Debug.Log($"Request data is {JsonUtility.ToJson(request)}");
         while (request.BetId != betId)
@@ -522,6 +486,7 @@ public class APIController : MonoBehaviour
         AWS_SocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
         (initatedres) =>
         {
+
             winningBetResponce = true;
 
             Debug.Log(initatedres);
@@ -532,7 +497,7 @@ public class APIController : MonoBehaviour
         },
         (successRes) =>
         {
-
+            //winningBetResponce = true;
             Debug.Log(successRes);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(successRes);
             //  action?.Invoke(response != null && (response.code == 200 || response.code == 224));
@@ -548,6 +513,10 @@ public class APIController : MonoBehaviour
         (failRes) =>
         {
             Debug.Log("WinningsBetMultiplayerAPI Failed" + failRes);
+            JObject jobject = JObject.Parse(failRes);
+            matchResponse.status = false;
+            matchResponse.Message = jobject["message"]?.ToString();
+            ErrorPopUpHandler.instance.ShowError((int)jobject["code"], jobject["message"].ToString());
         });
 
 
@@ -645,10 +614,25 @@ public class APIController : MonoBehaviour
         });
         return;
     }
+
+    /*
+     Dictionary<string, string> bodyDict = new Dictionary<string, string>
+            {
+                { "env", environment},
+                { "betAmount", betAmount },
+                { "CardData",JsonConvert.SerializeObject(GameController.Instance.CardListToServer) }
+            };
+            AWS_SocketController.instance.GetRandomCard();
+    */
+    public void GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
+    {
+        AWS_SocketController.instance.FetchGamePrediction("Prediction", authentication.gamename, payload, initAction, successAction, errorAction);
+    }
+
     public CreateMatchResponse matchResponse;
     public async void CreateAndJoinMatch(int index, float amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
     {
-        Debug.Log("CreateAndJoinMatch_" + index);
+        Debug.Log("1CreateAndJoinMatch 1 init => " + index);
         matchResponse = new CreateMatchResponse();
         if (isBlockAPI)
         {
@@ -675,7 +659,7 @@ public class APIController : MonoBehaviour
         (initiatedres) =>
         {
             createandjoingameResponseReceived = true;
-            //Debug.Log("CreateAndJoinMatch 1 => " + initiatedres);
+            Debug.Log(" 2CreateAndJoinMatch 1 init => " + initiatedres);
             JObject obj = JObject.Parse(initiatedres);
             string message = obj["message"]?.ToString();
             Debug.Log(message);
@@ -694,7 +678,8 @@ public class APIController : MonoBehaviour
         },
         (successres) =>
         {
-            Debug.Log("CreateAndJoinMatch 1 => " + successres);
+            createandjoingameResponseReceived = true;
+            Debug.Log("3CreateAndJoinMatch 1 init =>" + successres);
             JObject jsonObject = JObject.Parse(successres);
             if ((int)jsonObject["code"] == 200)
             {
@@ -780,6 +765,11 @@ public class APIController : MonoBehaviour
     #endregion
     public void UpdateAudioSettings()
     {
+
+        LocalStorage.Save("Lootrix_sound", APIController.instance.authentication.sound ? "true" : "false");
+        LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");
+        return;
+
 #if !UNITY_EDITOR
         SetAudio(APIController.instance.authentication.sound ? 1 : 0, APIController.instance.authentication.music ? 1 : 0);
 #endif

@@ -102,6 +102,7 @@ public class GameController : MonoBehaviour
     public bool isBonus_OFF;
     public bool startGame;
     public bool _balanceUpdate = false;
+    public bool demo;
     // private
     private bool makeLose;
     private bool isBegin;
@@ -282,7 +283,7 @@ public class GameController : MonoBehaviour
     private string lobbyName;
     private string betID;
     private int BetIndex;
-    private CreateMatchResponse MatchRes;
+    public CreateMatchResponse MatchRes;
     private bool IsInTab = true;
     public bool CanPlayAudio;
     [SerializeField] GameObject LoadingPopUp;
@@ -365,7 +366,7 @@ public class GameController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     ISActive = true;
-                    if (!take && !lost && !isScroll && !HowToPlay.activeSelf /*&& !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf */&&
+                    if (!take && !lost && !isScroll && !HowToPlay.activeSelf && /*!ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf &&*/
                         (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !pauseGame)
                         && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                     {
@@ -395,7 +396,7 @@ public class GameController : MonoBehaviour
         if (isPressed && !ISActive)
         {
             //isPressed = false;
-            if (!take && !lost && !isScroll && !HowToPlay.activeSelf /*&& !ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf */&&
+            if (!take && !lost && !isScroll && !HowToPlay.activeSelf && /*!ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf &&*/
                         (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !pauseGame)
                         && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
@@ -443,13 +444,18 @@ public class GameController : MonoBehaviour
     public void InitPlayerDetails()
     {
         Debug.Log("UserDetails" + APIController.instance.userDetails.Id + " player ID " + playerID);
-        
+
         playerID = APIController.instance.userDetails.Id;
         playerName = APIController.instance.userDetails.name;
         UI_Controller.instance.settingsHandler.playerNameTxt.text = playerName;
         operatorName = APIController.instance.userDetails.game_Id.Split("_")[0].ToString();
         gameName = APIController.instance.userDetails.game_Id.Split("_")[1].ToString();
         lobbyName = "Room : " + DateTime.UtcNow + UnityEngine.Random.Range(100, 999);
+        if (APIController.instance.authentication.operatorname == "demo")
+            demo = true;
+        else
+            demo = false;
+
         if (GameController.instance.LoadingPopUp.activeSelf)
         {
             GameController.instance.LoadingPopUp.SetActive(false);
@@ -462,17 +468,9 @@ public class GameController : MonoBehaviour
             SelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
         }
 
-        /*GameController.instance.ResponsePopUp.SetActive(true);*/
         Debug.Log("Player Details Subscribed");
 
-        if (APIController.instance.userDetails.isBlockApiConnection)
-        {
-            settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
-        }
-        else
-        {
-            settingsPanelHandler.SetToggleValueFromAPI(true, true);
-        }
+        settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
     }
     public void InitAmountDetails()
     {
@@ -586,7 +584,7 @@ public class GameController : MonoBehaviour
 
         if (buttonPress == true)
         {
-            if (APIController.instance.userDetails.isBlockApiConnection)
+            if (APIController.instance.authentication.operatorname == "demo")
             {
                 InsufficientBalance.SetActive(true);
                 InsufBal_Rumblebets.SetActive(false);
@@ -916,7 +914,6 @@ public class GameController : MonoBehaviour
     {
         checking = true;
         Debug.Log("Process Final Winnings Changed");
-        NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
     }
     bool checking = false;
 
@@ -949,62 +946,13 @@ public class GameController : MonoBehaviour
         balloonShake_blue.GetComponent<ImageSequencer>().enabled = true;
     }
 
-    public async void TakeCashOut() // TakeCash button
+    public void TakeCashOut() // TakeCash button
     {
-        #region ________ Internet Checking : 1 ________
-        //APIController.instance.CheckInternetandProcess((success) =>
-        //{
-        //    if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
-        //    {
-        checking = false;
-
-        if (APIController.instance.userDetails.isBlockApiConnection)
-        {
-            bool checkingInternet = true;
-            while (checkingInternet)
-            {
-                APIController.instance.CheckInternetandProcess((success) =>
-                {
-                    if (success)
-                    {
-                        Debug.Log("checkingInternet");
-                        checkingInternet = false;
-                        //NakamaManager.OnInternetCheckSuccess?.Invoke();
-                    }
-                });
-
-                for (int i = 0; i < 30; i++)
-                {
-                    if (!checkingInternet) break;
-
-                    await UniTask.Delay(100);
-                }
-            }
-        }
-        else
-        {
-            NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
-            NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccess;
-
-            while (!checking)
-            {
-                Debug.Log("Process Final Winnings Loading");
-                await UniTask.Delay(100);
-            }
-            await UniTask.Delay(100);
-        }
-
-        while (InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
-        {
-            await UniTask.Delay(100);
-        }
-
-
         InternetCheck = true;
-
-        #region
+        Debug.Log("TakeCashButtonChecking ===>>>> 1  " + isWin);
         if (!isWin)
         {
+            Debug.Log("TakeCashButtonChecking ===>>>> 2  " + isWin);
             take = true;
             startGame = false;
             multiplier = float.Parse(multiplier.ToString("0.00"));
@@ -1039,31 +987,16 @@ public class GameController : MonoBehaviour
 
             if ((winCash_Demo < 10))
             {
+                Debug.Log("TakeCashButtonChecking ===>>>> 3  " + isWin);
                 audioController.PlayAudio(AudioEnum.winGame);
                 winPanel.SetActive(true);
                 TakingCash();
                 Winning_Animations();
             }
             Call_Functions();
-            /* if (APIController.instance.userDetails.isBlockApiConnection)*/
             DelayFuction();
             isWin = true;
         }
-        #endregion
-        //    }
-        //    else
-        //    {
-        //        InternetCheck = false;
-        //        Debug.Log("CheckInternetandProcess ============>  down" + success);
-        //        return;
-        //    }
-        //});
-
-        //if (!InternetCheck)
-        //{
-        //    return;
-        //}
-        #endregion
     }
 
     public bool isCreateMatchSucceess = false;
@@ -1101,7 +1034,6 @@ public class GameController : MonoBehaviour
             {
                 // Controller.BetAmount = 5;
                 PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);
-                /*PassTxt(betAmountTxt, $"{betAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");*/
             }
             else
             {
@@ -1109,7 +1041,7 @@ public class GameController : MonoBehaviour
             }
 
             Debug.Log("LocalInitializeBet 2 " + betAmount);
-            if (APIController.instance.userDetails.isBlockApiConnection)
+            if (demo)
             {
                 InsufficientBalance.SetActive(true);
                 InsufBal_Rumblebets.SetActive(false);
@@ -1136,35 +1068,8 @@ public class GameController : MonoBehaviour
         Debug.Log("BetAMount ********* " + betAmount + " " + " Balance ******* " + TotalAmount);
         List<string> _list = new List<string>();
         _list.Add(APIController.instance.userDetails.Id);
-        Debug.Log("isBlockApiConnection " + APIController.instance.userDetails.isBlockApiConnection);
 
-        if (!APIController.instance.userDetails.isBlockApiConnection)
-        {
-            //live
-            CreateMatchAPICall();
-        }
-        else
-        {
-            //demo
-            BetIndex = APIController.instance.InitlizeBet(betAmount, val, false, (success) =>
-            {
-                if (success)
-                {
-                    Debug.Log("Bet Initiated");
-                    Debug.Log("Demo Mode");
-                    /*startGame = true;*/
-                    pauseGame = false;
-                    Debug.Log("CheckPauseCondition ====> 1 " + pauseGame);
-                    isCreateMatchSucceess = true;
-
-                }
-                else
-                {
-                    Debug.Log("Bet Initiate Failed");
-                    pauseGame = true;
-                }
-            }, APIController.instance.userDetails.Id, false);
-        }
+        CreateMatchAPICall();
         #endregion
     }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
@@ -1178,24 +1083,6 @@ public class GameController : MonoBehaviour
         _list.Add(APIController.instance.userDetails.Id);
         APIController.instance.CreateAndJoinMatch(_index, betAmount, TransData, false, lobbyName, APIController.instance.userDetails.Id,
                false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list,
-               /*(success, newbetID, res) =>
-               {
-                   if (success)
-                   {
-                       betID = newbetID.ToString();
-                       MatchRes = res;
-                       pauseGame = false;
-                       Debug.Log("CheckPauseCondition ====> 2 " + pauseGame);
-                       isCreateMatchSucceess = true;
-                       Debug.Log("CreateMatchAPICalled========>");
-                       Debug.Log(" GameProcess ===> GameStart_1");
-                   }
-                   else
-                   {
-                       pauseGame = true;
-                       Debug.Log("CreateMatchAPIFailed========>");
-                   }
-               }*/
                (initialized) =>
                {
 
@@ -1205,19 +1092,15 @@ public class GameController : MonoBehaviour
          BetIndex = betIndex;
          MatchRes = response;
          betID = response.Message;
-         /*DeckScript.DSInstance.IsApiWin = true; // Set RNG to Random Game Play.....*/
-         //css.Deal();
          startGame = true;
      },
      (failed) =>
      {
          // Resetting all game Data......
          ResetBets();
-     }
-
-               );
+     });
     }
-    async void API_Winning()
+    void API_Winning()
     {
         string message = "Game Won";
         string value = takeCash.ToString("F2");
@@ -1226,103 +1109,17 @@ public class GameController : MonoBehaviour
         val.Amount = amount;
         val.Info = message;
 
-        if (!APIController.instance.userDetails.isBlockApiConnection)
-        {
-            Debug.Log("isCreateMatchSucceess ====> " + isCreateMatchSucceess);
-            while (!isCreateMatchSucceess)
-            {
-                await UniTask.Delay(100);
-            }
-            Debug.Log("isCreateMatchSucceess ====> success " + isCreateMatchSucceess);
-            WinningBetAPICall(amount, takeCash);
-        }
-        else
-        {
-            Debug.Log($"1 WinningBet Call ========> {takeCash}  && POt Amount {betAmount}");
-
-            APIController.instance.WinningsBet(BetIndex, takeCash, betAmount, val, (success) =>
-            {
-                Debug.Log($"1 WinningBet Call ========> {takeCash}  && POt Amount {betAmount}");
-
-                if (success)
-                {
-                    Debug.Log("Winning Bet Initiated");
-                }
-                else
-                {
-                    Debug.Log("Winning Bet Failed");
-
-                }
-            }, APIController.instance.userDetails.Id, false);
-        }
+        Debug.Log("isCreateMatchSucceess ====> success " + isCreateMatchSucceess);
+        WinningBetAPICall(amount, takeCash);
     }
-    public async void WinningBetAPICall(double WinAmount, double PotAmount)   //WINNINGBETAPI CALLING METHOD
+    public void WinningBetAPICall(double WinAmount, double PotAmount)   //WINNINGBETAPI CALLING METHOD
     {
         TransactionMetaData _metaData = new TransactionMetaData();
         _metaData.Amount = (float)WinAmount;
         _metaData.Info = "Game Won";
         Debug.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
 
-        //bool checking = false;
-        //while (!checking)
-        //{
-        //    APIController.instance.CheckInternetandProcess(async (success) =>
-        //    {
-        //        if (success && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
-        //        {
-        //            checking = true;
-        //        }
-        //        await UniTask.Delay(1000);
-        //    });
-        //    await UniTask.Delay(1000);
-        //}
-        //await UniTask.Delay(100);
-        checking = false;
-
-        if (APIController.instance.userDetails.isBlockApiConnection)
-        {
-            bool checkingInternet = true;
-            while (checkingInternet)
-            {
-                APIController.instance.CheckInternetandProcess((success) =>
-                {
-                    if (success)
-                    {
-                        checkingInternet = false;
-                        //akamaManager.OnInternetCheckSuccess?.Invoke();
-                    }
-                });
-
-                for (int i = 0; i < 30; i++)
-                {
-                    if (!checkingInternet) break;
-
-                    await UniTask.Delay(100);
-                }
-
-
-            }
-        }
-        else
-        {
-            NakamaManager.OnInternetCheckSuccess -= OnInternetCheckSuccess;
-            NakamaManager.OnInternetCheckSuccess += OnInternetCheckSuccess;
-
-            while (!checking)
-            {
-                Debug.Log("WinningBetAPICall Final Winnings Loading");
-                await UniTask.Delay(100);
-            }
-            await UniTask.Delay(100);
-        }
-        if (!APIController.instance.userDetails.isBlockApiConnection)
-        {
-
-            /*APIController.UpdateBalance();
-            APIController.instance.GetUpdatedBalance();*/
-        }
-
-        Debug.Log(" WinningBetAPI , Checking Internet" + checking);
+        Debug.Log(" WinningBetAPI , Checking Internet" + checking + MatchRes.MatchToken);
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, (float)WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
             Debug.Log($"2 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}  && bet index {BetIndex} , My Bet Amount {betAmount}");
@@ -1330,15 +1127,12 @@ public class GameController : MonoBehaviour
             if (success)
             {
                 Debug.Log("3 WinningBetAPI Call Success========> ");
-
-                /*APIController.GetUpdatedBalance();*/
             }
             else
             {
                 Debug.Log("WinningBetAPIfailed========>");
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
-        /* DemoAPIReset();*/
     }
     void Call_Functions()
     {
@@ -1535,11 +1329,11 @@ public class GameController : MonoBehaviour
     {
         await UniTask.Delay(2000);
         winTxt.transform.DORotate(new Vector3(0f, 360f, 0f), 0.5f, RotateMode.FastBeyond360).SetEase(Ease.InOutSine);
-        if (APIController.instance.userDetails.isBlockApiConnection)
+        #region
+        /*if (APIController.instance.userDetails.isBlockApiConnection)
             winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
         else
         {
-            /*winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");*/
             if (APIController.instance.userDetails.currency_type == "USD")
             {
                 winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
@@ -1552,6 +1346,19 @@ public class GameController : MonoBehaviour
             {
                 winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
             }
+        }*/
+        #endregion
+        if (APIController.instance.userDetails.currency_type == "USD")
+        {
+            winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
+        }
+        else if (APIController.instance.userDetails.currency_type == "EUR")
+        {
+            winTxt.text = takeCash.ToString("0.00" + " <size=70>EUR</size>");
+        }
+        else if (APIController.instance.userDetails.currency_type == "INR")
+        {
+            winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
         }
 
         winTxt.color = Color.green;
@@ -1684,36 +1491,11 @@ public class GameController : MonoBehaviour
     bool InternetCheck;
     public void OnClickDown()
     {
-        /*bool isAbleToPlay = false;
-        if (!APIController.instance.userDetails.isBlockApiConnection)
-        {
-            APIController.instance.GetBalance((balance) =>
-            {
-                isAbleToPlay = true;
-            });
-        }*/
-
         #region
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
-            if (success/* && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf*/)
+            if (success)
             {
-                /*if (!APIController.instance.userDetails.isBlockApiConnection)
-                {
-                    while (!isAbleToPlay)
-                    {
-                        if (needToCancelBet)
-                        {
-                            needToCancelBet = false;
-                            pauseGame = true;
-                            Debug.Log("CheckPauseCondition ====> 3 " + pauseGame);
-                            ResetBets();
-                            isAbleToPlay = false;
-                            return;
-                        }
-                        await UniTask.Delay(100);
-                    }
-                }*/
                 InternetCheck = true;
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
                 {
@@ -1784,11 +1566,8 @@ public class GameController : MonoBehaviour
                         HandGestures_start.SetActive(false);
                     }
 
-                    /*if (!APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
-                        RNG_APICall();
-                    else */
                     makeLose = true;
-                    if (APIController.instance.userDetails.isBlockApiConnection && !buttonPress)
+                    if (!buttonPress)
                     {
                         gameCounts++;
 
@@ -2183,23 +1962,23 @@ public class GameController : MonoBehaviour
             inputField.raycastTarget = true;
         }
 
-        if (betAmount <= (int)APIController.instance.authentication.entryAmountDetails.incrementValue)
+        if (betAmount <= APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
         }
-        else if (betAmount > (int)APIController.instance.authentication.entryAmountDetails.incrementValue)
+        else if (betAmount > APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
 
-        if (betAmount < (int)APIController.instance.authentication.entryAmountDetails.maxBetValue)
+        if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)
         {
             plusButton.enabled = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
         }
-        else if (betAmount >= (int)APIController.instance.authentication.entryAmountDetails.maxBetValue)
+        else if (betAmount >= APIController.instance.authentication.entryAmountDetails.maxBetValue)
         {
             plusButton.enabled = false;
             plusButtomImg.color = new Color32(255, 255, 255, 100);

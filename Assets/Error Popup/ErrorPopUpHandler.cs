@@ -9,10 +9,11 @@ public class ErrorPopUpHandler : MonoBehaviour
 {
     public static ErrorPopUpHandler instance;
     public GameObject ErrorPanel;
-    
     public TMP_Text errorText;
     CanvasGroup canvasGroup;
-    int _code;
+
+    public
+        int _code;
 
     void Awake()
     {
@@ -35,17 +36,28 @@ public class ErrorPopUpHandler : MonoBehaviour
         canvasGroup.DOFade(0, 0.2f).OnComplete(() =>
         {
             ErrorPanel.gameObject.SetActive(false);
-
-            if (_code == 401)
+            switch (_code)
             {
-                /*MiniRouletteUIController.instance.SettingsPanel.redirectingToMainMenu.SetActive(true);*/
-                SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
-                //GameController.Instance.ExitWebGL();
-                SettingsPanelHandler.instance.OnExitBtnClick();
-            }
-            else
-            {
+                case 401:
+                case 403:
+                case 405:
+                case 412:
+                case 413:
+                case 501:
+                    // SettingsPanelHandler.Instance.ExitWebGL();
+                    SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
 
+                    break;
+                case 503:
+                    // SettingsPanelHandler.Instance.ShowServerMaintanence();
+                    InternetChecking.instance.ServerMaintenancePopup.SetActive(true);
+
+                    break;
+                default:
+                    if (APIController.instance.authentication.operatorname.ToLower() != "demo")
+                        APIController.instance.GetUpdatedBalance();
+                    // You can add a default action here if needed
+                    break;
             }
         });
     }

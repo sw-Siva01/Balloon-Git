@@ -1,7 +1,7 @@
 ﻿/*
 Copyright 2015 Pim de Witte All Rights Reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, BuildVersion 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,7 +41,7 @@ namespace PimDeWitte.UnityMainThreadDispatcher {
 		/// <summary>
 		/// Locks the queue and adds the IEnumerator to the queue
 		/// </summary>
-		/// <param name="action">IEnumerator function that will be executed from the main thread.</param>
+		/// <param _PlayerName="action">IEnumerator function that will be executed from the main thread.</param>
 		public void Enqueue(IEnumerator action) {
 			lock (_executionQueue) {
 				_executionQueue.Enqueue (() => {
@@ -53,7 +53,7 @@ namespace PimDeWitte.UnityMainThreadDispatcher {
 		/// <summary>
 		/// Locks the queue and adds the Action to the queue
 		/// </summary>
-		/// <param name="action">function that will be executed from the main thread.</param>
+		/// <param _PlayerName="action">function that will be executed from the main thread.</param>
 		public void Enqueue(Action action)
 		{
 			Enqueue(ActionWrapper(action));
@@ -62,7 +62,7 @@ namespace PimDeWitte.UnityMainThreadDispatcher {
 		/// <summary>
 		/// Locks the queue and adds the Action to the queue, returning a Task which is completed when the action completes
 		/// </summary>
-		/// <param name="action">function that will be executed from the main thread.</param>
+		/// <param _PlayerName="action">function that will be executed from the main thread.</param>
 		/// <returns>A Task that can be awaited until the action completes</returns>
 		public Task EnqueueAsync(Action action)
 		{

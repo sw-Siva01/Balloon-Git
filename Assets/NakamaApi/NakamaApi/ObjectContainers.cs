@@ -7,8 +7,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static WebApiManager;
 
-
-
 [System.Serializable]
 public class BackendAPI
 {
@@ -48,7 +46,6 @@ public class BetRequest
     public string MatchToken;
     public int betId;
 }
-
 
 [Serializable]
 public class APIRequestList
@@ -98,8 +95,6 @@ public class UserGameData
     public string platform;
     public bool isBlockApiConnection;
 
-
-
     public double bootAmount;
     public bool isWin; //lootrix
     public bool hasBot;
@@ -126,9 +121,10 @@ public class AuthenticationData
     public bool music = true;
     public bool sound = true;
 
+    public string environment = "";
+
     public EntryAmountDetails entryAmountDetails = new EntryAmountDetails();
 }
-
 
 [System.Serializable]
 public class EntryAmountDetails
@@ -182,9 +178,9 @@ public class EntryAmountDetails
         }
         else
         {
-            betValues = new List<int> { 10, 100, 150, 250 };
+            betValues = new List<int> { 10, 20, 50, 100 };
             minBetValue = 10;
-            maxBetValue = 100;
+            maxBetValue = 500;
             incrementValue = 10;
             decrementValue = 10;
             entryAmounts = new List<int> { };
@@ -193,7 +189,6 @@ public class EntryAmountDetails
             chaalLimits = new List<int> { };
         }
     }
-
 }
 [Serializable]
 public class BetAmountDetails

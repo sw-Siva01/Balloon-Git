@@ -283,7 +283,6 @@ namespace Nakama.Helpers
             Debug.Log("GetInternet Status Check Socket connected ");
             APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.Active);
             /*APIController.instance.GetNetworkStatus(true.ToString());*/
-
         }
 
         string matchId;

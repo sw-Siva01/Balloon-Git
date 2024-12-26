@@ -14,8 +14,10 @@ public class AWS_SocketController : MonoBehaviour
 {
     private WSClient _wsClient;
     public string url = "wss://q0j2tch76b.execute-api.ap-south-1.amazonaws.com/live/";
+
     public static AWS_SocketController instance;
     public List<WSS_Event> wss_Events = new List<WSS_Event>();
+
     //public bool isOnline = false;
 
     private void Awake()
@@ -26,6 +28,14 @@ public class AWS_SocketController : MonoBehaviour
     {
         _wsClient = gameObject.AddComponent<WSClient>();
         SubscribeToEvents();
+        // ConnectToWebSocket();
+    }
+
+
+
+    public void ConnectWebSocket(string environment)
+    {
+        url += environment;
         ConnectToWebSocket();
     }
 
@@ -96,6 +106,30 @@ public class AWS_SocketController : MonoBehaviour
         await _wsClient.Send(message);
     }
 
+    public async void FetchGamePrediction(string requestType, string gamename, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
+    {
+        Dictionary<string, string> bodyDict = new Dictionary<string, string>
+        {
+            { "gameId", gamename },
+            { "gameAction", "gameprediction" },
+            { "body", body },
+        };
+        string payload = JsonConvert.SerializeObject(bodyDict);
+        WSMessage message = new WSMessage("gameservice", payload);
+        WSS_Event wssevent = new WSS_Event()
+        {
+            RequestType = requestType,
+            InitialtedCallBack = initialaction,
+            SuccessCallBack = successaction,
+            ErrorCallBack = errorAction,
+            RequestID = message.RequestID
+        };
+        wss_Events.Add(wssevent);
+
+        await _wsClient.Send(message);
+    }
+
+
 
     public async void SendRequest(string requestType, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
     {
@@ -121,6 +155,21 @@ public class AWS_SocketController : MonoBehaviour
         await _wsClient.Send(message);
     }
 
+    public void GetRandomCard(string environment, string betAmount, string gameName)
+    {
+
+        // string payload = JsonConvert.SerializeObject(bodyDict);
+        // WSS_Event wssevent = new WSS_Event()
+        // {
+        //     RequestType = requestType,
+        //     InitialtedCallBack = initialaction,
+        //     SuccessCallBack = successaction,
+        //     ErrorCallBack = errorAction,
+        //     RequestID = message.RequestID
+        // };
+        // wss_Events.Add(wssevent);
+        // _wsClient.FetchGameResponse(gameName, "gameprediction", payload);
+    }
 
     private void HandleErrorReceived(string message)
     {
@@ -140,7 +189,11 @@ public class AWS_SocketController : MonoBehaviour
             Debug.Log("Payload" + payload);
             if (string.IsNullOrEmpty(payload))
             {
-                wSS_Event.InitialtedCallBack?.Invoke(message);
+                Debug.Log(jsonObject["message"].ToString());
+                if (jsonObject["message"].ToString() != "timeout")
+                {
+                    wSS_Event.InitialtedCallBack?.Invoke(message);
+                }
             }
             else
             {
@@ -174,7 +227,7 @@ public class AWS_SocketController : MonoBehaviour
             else
             {
                 JObject payloadmessage = JObject.Parse(jsonObject["payload"].ToString());
-                Debug.Log("Payload Message11" + jsonObject);
+                //Debug.Log("Payload Message11" + jsonObject);
                 JObject jObject = JObject.Parse(payloadmessage["Message"]?.ToString());
                 //Debug.Log("Payload Message" + payloadmessage["Message"]);
                 if ((int)jObject["code"] == 200)
@@ -183,6 +236,7 @@ public class AWS_SocketController : MonoBehaviour
                 }
                 else
                 {
+                    // Debug.Log("Payload Message22" + wSS_Event.RequestID + "==="+ wSS_Event.RequestType);
                     wSS_Event.ErrorCallBack?.Invoke(jObject?.ToString());
                 }
                 wss_Events.RemoveAll(x => x.RequestID.Equals(requestID));
@@ -288,6 +342,7 @@ public class AWS_SocketController : MonoBehaviour
             { "provider", APIController.instance.authentication.gamename+"_lootrix" },
             { "action", "initbet" },
             { "action_id", APIController.instance.authentication.gamename+"_initbet" },
+             {"balance",APIController.instance.userDetails.balance}
         };
         SendRequest("CreateAndJoinMatch", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
@@ -341,7 +396,8 @@ public class AWS_SocketController : MonoBehaviour
             { "provider", APIController.instance.authentication.gamename+"_lootrix" },
             { "action", "winningbet" },
             { "action_id", APIController.instance.authentication.gamename+"_winningbet" },
-            { "platform", APIController.instance.authentication.platform }
+            { "platform", APIController.instance.authentication.platform },
+            {"balance",APIController.instance.userDetails.balance}
         };
         Debug.Log("Winning Bet Request " + JsonConvert.SerializeObject(payload));
         SendRequest("WinningBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
@@ -389,7 +445,8 @@ public class AWS_SocketController : MonoBehaviour
             { "action_id", APIController.instance.authentication.gamename+"_addbet" },
             { "session_token", APIController.instance.authentication.session_token},
             { "platform", APIController.instance.authentication.platform },
-            { "url", APIController.instance.authentication.operatorDomainUrl+"api/deposit" }
+            { "url", APIController.instance.authentication.operatorDomainUrl+"api/deposit" },
+             {"balance",APIController.instance.userDetails.balance}
         };
         SendRequest("AddBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
@@ -447,7 +504,8 @@ public class AWS_SocketController : MonoBehaviour
             { "action_id", APIController.instance.authentication.gamename+"_addbet" },
             { "session_token", APIController.instance.authentication.session_token},
             { "platform", APIController.instance.authentication.platform },
-            { "url", APIController.instance.authentication.operatorDomainUrl+"api/deposit" }
+            { "url", APIController.instance.authentication.operatorDomainUrl+"api/deposit" },
+            {"balance",APIController.instance.userDetails.balance}
         };
         SendRequest(JsonConvert.SerializeObject(payload), action);
     }

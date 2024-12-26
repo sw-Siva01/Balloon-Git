@@ -1,19 +1,20 @@
+
 using UnityEngine;
 
 public class InternetChecking : MonoBehaviour
 {
+    public static InternetChecking instance;
     public GameObject InternetDisconnectedPopup;
     public GameObject ServerMaintenancePopup;
-    public static InternetChecking instance;
-    private void Awake()
-    {
-        instance = this;
-    }
+
     private void Start()
     {
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
     }
-
+    private void Awake()
+    {
+        instance = this;
+    }
     public void GetNetworkStatus(NetworkStatus data)
     {
         if (data != NetworkStatus.Active)
@@ -34,22 +35,10 @@ public class InternetChecking : MonoBehaviour
             Debug.Log($"NetworkStatus ==> {data.ToString()}");
             if (InternetDisconnectedPopup.activeSelf || ServerMaintenancePopup.activeSelf)
             {
-                if (!APIController.instance.userDetails.isBlockApiConnection)
-                {
-
-                    /*APIController.UpdateBalance();
-                    APIController.instance.GetUpdatedBalance();*/
-                }
-                if (GameController.instance._balanceUpdate)
-                {
-                    /*APIController.instance.GetBalance((data) => { });*/
-                    GameController.instance._balanceUpdate = false;
-
-                }
                 InternetDisconnectedPopup.SetActive(false);
                 ServerMaintenancePopup.SetActive(false);
             }
         }
-        AudioListener.volume = (GameController.instance.CanPlayAudio && data == NetworkStatus.Active && !InternetDisconnectedPopup.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
+        AudioListener.volume = (data == NetworkStatus.Active && !InternetDisconnectedPopup.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
     }
 }

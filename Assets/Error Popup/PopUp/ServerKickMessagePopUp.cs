@@ -63,21 +63,4 @@ public class ServerKickMessagePopUp : MonoBehaviour
                 gameObject.SetActive(false);
             });
     }
-
-
-
-    //     public void RedirectToMainMenu()
-    //     {
-    // #if UNITY_WEBGL
-    //         //UIController.instance.BackToMainMenuLoading.SetActive(true);
-    // #endif
-    //     }
-
-    //     public void RedirectToGame()
-    //     {
-    //         //GameController.Instance.isInGame = false;
-    //         this.gameObject.SetActive(false);
-
-    //         // GameController.Instance.VerifyandStartLudo();
-    //     }
 }
