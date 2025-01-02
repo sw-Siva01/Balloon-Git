@@ -87,7 +87,7 @@ public class KeyBoardHandler : MonoBehaviour
         currentInput = displayText.text;
         decimalButton.interactable = !currentInput.Contains(".");
         controller.betAmountTxt.gameObject.SetActive(false);
-        if (APIController.instance.authentication.platform == "mobile")
+        if (!GameController.instance.numBool)
         {
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(true);
         }

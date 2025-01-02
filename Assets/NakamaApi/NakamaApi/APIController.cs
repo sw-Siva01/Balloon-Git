@@ -248,7 +248,7 @@ public class APIController : MonoBehaviour
                Debug.Log("authentication response is : " + successRes);
                JObject apiResponse = JObject.Parse(successRes);
                Debug.Log("authentication response is : " + (int)apiResponse["code"]);
-              
+
 
                Debug.Log("Auth response  => " + apiResponse.ToString());
                if ((int)apiResponse["code"] == 200)
@@ -471,7 +471,7 @@ public class APIController : MonoBehaviour
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
         winningBetCalled = true;
-         Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
+        Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
         // Debug.Log($"Request data is {JsonUtility.ToJson(request)}");
         while (request.BetId != betId)

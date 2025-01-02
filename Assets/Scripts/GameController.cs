@@ -103,6 +103,7 @@ public class GameController : MonoBehaviour
     public bool startGame;
     public bool _balanceUpdate = false;
     public bool demo;
+    public bool numBool;
     // private
     private bool makeLose;
     private bool isBegin;
@@ -691,12 +692,12 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (isPressed && isFire && !lost)
+        if (startGame && isPressed && isFire && !lost)
         {
             // To move the Target pos Up at the Start
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
-            startGame = true;
+            /*startGame = true;*/
             Debug.Log(" GameProcess ===> GameStart_Update");
 
             if (timeSinceLastIncrement >= incrementInterval)
@@ -1097,6 +1098,7 @@ public class GameController : MonoBehaviour
      (failed) =>
      {
          // Resetting all game Data......
+         startGame = false;
          ResetBets();
      });
     }
@@ -1503,7 +1505,7 @@ public class GameController : MonoBehaviour
                     Debug.Log(" Bigger_Amount" + buttonPress);
                 }
 
-                if (!numPad && !buttonPress && !lost)
+                if (!numPad && !buttonPress && !lost && startGame)
                 {
                     Debug.Log(" GameProcess ===> GameStart");
                     Debug.Log(" Button ====> PressDown");

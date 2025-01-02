@@ -43,7 +43,7 @@ public class BetInputController : MonoBehaviour
             {
                 Debug.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
-                if (APIController.instance.authentication.platform == "mobile")
+                if (!GameController.instance.numBool)
                 {
 
                     BetAmtInput.textViewport.gameObject.SetActive(false);
@@ -53,7 +53,7 @@ public class BetInputController : MonoBehaviour
             {
                 Debug.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
-                if (APIController.instance.authentication.platform == "mobile")
+                if (!GameController.instance.numBool)
                 {
 
                     BetAmtInput.textViewport.gameObject.SetActive(false);
@@ -66,7 +66,7 @@ public class BetInputController : MonoBehaviour
     {
         controller.numPad = true;
         Debug.Log(" TOwer UserDevice ::" + APIController.instance.authentication.platform);
-        if (APIController.instance.authentication.platform == "desktop")
+        if (GameController.instance.numBool)
         {
             return;
         }
@@ -93,7 +93,7 @@ public class BetInputController : MonoBehaviour
     public void OnEndEditBetAmount(float amount)
     {
         Debug.Log("OnEndEditBetAmount");
-        if (APIController.instance.authentication.platform == "desktop")
+        if (GameController.instance.numBool)
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
             {
@@ -113,7 +113,7 @@ public class BetInputController : MonoBehaviour
             }
             else
             {
-                if (APIController.instance.authentication.platform == "desktop")
+                if (GameController.instance.numBool)
                 {
                     amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
@@ -123,7 +123,7 @@ public class BetInputController : MonoBehaviour
 
             }
         }
-        if (APIController.instance.authentication.platform == "desktop")
+        if (GameController.instance.numBool)
         {
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
@@ -137,7 +137,7 @@ public class BetInputController : MonoBehaviour
 
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
-            if (APIController.instance.authentication.platform == "desktop")
+            if (GameController.instance.numBool)
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
             }
@@ -149,7 +149,7 @@ public class BetInputController : MonoBehaviour
     public void OnEditInput()
     {
 
-        if (APIController.instance.authentication.platform == "desktop")
+        if (GameController.instance.numBool)
         {
             string val = controller.betAmount.ToString("F2");
             BetAmtInput.text = val;
@@ -256,9 +256,9 @@ public class BetInputController : MonoBehaviour
         Debug.Log("EnableBetInput");
 
         BetAmtInput.interactable = true;
-        if (APIController.instance.authentication.platform == "mobile")
+        if (!GameController.instance.numBool)
         {
-            if (APIController.instance.authentication.platform == "mobile")
+            if (!GameController.instance.numBool)
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
 
@@ -289,7 +289,7 @@ public class BetInputController : MonoBehaviour
         controller.betAmount = float.Parse(_s);
 
         BetAmtInput.textViewport.gameObject.SetActive(true);
-        //  if (APIController.instance.authentication.platform == "mobile") BetAmtInput.interactable = false;
+        //  if (!GameController.instance.numBool) BetAmtInput.interactable = false;
         Debug.Log("DisableBetInput");
 
     }

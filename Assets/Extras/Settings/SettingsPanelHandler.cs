@@ -149,7 +149,6 @@ public class SettingsPanelHandler : UIHandler
     }
     private void UpdateMusic()
     {
-
         APIController.instance.authentication.sound = SoundToggle.isOn;
         APIController.instance.authentication.music = MusicToggle.isOn;
 
