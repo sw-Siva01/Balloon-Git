@@ -152,6 +152,9 @@ public class SettingsPanelHandler : UIHandler
         APIController.instance.authentication.sound = SoundToggle.isOn;
         APIController.instance.authentication.music = MusicToggle.isOn;
 
+        LocalStorage.Save("Lootrix_sound", APIController.instance.authentication.sound ? "true" : "false");
+        LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");
+
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
             if (success)

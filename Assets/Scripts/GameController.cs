@@ -457,9 +457,11 @@ public class GameController : MonoBehaviour
         else
             demo = false;
 
-        if (GameController.instance.LoadingPopUp.activeSelf)
+        if (LoadingPopUp.activeSelf)
         {
-            GameController.instance.LoadingPopUp.SetActive(false);
+            LoadingPopUp.SetActive(false);
+            CanPlayAudio = true;
+            SettingsPanelHandler.instance.HideMe();
             Welcom_Button();
         }
 
@@ -1505,7 +1507,7 @@ public class GameController : MonoBehaviour
                     Debug.Log(" Bigger_Amount" + buttonPress);
                 }
 
-                if (!numPad && !buttonPress && !lost && startGame)
+                if (!numPad && !buttonPress && !lost)
                 {
                     Debug.Log(" GameProcess ===> GameStart");
                     Debug.Log(" Button ====> PressDown");
@@ -1968,11 +1970,15 @@ public class GameController : MonoBehaviour
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
+            Debug.Log("minusButtonImg Shade is " + 0);
+            Debug.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
         }
         else if (betAmount > APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
+            Debug.Log("minusButtonImg Shade is " + 1);
+            Debug.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
         }
 
         if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)
