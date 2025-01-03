@@ -746,7 +746,6 @@ public class GameController : MonoBehaviour
             balloonBlue_Start.gameObject.SetActive(false);
         }
     }
-
     void Balloon_Burt()
     {
         Debug.Log(" GameProcess ===> GameLose");
@@ -921,7 +920,6 @@ public class GameController : MonoBehaviour
     bool checking = false;
 
     public ImageSequencer imageSequencer;
-
     public void Animation_Pause()
     {
         heat_IdleAnim.SetBool("isPlay1", false);
@@ -948,7 +946,6 @@ public class GameController : MonoBehaviour
         takeCash_Anim.SetActive(true);
         balloonShake_blue.GetComponent<ImageSequencer>().enabled = true;
     }
-
     public void TakeCashOut() // TakeCash button
     {
         InternetCheck = true;
