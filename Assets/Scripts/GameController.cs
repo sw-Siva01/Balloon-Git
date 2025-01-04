@@ -394,7 +394,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (isPressed && !ISActive)
+        if ((isPressed || !isPressed) && !ISActive)
         {
             //isPressed = false;
             if (!take && !lost && !isScroll && !HowToPlay.activeSelf && /*!ResponsePopUp.activeSelf && !LoadingPopUp.activeSelf &&*/
@@ -812,6 +812,7 @@ public class GameController : MonoBehaviour
         }
         if (startGame && !lost)
         {
+            mString = (MathF.Floor(multiplier * 100) / 100f).ToString("0.00");
             tString = (betAmount * float.Parse(mString)).ToString("0.00");
             takeCash = float.Parse(tString);
             takeCashWintxt.text = takeCash.ToString("0.00");
@@ -842,7 +843,7 @@ public class GameController : MonoBehaviour
             // Increment the timer by the time elapsed since the last frame
             timeSinceLastIncrement += Time.deltaTime;
         }
-
+        Debug.Log("##@@%%!!**^^ " + "MultiplierValue " + multiplier + "TakeCashValue " + takeCash);
         if (startGame && takeBetAmount)
         {
             takeBetAmount = false;
