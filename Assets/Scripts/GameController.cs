@@ -108,7 +108,7 @@ public class GameController : MonoBehaviour
     private bool makeLose;
     private bool isBegin;
     public bool pauseGame;
-    private bool isPressed;
+    public bool isPressed;
     private bool buttonPress;
     private bool takeBetAmount;
     private bool isSet;
@@ -1080,6 +1080,7 @@ public class GameController : MonoBehaviour
         TransData.Info = "InitBet";
         int _index = UnityEngine.Random.Range(100, 999);
         List<string> _list = new();
+        lobbyName = "Room : " + DateTime.UtcNow + UnityEngine.Random.Range(100, 999);
         _list.Add(APIController.instance.userDetails.Id);
         APIController.instance.CreateAndJoinMatch(_index, betAmount, TransData, false, lobbyName, APIController.instance.userDetails.Id,
                false, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.isBlockApiConnection, _list,
@@ -1089,6 +1090,7 @@ public class GameController : MonoBehaviour
                },
      (betIndex, response) =>
      {
+         Debug.Log("Is match getting ===>>>> + Success");
          BetIndex = betIndex;
          MatchRes = response;
          betID = response.Message;
@@ -1097,6 +1099,7 @@ public class GameController : MonoBehaviour
      (failed) =>
      {
          // Resetting all game Data......
+         Debug.Log("Is match getting ===>>>> + Failed");
          startGame = false;
          ResetBets();
      });
@@ -1508,7 +1511,6 @@ public class GameController : MonoBehaviour
                 {
                     Debug.Log(" GameProcess ===> GameStart");
                     Debug.Log(" Button ====> PressDown");
-
                     unPress.SetActive(false);
                     pressed.SetActive(true);
 
