@@ -48,7 +48,7 @@ public class SettingsPanelHandler : UIHandler
     }
     public void FullScreenFunc()
     {
-        Debug.Log("FullScreenFunc");
+        DebugHelper.Log("FullScreenFunc");
         APIController.FullScreen();
         UI_Controller.instance.settingsHandler.HideMe();
     }
@@ -61,7 +61,7 @@ public class SettingsPanelHandler : UIHandler
         SoundToggle.isOn = value;
 
         soundTogWelcome.isOn = value;
-        Debug.Log("Sound volume --> " + value);
+        DebugHelper.Log("Sound volume --> " + value);
 
         if (SoundToggle.isOn)
         {
@@ -83,7 +83,7 @@ public class SettingsPanelHandler : UIHandler
     {
         MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
 
-        Debug.Log("Music volume --> " + _state);
+        DebugHelper.Log("Music volume --> " + _state);
         MusicToggle.isOn = _state;
         musicTogWelcome.isOn = _state;
 
@@ -103,7 +103,7 @@ public class SettingsPanelHandler : UIHandler
     }
     public override void HideMe()
     {
-        Debug.Log("Settings Panel Open ");
+        DebugHelper.Log("Settings Panel Open ");
         UI_Controller.instance.PlayButtonSound();
         PanelTransform?.DOKill();
         PanelTransform.DOAnchorPosX(-1000f, 0.3f);
@@ -113,7 +113,7 @@ public class SettingsPanelHandler : UIHandler
     }
     public void Welcomebtn_OFF()
     {
-        Debug.Log("Welcome button OFF ");
+        DebugHelper.Log("Welcome button OFF ");
         PanelTransform?.DOKill();
         PanelTransform.DOAnchorPosX(-1000f, 0.3f);
         PanelTransform.GetComponent<CanvasGroup>().DOFade(0, 0.3f).OnComplete(() => { gameObject.SetActive(false); PanelTransform.gameObject.SetActive(false); });

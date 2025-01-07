@@ -238,7 +238,7 @@ public class InfiniteScroll : MonoBehaviour
                 if (float.TryParse(numericPart, out bfloat))
                 {
                     // Successfully parsed the numeric part to a float
-                    Debug.Log($"Parsed value: {bfloat}");
+                    DebugHelper.Log($"Parsed value: {bfloat}");
                 }
                 ///
                 BonusValue = float.Parse(BonusValue.ToString("0.00"));

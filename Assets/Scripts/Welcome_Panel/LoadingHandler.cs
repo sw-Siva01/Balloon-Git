@@ -6,22 +6,6 @@ using UnityEngine;
 public class LoadingHandler : MonoBehaviour
 {
     #region
-    /*[SerializeField] private GameObject LoadingImage;
-    public float Delay;
-
-    private void OnEnable()
-    {
-        LoadingImage.transform?.DOKill();
-        LoadingImage.transform.DOLocalRotate(new Vector3(0,0,-360) , Delay , RotateMode.FastBeyond360).SetLoops(-1 , LoopType.Incremental).SetEase(Ease.Linear);
-    }
-
-    private void OnDisable()
-    {
-        LoadingImage.transform?.DOKill();
-    }*/
-    #endregion
-
-    #region
     public RectTransform targetPosition; // Assign this in the Inspector
     public float moveDuration = 1f; // Duration for the movement
     public float waitDuration = 1f; // Duration to wait at each position

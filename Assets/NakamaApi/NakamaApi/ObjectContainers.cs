@@ -143,7 +143,7 @@ public class EntryAmountDetails
 
     public void SetEntryAmount(string entryData, string currency_type)
     {
-        // Debug.Log(entryData);
+        // DebugHelper.Log(entryData);
         if (string.IsNullOrEmpty(entryData))
         {
             SetDefaultAmount(currency_type);

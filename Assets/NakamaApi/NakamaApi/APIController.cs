@@ -87,7 +87,7 @@ public class APIController : MonoBehaviour
 
     public void UpdateBalanceTrigger()
     {
-        Debug.Log("UpdateBalanceTrigger ==>  ");
+        DebugHelper.Log("UpdateBalanceTrigger ==>  ");
         OnUserDeposit?.Invoke();
         isClickDeopsit = false;
         if (!GameController.instance.demo)
@@ -96,7 +96,7 @@ public class APIController : MonoBehaviour
 
     public void UpdateBalanceResponse(double data)
     {
-        Debug.Log("Balance Updated response  :::::::----::: " + data);
+        DebugHelper.Log("Balance Updated response  :::::::----::: " + data);
         userDetails.balance = (float)data;
         OnUserBalanceUpdate?.Invoke();
 #if !UNITY_EDITOR && UNITY_WEBGL
@@ -107,11 +107,11 @@ public class APIController : MonoBehaviour
             OnUserDeposit?.Invoke();
         }
     }
-    public void ApiCallBackDebugger(string data)
+    public void ApiCallBackDebugHelperger(string data)
     {
         byte[] bytesToEncode = Convert.FromBase64String(data);
         string base64EncodedString = Encoding.UTF8.GetString(bytesToEncode);
-        Debug.Log(base64EncodedString + "inpuT");
+        DebugHelper.Log(base64EncodedString + "inpuT");
         JObject OBJ = JObject.Parse(base64EncodedString);
         string url = OBJ["url"].ToString();
         int code = int.Parse(OBJ["status"].ToString());
@@ -121,9 +121,9 @@ public class APIController : MonoBehaviour
     }
     public async void CheckAPICallBack(string url, int timeout)
     {
-        Debug.Log($"API_ Response :-  URL{url} -- timeout check");
+        DebugHelper.Log($"API_ Response :-  URL{url} -- timeout check");
         await UniTask.Delay(timeout * 1000);
-        Debug.Log($"API_ Response :-  URL{url} -- timeout..");
+        DebugHelper.Log($"API_ Response :-  URL{url} -- timeout..");
 
         foreach (var item in apiRequestList)
         {
@@ -139,7 +139,7 @@ public class APIController : MonoBehaviour
     {
         Time.timeScale = 1;
         isInFocus = data == "true" ? true : false;
-        Debug.Log($"Calleeedddd switching tab {data}   -   {isOnline}   -   {isInFocus}");
+        DebugHelper.Log($"Calleeedddd switching tab {data}   -   {isOnline}   -   {isInFocus}");
         OnSwitchingTab?.Invoke(data.ToLower() == "true");
     }
     #endregion
@@ -162,17 +162,17 @@ public class APIController : MonoBehaviour
         (successAction) =>
         {
             playerinfoReceived = true;
-            Debug.Log("authentication response is : " + successAction);
+            DebugHelper.Log("authentication response is : " + successAction);
             JObject apiResponse = JObject.Parse(successAction);
-            Debug.Log("authentication response is : " + (int)apiResponse["code"]);
-            Debug.Log(apiResponse.ToString());
+            DebugHelper.Log("authentication response is : " + (int)apiResponse["code"]);
+            DebugHelper.Log(apiResponse.ToString());
             if ((int)apiResponse["code"] == 200)
             {
                 JObject json = JObject.Parse(apiResponse["data"].ToString());
-                Debug.Log($"Player Info Json Response 1 => {json.ToString()}");
+                DebugHelper.Log($"Player Info Json Response 1 => {json.ToString()}");
                 authentication.balance = (float)json["balance"];
                 userDetails.balance = authentication.balance;
-                Debug.Log("/8::----::: " + authentication.balance);
+                DebugHelper.Log("/8::----::: " + authentication.balance);
                 OnUserBalanceUpdate?.Invoke();
 #if !UNITY_EDITOR && UNITY_WEBGL
                 UpdateBalance();
@@ -184,7 +184,7 @@ public class APIController : MonoBehaviour
             }
         }, (falseAction) =>
         {
-            Debug.Log("Player Info Failed " + falseAction);
+            DebugHelper.Log("Player Info Failed " + falseAction);
         });
 
         float time = Time.time;
@@ -207,7 +207,7 @@ public class APIController : MonoBehaviour
     public AuthenticationData authentication = new AuthenticationData();
     public void StartAuthentication(string data)
     {
-        Debug.Log("Response from wegbl for authentication : " + data);
+        DebugHelper.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
         // if (data.Length < 30 || (authentication != null && authentication.operatorname == "demo"))
         // {
@@ -220,7 +220,7 @@ public class APIController : MonoBehaviour
         {
             JObject apiResponse = JObject.Parse(data);
             string json = apiResponse["game_data"].ToString();
-            Debug.Log(json);
+            DebugHelper.Log(json);
             if (string.IsNullOrEmpty(json))
             {
                 ignoreAuthdata = false;
@@ -240,17 +240,17 @@ public class APIController : MonoBehaviour
 
            (initaitedres) =>
            {
-               Debug.Log("authentication response is : " + initaitedres + "ignore" + ignoreAuthdata);
+               DebugHelper.Log("authentication response is : " + initaitedres + "ignore" + ignoreAuthdata);
            },
 
            (successRes) =>
            {
-               Debug.Log("authentication response is : " + successRes);
+               DebugHelper.Log("authentication response is : " + successRes);
                JObject apiResponse = JObject.Parse(successRes);
-               Debug.Log("authentication response is : " + (int)apiResponse["code"]);
+               DebugHelper.Log("authentication response is : " + (int)apiResponse["code"]);
 
 
-               Debug.Log("Auth response  => " + apiResponse.ToString());
+               DebugHelper.Log("Auth response  => " + apiResponse.ToString());
                if ((int)apiResponse["code"] == 200)
                {
                    JObject data = JObject.Parse(apiResponse["data"].ToString());
@@ -258,7 +258,7 @@ public class APIController : MonoBehaviour
                    authentication.session_token = (string)output["session_token"];
                    authentication.name = (string)data["username"];
                    authentication.balance = (float)data["balance"];
-                   Debug.Log("Auth response 1 => " + authentication.balance);
+                   DebugHelper.Log("Auth response 1 => " + authentication.balance);
                    if (!ignoreAuthdata)
                    {
                        authentication.entryAmountDetails = new();
@@ -266,7 +266,7 @@ public class APIController : MonoBehaviour
                    }
                    //authentication.music = (string)json1["music"].ToString();
 
-                   Debug.Log("authentication  is : " + JsonUtility.ToJson(authentication));
+                   DebugHelper.Log("authentication  is : " + JsonUtility.ToJson(authentication));
                    userDetails.Id = authentication.Id;
                    userDetails.game_Id = authentication.operatorname + "_" + authentication.gamename;
                    //userDetails.isBlockApiConnection = authentication.operatorname == "demo";
@@ -295,7 +295,7 @@ public class APIController : MonoBehaviour
 
                    if (string.IsNullOrWhiteSpace(userDetails.gameId))
                        userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
-                   Debug.Log("Check this once !!!!!!!!!!!!!" + JsonUtility.ToJson(userDetails));
+                   DebugHelper.Log("Check this once !!!!!!!!!!!!!" + JsonUtility.ToJson(userDetails));
 
                    // MiniRouletteUIController.instance.SettingsPanel.UpdateToggle(authentication.sound, authentication.music);
                    AudioListener.volume = 1;
@@ -315,10 +315,10 @@ public class APIController : MonoBehaviour
 #if !UNITY_EDITOR
                     DisconnectGame("Illigal Access");
 #else
-                   Debug.Log("Illigal Access");
+                   DebugHelper.Log("Illigal Access");
 #endif
                }
-               Debug.Log("On User Balance Updated");
+               DebugHelper.Log("On User Balance Updated");
 
                OnUserBalanceUpdate?.Invoke();
                OnUserDetailsUpdate?.Invoke();
@@ -326,7 +326,9 @@ public class APIController : MonoBehaviour
 
            (errorRes) =>
            {
-               Debug.Log("Authentication Failed " + errorRes);
+               DebugHelper.Log("Authentication Failed " + errorRes);
+               JObject apiResponse = JObject.Parse(errorRes);
+               ErrorPopUpHandler.instance.ShowError((int)apiResponse["code"], (string)apiResponse["message"]);
            }
        );
     }
@@ -364,16 +366,16 @@ public class APIController : MonoBehaviour
     #region API
     public int InitlizeBet(float amount, TransactionMetaData metadata, bool isAbleToCancel = false, Action<bool> action = null, string playerId = "", bool isBot = false, Action<string> betIdAction = null)
     {
-        Debug.Log("" + amount);
+        DebugHelper.Log("" + amount);
         if (string.IsNullOrWhiteSpace(playerId) || playerId == userDetails.Id)
         {
-            Debug.Log("Dummy Data" + amount);
+            DebugHelper.Log("Dummy Data" + amount);
             userDetails.balance -= amount;
             OnUserBalanceUpdate.Invoke();
         }
         else
         {
-            Debug.Log(playerId + " __ " + userDetails.Id + "__ Dummy Data ---1" + amount);
+            DebugHelper.Log(playerId + " __ " + userDetails.Id + "__ Dummy Data ---1" + amount);
         }
         action?.Invoke(true);
         return 0;
@@ -405,13 +407,13 @@ public class APIController : MonoBehaviour
 
     public void WinningsBet(int index, float amount, double spend_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
-        Debug.Log("Winning Bet Data **********" + isPlayByDummyData);
+        DebugHelper.Log("Winning Bet Data **********" + isPlayByDummyData);
 
         if (isPlayByDummyData)
         {
             if (playerId == "" || playerId == userDetails.Id)
             {
-                Debug.Log("Winning Bet Data **********");
+                DebugHelper.Log("Winning Bet Data **********");
                 userDetails.balance += amount;
                 OnUserBalanceUpdate.Invoke();
             }
@@ -422,7 +424,7 @@ public class APIController : MonoBehaviour
 
     public void APICallBack(string url, int code, string body, string error)
     {
-        Debug.Log($"API_ Response :-  URL{url} -- Code {code} -- Body {body} -- Error {error}");
+        DebugHelper.Log($"API_ Response :-  URL{url} -- Code {code} -- Body {body} -- Error {error}");
 
         foreach (var item in apiRequestList)
         {
@@ -445,10 +447,10 @@ public class APIController : MonoBehaviour
     {
         WebApiManager.Instance.GetNetWorkCall(api.callType, api.url, api.param, (success, error, body) =>
         {
-            Debug.Log($"<color=orange>Success is set to {success}, error is set to {error} and body is set to {body}\nURL is : {api.url}</color>");
+            DebugHelper.Log($"<color=orange>Success is set to {success}, error is set to {error} and body is set to {body}\nURL is : {api.url}</color>");
             if (success)
             {
-                Debug.Log($"<color=orange>API sent to success</color>");
+                DebugHelper.Log($"<color=orange>API sent to success</color>");
                 api.action?.Invoke(success, error, body);
             }
             else
@@ -456,11 +458,11 @@ public class APIController : MonoBehaviour
                 if (timeout >= 3)
                 {
                     api.action?.Invoke(success, error, body);
-                    Debug.Log($"<color=orange>API run failed with timeout {timeout}</color>");
+                    DebugHelper.Log($"<color=orange>API run failed with timeout {timeout}</color>");
                 }
                 else
                 {
-                    Debug.Log($"<color=orange>API recalled with timeout set to {timeout}</color>");
+                    DebugHelper.Log($"<color=orange>API recalled with timeout set to {timeout}</color>");
                     ExecuteAPI(api, timeout++);
                 }
             }
@@ -471,16 +473,16 @@ public class APIController : MonoBehaviour
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
         winningBetCalled = true;
-        Debug.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
+        DebugHelper.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
-        // Debug.Log($"Request data is {JsonUtility.ToJson(request)}");
+        // DebugHelper.Log($"Request data is {JsonUtility.ToJson(request)}");
         while (request.BetId != betId)
         {
             await UniTask.Delay(200);
         }
 
         float currentBalance = userDetails.balance + win_amount_with_comission;
-        Debug.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
+        DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
 #if CasinoGames
         bool winningBetResponce = false;
         AWS_SocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
@@ -489,16 +491,16 @@ public class APIController : MonoBehaviour
 
             winningBetResponce = true;
 
-            Debug.Log(initatedres);
+            DebugHelper.Log(initatedres);
             double userbalance = currentBalance;
             UpdateBalanceResponse(userbalance);
             action?.Invoke(true);
-            Debug.Log("WinningsBetMultiplayerAPI Initialized" + initatedres);
+            DebugHelper.Log("WinningsBetMultiplayerAPI Initialized" + initatedres);
         },
         (successRes) =>
         {
             //winningBetResponce = true;
-            Debug.Log(successRes);
+            DebugHelper.Log(successRes);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(successRes);
             //  action?.Invoke(response != null && (response.code == 200 || response.code == 224));
             if (response.code == 224)
@@ -512,7 +514,7 @@ public class APIController : MonoBehaviour
         },
         (failRes) =>
         {
-            Debug.Log("WinningsBetMultiplayerAPI Failed" + failRes);
+            DebugHelper.Log("WinningsBetMultiplayerAPI Failed" + failRes);
             JObject jobject = JObject.Parse(failRes);
             matchResponse.status = false;
             matchResponse.Message = jobject["message"]?.ToString();
@@ -528,7 +530,7 @@ public class APIController : MonoBehaviour
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
-                    Debug.Log("WinningBetResponce  Retry Called");
+                    DebugHelper.Log("WinningBetResponce  Retry Called");
                     // CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     WinningsBetMultiplayerAPI(betIndex, betId, win_amount_with_comission, spend_amount, pot_amount, metadata, action, playerId, isBot, isWinner, gameName, operatorName, gameId, commission, matchToken);
                     return;
@@ -576,7 +578,7 @@ public class APIController : MonoBehaviour
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
-                    Debug.Log("WinningBetResponce  Retry Called");
+                    DebugHelper.Log("WinningBetResponce  Retry Called");
                     GetRandomPredictionIndexApi(rowCount, columnCount, predectedCount, OnScucces, gamename);
 
                     return;
@@ -599,7 +601,7 @@ public class APIController : MonoBehaviour
         {
             if (success)
             {
-                Debug.Log("Add Bet Res :: " + res);
+                DebugHelper.Log("Add Bet Res :: " + res);
                 ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
                 action?.Invoke(response != null && response.code == 200);
                 JObject json = JObject.Parse(response.message);
@@ -608,7 +610,7 @@ public class APIController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Add Bet Failed" + res);
+                DebugHelper.Log("Add Bet Failed" + res);
             }
 
         });
@@ -632,7 +634,7 @@ public class APIController : MonoBehaviour
     public CreateMatchResponse matchResponse;
     public async void CreateAndJoinMatch(int index, float amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
     {
-        Debug.Log("1CreateAndJoinMatch 1 init => " + index);
+        DebugHelper.Log("1CreateAndJoinMatch 1 init => " + index);
         matchResponse = new CreateMatchResponse();
         if (isBlockAPI)
         {
@@ -644,7 +646,7 @@ public class APIController : MonoBehaviour
 
         if (betRequest.Exists(x => x.betId == index))
         {
-            Debug.Log("Checking BetRequest already Exists ===> " + index);
+            DebugHelper.Log("Checking BetRequest already Exists ===> " + index);
             betRequest.RemoveAll(x => x.betId == index);
         }
 
@@ -652,40 +654,40 @@ public class APIController : MonoBehaviour
         bet.PlayerId = playerId;
         bet.betId = index;
         betRequest.Add(bet);
-        Debug.Log($"BetRequest JSON Temp before Response.....BetIndex_{index}");
+        DebugHelper.Log($"BetRequest JSON Temp before Response.....BetIndex_{index}");
         bool createandjoingameResponseReceived = false;
         AWS_SocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonUtility.ToJson(metadata),
 
         (initiatedres) =>
         {
             createandjoingameResponseReceived = true;
-            Debug.Log(" 2CreateAndJoinMatch 1 init => " + initiatedres);
+            DebugHelper.Log(" 2CreateAndJoinMatch 1 init => " + initiatedres);
             JObject obj = JObject.Parse(initiatedres);
             string message = obj["message"]?.ToString();
-            Debug.Log(message);
+            DebugHelper.Log(message);
             if (message.Contains("timeout"))
             {
                 // ErrorPopUpHandler.instance.ShowError("Request TimeOut");
                 matchResponse.status = false;
                 matchResponse.Message = initiatedres;
                 errorAction?.Invoke(matchResponse);
-                Debug.Log("CreateAndJoinMatch Failed " + initiatedres);
+                DebugHelper.Log("CreateAndJoinMatch Failed " + initiatedres);
             }
             else
             {
-                Debug.Log("CreateAndJoinMatch 1 => " + initiatedres);
+                DebugHelper.Log("CreateAndJoinMatch 1 => " + initiatedres);
             }
         },
         (successres) =>
         {
             createandjoingameResponseReceived = true;
-            Debug.Log("3CreateAndJoinMatch 1 init =>" + successres);
+            DebugHelper.Log("3CreateAndJoinMatch 1 init =>" + successres);
             JObject jsonObject = JObject.Parse(successres);
             if ((int)jsonObject["code"] == 200)
             {
                 winningBetCalled = false;
                 JObject jsonObject1 = JObject.Parse(jsonObject["data"].ToString());
-                Debug.Log("jsonObject1  => " + double.Parse(jsonObject1["balance"].ToString()));
+                DebugHelper.Log("jsonObject1  => " + double.Parse(jsonObject1["balance"].ToString()));
                 //Response for Create and join match
                 /*
                 "{\"MatchToken\":\"7473f476-9495-446e-ad1c-df923b19bf7b\",
@@ -706,7 +708,7 @@ public class APIController : MonoBehaviour
                 bet.MatchToken = jsonObject1["MatchToken"].ToString();
                 UpdateBalanceResponse(matchResponse.balance);
                 successAction?.Invoke(index, matchResponse);
-                Debug.Log(JsonConvert.SerializeObject(matchResponse) + "CreateAndJoinMatch 2 => " + bet.BetId + " ... " + bet.MatchToken + "....Balance" + matchResponse.balance);
+                DebugHelper.Log(JsonConvert.SerializeObject(matchResponse) + "CreateAndJoinMatch 2 => " + bet.BetId + " ... " + bet.MatchToken + "....Balance" + matchResponse.balance);
             }
             else
             {
@@ -724,7 +726,7 @@ public class APIController : MonoBehaviour
 
                 matchResponse.Message = "";
 
-                Debug.Log(jsonObject.ToString());
+                DebugHelper.Log(jsonObject.ToString());
 
                 ErrorPopUpHandler.instance.ShowError((int)jsonObject["code"], jsonObject["message"]?.ToString());
                 matchResponse.status = false;
@@ -734,7 +736,7 @@ public class APIController : MonoBehaviour
         },
         (errorres) =>
         {
-            Debug.Log("CreateAndJoinMatch Failed " + errorres);
+            DebugHelper.Log("CreateAndJoinMatch Failed " + errorres);
             JObject jobject = JObject.Parse(errorres);
             matchResponse.status = false;
             matchResponse.Message = jobject["message"]?.ToString();
@@ -752,7 +754,7 @@ public class APIController : MonoBehaviour
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
-                    Debug.Log("NewCreateAndJoinMatch_1  Retry Called");
+                    DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     return;
                 }
@@ -786,7 +788,7 @@ public class APIController : MonoBehaviour
         {
             if (success)
             {
-                Debug.Log("Audio Settings Has been Updated");
+                DebugHelper.Log("Audio Settings Has been Updated");
             }
         });
     }
@@ -824,7 +826,7 @@ public class APIController : MonoBehaviour
                         BackendAPIURL = JsonUtility.FromJson<BackendAPI>(response.message);
                         BackendAPIURL.isGetData = true;
                         // NakamaManager.Instance.connectedHost = BackendAPIURL.LootrixHost;
-                        // Debug.Log(NakamaManager.Instance.connectedHost + "DSFSDFSDF");
+                        // DebugHelper.Log(NakamaManager.Instance.connectedHost + "DSFSDFSDF");
                     }
                 }
             };
@@ -852,7 +854,7 @@ public class APIController : MonoBehaviour
         cancelBetreq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
         // Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CancelBet", cancelBetreq.ToJson(), (res) =>
         // {
-        //     Debug.Log(res);
+        //     DebugHelper.Log(res);
         //     ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
         //     action?.Invoke(response != null && response.code == 200);
         //     JObject json = JObject.Parse(response.message);
@@ -875,7 +877,7 @@ public class APIController : MonoBehaviour
 
         // Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
         // {
-        //     Debug.Log("Rng Calculation inside GetRNG 2");
+        //     DebugHelper.Log("Rng Calculation inside GetRNG 2");
         //     JObject jsonObject = JObject.Parse(res);
         //     userDetails.isWin = ((int.Parse(jsonObject["iswin"].ToString()) > 0));
         //     userDetails.maxWin = float.Parse(jsonObject["Multiplier"].ToString());

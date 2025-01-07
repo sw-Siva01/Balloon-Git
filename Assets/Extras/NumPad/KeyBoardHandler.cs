@@ -120,11 +120,11 @@ public class KeyBoardHandler : MonoBehaviour
 
     void OnSubmitInput()
     {
-        Debug.Log("OnSubmitInput");
+        DebugHelper.Log("OnSubmitInput");
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {
-            Debug.Log("KeyPad Input WIthout Value");
+            DebugHelper.Log("KeyPad Input WIthout Value");
             controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
             OnSubmitAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
         }
@@ -147,28 +147,28 @@ public class KeyBoardHandler : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Cant Convert Too lengthy");
+                DebugHelper.Log("Cant Convert Too lengthy");
                 OnSubmitAction?.Invoke(APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 controller.betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
             }
-            Debug.Log("KeyPad Input WIth Some Values");
+            DebugHelper.Log("KeyPad Input WIth Some Values");
         }
-        Debug.Log("OnSubmitInput Called");
+        DebugHelper.Log("OnSubmitInput Called");
         BetInputController.Instance.CloseKeyPadPanel();
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
     }
 
     public void OnCancelInput()
     {
-        Debug.Log("OnCancelInput");
+        DebugHelper.Log("OnCancelInput");
         MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {
-            Debug.Log("IsEmptyInput " + BetInputController.Instance.IsEmptyInput);
+            DebugHelper.Log("IsEmptyInput " + BetInputController.Instance.IsEmptyInput);
             BetInputController.Instance.IsEmptyInput = true;
 
-            Debug.Log("KeyPad Input WIthout Value");
+            DebugHelper.Log("KeyPad Input WIthout Value");
             controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
             OnCancelAction?.Invoke(float.Parse(controller.betAmount.ToString("0.00")));
@@ -192,14 +192,14 @@ public class KeyBoardHandler : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Cant Convert Too lengthy");
+                DebugHelper.Log("Cant Convert Too lengthy");
                 OnSubmitAction?.Invoke(APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 controller.betAmount = APIController.instance.authentication.entryAmountDetails.maxBetValue;
             }
 
-            Debug.Log("KeyPad Input WIth Some Values");
+            DebugHelper.Log("KeyPad Input WIth Some Values");
         }
-        Debug.Log("OnCancelInput Called");
+        DebugHelper.Log("OnCancelInput Called");
 
         BetInputController.Instance.CloseKeyPadPanel();
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);

@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using static System.Net.Mime.MediaTypeNames;
-using Debug = UnityEngine.Debug;
+//using DebugHelper = UnityEngine.DebugHelper;
 using Input = UnityEngine.Input;
 
 public class BetInputController : MonoBehaviour
@@ -41,7 +41,7 @@ public class BetInputController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                Debug.Log("Enter key was pressed!");
+                DebugHelper.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
                 if (!GameController.instance.numBool)
                 {
@@ -51,7 +51,7 @@ public class BetInputController : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                Debug.Log("Enter key was pressed!");
+                DebugHelper.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
                 if (!GameController.instance.numBool)
                 {
@@ -65,7 +65,7 @@ public class BetInputController : MonoBehaviour
     public void OpenKeyPadPanel()
     {
         controller.numPad = true;
-        Debug.Log(" TOwer UserDevice ::" + APIController.instance.authentication.platform);
+        DebugHelper.Log(" TOwer UserDevice ::" + APIController.instance.authentication.platform);
         if (GameController.instance.numBool)
         {
             return;
@@ -92,7 +92,7 @@ public class BetInputController : MonoBehaviour
     }
     public void OnEndEditBetAmount(float amount)
     {
-        Debug.Log("OnEndEditBetAmount");
+        DebugHelper.Log("OnEndEditBetAmount");
         if (GameController.instance.numBool)
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
@@ -108,7 +108,7 @@ public class BetInputController : MonoBehaviour
                 }
                 catch
                 {
-                    Debug.Log("Cant convert Too Lengthy OnEndEditBetAmount");
+                    DebugHelper.Log("Cant convert Too Lengthy OnEndEditBetAmount");
                 }
             }
             else
@@ -118,7 +118,7 @@ public class BetInputController : MonoBehaviour
                     amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
 
                 }
-                Debug.Log("eMPTY iNPUT eNDeDIT");
+                DebugHelper.Log("eMPTY iNPUT eNDeDIT");
                 IsEmptyInput = true;
 
             }
@@ -155,9 +155,9 @@ public class BetInputController : MonoBehaviour
             BetAmtInput.text = val;
             DisableBetInput();
         }
-        else
+        else if (!GameController.instance.numBool)
         {
-            Debug.Log("OnEditInput ELse");
+            DebugHelper.Log("OnEditInput ELse");
 
             controller.numPad = true;
             OpenKeyPadPanel();
@@ -165,7 +165,7 @@ public class BetInputController : MonoBehaviour
             _KeyBoardHandler.ShowKeyBoard((float)controller.betAmount,
              (inputValue) =>
              {
-                 Debug.Log("EDIT OVER" + inputValue + (float)controller.betAmount);
+                 DebugHelper.Log("EDIT OVER" + inputValue + (float)controller.betAmount);
                  // DisableKeyBoard();
                  controller.betAmount = (float)inputValue;
                  string _s = controller.betAmount.ToString("0.00");
@@ -174,7 +174,7 @@ public class BetInputController : MonoBehaviour
                  controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
-                 Debug.Log("Done " + controller.betAmount);
+                 DebugHelper.Log("Done " + controller.betAmount);
              },
              (value) =>
              {
@@ -182,7 +182,7 @@ public class BetInputController : MonoBehaviour
              },
              (input) =>
              {
-                 Debug.Log("Cancelled ");
+                 DebugHelper.Log("Cancelled ");
 
                  controller.betAmount = (float)input;
                  string _s = controller.betAmount.ToString("0.00");
@@ -191,16 +191,16 @@ public class BetInputController : MonoBehaviour
                  controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
-                 Debug.Log("Done " + controller.betAmount);
+                 DebugHelper.Log("Done " + controller.betAmount);
              });
-            Debug.Log(" Done  ");
+            DebugHelper.Log(" Done  ");
         }
     }
     public void RestrictInput()
     {
         if (string.IsNullOrWhiteSpace(BetAmtInput.text))
         {
-            Debug.Log("Closing +");
+            DebugHelper.Log("Closing +");
 
             IsEmptyInput = true;
             controller.betAmount = /*0.1f*/APIController.instance.authentication.entryAmountDetails.minBetValue;
@@ -235,7 +235,7 @@ public class BetInputController : MonoBehaviour
     public void CloseKeyPadPanel()
     {
         controller.numPad = false;
-        Debug.Log("CloseKeyPadPanel ");
+        DebugHelper.Log("CloseKeyPadPanel ");
         BetPanel.gameObject.SetActive(false);
         RestrictInput();
 
@@ -246,14 +246,14 @@ public class BetInputController : MonoBehaviour
         }
 
         EnableBetInput();
-        Debug.Log("CloseKeyPadPanel Done ");
+        DebugHelper.Log("CloseKeyPadPanel Done ");
         controller.HandGesture();
 
     }
 
     public void EnableBetInput()
     {
-        Debug.Log("EnableBetInput");
+        DebugHelper.Log("EnableBetInput");
 
         BetAmtInput.interactable = true;
         if (!GameController.instance.numBool)
@@ -276,13 +276,13 @@ public class BetInputController : MonoBehaviour
         controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
         /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + APIController.instance.userDetails.currency_type;*/
 
-        Debug.Log("EnableBetInput Called");
+        DebugHelper.Log("EnableBetInput Called");
 
     }
 
     public void DisableBetInput()
     {
-        Debug.Log("DisableBetInput");
+        DebugHelper.Log("DisableBetInput");
         controller.betAmountTxt.gameObject.SetActive(false);
         BetAmtInput.text = controller.betAmount.ToString("0.00");
         string _s = controller.betAmount.ToString("0.00");
@@ -290,7 +290,7 @@ public class BetInputController : MonoBehaviour
 
         BetAmtInput.textViewport.gameObject.SetActive(true);
         //  if (!GameController.instance.numBool) BetAmtInput.interactable = false;
-        Debug.Log("DisableBetInput");
+        DebugHelper.Log("DisableBetInput");
 
     }
 }

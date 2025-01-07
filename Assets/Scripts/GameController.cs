@@ -444,7 +444,7 @@ public class GameController : MonoBehaviour
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
     public void InitPlayerDetails()
     {
-        Debug.Log("UserDetails" + APIController.instance.userDetails.Id + " player ID " + playerID);
+        DebugHelper.Log("UserDetails" + APIController.instance.userDetails.Id + " player ID " + playerID);
 
         playerID = APIController.instance.userDetails.Id;
         playerName = APIController.instance.userDetails.name;
@@ -471,7 +471,7 @@ public class GameController : MonoBehaviour
             SelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
         }
 
-        Debug.Log("Player Details Subscribed");
+        DebugHelper.Log("Player Details Subscribed");
 
         settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
     }
@@ -486,18 +486,18 @@ public class GameController : MonoBehaviour
         /*PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);*/
         PassTxt(betAmountTxt, $"{betAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");
         PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size=35>{APIController.instance.userDetails.currency_type}</size>");
-        Debug.Log("Amount Details Subscribed");
+        DebugHelper.Log("Amount Details Subscribed");
     }
     private void OnSwitchTab(bool isFocus)
     {
-        Debug.Log($"SwitchTab Status Check ********** {isFocus} || IsinFocus = {APIController.instance.isInFocus} || IsOnline {APIController.instance.isOnline}");
+        DebugHelper.Log($"SwitchTab Status Check ********** {isFocus} || IsinFocus = {APIController.instance.isInFocus} || IsOnline {APIController.instance.isOnline}");
         if (CanPlayAudio)
             AudioListener.volume = (isFocus && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
         IsInTab = isFocus;
     }
     public void InitUserDeposit()
     {
-        Debug.Log("Deposit Called");
+        DebugHelper.Log("Deposit Called");
     }
     public void PassTxt(TMP_Text _txt, string _passingValue)
     {
@@ -537,7 +537,7 @@ public class GameController : MonoBehaviour
 
                 countTime -= 1f * Time.deltaTime;
                 sliderAutoCashNoTxt.text = countTime.ToString(" 0");
-                Debug.Log("Internet Checking : " + InternetCheck);
+                DebugHelper.Log("Internet Checking : " + InternetCheck);
                 audioController.StopAudio(AudioEnum.startSlider);
                 slider.value = countTime;
                 if (countTime < 0)
@@ -687,7 +687,7 @@ public class GameController : MonoBehaviour
         {
             if (multiplier >= holdHeight)
             {
-                Debug.Log("mStringValue =====> " + float.Parse(mString) + holdHeight);
+                DebugHelper.Log("mStringValue =====> " + float.Parse(mString) + holdHeight);
                 gameLost = true;
                 lost = true;
                 Balloon_Burt();
@@ -700,7 +700,7 @@ public class GameController : MonoBehaviour
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
             /*startGame = true;*/
-            Debug.Log(" GameProcess ===> GameStart_Update");
+            DebugHelper.Log(" GameProcess ===> GameStart_Update");
 
             if (timeSinceLastIncrement >= incrementInterval)
             {
@@ -748,7 +748,7 @@ public class GameController : MonoBehaviour
     }
     void Balloon_Burt()
     {
-        Debug.Log(" GameProcess ===> GameLose");
+        DebugHelper.Log(" GameProcess ===> GameLose");
         ResetBets();
         audioController.PlayAudio(AudioEnum.ballonPopOut);
         holdButton.enabled = false;
@@ -843,7 +843,7 @@ public class GameController : MonoBehaviour
             // Increment the timer by the time elapsed since the last frame
             timeSinceLastIncrement += Time.deltaTime;
         }
-        Debug.Log("##@@%%!!**^^ " + "MultiplierValue " + multiplier + "TakeCashValue " + takeCash);
+        /*DebugHelper.Log("##@@%%!!**^^ " + "MultiplierValue " + multiplier + "TakeCashValue " + takeCash);*/
         if (startGame && takeBetAmount)
         {
             takeBetAmount = false;
@@ -916,7 +916,7 @@ public class GameController : MonoBehaviour
     public void OnInternetCheckSuccess()
     {
         checking = true;
-        Debug.Log("Process Final Winnings Changed");
+        DebugHelper.Log("Process Final Winnings Changed");
     }
     bool checking = false;
 
@@ -950,13 +950,13 @@ public class GameController : MonoBehaviour
     public void TakeCashOut() // TakeCash button
     {
         InternetCheck = true;
-        Debug.Log("TakeCashButtonChecking ===>>>> 1  " + isWin);
+        DebugHelper.Log("TakeCashButtonChecking ===>>>> 1  " + isWin);
         if (!isWin)
         {
-            Debug.Log("TakeCashButtonChecking ===>>>> 2  " + isWin);
+            DebugHelper.Log("TakeCashButtonChecking ===>>>> 2  " + isWin);
             take = true;
             startGame = false;
-            multiplier = float.Parse(multiplier.ToString("0.00"));
+            //multiplier = float.Parse(multiplier.ToString("0.00"));
             multiplierTxt.text = multiplier.ToString();
             multiplierTxt_Shadow.text = multiplier.ToString();
             holdButton.enabled = false;
@@ -983,12 +983,12 @@ public class GameController : MonoBehaviour
                 isNormal = true;
             }
 
-            Debug.Log(" WinCashCheck : " + winCash);
+            DebugHelper.Log(" WinCashCheck : " + winCash);
             Demo_Bonus();
 
             if ((winCash_Demo < 10))
             {
-                Debug.Log("TakeCashButtonChecking ===>>>> 3  " + isWin);
+                DebugHelper.Log("TakeCashButtonChecking ===>>>> 3  " + isWin);
                 audioController.PlayAudio(AudioEnum.winGame);
                 winPanel.SetActive(true);
                 TakingCash();
@@ -1013,22 +1013,22 @@ public class GameController : MonoBehaviour
 
         APIController.instance.CheckInternetandProcess((success) =>
         {
-            Debug.Log("CheckInternetandProcess Betbtn");
+            DebugHelper.Log("CheckInternetandProcess Betbtn");
             if (success)
             {
-                Debug.Log("CheckInternetandProcess Betbtn Success");
+                DebugHelper.Log("CheckInternetandProcess Betbtn Success");
                 LocalInitializeBet();
             }
             else
             {
-                Debug.Log("CheckInternetandProcess Failed");
+                DebugHelper.Log("CheckInternetandProcess Failed");
                 BetInputController.Instance.BetAmtInput.interactable = true;
             }
         });
     }
     void LocalInitializeBet()
     {
-        Debug.Log("Entered LocalInitializeBet");
+        DebugHelper.Log("Entered LocalInitializeBet");
         if (betAmount > TotalAmount)
         {
             if (TotalAmount >= .1f)
@@ -1038,10 +1038,10 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                Debug.Log("nmnm");
+                DebugHelper.Log("nmnm");
             }
 
-            Debug.Log("LocalInitializeBet 2 " + betAmount);
+            DebugHelper.Log("LocalInitializeBet 2 " + betAmount);
             if (demo)
             {
                 InsufficientBalance.SetActive(true);
@@ -1065,8 +1065,8 @@ public class GameController : MonoBehaviour
         val.Info = message;
         string m = betAmount.ToString("0.00");
         betAmount = float.Parse(m);
-        Debug.Log("LocalInitializeBet Controller.BetButtonclik ");
-        Debug.Log("BetAMount ********* " + betAmount + " " + " Balance ******* " + TotalAmount);
+        DebugHelper.Log("LocalInitializeBet Controller.BetButtonclik ");
+        DebugHelper.Log("BetAMount ********* " + betAmount + " " + " Balance ******* " + TotalAmount);
         List<string> _list = new List<string>();
         _list.Add(APIController.instance.userDetails.Id);
 
@@ -1075,7 +1075,7 @@ public class GameController : MonoBehaviour
     }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
     {
-        Debug.Log("CreateMatchAPICalled========>");
+        DebugHelper.Log("CreateMatchAPICalled========>");
         TransactionMetaData TransData = new();
         TransData.Amount = betAmount;
         TransData.Info = "InitBet";
@@ -1091,7 +1091,7 @@ public class GameController : MonoBehaviour
                },
      (betIndex, response) =>
      {
-         Debug.Log("Is match getting ===>>>> + Success");
+         DebugHelper.Log("Is match getting ===>>>> + Success");
          BetIndex = betIndex;
          MatchRes = response;
          betID = response.Message;
@@ -1100,7 +1100,7 @@ public class GameController : MonoBehaviour
      (failed) =>
      {
          // Resetting all game Data......
-         Debug.Log("Is match getting ===>>>> + Failed");
+         DebugHelper.Log("Is match getting ===>>>> + Failed");
          startGame = false;
          ResetBets();
      });
@@ -1114,7 +1114,7 @@ public class GameController : MonoBehaviour
         val.Amount = amount;
         val.Info = message;
 
-        Debug.Log("isCreateMatchSucceess ====> success " + isCreateMatchSucceess);
+        DebugHelper.Log("isCreateMatchSucceess ====> success " + isCreateMatchSucceess);
         WinningBetAPICall(amount, takeCash);
     }
     public void WinningBetAPICall(double WinAmount, double PotAmount)   //WINNINGBETAPI CALLING METHOD
@@ -1122,20 +1122,20 @@ public class GameController : MonoBehaviour
         TransactionMetaData _metaData = new TransactionMetaData();
         _metaData.Amount = (float)WinAmount;
         _metaData.Info = "Game Won";
-        Debug.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
+        DebugHelper.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
 
-        Debug.Log(" WinningBetAPI , Checking Internet" + checking + MatchRes.MatchToken);
+        DebugHelper.Log(" WinningBetAPI , Checking Internet" + checking + MatchRes.MatchToken);
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, (float)WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
-            Debug.Log($"2 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}  && bet index {BetIndex} , My Bet Amount {betAmount}");
+            DebugHelper.Log($"2 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}  && bet index {BetIndex} , My Bet Amount {betAmount}");
 
             if (success)
             {
-                Debug.Log("3 WinningBetAPI Call Success========> ");
+                DebugHelper.Log("3 WinningBetAPI Call Success========> ");
             }
             else
             {
-                Debug.Log("WinningBetAPIfailed========>");
+                DebugHelper.Log("WinningBetAPIfailed========>");
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
     }
@@ -1155,7 +1155,7 @@ public class GameController : MonoBehaviour
     }
     async void DelayFuction()
     {
-        Debug.Log("DemoAPIReset ===> Demo  ");
+        DebugHelper.Log("DemoAPIReset ===> Demo  ");
         if (isBonus_1)
         {
             if (winCash_Demo == 10)
@@ -1191,7 +1191,7 @@ public class GameController : MonoBehaviour
     }
     async void DemoAPIReset()
     {
-        Debug.Log("DemoAPIReset ===> Live  ");
+        DebugHelper.Log("DemoAPIReset ===> Live  ");
         if (isBonus_1)
         {
             if (winCash_Demo == 10)
@@ -1224,12 +1224,12 @@ public class GameController : MonoBehaviour
             await UniTask.Delay(1000);
             Bonus_Delay();
         }
-        Debug.Log("DemoAPIReset 1 ");
+        DebugHelper.Log("DemoAPIReset 1 ");
 
     }
     void TimeDelay() // Clear UI
     {
-        Debug.Log("TimeDelay 0  ");
+        DebugHelper.Log("TimeDelay 0  ");
 
         multiplierTxt.color = Color.white;
         winTxt.color = Color.white;
@@ -1307,7 +1307,7 @@ public class GameController : MonoBehaviour
     {
         isPressed = false;
         pauseGame = false;
-        Debug.Log("CheckPauseCondition ====> 5 " + pauseGame);
+        DebugHelper.Log("CheckPauseCondition ====> 5 " + pauseGame);
         startGame = false;
         winPanel.SetActive(false);
         multiplierTxt.text = multiplier.ToString("0.00");
@@ -1334,25 +1334,6 @@ public class GameController : MonoBehaviour
     {
         await UniTask.Delay(2000);
         winTxt.transform.DORotate(new Vector3(0f, 360f, 0f), 0.5f, RotateMode.FastBeyond360).SetEase(Ease.InOutSine);
-        #region
-        /*if (APIController.instance.userDetails.isBlockApiConnection)
-            winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
-        else
-        {
-            if (APIController.instance.userDetails.currency_type == "USD")
-            {
-                winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
-            }
-            else if (APIController.instance.userDetails.currency_type == "EUR")
-            {
-                winTxt.text = takeCash.ToString("0.00" + " <size=70>EUR</size>");
-            }
-            else if (APIController.instance.userDetails.currency_type == "INR")
-            {
-                winTxt.text = takeCash.ToString("0.00" + " <size=70>INR</size>");
-            }
-        }*/
-        #endregion
         if (APIController.instance.userDetails.currency_type == "USD")
         {
             winTxt.text = takeCash.ToString("0.00" + " <size=70>USD</size>");
@@ -1505,13 +1486,13 @@ public class GameController : MonoBehaviour
                 if (!startGame && !pauseGame && (TotalAmount < betAmount))
                 {
                     buttonPress = true;
-                    Debug.Log(" Bigger_Amount" + buttonPress);
+                    DebugHelper.Log(" Bigger_Amount" + buttonPress);
                 }
 
                 if (!numPad && !buttonPress && !lost)
                 {
-                    Debug.Log(" GameProcess ===> GameStart");
-                    Debug.Log(" Button ====> PressDown");
+                    DebugHelper.Log(" GameProcess ===> GameStart");
+                    DebugHelper.Log(" Button ====> PressDown");
                     unPress.SetActive(false);
                     pressed.SetActive(true);
 
@@ -1586,7 +1567,7 @@ public class GameController : MonoBehaviour
                                 gameCounts = 0;
                             }
                         }
-                        //Debug.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
+                        //DebugHelper.Log($"RNG Value Check:\n==============\n gameCounts : {gameCounts}\n maxHeight : {holdHeight}\n==============\n");
                     }
                     API_IntitalizeBetAmount();
                     isBegin = true;
@@ -1595,7 +1576,7 @@ public class GameController : MonoBehaviour
             else
             {
                 InternetCheck = false;
-                Debug.Log("CheckInternetandProcess ============>  down" + success);
+                DebugHelper.Log("CheckInternetandProcess ============>  down" + success);
                 return;
             }
         });
@@ -1614,11 +1595,11 @@ public class GameController : MonoBehaviour
             holdHeight = _MaxWin;
             if (_IsWin)
             {
-                Debug.Log($"RNG Calculation:\n==============\n RNG Value Check : randomGamePlay \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
+                DebugHelper.Log($"RNG Calculation:\n==============\n RNG Value Check : randomGamePlay \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
             }
             else
             {
-                Debug.Log($"RNG Calculation:\n==============\n RNG Value Check : LoseThisGame \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
+                DebugHelper.Log($"RNG Calculation:\n==============\n RNG Value Check : LoseThisGame \n MaxHeight : {_MaxWin}\n GameCount : {_gameCount}\n==============\n");
             }
 
         }, gameName, 0);
@@ -1633,7 +1614,7 @@ public class GameController : MonoBehaviour
                 InternetCheck = true;
                 unPress.SetActive(true);
                 pressed.SetActive(false);
-                Debug.Log(" Button ====> PressUP");
+                DebugHelper.Log(" Button ====> PressUP");
                 isPressed = false;
                 heat_Anim.SetBool("isPlay2", false);
                 heat_IdleAnim.SetBool("isPlay1", true);
@@ -1656,7 +1637,7 @@ public class GameController : MonoBehaviour
             else
             {
                 InternetCheck = false;
-                Debug.Log("CheckInternetandProcess ============>  up" + success);
+                DebugHelper.Log("CheckInternetandProcess ============>  up" + success);
                 return;
             }
         });
@@ -1796,7 +1777,7 @@ public class GameController : MonoBehaviour
         {
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
-            Debug.Log("SelectBetButton_1 ==> 2");
+            DebugHelper.Log("SelectBetButton_1 ==> 2");
 
             BetInputController.Instance.BetPanel.gameObject.SetActive(false);
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
@@ -1910,7 +1891,7 @@ public class GameController : MonoBehaviour
                 BetAmountTxt_Scaling();
                 plusButtomImg.color = new Color32(255, 255, 255, 255);
                 AmountColor_Glow();
-                Debug.Log("Minimum BetAmount ===>$.....");
+                DebugHelper.Log("Minimum BetAmount ===>$.....");
             }
             /*if (betAmount <= 0.20f)*/
             if (betAmount <= APIController.instance.authentication.entryAmountDetails.minBetValue)
@@ -1970,15 +1951,15 @@ public class GameController : MonoBehaviour
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
-            Debug.Log("minusButtonImg Shade is " + 0);
-            Debug.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
+            DebugHelper.Log("minusButtonImg Shade is " + 0);
+            DebugHelper.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
         }
         else if (betAmount > APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
-            Debug.Log("minusButtonImg Shade is " + 1);
-            Debug.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
+            DebugHelper.Log("minusButtonImg Shade is " + 1);
+            DebugHelper.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);
         }
 
         if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)

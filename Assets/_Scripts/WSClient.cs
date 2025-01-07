@@ -17,9 +17,7 @@ using System.Threading.Tasks;
 public class WSClient : MonoBehaviour
 {
     public event Action<string> OnMessageReceived;
-
     public event Action<string> OnErrorReceived;
-
 
     public event Action OnConnected;
     public event Action OnDisconnected;
@@ -259,7 +257,6 @@ public class WSClient : MonoBehaviour
             OnError?.Invoke(ex);
         }
     }
-
 
     private IEnumerator SendHeartbeat()
     {

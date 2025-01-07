@@ -49,7 +49,7 @@ public class AWS_SocketController : MonoBehaviour
     #region Websocket 
     public bool IsOnline()
     {
-        Debug.Log($"Check IsOnline => {_wsClient._webSocket == null}");
+        DebugHelper.Log($"Check IsOnline => {_wsClient._webSocket == null}");
         if (_wsClient._webSocket == null)
         {
             _ = _wsClient.Connect(url);
@@ -57,7 +57,7 @@ public class AWS_SocketController : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Check IsOnline => {_wsClient._webSocket.State}");
+            DebugHelper.Log($"Check IsOnline => {_wsClient._webSocket.State}");
             return _wsClient._webSocket?.State == WebSocketState.Open;
         }
     }
@@ -82,7 +82,7 @@ public class AWS_SocketController : MonoBehaviour
         //isOnline = false;
         APIController.instance.isOnline = false;
         APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
-        Debug.LogError("WebSocket disconnected.");
+        DebugHelper.LogError("WebSocket disconnected.");
     }
     #endregion
 
@@ -94,10 +94,10 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - Create AND Join");
+            DebugHelper.Log("waiting for server connect  - Create AND Join");
         }
 
-        Debug.Log("Send Request" + body);
+        DebugHelper.Log("Send Request" + body);
         WSMessage message = new WSMessage("lambda", body);
         WSS_Event wssevent = new WSS_Event();
         wssevent.CallBack = action;
@@ -136,7 +136,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - Create AND Join");
+            DebugHelper.Log("waiting for server connect  - Create AND Join");
         }
 
         WSMessage message = new WSMessage("lambda", body);
@@ -151,7 +151,7 @@ public class AWS_SocketController : MonoBehaviour
         };
 
         wss_Events.Add(wssevent);
-        Debug.Log("------" + message.Body);
+        DebugHelper.Log("------" + message.Body);
         await _wsClient.Send(message);
     }
 
@@ -179,17 +179,17 @@ public class AWS_SocketController : MonoBehaviour
             string requestID = jsonObject["requestID"]?.ToString();
 
             WSS_Event wSS_Event = wss_Events.FirstOrDefault(x => x.RequestID == requestID);
-            Debug.LogError($"Response Time: {WSClient.GetResponseTime(requestID)} ms,RequestType {wSS_Event?.RequestType}, Message {message}");
+            DebugHelper.LogError($"Response Time: {WSClient.GetResponseTime(requestID)} ms,RequestType {wSS_Event?.RequestType}, Message {message}");
 
             if (string.IsNullOrEmpty(wSS_Event.RequestID))
             {
                 return;
             }
             string payload = jsonObject["payload"]?.ToString();
-            Debug.Log("Payload" + payload);
+            DebugHelper.Log("Payload" + payload);
             if (string.IsNullOrEmpty(payload))
             {
-                Debug.Log(jsonObject["message"].ToString());
+                DebugHelper.Log(jsonObject["message"].ToString());
                 if (jsonObject["message"].ToString() != "timeout")
                 {
                     wSS_Event.InitialtedCallBack?.Invoke(message);
@@ -210,7 +210,7 @@ public class AWS_SocketController : MonoBehaviour
         {
             JObject jsonObject = JObject.Parse(message);
             string requestID = jsonObject["requestID"]?.ToString();
-            Debug.Log($"Response Time: {WSClient.GetResponseTime(requestID)} ms, Message {message}");
+            DebugHelper.Log($"Response Time: {WSClient.GetResponseTime(requestID)} ms, Message {message}");
             WSS_Event wSS_Event = wss_Events.FirstOrDefault(x => x.RequestID == requestID);
 
             if (string.IsNullOrEmpty(wSS_Event.RequestID))
@@ -219,7 +219,7 @@ public class AWS_SocketController : MonoBehaviour
             }
 
             string payload = jsonObject["payload"]?.ToString();
-            Debug.Log("Payload" + payload);
+            DebugHelper.Log("Payload" + payload);
             if (string.IsNullOrEmpty(payload))
             {
                 wSS_Event.InitialtedCallBack?.Invoke(message);
@@ -227,16 +227,16 @@ public class AWS_SocketController : MonoBehaviour
             else
             {
                 JObject payloadmessage = JObject.Parse(jsonObject["payload"].ToString());
-                //Debug.Log("Payload Message11" + jsonObject);
+                //DebugHelper.Log("Payload Message11" + jsonObject);
                 JObject jObject = JObject.Parse(payloadmessage["Message"]?.ToString());
-                //Debug.Log("Payload Message" + payloadmessage["Message"]);
+                //DebugHelper.Log("Payload Message" + payloadmessage["Message"]);
                 if ((int)jObject["code"] == 200)
                 {
                     wSS_Event.SuccessCallBack?.Invoke(payloadmessage["Message"]?.ToString());
                 }
                 else
                 {
-                    // Debug.Log("Payload Message22" + wSS_Event.RequestID + "==="+ wSS_Event.RequestType);
+                    // DebugHelper.Log("Payload Message22" + wSS_Event.RequestID + "==="+ wSS_Event.RequestType);
                     wSS_Event.ErrorCallBack?.Invoke(jObject?.ToString());
                 }
                 wss_Events.RemoveAll(x => x.RequestID.Equals(requestID));
@@ -267,7 +267,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - Authentication");
+            DebugHelper.Log("waiting for server connect  - Authentication");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>() {
             {"request_type","auth"},
@@ -313,12 +313,12 @@ public class AWS_SocketController : MonoBehaviour
         }
         */
 
-        Debug.Log("Trying to Authenticate");
+        DebugHelper.Log("Trying to Authenticate");
 
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - Create AND Join");
+            DebugHelper.Log("waiting for server connect  - Create AND Join");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>() {
             { "created_by", APIController.instance.authentication.Id },
@@ -375,7 +375,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - WinningBet");
+            DebugHelper.Log("waiting for server connect  - WinningBet");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
@@ -399,7 +399,7 @@ public class AWS_SocketController : MonoBehaviour
             { "platform", APIController.instance.authentication.platform },
             {"balance",APIController.instance.userDetails.balance}
         };
-        Debug.Log("Winning Bet Request " + JsonConvert.SerializeObject(payload));
+        DebugHelper.Log("Winning Bet Request " + JsonConvert.SerializeObject(payload));
         SendRequest("WinningBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
@@ -408,7 +408,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - PlayerInfo");
+            DebugHelper.Log("waiting for server connect  - PlayerInfo");
         }
         Dictionary<string, string> payload = new Dictionary<string, string>(){
             {"request_type", "info"},
@@ -427,7 +427,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - AddBet");
+            DebugHelper.Log("waiting for server connect  - AddBet");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
@@ -466,7 +466,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - GetRandomPrediction");
+            DebugHelper.Log("waiting for server connect  - GetRandomPrediction");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
@@ -486,7 +486,7 @@ public class AWS_SocketController : MonoBehaviour
         while (!IsOnline())
         {
             await UniTask.Delay(100);
-            Debug.Log("waiting for server connect  - AddBet");
+            DebugHelper.Log("waiting for server connect  - AddBet");
         }
         Dictionary<string, object> payload = new Dictionary<string, object>
         {

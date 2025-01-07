@@ -23,6 +23,11 @@ public class ErrorPopUpHandler : MonoBehaviour
 
     public void ShowError(int code, string error)
     {
+        if (code == 504)
+        {
+            InternetChecking.instance.ServerMaintenancePopup.SetActive(true);
+            return;
+        }
         ErrorPanel.gameObject.SetActive(true);
         canvasGroup.DOFade(1, 0.2f).From(0);
         CancelInvoke(nameof(HideError));

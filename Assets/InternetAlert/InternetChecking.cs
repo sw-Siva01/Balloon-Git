@@ -22,17 +22,17 @@ public class InternetChecking : MonoBehaviour
             if (data == NetworkStatus.NetworkIssue)
             {
                 InternetDisconnectedPopup.SetActive(true);
-                Debug.Log($"Internet Status ===> {data.ToString()}....Enabling Internet Popup");
+                DebugHelper.Log($"Internet Status ===> {data.ToString()}....Enabling Internet Popup");
             }
             else if (data == NetworkStatus.ServerIssue)
             {
                 ServerMaintenancePopup.SetActive(true);
-                Debug.Log($"Internet Status ===> {data.ToString()}....Enabling Server Maintenance Popup");
+                DebugHelper.Log($"Internet Status ===> {data.ToString()}....Enabling Server Maintenance Popup");
             }
         }
         else
         {
-            Debug.Log($"NetworkStatus ==> {data.ToString()}");
+            DebugHelper.Log($"NetworkStatus ==> {data.ToString()}");
             if (InternetDisconnectedPopup.activeSelf || ServerMaintenancePopup.activeSelf)
             {
                 InternetDisconnectedPopup.SetActive(false);
