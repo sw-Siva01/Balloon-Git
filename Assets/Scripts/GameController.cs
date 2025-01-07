@@ -373,13 +373,15 @@ public class GameController : MonoBehaviour
                     {
                         Button_ONEnter();
                         OnClickDown();
-                        BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
+                        #region
+                        /*BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
                         if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
                         {
                             BetInputController.Instance.CloseKeyPadPanel();
                             BetInputController.Instance.RestrictInput();
-                        }
+                        }*/
+                        #endregion
                     }
                     else if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf && isPressed)
                     {
@@ -403,13 +405,15 @@ public class GameController : MonoBehaviour
             {
                 OnClickUp();
                 Button_OFFEnter();
-                BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
+                #region
+                /*BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
                 if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
                 {
                     BetInputController.Instance.CloseKeyPadPanel();
                     BetInputController.Instance.RestrictInput();
-                }
+                }*/
+                #endregion
             }
         }
 
@@ -1499,6 +1503,13 @@ public class GameController : MonoBehaviour
                     if (HandGestures_start.activeSelf)
                     {
                         HandGestures_start.SetActive(false);
+                    }
+                    BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
+
+                    if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
+                    {
+                        BetInputController.Instance.CloseKeyPadPanel();
+                        BetInputController.Instance.RestrictInput();
                     }
                     isPressed = true;
                     audioController.StopAudio(AudioEnum.reverseSlider);

@@ -45,7 +45,6 @@ public class BetInputController : MonoBehaviour
                 CloseKeyPadPanel();
                 if (!GameController.instance.numBool)
                 {
-
                     BetAmtInput.textViewport.gameObject.SetActive(false);
                 }
             }
@@ -155,7 +154,7 @@ public class BetInputController : MonoBehaviour
             BetAmtInput.text = val;
             DisableBetInput();
         }
-        else if (!GameController.instance.numBool)
+        else
         {
             DebugHelper.Log("OnEditInput ELse");
 
@@ -261,12 +260,10 @@ public class BetInputController : MonoBehaviour
             if (!GameController.instance.numBool)
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
-
             }
             else
             {
                 controller.betAmountTxt.gameObject.SetActive(false);
-
             }
         }
 
