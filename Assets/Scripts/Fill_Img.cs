@@ -87,7 +87,7 @@ public class Fill_Img : MonoBehaviour
 
         if (bonus)
         {
-            Timer = controller.bonusTimer;
+            Timer = controller.Bonustimer;
         }
 
         if (bonusTimer)
@@ -199,7 +199,7 @@ public class Fill_Img : MonoBehaviour
             await UniTask.Delay(3000);
             scrollViewAnim.SetActive(false);
 
-            controller.winBonus = 3;
+            controller.Winbonus = 3;
         }
     }
     async void Setting_OFF()
@@ -217,7 +217,7 @@ public class Fill_Img : MonoBehaviour
         bonusObj.gameObject.SetActive(false);
 
 
-        controller.winBonus = 3;
+        controller.Winbonus = 3;
     }
     void UpdateTimerUI()
     {

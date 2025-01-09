@@ -317,23 +317,23 @@ public class InfiniteScroll : MonoBehaviour
     IEnumerator Add_BonusValue()
     {
         BonusValue = float.Parse(BonusValue.ToString("0.00"));
-        controller.multiplier = float.Parse(controller.multiplier.ToString("0.00"));
+        controller.Multiplier = float.Parse(controller.Multiplier.ToString("0.00"));
 
-        while (controller.multiplier < BonusValue)
+        while (controller.Multiplier < BonusValue)
         {
-            controller.mString = controller.multiplier.ToString("0.00");
+            controller.Mstring = controller.Multiplier.ToString("0.00");
 
-            if (controller.multiplier < BonusValue)
+            if (controller.Multiplier < BonusValue)
             {
-                controller.multiplier += bfloat * Time.deltaTime;
-                controller.multiplier = Mathf.Min(controller.multiplier, BonusValue);
+                controller.Multiplier += bfloat * Time.deltaTime;
+                controller.Multiplier = Mathf.Min(controller.Multiplier, BonusValue);
             }
 
             //controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
-            controller.tString = (controller.betAmount * controller.multiplier).ToString();
-            controller.takeCash = float.Parse(controller.tString);
+            controller.Tstring = (controller.betAmount * controller.Multiplier).ToString();
+            controller.TakeCash = float.Parse(controller.Tstring);
 
-            BonusMultiplier_txt.text = controller.multiplier.ToString("0.00");
+            BonusMultiplier_txt.text = controller.Multiplier.ToString("0.00");
 
             yield return null;
         }
@@ -398,7 +398,7 @@ public class InfiniteScroll : MonoBehaviour
     {
         bfloat = 0f;
         BonusValue = 0f;
-        controller.winCash_Demo = 0f;
+        controller.WinCash_demo = 0f;
         BonusMultiplier_txt.text = 0.00f.ToString("0.00");
         controller.isScroll = false;
         StopAllCoroutines();
