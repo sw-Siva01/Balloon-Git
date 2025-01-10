@@ -159,14 +159,16 @@ public class Fill_Img : MonoBehaviour
         // Add a delay of 1 second
         sequence.AppendInterval(0.01f);
         // Add the second scale animation to the sequence
-        sequence.Append(bonusTxt_Img.DOScale(new Vector3(0f, 0f, 0f), 0.5f).SetEase(Ease.InSine));
+        sequence.Append(bonusTxt_Img.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InSine));
     }
     public async void TimerUpdate()
     {
+        // Initial delay before showing the fill meter
         await UniTask.Delay(2500);
         fill_Meter.SetActive(true);
         bonusTimer = true;
 
+        // Handle case when Timer is not 10 and bonus is not active
         if (Timer != 10 && !controller.isBonus)
         {
             await UniTask.Delay(2000);
@@ -174,18 +176,22 @@ public class Fill_Img : MonoBehaviour
             Setting_OFF();
         }
 
+        // Handle case when Timer is 10 or more
         if (Timer >= 10)
         {
+            // Play audio and show animations
             await UniTask.Delay(900);
             audioController.PlayAudio(AudioEnum.bonus);
             bonusShine.SetBool("isShine", true);
             bonus_Txt.SetActive(false);
             BonusTxt_Animation();
 
+            // Activate scroll view animation and set bonus state
             await UniTask.Delay(900);
             scrollViewAnim.SetActive(true);
             controller.isBonus = true;
 
+            // Handle scrolling logic
             if (controller.isBonus && controller.isScroll)
             {
                 scrollView.BonusMultiplier_txt.gameObject.SetActive(true);
@@ -196,9 +202,11 @@ public class Fill_Img : MonoBehaviour
                 Timer = 0;
             }
 
+            // Delay for scroll animation and reset state
             await UniTask.Delay(3000);
             scrollViewAnim.SetActive(false);
 
+            // Set bonus multiplier
             controller.Winbonus = 3;
         }
     }
@@ -224,14 +232,16 @@ public class Fill_Img : MonoBehaviour
         float fillAmount = timeRemaining / totalTime;
         timerBar.fillAmount = fillAmount;
     }
-    public void CountText_Animation()
+
+    #region ----- OLD Content -------
+   /* public void CountText_Animation()
     {
         Sequence sequence = DOTween.Sequence();
         switch (scrollView.Count)
         {
             case 1:
                 // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                sequence.Append(numbCount_2.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine))
                         .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
 
                 // Add a delay of 1 second
@@ -242,7 +252,7 @@ public class Fill_Img : MonoBehaviour
                 break;
             case 2:
                 // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
+                sequence.Append(numbCount_3.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine))
                         .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
 
                 // Add a delay of 1 second
@@ -268,8 +278,55 @@ public class Fill_Img : MonoBehaviour
         // DoTween Text in Sequence
         Sequence sequence = DOTween.Sequence();
         // Add the first scale animation and move animation to the sequence
-        sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine));
+        sequence.Append(numbCount_1.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine));
+    }*/
+    #endregion
+
+    #region ----- Trying Content -------
+    public void CountText_Animation()
+    {
+        Sequence sequence = DOTween.Sequence();
+
+        // Get the appropriate elements based on the scrollView count
+        Transform activeElement = null;
+        Transform previousElement = null;
+
+        switch (scrollView.Count)
+        {
+            case 1:
+                activeElement = numbCount_1;
+                previousElement = numbCount_2;
+                break;
+            case 2:
+                activeElement = numbCount_2;
+                previousElement = numbCount_3;
+                break;
+            case 3:
+                activeElement = numbCount_3;
+                break;
+        }
+
+        // Play animations
+        if (previousElement != null)
+        {
+            sequence.Append(previousElement.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine));
+        }
+
+        if (activeElement != null)
+        {
+            sequence.Append(activeElement.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
+                    .AppendInterval(0.01f)
+                    .Append(activeElement.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine));
+        }
     }
+
+    void SettingOFF()
+    {
+        // Reset numbCount_1 scale to zero
+        numbCount_1.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine);
+    }
+
+    #endregion
     private void OnDisable()
     {
         if (Timer >= 10)

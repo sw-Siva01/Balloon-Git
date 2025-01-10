@@ -22,7 +22,6 @@ public class InfiniteScroll : MonoBehaviour
     public GameObject targetPositionObject; // Target position GameObject
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
-
     private Vector2 oldVelocity;
     private bool isUpdated;
 
@@ -45,14 +44,12 @@ public class InfiniteScroll : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("TextMeshProUGUI")]
-
     public TextMeshProUGUI Bonus_Count_txt;
     public TextMeshProUGUI BonusMultiplier_txt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Bonus_Numb_Count")]
-
     [SerializeField] RectTransform numbCount_1;
     [SerializeField] RectTransform numbCount_2;
     [SerializeField] RectTransform numbCount_3;
@@ -74,13 +71,6 @@ public class InfiniteScroll : MonoBehaviour
 
         // Calculate the number of items needed to fill the viewport
         int itemsToAdd = Mathf.CeilToInt(viewPortTransform.rect.width / (ItemList[0].rect.width + HLG.spacing));
-
-        // Add items to the end of the content panel
-        for (int i = 0; i < itemsToAdd; i++)
-        {
-            /*RectTransform rt = Instantiate(ItemList[i % ItemList.Length], contentPanelTransform);
-            rt.SetAsLastSibling();*/
-        }
 
         // Add items to the beginning of the content panel
         for (int i = 0; i < itemsToAdd; i++)
@@ -181,9 +171,6 @@ public class InfiniteScroll : MonoBehaviour
             yield return null;
         }
 
-        /*// Adjust to the nearest centered item after stopping
-        CenterOnClosestItem();*/
-
         // Adjust to the nearest centered item after stopping
         StartCoroutine(CenterOnClosestItem());
     }
@@ -229,7 +216,6 @@ public class InfiniteScroll : MonoBehaviour
             TextMeshProUGUI textComponent = closestItem.GetComponentInChildren<TextMeshProUGUI>();
             if (textComponent != null)
             {
-                /*textComponent.color = Color.green;*/ // Change to the desired color
                 controller.BonusRewardValue = textComponent.text.ToString();
                 ///
                 string input = controller.BonusRewardValue; // Replace with your actual input

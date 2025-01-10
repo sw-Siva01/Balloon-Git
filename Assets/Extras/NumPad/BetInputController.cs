@@ -186,7 +186,6 @@ public class BetInputController : MonoBehaviour
                  controller.betAmount = (float)input;
                  string _s = controller.betAmount.ToString("0.00");
                  controller.betAmount = float.Parse(_s);
-                 /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " " + APIController.instance.userDetails.currency_type;*/
                  controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                  CloseKeyPadPanel();
                  controller.betAmountTxt.gameObject.SetActive(true);
@@ -202,7 +201,7 @@ public class BetInputController : MonoBehaviour
             DebugHelper.Log("Closing +");
 
             IsEmptyInput = true;
-            controller.betAmount = /*0.1f*/APIController.instance.authentication.entryAmountDetails.minBetValue;
+            controller.betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
         }
         else
         {
@@ -210,7 +209,6 @@ public class BetInputController : MonoBehaviour
             if (BetAmtInput.text == ".")
             {
                 amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
-
             }
             else
             {
@@ -269,9 +267,7 @@ public class BetInputController : MonoBehaviour
 
         string _s = controller.betAmount.ToString("0.00");
         controller.betAmount = float.Parse(_s);
-        /*controller.betAmountTxt.text = controller.betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type;*/
         controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
-        /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + APIController.instance.userDetails.currency_type;*/
 
         DebugHelper.Log("EnableBetInput Called");
 
@@ -286,7 +282,6 @@ public class BetInputController : MonoBehaviour
         controller.betAmount = float.Parse(_s);
 
         BetAmtInput.textViewport.gameObject.SetActive(true);
-        //  if (!GameController.instance.numBool) BetAmtInput.interactable = false;
         DebugHelper.Log("DisableBetInput");
 
     }

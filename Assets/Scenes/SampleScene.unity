@@ -5801,7 +5801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: DummyData
-      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"774bd144-7081-4e7d-afe9-14824ff17f0d","token":"8b9d70e7-d19e-43af-b00b-ac1736251729","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
+      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"774bd144-7081-4e7d-afe9-14824ff17f0d","token":"5886977a-67ab-411a-9245-181736484573","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":1,"music":1,"environment":"dev"}'
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -30462,7 +30462,7 @@ MonoBehaviour:
   Bonustimer: 0
   keyBoard: {fileID: 1238871142080918376}
   settingsPanelHandler: {fileID: 416601952736041760}
-  takeCashbutton: {fileID: 0}
+  takeCashbutton: {fileID: 1819168689}
   holdButton: {fileID: 704416873}
   heatTxt: {fileID: 2004977744}
   unSelectedBtnTxt:
@@ -30500,10 +30500,10 @@ MonoBehaviour:
   takeCashObj: {fileID: 1266807208}
   unPress: {fileID: 1420032619}
   pressed: {fileID: 121159068}
-  takeCashtxt: {fileID: 0}
+  takeCashtxt: {fileID: 845186803}
   takeCashWintxt: {fileID: 1252174739}
   takeCurrencytxt: {fileID: 405718780}
-  takeCashImg: {fileID: 0}
+  takeCashImg: {fileID: 1819168690}
   plusButtomImg: {fileID: 1292662799}
   minusButtonImg: {fileID: 1771205436}
   isScroll: 0
@@ -30519,7 +30519,7 @@ MonoBehaviour:
   startGame: 0
   _balanceUpdate: 0
   multiplierTxt: {fileID: 1898352829}
-  xTxt: {fileID: 0}
+  xTxt: {fileID: 801902552}
   multiplierTxt_Shadow: {fileID: 2023699933}
   takeCashTxt: {fileID: 1252174739}
   totalAmountTxt: {fileID: 1714326337}
@@ -30571,16 +30571,16 @@ MonoBehaviour:
   - {fileID: 913367060}
   slider_Anim: {fileID: 1984203356}
   bonusBallon: {fileID: 1639272521}
-  insufficientBalance: {fileID: 0}
-  insufBal_Rumblebets: {fileID: 0}
+  insufficientBalance: {fileID: 1498631047}
+  insufBal_Rumblebets: {fileID: 289344139}
   cancelButton: {fileID: 1246606482}
   rumbleBet_cancelButton: {fileID: 1405522143}
-  howToPlay: {fileID: 0}
-  amountGlow: {fileID: 0}
-  handGestures_start: {fileID: 0}
-  handGestures_btAmt: {fileID: 0}
-  handGestures_start_Img: {fileID: 0}
-  handGestures_btAmt_Img: {fileID: 0}
+  howToPlay: {fileID: 6208332247014328514}
+  amountGlow: {fileID: 1666359590}
+  handGestures_start: {fileID: 381450674}
+  handGestures_btAmt: {fileID: 15170613}
+  handGestures_start_Img: {fileID: 2053887542}
+  handGestures_btAmt_Img: {fileID: 2059085012}
   heatbtnCollider: {fileID: 704416877}
   maxBet_Reached: {fileID: 629583619}
   audioController: {fileID: 1165968576047954302}
