@@ -501,7 +501,7 @@ public class GameController : MonoBehaviour
             {
                 isRayHitActive = true;
 
-                if (!take && !lost && !isScroll && !howToPlay.activeSelf &&
+                if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
                     !InternetChecking.instance.InternetDisconnectedPopup.activeSelf &&
                     !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                 {
@@ -525,7 +525,7 @@ public class GameController : MonoBehaviour
         // Handle Mouse Button Release or when no ray hit
         if (!isRayHitActive)
         {
-            if (!take && !lost && !isScroll && !howToPlay.activeSelf &&
+            if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
                 !InternetChecking.instance.InternetDisconnectedPopup.activeSelf &&
                 !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {

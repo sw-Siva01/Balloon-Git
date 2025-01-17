@@ -47,7 +47,7 @@ public class WSClient : MonoBehaviour
     {
         if (_isConnected)
         {
-            //Debug.Log("Already connected. Skipping connection attempt.");
+            //DebugHelper.Log("Already connected. Skipping connection attempt.");
             return;
         }
 
@@ -59,7 +59,7 @@ public class WSClient : MonoBehaviour
 
         _webSocket.OnOpen += () =>
         {
-            Debug.Log("WebSocket Connected.");
+            DebugHelper.Log("WebSocket Connected.");
             OnConnected?.Invoke();
             if (_reconnectionCoroutine != null)
                 StopCoroutine(_reconnectionCoroutine);
@@ -74,13 +74,13 @@ public class WSClient : MonoBehaviour
 
         _webSocket.OnError += (error) =>
         {
-            Debug.LogError($"WebSocket Error: {error}");
+            DebugHelper.LogError($"WebSocket Error: {error}");
             OnError?.Invoke(new Exception(error));
         };
 
         _webSocket.OnClose += async (code) =>
         {
-            Debug.Log($"WebSocket Closed with code: {code}");
+            DebugHelper.Log($"WebSocket Closed with code: {code}");
             // OnDisconnected?.Invoke();
             await RestartReconnection();
         };
@@ -94,8 +94,8 @@ public class WSClient : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Parsing Error: {ex.Message}");
-                Debug.LogError(message);
+                DebugHelper.LogError($"Parsing Error: {ex.Message}");
+                DebugHelper.LogError(message);
                 //string error = "{\"requestID\":\"1734356995159\",\"payload\":{\"OpCode\":\"LambdaResponse\",\"Message\":\"{\\\"code\\\":502,\\\"message\\\":\\\"{ message: \\\\\\\"Internal server error\\\\\\\"}\\\"}\"}}";
                 //ParseMessage(error);
                 //ParseMessage();
@@ -104,12 +104,12 @@ public class WSClient : MonoBehaviour
 
         try
         {
-            Debug.Log($"Attempting to connect to: {_serverUrl}");
+            DebugHelper.Log($"Attempting to connect to: {_serverUrl}");
             await _webSocket.Connect();
         }
         catch (Exception ex)
         {
-            Debug.LogError($"WebSocket Connection Error: {ex.Message}");
+            DebugHelper.LogError($"WebSocket Connection Error: {ex.Message}");
             OnError?.Invoke(ex);
             await RestartReconnection();
         }
@@ -133,7 +133,7 @@ public class WSClient : MonoBehaviour
     {
         if (_webSocket == null || !_isConnected)
         {
-            Debug.Log("WebSocket already disconnected.");
+            DebugHelper.Log("WebSocket already disconnected.");
             return;
         }
 
@@ -142,11 +142,11 @@ public class WSClient : MonoBehaviour
             _isManuallyDisconnected = true;
             OnDisconnected?.Invoke();
             await _webSocket.Close();
-            Debug.Log("WebSocket Disconnected.");
+            DebugHelper.Log("WebSocket Disconnected.");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"WebSocket Disconnect Error: {ex.Message}");
+            DebugHelper.LogError($"WebSocket Disconnect Error: {ex.Message}");
             OnError?.Invoke(ex);
         }
         finally
@@ -185,19 +185,19 @@ public class WSClient : MonoBehaviour
             try
             {
                 json = JsonConvert.SerializeObject(message);
-                Debug.Log("Serialized JSON: " + json);
+                DebugHelper.Log("Serialized JSON: " + json);
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Serialization failed: {ex.Message}");
+                DebugHelper.LogError($"Serialization failed: {ex.Message}");
             }
-            //Debug.Log("Message: " + JsonConvert.SerializeObject(message, Formatting.Indented));
-            Debug.Log(json + "=====Sent Request==== ");
+            //DebugHelper.Log("Message: " + JsonConvert.SerializeObject(message, Formatting.Indented));
+            DebugHelper.Log(json + "=====Sent Request==== ");
             await _webSocket.SendText(Cryptography.EncryptStr(json));
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error sending message: {ex.Message}");
+            DebugHelper.LogError($"Error sending message: {ex.Message}");
             OnError?.Invoke(ex);
         }
     }
@@ -210,7 +210,7 @@ public class WSClient : MonoBehaviour
         {
             try
             {
-                Debug.LogError("Request Timedout: " + requestID + "Check WebSocket State : " + (_webSocket == null));
+                DebugHelper.LogError("Request Timedout: " + requestID + "Check WebSocket State : " + (_webSocket == null));
                 // OnDisconnected?.Invoke();
                 // _ = _webSocket.Close();
                 // if (_reconnectionCoroutine != null)
@@ -232,7 +232,7 @@ public class WSClient : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Debug.Log("Request Timedout: " + requestID);
+                DebugHelper.Log("Request Timedout: " + requestID);
             }
         }
     }
@@ -241,19 +241,19 @@ public class WSClient : MonoBehaviour
     {
         if (!_isConnected)
         {
-            Debug.LogError("WebSocket is not connected.");
+            DebugHelper.LogError("WebSocket is not connected.");
             await RestartReconnection();
             return;
         }
 
         try
         {
-            Debug.Log(jsonMessage);
+            DebugHelper.Log(jsonMessage);
             await _webSocket.SendText(Cryptography.EncryptStr(jsonMessage));
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error sending message: {ex.Message}");
+            DebugHelper.LogError($"Error sending message: {ex.Message}");
             OnError?.Invoke(ex);
         }
     }
@@ -268,7 +268,7 @@ public class WSClient : MonoBehaviour
 
             if (_stopwatch.IsRunning)
             {
-                Debug.LogError("Pong not received in time. Assuming disconnection.");
+                DebugHelper.LogError("Pong not received in time. Assuming disconnection.");
                 OnDisconnected?.Invoke();
                 if (_reconnectionCoroutine != null)
                     StopCoroutine(_reconnectionCoroutine);
@@ -289,7 +289,7 @@ public class WSClient : MonoBehaviour
     {
         if (_isManuallyDisconnected)
         {
-            Debug.Log("Disconnection was manual. Skipping reconnect attempts.");
+            DebugHelper.Log("Disconnection was manual. Skipping reconnect attempts.");
             yield break;
         }
 
@@ -318,7 +318,7 @@ public class WSClient : MonoBehaviour
 
             ping = (int)_stopwatch.ElapsedMilliseconds;
             if (isPingLogRequired)
-                Debug.Log($"Ping: {ping} ms");
+                DebugHelper.Log($"Ping: {ping} ms");
         }
         else
         {
@@ -365,7 +365,7 @@ public class WSClient : MonoBehaviour
 
     private async void OnApplicationQuit()
     {
-        Debug.Log("Application quitting. Disconnecting WebSocket.");
+        DebugHelper.Log("Application quitting. Disconnecting WebSocket.");
         _isManuallyDisconnected = true;
         await Disconnect();
     }
@@ -374,7 +374,7 @@ public class WSClient : MonoBehaviour
     {
         DateTimeOffset current = DateTimeOffset.UtcNow;
         DateTimeOffset originalTime = DateTimeOffset.FromUnixTimeMilliseconds((long)Convert.ToDouble(timeStamp));
-        //Debug.Log($"{current}: {originalTime}");
+        //DebugHelper.Log($"{current}: {originalTime}");
         return (current - originalTime).Milliseconds;
 
     }
@@ -398,7 +398,7 @@ public class WSMessage
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         long unixTimestamp = now.ToUnixTimeMilliseconds();
-        //Debug.Log(unixTimestamp);
+        //DebugHelper.Log(unixTimestamp);
         RequestID = unixTimestamp.ToString();
         //RequestID = Guid.NewGuid().ToString();
     }

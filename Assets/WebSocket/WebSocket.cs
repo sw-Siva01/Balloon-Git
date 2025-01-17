@@ -454,7 +454,7 @@ namespace NativeWebSocket
         {
             try
             {
-                Debug.Log("Connecting");
+                /*DebugHelper.Log("Connecting");*/
                 m_TokenSource = new CancellationTokenSource();
                 m_CancellationToken = m_TokenSource.Token;
                 m_Socket = new ClientWebSocket();
