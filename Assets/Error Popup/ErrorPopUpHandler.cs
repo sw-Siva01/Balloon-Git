@@ -49,8 +49,8 @@ public class ErrorPopUpHandler : MonoBehaviour
                 case 412:
                 case 413:
                 case 501:
-                    // SettingsPanelHandler.Instance.ExitWebGL();
-                    SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
+                     UI_Controller.instance.ExitWebGL();
+                    //SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
 
                     break;
                 case 503:

@@ -134,7 +134,6 @@ public class APIController : MonoBehaviour
         }
         apiRequestList.RemoveAll(x => x.url == url);
     }
-
     public void OnSwitchingTabs(string data)
     {
         Time.timeScale = 1;
@@ -381,7 +380,6 @@ public class APIController : MonoBehaviour
         return 0;
 
     }
-
     public void AddBet(int index, string BetId, TransactionMetaData metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
         if (playerId == "" || playerId == userDetails.Id)
@@ -392,7 +390,6 @@ public class APIController : MonoBehaviour
         action?.Invoke(true);
         return;
     }
-
     public void CancelBet(int index, string metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
 
     {
@@ -404,7 +401,6 @@ public class APIController : MonoBehaviour
         action?.Invoke(true);
         return;
     }
-
     public void WinningsBet(int index, float amount, double spend_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
         DebugHelper.Log("Winning Bet Data **********" + isPlayByDummyData);

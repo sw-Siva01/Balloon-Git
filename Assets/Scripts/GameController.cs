@@ -2177,7 +2177,6 @@ public class GameController : MonoBehaviour
         // Call method to handle slider objects
         Slider_Objs();
     }
-
     #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }

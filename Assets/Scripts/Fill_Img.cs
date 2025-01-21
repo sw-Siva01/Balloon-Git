@@ -224,7 +224,6 @@ public class Fill_Img : MonoBehaviour
         await UniTask.Delay(1000);
         bonusObj.gameObject.SetActive(false);
 
-
         controller.Winbonus = 3;
     }
     void UpdateTimerUI()
@@ -232,56 +231,6 @@ public class Fill_Img : MonoBehaviour
         float fillAmount = timeRemaining / totalTime;
         timerBar.fillAmount = fillAmount;
     }
-
-    #region ----- OLD Content -------
-   /* public void CountText_Animation()
-    {
-        Sequence sequence = DOTween.Sequence();
-        switch (scrollView.Count)
-        {
-            case 1:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_2.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine))
-                        .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
-                break;
-            case 2:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_3.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine))
-                        .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
-                break;
-            case 3:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine));
-                break;
-        }
-    }
-    void SettingOFF()
-    {
-        // DoTween Text in Sequence
-        Sequence sequence = DOTween.Sequence();
-        // Add the first scale animation and move animation to the sequence
-        sequence.Append(numbCount_1.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine));
-    }*/
-    #endregion
-
     #region ----- Trying Content -------
     public void CountText_Animation()
     {
@@ -325,8 +274,8 @@ public class Fill_Img : MonoBehaviour
         // Reset numbCount_1 scale to zero
         numbCount_1.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine);
     }
-
     #endregion
+
     private void OnDisable()
     {
         if (Timer >= 10)

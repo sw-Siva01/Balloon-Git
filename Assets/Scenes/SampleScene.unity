@@ -6071,7 +6071,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VERSION (7-01-25)_08
+  m_text: VERSION (21-01-25)_09
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a69942246e9f3304e859c60cf7d549fc, type: 2}
   m_sharedMaterial: {fileID: -6247532791395908082, guid: a69942246e9f3304e859c60cf7d549fc, type: 2}
@@ -50431,15 +50431,13 @@ MonoBehaviour:
   autoScroll: 0
   Count: 3
   bfloat: 0
-  BonusValue: 0
-  mValue: 0
-  Svalue: 
+  bonusValue: 0
   scrollSpeed: 2000
   decelerationRate: 0.1
   minScrollTime: 4
   maxScrollTime: 6
   slerpDuration: 1
-  Bonus_Count_txt: {fileID: 6039659613656242332}
+  bonus_Count_txt: {fileID: 6039659613656242332}
   BonusMultiplier_txt: {fileID: 1222944507}
   numbCount_1: {fileID: 1436600055}
   numbCount_2: {fileID: 2003746617}

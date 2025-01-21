@@ -68,6 +68,5 @@ public class UI_Controller : MonoBehaviour
         MasterAudioController.instance.StopAudio(AudioEnum.buttonClick);
         MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
     }
-
     #endregion
 }
