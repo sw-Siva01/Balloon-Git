@@ -147,51 +147,53 @@ public class BetInputController : MonoBehaviour
     }
     public void OnEditInput()
     {
-
-        if (GameController.instance.numBool)
+        if (!controller.onClick)
         {
-            string val = controller.betAmount.ToString("F2");
-            BetAmtInput.text = val;
-            DisableBetInput();
-        }
-        else
-        {
-            DebugHelper.Log("OnEditInput ELse");
+            if (GameController.instance.numBool)
+            {
+                string val = controller.betAmount.ToString("F2");
+                BetAmtInput.text = val;
+                DisableBetInput();
+            }
+            else
+            {
+                DebugHelper.Log("OnEditInput ELse");
 
-            controller.numPad = true;
-            OpenKeyPadPanel();
+                controller.numPad = true;
+                OpenKeyPadPanel();
 
-            _KeyBoardHandler.ShowKeyBoard((float)controller.betAmount,
-             (inputValue) =>
-             {
-                 DebugHelper.Log("EDIT OVER" + inputValue + (float)controller.betAmount);
+                _KeyBoardHandler.ShowKeyBoard((float)controller.betAmount,
+                 (inputValue) =>
+                 {
+                     DebugHelper.Log("EDIT OVER" + inputValue + (float)controller.betAmount);
                  // DisableKeyBoard();
                  controller.betAmount = (float)inputValue;
-                 string _s = controller.betAmount.ToString("0.00");
-                 controller.betAmount = float.Parse(_s);
+                     string _s = controller.betAmount.ToString("0.00");
+                     controller.betAmount = float.Parse(_s);
                  /*controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " " + APIController.instance.userDetails.currency_type;*/
-                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
-                 CloseKeyPadPanel();
-                 controller.betAmountTxt.gameObject.SetActive(true);
-                 DebugHelper.Log("Done " + controller.betAmount);
-             },
-             (value) =>
-             {
-                 controller.betAmountTxt.gameObject.SetActive(false);
-             },
-             (input) =>
-             {
-                 DebugHelper.Log("Cancelled ");
+                     controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
+                     CloseKeyPadPanel();
+                     controller.betAmountTxt.gameObject.SetActive(true);
+                     DebugHelper.Log("Done " + controller.betAmount);
+                 },
+                 (value) =>
+                 {
+                     controller.betAmountTxt.gameObject.SetActive(false);
+                 },
+                 (input) =>
+                 {
+                     DebugHelper.Log("Cancelled ");
 
-                 controller.betAmount = (float)input;
-                 string _s = controller.betAmount.ToString("0.00");
-                 controller.betAmount = float.Parse(_s);
-                 controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
-                 CloseKeyPadPanel();
-                 controller.betAmountTxt.gameObject.SetActive(true);
-                 DebugHelper.Log("Done " + controller.betAmount);
-             });
-            DebugHelper.Log(" Done  ");
+                     controller.betAmount = (float)input;
+                     string _s = controller.betAmount.ToString("0.00");
+                     controller.betAmount = float.Parse(_s);
+                     controller.betAmountTxt.text = controller.betAmount.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
+                     CloseKeyPadPanel();
+                     controller.betAmountTxt.gameObject.SetActive(true);
+                     DebugHelper.Log("Done " + controller.betAmount);
+                 });
+                DebugHelper.Log(" Done  ");
+            }
         }
     }
     public void RestrictInput()
