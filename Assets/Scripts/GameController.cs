@@ -126,6 +126,7 @@ public class GameController : MonoBehaviour
     private bool touch;
     private bool stopper;
     private bool timerCount = true;
+    public bool IsCreateMatchCalled=false;  
 
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -951,47 +952,8 @@ public class GameController : MonoBehaviour
 
         if (!isWin)
         {
-            take = true;
-            startGame = false;
-            onClick = false;
-            //multiplier = float.Parse(multiplier.ToString("0.00"));
-            multiplierTxt.text = Multiplier.ToString();
-            multiplierTxt_Shadow.text = Multiplier.ToString();
-            holdButton.enabled = false;
-            // TakeCash
-            takeCashImg.color = new Color32(140, 140, 140, 255);
-            takeCashtxt.color = new Color32(194, 236, 166, 120);
-            takeCashWintxt.color = new Color32(194, 236, 166, 120);
-            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
-            takeCashObj.SetActive(false);
-            // sliderOBjs
-            slider_bg.SetActive(false);
-            fillArea.SetActive(false);
-            slider_txt.SetActive(false);
-            sliderAutoCashNoTxt.gameObject.SetActive(false);
-            slider_Anim.SetBool("isOFF", true);
-            ballon_Anim.SetBool("isTake", true);
-            //winCount
-            if (!winCount && betAmount <= 5f)
-            {
-                winCash++;
-            }
-            else
-            {
-                isNormal = true;
-            }
+            TakingCash();
 
-            Demo_Bonus();
-
-            if ((WinCash_demo < 10))
-            {
-                audioController.PlayAudio(AudioEnum.winGame);
-                winPanel.SetActive(true);
-                TakingCash();
-                Winning_Animations();
-            }
-            Call_Functions();
-            DelayFuction();
             isWin = true;
         }
     }
@@ -1071,6 +1033,7 @@ public class GameController : MonoBehaviour
     }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
     {
+        IsCreateMatchCalled = true;
         DebugHelper.Log("CreateMatchAPICalled========>");
         TransactionMetaData TransData = new();
         TransData.Amount = betAmount;
@@ -1129,6 +1092,50 @@ public class GameController : MonoBehaviour
             if (success)
             {
                 DebugHelper.Log("3 WinningBetAPI Call Success========> ");
+                IsCreateMatchCalled = false;
+
+                take = true;
+                startGame = false;
+                onClick = false;
+                //multiplier = float.Parse(multiplier.ToString("0.00"));
+                multiplierTxt.text = Multiplier.ToString();
+                multiplierTxt_Shadow.text = Multiplier.ToString();
+                holdButton.enabled = false;
+                // TakeCash
+                takeCashImg.color = new Color32(140, 140, 140, 255);
+                takeCashtxt.color = new Color32(194, 236, 166, 120);
+                takeCashWintxt.color = new Color32(194, 236, 166, 120);
+                takeCurrencytxt.color = new Color32(194, 236, 166, 120);
+                takeCashObj.SetActive(false);
+                // sliderOBjs
+                slider_bg.SetActive(false);
+                fillArea.SetActive(false);
+                slider_txt.SetActive(false);
+                sliderAutoCashNoTxt.gameObject.SetActive(false);
+                slider_Anim.SetBool("isOFF", true);
+                ballon_Anim.SetBool("isTake", true);
+                //winCount
+                if (!winCount && betAmount <= 5f)
+                {
+                    winCash++;
+                }
+                else
+                {
+                    isNormal = true;
+                }
+
+                Demo_Bonus();
+
+                if ((WinCash_demo < 10))
+                {
+                    audioController.PlayAudio(AudioEnum.winGame);
+                    winPanel.SetActive(true);
+                    // TakingCash();
+                    Winning_Animations();
+                }
+                Call_Functions();
+                DelayFuction();
+
             }
             else
             {
@@ -1312,6 +1319,8 @@ public class GameController : MonoBehaviour
         makeLose = false;
         unPress.SetActive(true);
         pressed.SetActive(false);
+
+        IsCreateMatchCalled=false;
         Invoke("TimeDelay", 1.5f);
     }
     void Winning_Animations()
@@ -1590,7 +1599,7 @@ public class GameController : MonoBehaviour
         }
         #endregion
     }*/
-    public void OnClickDown()
+    public async void OnClickDown()
     {
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
@@ -1629,8 +1638,23 @@ public class GameController : MonoBehaviour
             // Game setup if conditions are met
             if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
             {
-                SetupGameForNewRound();
+                //SetupGameForNewRound();
+                if (!IsCreateMatchCalled)
+                {
+                    API_IntitalizeBetAmount();
+
+                }
+                else
+                {
+                    return;
+                }
             }
+            while (!startGame)
+            {
+                await UniTask.Delay(100);  
+            }
+
+            SetupGameForNewRound();
         });
 
         // Early return if no internet connection
@@ -1723,7 +1747,7 @@ public class GameController : MonoBehaviour
         }
 
         // Initialize bet amount
-        API_IntitalizeBetAmount();
+        //API_IntitalizeBetAmount();
         isBegin = true;
     }
     #endregion

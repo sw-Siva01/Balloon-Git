@@ -18,6 +18,8 @@ public class AWS_SocketController : MonoBehaviour
     public static AWS_SocketController instance;
     public List<WSS_Event> wss_Events = new List<WSS_Event>();
 
+
+    Dictionary<string,bool> ActiveTasks = new Dictionary<string, bool>();
     //public bool isOnline = false;
 
     private void Awake()
@@ -31,6 +33,13 @@ public class AWS_SocketController : MonoBehaviour
         // ConnectToWebSocket();
     }
 
+    public bool GetTaskStatus(string TaskID)
+    {
+        if(ActiveTasks.ContainsKey(TaskID))
+            return ActiveTasks[TaskID];
+        else 
+            return false;
+    }
 
 
     public void ConnectWebSocket(string environment)
@@ -89,13 +98,13 @@ public class AWS_SocketController : MonoBehaviour
 
 
     #region Request and Response handlers
-    public async void SendRequest(string body, Action<bool, string> action)
+    public string SendRequest(string body, Action<bool, string> action)
     {
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - Create AND Join");
-        }
+        // while (!IsOnline())
+        // {
+        //     await UniTask.Delay(100);
+        //     DebugHelper.Log("waiting for server connect  - Create AND Join");
+        // }
 
         DebugHelper.Log("Send Request" + body);
         WSMessage message = new WSMessage("lambda", body);
@@ -103,10 +112,11 @@ public class AWS_SocketController : MonoBehaviour
         wssevent.CallBack = action;
         wssevent.RequestID = message.RequestID;
         wss_Events.Add(wssevent);
-        await _wsClient.Send(message);
+        _= _wsClient.Send(message,"");
+        return message.RequestID;
     }
 
-    public async void FetchGamePrediction(string requestType, string gamename, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
+    public string FetchGamePrediction(string requestType, string gamename, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
     {
         Dictionary<string, string> bodyDict = new Dictionary<string, string>
         {
@@ -122,37 +132,39 @@ public class AWS_SocketController : MonoBehaviour
             InitialtedCallBack = initialaction,
             SuccessCallBack = successaction,
             ErrorCallBack = errorAction,
-            RequestID = message.RequestID
+            RequestID = message.RequestID,
+            TaskID = requestType + DateTime.Now
         };
         wss_Events.Add(wssevent);
 
-        await _wsClient.Send(message);
+        _= _wsClient.Send(message,wssevent.TaskID);
+
+        return message.RequestID;
     }
 
 
 
-    public async void SendRequest(string requestType, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
+    public  string SendRequest(string requestType, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
     {
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - Create AND Join");
-        }
-
         WSMessage message = new WSMessage("lambda", body);
-
+       
         WSS_Event wssevent = new WSS_Event()
         {
             RequestType = requestType,
             InitialtedCallBack = initialaction,
             SuccessCallBack = successaction,
             ErrorCallBack = errorAction,
-            RequestID = message.RequestID
+            RequestID = message.RequestID,
+            TaskID = message.RequestID
         };
-
         wss_Events.Add(wssevent);
-        DebugHelper.Log("------" + message.Body);
-        await _wsClient.Send(message);
+        ActiveTasks.Add(wssevent.TaskID,true);
+        message.Body = body;
+        Debug.Log( message.Body +"??");
+        // reqID = message.RequestID;
+         _=_wsClient.Send(message,wssevent.TaskID);
+         return message.RequestID;
+
     }
 
     public void GetRandomCard(string environment, string betAmount, string gameName)
@@ -169,6 +181,13 @@ public class AWS_SocketController : MonoBehaviour
         // };
         // wss_Events.Add(wssevent);
         // _wsClient.FetchGameResponse(gameName, "gameprediction", payload);
+    }
+
+    public void RemoveRequestEvent(string requestID)
+    {
+                if(ActiveTasks.ContainsKey(requestID))
+                    ActiveTasks.Remove(requestID);
+                wss_Events.RemoveAll(x => x.RequestID.Equals(requestID));
     }
 
     private void HandleErrorReceived(string message)
@@ -192,13 +211,23 @@ public class AWS_SocketController : MonoBehaviour
                 DebugHelper.Log(jsonObject["message"].ToString());
                 if (jsonObject["message"].ToString() != "timeout")
                 {
+                    // if(ActiveTasks.ContainsKey(wSS_Event.TaskID))
+                    //     ActiveTasks[wSS_Event.TaskID] = false;
                     wSS_Event.InitialtedCallBack?.Invoke(message);
+                }
+                else
+                {
+                    if(ActiveTasks.ContainsKey(wSS_Event.TaskID))
+                         ActiveTasks.Remove(wSS_Event.TaskID);
                 }
             }
             else
             {
                 wSS_Event.ErrorCallBack?.Invoke(jsonObject["payload"]["Message"]?.ToString());
+                 if(ActiveTasks.ContainsKey(wSS_Event.TaskID))
+                    ActiveTasks.Remove(wSS_Event.TaskID);
                 wss_Events.RemoveAll(x => x.RequestID.Equals(requestID));
+               
             }
         }
         catch { }
@@ -230,7 +259,7 @@ public class AWS_SocketController : MonoBehaviour
                 //DebugHelper.Log("Payload Message11" + jsonObject);
                 JObject jObject = JObject.Parse(payloadmessage["Message"]?.ToString());
                 //DebugHelper.Log("Payload Message" + payloadmessage["Message"]);
-                if ((int)jObject["code"] == 200)
+                if ((int)jObject["code"] == 200|| (int)jObject["code"] == 224)
                 {
                     wSS_Event.SuccessCallBack?.Invoke(payloadmessage["Message"]?.ToString());
                 }
@@ -251,7 +280,7 @@ public class AWS_SocketController : MonoBehaviour
 
     #region  WSS_Events
 
-    public async void WSS_Authentication(Action<string> initiatedAction, Action<string> successAction, Action<string> errorAction)
+    public  string  WSS_Authentication(Action<string> initiatedAction, Action<string> successAction, Action<string> errorAction)
     {
         /*  Sample Request Data ********************************
         {
@@ -263,12 +292,9 @@ public class AWS_SocketController : MonoBehaviour
           "operator": "rumblebets"
           }
         */
+       //await UniTask.Delay(50);
+       
 
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - Authentication");
-        }
         Dictionary<string, object> payload = new Dictionary<string, object>() {
             {"request_type","auth"},
             {"user_token",APIController.instance.authentication.token},
@@ -277,10 +303,10 @@ public class AWS_SocketController : MonoBehaviour
             {"game_name",APIController.instance.authentication.gamename},
             {"operator",APIController.instance.authentication.operatorname}
         };
-        SendRequest("Authentication", JsonConvert.SerializeObject(payload), initiatedAction, successAction, errorAction);
+       return SendRequest("Authentication", JsonConvert.SerializeObject(payload), initiatedAction, successAction, errorAction);
     }
 
-    public async void WSS_CreateAndJoin(string lobbyName, int bet_index, double amount, bool isAbleToCancel, string metaData, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public string WSS_CreateAndJoin(string lobbyName, int bet_index, float amount, bool isAbleToCancel, string metaData, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
 
         /*  Sample Request Data ********************************
@@ -312,14 +338,10 @@ public class AWS_SocketController : MonoBehaviour
             "platform": "tablet"
         }
         */
+        //await UniTask.Delay(1);
+        DebugHelper.Log("Trying to Authenticate"+" a "+amount+" m "+ metaData);
 
-        DebugHelper.Log("Trying to Authenticate");
-
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - Create AND Join");
-        }
+        
         Dictionary<string, object> payload = new Dictionary<string, object>() {
             { "created_by", APIController.instance.authentication.Id },
             { "user_id", APIController.instance.authentication.Id },
@@ -344,11 +366,13 @@ public class AWS_SocketController : MonoBehaviour
             { "action_id", APIController.instance.authentication.gamename+"_initbet" },
              {"balance",APIController.instance.userDetails.balance}
         };
-        SendRequest("CreateAndJoinMatch", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
+        return SendRequest("CreateAndJoinMatch", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
-    public async void WSS_WinningBet(string betID, int isWin, double amount, double spendAmount, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public string WSS_WinningBet(string betID, int isWin, float amount, float spendAmount, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
+        DebugHelper.Log("WSS_WinningBet " + amount + " sa " + spendAmount);
+
         /*  Sample Request Data ********************************
         {
             "user_id": "cbb0c034-3491-4b14-8165-e3610384187d",
@@ -371,12 +395,7 @@ public class AWS_SocketController : MonoBehaviour
             "platform": "tablet"
         }
         */
-
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - WinningBet");
-        }
+       
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
             { "user_id",  APIController.instance.authentication.Id},
@@ -400,16 +419,12 @@ public class AWS_SocketController : MonoBehaviour
             {"balance",APIController.instance.userDetails.balance}
         };
         DebugHelper.Log("Winning Bet Request " + JsonConvert.SerializeObject(payload));
-        SendRequest("WinningBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
+        return SendRequest("WinningBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
-    public async void WSS_PlayerInfo(Action<string> initalizedAction = null, Action<string> successAction = null, Action<string> errorAction = null)
+    public string WSS_PlayerInfo(Action<string> initalizedAction = null, Action<string> successAction = null, Action<string> errorAction = null)
     {
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - PlayerInfo");
-        }
+        
         Dictionary<string, string> payload = new Dictionary<string, string>(){
             {"request_type", "info"},
             {"user_id", APIController.instance.authentication.Id},
@@ -419,16 +434,12 @@ public class AWS_SocketController : MonoBehaviour
             {"operator",APIController.instance.authentication.operatorname},
             {"game_name", APIController.instance.authentication.gamename}
         };
-        SendRequest("PlayerInfo", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
+       return SendRequest("PlayerInfo", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
-    public async void WSS_AddBet(string betID, double amount, string metadata, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public void WSS_AddBet(string betID, double amount, string metadata, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - AddBet");
-        }
+      
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
             { "Game_Id", APIController.instance.userDetails.gameId },
@@ -451,7 +462,7 @@ public class AWS_SocketController : MonoBehaviour
         SendRequest("AddBet", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
-    public async void WSS_GetRandomPredictions(int round_count, int column_count, int prediction_count, string gameName, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public string WSS_GetRandomPredictions(int round_count, int column_count, int prediction_count, string gameName, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
         /*  Sample Request Data ********************************
             {
@@ -462,12 +473,7 @@ public class AWS_SocketController : MonoBehaviour
                 "request_type": "RandomPrediction"
             }
         */
-
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - GetRandomPrediction");
-        }
+      
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
             { "row_count", round_count },
@@ -476,18 +482,13 @@ public class AWS_SocketController : MonoBehaviour
             { "game_name", gameName },
             { "request_type", "RandomPrediction" }
         };
-        SendRequest("GetRandomprediction", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
+       return SendRequest("GetRandomprediction", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
 
     }
 
 
-    public async void WSS_AddBet(string betID, double amount, string metadata, Action<bool, string> action)
+    public string WSS_AddBet(string betID, double amount, string metadata, Action<bool, string> action)
     {
-        while (!IsOnline())
-        {
-            await UniTask.Delay(100);
-            DebugHelper.Log("waiting for server connect  - AddBet");
-        }
         Dictionary<string, object> payload = new Dictionary<string, object>
         {
             { "Game_Id", APIController.instance.userDetails.gameId },
@@ -507,7 +508,7 @@ public class AWS_SocketController : MonoBehaviour
             { "url", APIController.instance.authentication.operatorDomainUrl+"api/deposit" },
             {"balance",APIController.instance.userDetails.balance}
         };
-        SendRequest(JsonConvert.SerializeObject(payload), action);
+        return SendRequest(JsonConvert.SerializeObject(payload), action);
     }
     #endregion
 }
@@ -521,4 +522,6 @@ public class WSS_Event
     public Action<string> InitialtedCallBack;
     public Action<string> ErrorCallBack;
     public Action<string> SuccessCallBack;
+
+    public string TaskID;
 }

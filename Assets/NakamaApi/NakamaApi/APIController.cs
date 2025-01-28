@@ -11,6 +11,7 @@ using UnityEngine;
 
 public class APIController : MonoBehaviour
 {
+
     public static APIController instance;
 
     [Header("Response from webGL json")]
@@ -39,6 +40,9 @@ public class APIController : MonoBehaviour
     public bool isClickDeopsit = false;
     public string defaultGameName;
     public int defaultBootAmount = 25;
+
+    public float waitingForResponseDelay = 4,retryDelay= 7;
+
     public List<APIRequestList> apiRequestList;
     public bool isInFocus = true;
     public bool isOnline = true;
@@ -90,7 +94,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log("UpdateBalanceTrigger ==>  ");
         OnUserDeposit?.Invoke();
         isClickDeopsit = false;
-        if (!GameController.instance.demo)
+        if (!userDetails.isBlockApiConnection)
             GetUpdatedBalance();
     }
 
@@ -107,7 +111,7 @@ public class APIController : MonoBehaviour
             OnUserDeposit?.Invoke();
         }
     }
-    public void ApiCallBackDebugHelperger(string data)
+    public void ApiCallBackDebugger(string data)
     {
         byte[] bytesToEncode = Convert.FromBase64String(data);
         string base64EncodedString = Encoding.UTF8.GetString(bytesToEncode);
@@ -132,8 +136,10 @@ public class APIController : MonoBehaviour
                 item.callback(false, "timeout", "timeout");
             }
         }
+
         apiRequestList.RemoveAll(x => x.url == url);
     }
+
     public void OnSwitchingTabs(string data)
     {
         Time.timeScale = 1;
@@ -150,6 +156,7 @@ public class APIController : MonoBehaviour
     }
 #endif
 
+
     public async void GetUpdatedBalance()
     {
         bool playerinfoReceived = false;
@@ -160,6 +167,7 @@ public class APIController : MonoBehaviour
         },
         (successAction) =>
         {
+              OnInternetStatusChange?.Invoke(NetworkStatus.Active);
             playerinfoReceived = true;
             DebugHelper.Log("authentication response is : " + successAction);
             JObject apiResponse = JObject.Parse(successAction);
@@ -187,10 +195,15 @@ public class APIController : MonoBehaviour
         });
 
         float time = Time.time;
-
+        bool waitingForresponseActive = false;
         while (!playerinfoReceived)
         {
-            if (Time.time - time > 7)
+             if(!waitingForresponseActive&&Time.time - time >waitingForResponseDelay)
+            {
+                waitingForresponseActive = true;
+                OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+            }
+            if (Time.time - time > retryDelay)
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
@@ -247,8 +260,14 @@ public class APIController : MonoBehaviour
                DebugHelper.Log("authentication response is : " + successRes);
                JObject apiResponse = JObject.Parse(successRes);
                DebugHelper.Log("authentication response is : " + (int)apiResponse["code"]);
-
-
+               /*
+               {
+                "code": 200,
+                "message": "Success",
+                "data": "{\"user_id\":\"f1e0a9e7-dd42-415a-a572-80c3efb99714\",\"username\":\"THALA\",\"balance\":\"5343.68\",\"currency\":\"INR\"}",
+                "output": "{\"session_token\":\"67bd004a-a124-0e3f-0cca-a9cf0e6f2eba\",\"gameid\":\"0d1b08db-5a4d-4a73-b050-ee616402912a\"}"
+                }
+               */
                DebugHelper.Log("Auth response  => " + apiResponse.ToString());
                if ((int)apiResponse["code"] == 200)
                {
@@ -323,9 +342,10 @@ public class APIController : MonoBehaviour
                OnUserDetailsUpdate?.Invoke();
            },
 
+
            (errorRes) =>
            {
-               DebugHelper.Log("Authentication Failed " + errorRes);
+               DebugHelper.Log("Authentication Failed " + errorRes );
                JObject apiResponse = JObject.Parse(errorRes);
                ErrorPopUpHandler.instance.ShowError((int)apiResponse["code"], (string)apiResponse["message"]);
            }
@@ -380,6 +400,7 @@ public class APIController : MonoBehaviour
         return 0;
 
     }
+
     public void AddBet(int index, string BetId, TransactionMetaData metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
         if (playerId == "" || playerId == userDetails.Id)
@@ -390,6 +411,7 @@ public class APIController : MonoBehaviour
         action?.Invoke(true);
         return;
     }
+
     public void CancelBet(int index, string metadata, float amount, Action<bool> action = null, string playerId = "", bool isBot = false)
 
     {
@@ -401,9 +423,10 @@ public class APIController : MonoBehaviour
         action?.Invoke(true);
         return;
     }
+
     public void WinningsBet(int index, float amount, double spend_amount, TransactionMetaData metadata, Action<bool> action = null, string playerId = "", bool isBot = false)
     {
-        DebugHelper.Log("Winning Bet Data **********" + isPlayByDummyData);
+
 
         if (isPlayByDummyData)
         {
@@ -469,11 +492,14 @@ public class APIController : MonoBehaviour
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
         winningBetCalled = true;
-        DebugHelper.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId}");
+        string reqID = "";
+        DebugHelper.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId},betRequest Count + {betRequest.Count}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
-        // DebugHelper.Log($"Request data is {JsonUtility.ToJson(request)}");
         while (request.BetId != betId)
         {
+
+            DebugHelper.Log("Request Bet"+ request.BetId + "betID" + betId);
+
             await UniTask.Delay(200);
         }
 
@@ -481,24 +507,25 @@ public class APIController : MonoBehaviour
         DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
 #if CasinoGames
         bool winningBetResponce = false;
-        AWS_SocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
+        reqID= AWS_SocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
         (initatedres) =>
         {
 
-            winningBetResponce = true;
+            //winningBetResponce = true;
 
-            DebugHelper.Log(initatedres);
-            double userbalance = currentBalance;
-            UpdateBalanceResponse(userbalance);
-            action?.Invoke(true);
+            // DebugHelper.Log(initatedres);
+            // double userbalance = currentBalance;
+            // UpdateBalanceResponse(userbalance);
+            // action?.Invoke(true);
             DebugHelper.Log("WinningsBetMultiplayerAPI Initialized" + initatedres);
         },
         (successRes) =>
         {
-            //winningBetResponce = true;
+             OnInternetStatusChange?.Invoke(NetworkStatus.Active);
+            winningBetResponce = true;
             DebugHelper.Log(successRes);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(successRes);
-            //  action?.Invoke(response != null && (response.code == 200 || response.code == 224));
+            action?.Invoke(response != null && (response.code == 200 || response.code == 224));
             if (response.code == 224)
             {
                 GetUpdatedBalance();
@@ -519,15 +546,19 @@ public class APIController : MonoBehaviour
 
 
         float time = Time.time;
-
+        bool waitingForresponseActive = false;
         while (!winningBetResponce)
         {
-            if (Time.time - time > 7)
+             if(!waitingForresponseActive&&Time.time - time >waitingForResponseDelay)
+            {
+                waitingForresponseActive = true;
+                OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+            }
+            if (Time.time - time > retryDelay)
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
-                    DebugHelper.Log("WinningBetResponce  Retry Called");
-                    // CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
+                    AWS_SocketController.instance.RemoveRequestEvent(reqID);
                     WinningsBetMultiplayerAPI(betIndex, betId, win_amount_with_comission, spend_amount, pot_amount, metadata, action, playerId, isBot, isWinner, gameName, operatorName, gameId, commission, matchToken);
                     return;
                 }
@@ -542,8 +573,8 @@ public class APIController : MonoBehaviour
 #if CasinoGames
 
         bool randomPredictionResponce = false;
-
-        AWS_SocketController.instance.WSS_GetRandomPredictions(rowCount, columnCount, predectedCount, gamename,
+           string reqID = "";
+       reqID= AWS_SocketController.instance.WSS_GetRandomPredictions(rowCount, columnCount, predectedCount, gamename,
         (init) =>
         {
             randomPredictionResponce = true;
@@ -551,10 +582,11 @@ public class APIController : MonoBehaviour
         },
         (success) =>
         {
-
+           
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(success);
             if (response.code == 200)
             {
+                 OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                 OnScucces?.Invoke(response.message, true);
             }
             else
@@ -568,12 +600,20 @@ public class APIController : MonoBehaviour
         }
         );
         float time = Time.time;
+        bool waitingForresponseActive = false;
         while (!randomPredictionResponce)
         {
-            if (Time.time - time > 7)
+
+              if(!waitingForresponseActive&&Time.time - time >waitingForResponseDelay)
+            {
+                waitingForresponseActive = true;
+                OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+            }
+            if (Time.time - time > retryDelay)
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
+                    AWS_SocketController.instance.RemoveRequestEvent(reqID);
                     DebugHelper.Log("WinningBetResponce  Retry Called");
                     GetRandomPredictionIndexApi(rowCount, columnCount, predectedCount, OnScucces, gamename);
 
@@ -622,15 +662,17 @@ public class APIController : MonoBehaviour
             };
             AWS_SocketController.instance.GetRandomCard();
     */
-    public void GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
+    public string GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
     {
-        AWS_SocketController.instance.FetchGamePrediction("Prediction", authentication.gamename, payload, initAction, successAction, errorAction);
+       return AWS_SocketController.instance.FetchGamePrediction("Prediction", authentication.gamename, payload, initAction, successAction, errorAction);
     }
 
     public CreateMatchResponse matchResponse;
     public async void CreateAndJoinMatch(int index, float amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
     {
         DebugHelper.Log("1CreateAndJoinMatch 1 init => " + index);
+
+     
         matchResponse = new CreateMatchResponse();
         if (isBlockAPI)
         {
@@ -652,11 +694,12 @@ public class APIController : MonoBehaviour
         betRequest.Add(bet);
         DebugHelper.Log($"BetRequest JSON Temp before Response.....BetIndex_{index}");
         bool createandjoingameResponseReceived = false;
-        AWS_SocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonUtility.ToJson(metadata),
+        string reqID = "";
+        reqID = AWS_SocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonConvert.SerializeObject(metadata),
 
         (initiatedres) =>
         {
-            createandjoingameResponseReceived = true;
+            //createandjoingameResponseReceived = true;
             DebugHelper.Log(" 2CreateAndJoinMatch 1 init => " + initiatedres);
             JObject obj = JObject.Parse(initiatedres);
             string message = obj["message"]?.ToString();
@@ -676,6 +719,8 @@ public class APIController : MonoBehaviour
         },
         (successres) =>
         {
+
+            OnInternetStatusChange?.Invoke(NetworkStatus.Active);
             createandjoingameResponseReceived = true;
             DebugHelper.Log("3CreateAndJoinMatch 1 init =>" + successres);
             JObject jsonObject = JObject.Parse(successres);
@@ -684,15 +729,6 @@ public class APIController : MonoBehaviour
                 winningBetCalled = false;
                 JObject jsonObject1 = JObject.Parse(jsonObject["data"].ToString());
                 DebugHelper.Log("jsonObject1  => " + double.Parse(jsonObject1["balance"].ToString()));
-                //Response for Create and join match
-                /*
-                "{\"MatchToken\":\"7473f476-9495-446e-ad1c-df923b19bf7b\",
-                \"TransactionID\":\"100f10c8-ffe2-4be8-8e44-ec9364f443ca\",
-                \"MatchCount\":1,
-                \"WinChance\":0,
-                \"Message\":\"8a4fcdac-95ea-47c0-b229-1a772cf7a619\",
-                \"IsRandom\":0,
-                \"balance\":\"5363.68\"}"*/
                 matchResponse.status = true;
                 matchResponse.MatchToken = jsonObject1["MatchToken"].ToString();
                 matchResponse.MatchCount = int.Parse(jsonObject1["MatchCount"].ToString());
@@ -732,6 +768,7 @@ public class APIController : MonoBehaviour
         },
         (errorres) =>
         {
+           // createandjoingameResponseReceived = true;
             DebugHelper.Log("CreateAndJoinMatch Failed " + errorres);
             JObject jobject = JObject.Parse(errorres);
             matchResponse.status = false;
@@ -743,13 +780,20 @@ public class APIController : MonoBehaviour
 
         // Wait for 5 seconds for response
         float time = Time.time;
-
+        bool waitingForresponseActive = false;
         while (!createandjoingameResponseReceived)
         {
-            if (Time.time - time > 7)
+            
+            if(!waitingForresponseActive&&Time.time - time >waitingForResponseDelay)
+            {
+                waitingForresponseActive = true;
+                OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+            }
+            if (Time.time - time > retryDelay)
             {
                 if (AWS_SocketController.instance.IsOnline())
                 {
+                    AWS_SocketController.instance.RemoveRequestEvent(reqID);
                     DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     return;

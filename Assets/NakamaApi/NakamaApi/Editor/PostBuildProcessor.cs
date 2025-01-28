@@ -19,11 +19,11 @@ public class PostBuildProcessor
             {
                 // Rename the file to index.php
                 File.Move(indexHtmlPath, indexPhpPath);
-                Debug.Log("Renamed index.html to index.php successfully.");
+                DebugHelper.Log("Renamed index.html to index.php successfully.");
             }
             else
             {
-                Debug.LogError("index.html file not found.");
+                DebugHelper.LogError("index.html file not found.");
             }
         }
     }

@@ -50,7 +50,7 @@ public class WebApiManager : MonoBehaviour
     public void GetNetWorkCall(NetworkCallType callType, string uri, List<KeyValuePojo> parameters, ReqCallback callback, int timeout = timeOut)
     {
         string bodyJsonString = string.Empty;
-        Debug.Log($"<color=aqua>GetNetworkCall called</color>");
+        DebugHelper.Log($"<color=aqua>GetNetworkCall called</color>");
 
         if (callType == NetworkCallType.POST_METHOD_USING_JSONDATA)
             bodyJsonString = getEncodedParams(parameters);
@@ -72,7 +72,7 @@ public class WebApiManager : MonoBehaviour
 
     private void GetNetWorkCall(NetworkCallType callType, string uri, string bodyJsonString, List<KeyValuePojo> parameters, ReqCallback callback, int timeout = timeOut)
     {
-        Debug.Log($"<color=aqua>GetNetworkCall called with call type {callType} url {uri}</color>");
+        DebugHelper.Log($"<color=aqua>GetNetworkCall called with call type {callType} url {uri}</color>");
         switch (callType)
         {
             case NetworkCallType.GET_METHOD:
@@ -114,7 +114,7 @@ public class WebApiManager : MonoBehaviour
         if (!parameters.Exists(x => x.keyId == "DateTime"))
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         string getParameters = getEncodedParams(parameters);
-        Debug.Log("Check $$$$$" + url + getParameters);
+        DebugHelper.Log("Check $$$$$" + url + getParameters);
         using (UnityWebRequest www = UnityWebRequest.Get(url + getParameters))
         {
             www.timeout = timeout;
@@ -124,8 +124,8 @@ public class WebApiManager : MonoBehaviour
                 yield return www;
             //while (!www.downloadHandler.isDone)
             //    yield return null;
-            Debug.Log("Check $$$$$" + www.error);
-            Debug.Log("WWW check" + www.result);
+            DebugHelper.Log("Check $$$$$" + www.error);
+            DebugHelper.Log("WWW check" + www.result);
             //Return result
             callback(www.result == UnityWebRequest.Result.Success, www.error, www.downloadHandler.text);
             yield break;
@@ -138,11 +138,11 @@ public class WebApiManager : MonoBehaviour
         if (!parameters.Exists(x => x.keyId == "DateTime"))
             parameters.Add(new KeyValuePojo { keyId = "DateTime", value = "Date___" + DateTime.UtcNow });
         WWWForm bodyFormData = new WWWForm();
-        Debug.Log("network call using post method :: " + url);
+        DebugHelper.Log("network call using post method :: " + url);
         foreach (KeyValuePojo items in parameters)
         {
             bodyFormData.AddField(items.keyId, items.value);
-            Debug.Log(items.keyId + "::" + items.value);
+            DebugHelper.Log(items.keyId + "::" + items.value);
         }
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, bodyFormData))
@@ -171,7 +171,7 @@ public class WebApiManager : MonoBehaviour
         }
 
         string jsonData = JsonConvert.SerializeObject(keyValuePairs);
-        Debug.Log($"<color=magenta>{jsonData}\n{url}</color>");
+        DebugHelper.Log($"<color=magenta>{jsonData}\n{url}</color>");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
         using UnityWebRequest request = UnityWebRequest.Post(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);

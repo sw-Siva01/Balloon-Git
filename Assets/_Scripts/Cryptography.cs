@@ -29,11 +29,11 @@ public class Cryptography
     public static string EncryptStr(string data)
     {
         //InitCharacters();
-        //Debug.Log(new string(cryptocharacters.ToArray()));
-        //Debug.Log("data is :: " + data);
+        //DebugHelper.Log(new string(cryptocharacters.ToArray()));
+        //DebugHelper.Log("data is :: " + data);
         byte[] bytes = Encoding.UTF8.GetBytes(data);
         string encryptedData = Convert.ToBase64String(bytes);
-        //Debug.Log("base64 is :: " + encryptedData);
+        //DebugHelper.Log("base64 is :: " + encryptedData);
         encryptedData = Encryptbase64String(encryptedData);
         return encryptedData;
     }
@@ -62,12 +62,12 @@ public class Cryptography
 
     public static string DecryptStr(string encryptedData)
     {
-        //Debug.Log("Encoded base64 is :: " + encryptedData);
+        //DebugHelper.Log("Encoded base64 is :: " + encryptedData);
         string base64Decoded = Decryptbase64String(encryptedData);
-        //Debug.Log("Base64 decoded is :: " + base64Decoded);
+        //DebugHelper.Log("Base64 decoded is :: " + base64Decoded);
         byte[] bytes = Convert.FromBase64String(base64Decoded);
         string originalData = Encoding.UTF8.GetString(bytes);
-        //Debug.Log("Original data is :: " + originalData);
+        //DebugHelper.Log("Original data is :: " + originalData);
         return originalData;
     }
 
