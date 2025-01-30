@@ -6065,7 +6065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: DummyData
-      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"bd8fc88a-7d97-467b-ae3b-3a27af0681b6","token":"6210649f-603f-4df1-8389-a01738046912","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
+      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"b1cdb116-9dc5-4540-8548-0c00f47ece49","token":"3b9c7b81-de29-4434-81c4-461738215949","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -30060,6 +30060,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1266807208}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1819168690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31990,6 +32002,7 @@ MonoBehaviour:
   startGame: 0
   _balanceUpdate: 0
   onClick: 0
+  IsCreateMatchCalled: 0
   multiplierTxt: {fileID: 1898352829}
   xTxt: {fileID: 801902552}
   multiplierTxt_Shadow: {fileID: 2023699933}

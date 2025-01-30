@@ -948,6 +948,18 @@ public class GameController : MonoBehaviour
     }
     public void TakeCashOut() // TakeCash button
     {
+
+
+
+        ////aparna////
+        Color32 disabledColor = new Color32(194, 236, 166, 120);
+        takeCashImg.color = new Color32(140, 140, 140, 255);
+        takeCashtxt.color = disabledColor;
+        takeCashWintxt.color = disabledColor;
+        takeCurrencytxt.color = disabledColor;
+        takeCash_Anim.gameObject.SetActive(false) ;
+
+
         InternetCheck = true;
 
         if (!isWin)
@@ -1124,7 +1136,7 @@ public class GameController : MonoBehaviour
                     isNormal = true;
                 }
 
-                Demo_Bonus();
+              //  Demo_Bonus();
 
                 if ((WinCash_demo < 10))
                 {
@@ -1847,7 +1859,7 @@ public class GameController : MonoBehaviour
         ButtonSelect_Anim();
 
         // Activate the hand gestures and slider animation
-        handGestures_btAmt.SetActive(true);
+     //   handGestures_btAmt.SetActive(true);
         slider_Anim.SetBool("isON", true);
 
         // Call method to handle slider objects
@@ -2216,11 +2228,10 @@ public class GameController : MonoBehaviour
     }
     public void HandGesture()
     {
-        if (handGestures_btAmt.activeSelf)
-        {
+       
             // Deactivate and activate UI elements
             handGestures_btAmt.SetActive(false);
-            handGestures_start.SetActive(true);
+           // handGestures_start.SetActive(true);
 
             // Enable necessary components
             heatbtnCollider.enabled = true;
@@ -2228,7 +2239,7 @@ public class GameController : MonoBehaviour
 
             // Play animation
             heat_IdleAnim.SetBool("isPlay1", true);
-        }
+        
     }
     public void Insufficient_OFF()
     {
