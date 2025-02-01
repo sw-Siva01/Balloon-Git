@@ -586,11 +586,15 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(true);
                 insufBal_Rumblebets.SetActive(false);
+                button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
+
             }
             else
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
+                button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
+
             }
         }
 
