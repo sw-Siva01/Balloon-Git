@@ -6065,7 +6065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: DummyData
-      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"b1cdb116-9dc5-4540-8548-0c00f47ece49","token":"8ab47712-16ba-40f1-b4b6-3e1738219896","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"mobile","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
+      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"b1cdb116-9dc5-4540-8548-0c00f47ece49","token":"c2ae183e-0f2d-4c5a-ba98-b21738649831","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"mobile","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -8189,7 +8189,7 @@ MonoBehaviour:
   m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
-  m_sharedMaterial: {fileID: 4709673107477454630, guid: 891dbe1500399c8439a6a364b1fe6823, type: 2}
+  m_sharedMaterial: {fileID: -2107759151067231342, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8252,7 +8252,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &522794118
@@ -22329,7 +22329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1348018350
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32084,6 +32084,7 @@ MonoBehaviour:
   imageSequencer: {fileID: 579672296}
   isCreateMatchSucceess: 0
   settingsBtn: {fileID: 1050069827}
+  currentClickValue: 0
 --- !u!1 &1983724679
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ using System;
 using System.Threading.Tasks;
 using Nakama.Helpers;
 using System.Linq;
+using System.Reflection;
 
 public class GameController : MonoBehaviour
 {
@@ -343,6 +344,11 @@ public class GameController : MonoBehaviour
         slider.minValue = 1f;
         timeRemaining = 0f; // Start the timer at 0
 
+
+        
+
+
+
         for (int i = 0; i < setected_Buttons.Count; i++)
         {
             int index = i; // Capture the loop variable to avoid closure issues
@@ -458,11 +464,26 @@ public class GameController : MonoBehaviour
             Welcom_Button();
         }
 
+
         for (int i = 0; i < 4; i++)
         {
             unSelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
             SelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
         }
+
+
+
+        //////////////////////////////////////////////////////////////////////
+        betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
+        betAmountTxt.text = $"{betAmount:0.00} <size=30>{currencyType}</size>";
+        ButtonSelect_Anim();
+        fireObj.SetActive(true);
+        fireIdleObj.SetActive(true);
+        unPress.SetActive(true);
+        pressed.SetActive(false);
+
+        ////////////////////////////////////////////////////
+        ///
 
         DebugHelper.Log("Player Details Subscribed");
 
@@ -586,15 +607,11 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(true);
                 insufBal_Rumblebets.SetActive(false);
-                button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
-
             }
             else
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
-                button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
-
             }
         }
 
@@ -955,7 +972,7 @@ public class GameController : MonoBehaviour
 
 
 
-        ////aparna////
+        ////////////////////////////////////////////////////////
         Color32 disabledColor = new Color32(194, 236, 166, 120);
         takeCashImg.color = new Color32(140, 140, 140, 255);
         takeCashtxt.color = disabledColor;
@@ -963,7 +980,7 @@ public class GameController : MonoBehaviour
         takeCurrencytxt.color = disabledColor;
         takeCash_Anim.gameObject.SetActive(false) ;
 
-
+        ////////////////////////////////////////////////////////
         InternetCheck = true;
 
         if (!isWin)
@@ -1020,11 +1037,13 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(true);
                 insufBal_Rumblebets.SetActive(false);
+                BetResetForInsufficient();
             }
             else
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
+                BetResetForInsufficient();
             }
             return;
         }
@@ -1320,6 +1339,30 @@ public class GameController : MonoBehaviour
         balloonParts.SetActive(true);
         balloonBlue_Start.SetActive(true);
     }
+
+
+
+    public void HandleInsuffitient()
+    {
+        Button_Switch_ON();
+        //colors
+        takeCashImg.color = new Color32(140, 140, 140, 255);
+        takeCashtxt.color = new Color32(194, 236, 166, 120);
+        takeCashWintxt.color = new Color32(194, 236, 166, 120);
+        takeCurrencytxt.color = new Color32(194, 236, 166, 120);
+        heatTxt.color = new Color32(63, 15, 15, 255);
+
+        // takeCash
+        takeCashObj.SetActive(false);
+        isBegin = false;
+        winPanel.SetActive(false);
+        takeBetAmount = true;
+        isWin = false;
+        countTime = 0f;
+        slider.value = 0f;
+
+        ButtonSelect_Anim();
+    }
     void ResetBets()
     {
         isPressed = false;
@@ -1339,6 +1382,20 @@ public class GameController : MonoBehaviour
         IsCreateMatchCalled=false;
         Invoke("TimeDelay", 1.5f);
     }
+
+
+    public void BetResetForInsufficient()
+    {
+        isPressed = false;
+        pauseGame = false;
+        startGame = false;
+        onClick = false;
+        unPress.SetActive(true);
+        pressed.SetActive(false);
+        ButtonSelect_Anim();
+    }
+
+
     void Winning_Animations()
     {
         winTxt.text = Multiplier.ToString("0.00" + " <size=80>X</size>");
@@ -1346,7 +1403,11 @@ public class GameController : MonoBehaviour
     }
     public async void TakingCash()
     {
-        await UniTask.Delay(3000);
+
+
+
+
+        //await UniTask.Delay(3000);
         API_Winning();
     }
     async void WinTxtObj()
@@ -1859,7 +1920,7 @@ public class GameController : MonoBehaviour
         StartCoroutine(Backgourn_Ballon_Fly());
 
         // Disable heat button collider and trigger necessary animations
-        heatbtnCollider.enabled = false;
+        heatbtnCollider.enabled = true;
         ButtonSelect_Anim();
 
         // Activate the hand gestures and slider animation
@@ -1873,6 +1934,9 @@ public class GameController : MonoBehaviour
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
     public Button settingsBtn;
+
+    public int currentClickValue;
+
     public void BetButtonPressed(int betValue)
     {
         if (takeBetAmount)
@@ -1907,6 +1971,12 @@ public class GameController : MonoBehaviour
             HandGesture();
         }
     }
+
+
+
+
+
+
     private void SetBetButtonsActiveState(int activeBet)
     {
         var betValues = APIController.instance.authentication.entryAmountDetails.betValues;
@@ -2105,6 +2175,7 @@ public class GameController : MonoBehaviour
     }
     void Button_Switch_ON()
     {
+        Debug.Log("EnableButtons buttons");
         // Enable all buttons
         button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
 
@@ -2249,6 +2320,10 @@ public class GameController : MonoBehaviour
     {
         buttonPress = false;
         isBegin = false;
+        BetResetForInsufficient();
+
+
+
     }
     #endregion
 
