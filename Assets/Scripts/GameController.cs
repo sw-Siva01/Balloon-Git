@@ -439,7 +439,6 @@ public class GameController : MonoBehaviour
         await UniTask.Delay(350);
         amountGlow.SetActive(false);
     }
-
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
     public void InitPlayerDetails()
     {
@@ -677,6 +676,7 @@ public class GameController : MonoBehaviour
             takeCashObj.SetActive(false);
         }
         // Taking cash
+
         if (take)
         {
             startGame = false;
@@ -973,12 +973,12 @@ public class GameController : MonoBehaviour
 
 
         ////////////////////////////////////////////////////////
-        Color32 disabledColor = new Color32(194, 236, 166, 120);
-        takeCashImg.color = new Color32(140, 140, 140, 255);
-        takeCashtxt.color = disabledColor;
-        takeCashWintxt.color = disabledColor;
-        takeCurrencytxt.color = disabledColor;
-        takeCash_Anim.gameObject.SetActive(false) ;
+        //Color32 disabledColor = new Color32(194, 236, 166, 120);
+        //takeCashImg.color = new Color32(140, 140, 140, 255);
+        //takeCashtxt.color = disabledColor;
+        //takeCashWintxt.color = disabledColor;
+        //takeCurrencytxt.color = disabledColor;
+        //takeCash_Anim.gameObject.SetActive(false) ;
 
         ////////////////////////////////////////////////////////
         InternetCheck = true;
@@ -1403,10 +1403,6 @@ public class GameController : MonoBehaviour
     }
     public async void TakingCash()
     {
-
-
-
-
         //await UniTask.Delay(3000);
         API_Winning();
     }
