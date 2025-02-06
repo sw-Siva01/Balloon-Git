@@ -1150,14 +1150,14 @@ public class GameController : MonoBehaviour
                 slider_Anim.SetBool("isOFF", true);
                 ballon_Anim.SetBool("isTake", true);
                 //winCount
-                if (!winCount && betAmount <= 5f)
-                {
-                    winCash++;
-                }
-                else
-                {
+                //if (!winCount && betAmount <= 5f)
+                //{
+                //    winCash++;
+                //}
+                //else
+                //{
                     isNormal = true;
-                }
+                //}
 
               //  Demo_Bonus();
 
@@ -1180,52 +1180,56 @@ public class GameController : MonoBehaviour
     }
     void Call_Functions()
     {
-        if (winCash == Winbonus)
-        {
-            isBonus_1 = true;
-            if (!isSet)
-                isBonus_2 = true;
-            else if (isSet)
-                isBonus_3 = true;
-        }
+        DebugHelper.Log("Check4");
+        //if (winCash == Winbonus)
+        //{
+        //    isBonus_1 = true;
+        //    if (!isSet)
+        //        isBonus_2 = true;
+        //    else if (isSet)
+        //        isBonus_3 = true;
+        //}
 
         if (winCash != Winbonus)
             isNormal = true;
     }
     async void DelayFuction()
     {
-        if (isBonus_1)
-        {
-            if (WinCash_demo == 10)
-            {
-                await UniTask.Delay(1000);
-                Bonus_Conditions();
-            }
+        DebugHelper.Log("Check3");
+        //if (isBonus_1)
+        //{
+        //    if (WinCash_demo == 10)
+        //    {
+        //        await UniTask.Delay(1000);
+        //        Bonus_Conditions();
+        //    }
 
-            await UniTask.Delay(3000);
-            winPanel.SetActive(false);
+        //    await UniTask.Delay(3000);
+        //    winPanel.SetActive(false);
 
-            await UniTask.Delay(100);
-            if (WinCash_demo < 10)
-                Bonus_Conditions();
-        }
-        if (isBonus_2)
-        {
-            await UniTask.Delay(5500);
-            TimeDelay();
-        }
+        //    await UniTask.Delay(100);
+        //    if (WinCash_demo < 10)
+        //        Bonus_Conditions();
+        //}
+        //if (isBonus_2)
+        //{
+        //    await UniTask.Delay(5500);
+        //    TimeDelay();
+        //}
 
         if (isNormal)
         {
+
+            DebugHelper.Log("Check1");
             await UniTask.Delay(3500);
             TimeDelay();
         }
 
-        if (isBonus_3)
-        {
-            await UniTask.Delay(3000);
-            Bonus_Delay();
-        }
+        //if (isBonus_3)
+        //{
+        //    await UniTask.Delay(3000);
+        //    Bonus_Delay();
+        //}
     }
     async void DemoAPIReset()
     {
@@ -1265,6 +1269,7 @@ public class GameController : MonoBehaviour
     }
     void TimeDelay() // Clear UI
     {
+        DebugHelper.Log("Check2");
         multiplierTxt.color = Color.white;
         winTxt.color = Color.white;
         xTxt.color = Color.white;

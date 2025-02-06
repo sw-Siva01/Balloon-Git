@@ -98,7 +98,7 @@ public class SettingsPanelHandler : UIHandler
         PanelTransform.DOKill();
         PanelTransform.gameObject.SetActive(true);
         PanelTransform.GetComponent<CanvasGroup>().DOFade(1, 0.1f);
-        PanelTransform.DOAnchorPosX(19f, 0.1f);
+        PanelTransform.DOAnchorPosX(50f, 0.1f);
         emptySpaceObj.SetActive(true);
     }
     public override void HideMe()
