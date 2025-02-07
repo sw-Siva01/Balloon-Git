@@ -273,6 +273,15 @@ public class GameController : MonoBehaviour
     [Header("Audio Script")]
     [SerializeField] MasterAudioController audioController;
 
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("Panel")]
+    [SerializeField] 
+    public GameObject RedirectionPanel;
+
+
+
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     // ScrollView GameObjects
@@ -2176,7 +2185,6 @@ public class GameController : MonoBehaviour
     }
     void Button_Switch_ON()
     {
-        Debug.Log("EnableButtons buttons");
         // Enable all buttons
         button_1.enabled = true; button_2.enabled = true; button_5.enabled = true; button_10.enabled = true;
 

@@ -40,7 +40,7 @@ public class WelcomSettings : UIHandler
     {
         GameController.instance.CanPlayAudio = true;
         AudioListener.volume = 1;
-        Debug.Log(" ^^^^^^^^^ 3 : " + AudioListener.volume);
+        DebugHelper.Log(" ^^^^^^^^^ 3 : " + AudioListener.volume);
         base.HideMe();
     }
     public override void OnBack()

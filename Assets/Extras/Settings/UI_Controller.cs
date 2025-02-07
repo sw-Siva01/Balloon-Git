@@ -47,7 +47,8 @@ public class UI_Controller : MonoBehaviour
     public void ExitWebGL()
     {
         /*APIController.CloseWindow();*/
-        SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
+       // SettingsPanelHandler.instance.RedirectingPanel.SetActive(true);
+        GameController.instance.RedirectionPanel.SetActive(true);
         InvokeRepeating(nameof(ShowCloseWindow), 1f, 5f);
     }
     #endregion
