@@ -90,7 +90,7 @@ public class UserGameData
     public string name;
     public string token;
     public string session_token;
-    public float balance;
+    public double balance;
     public string currency_type;
     public string game_Id;
     public string gameId;
@@ -115,7 +115,7 @@ public class AuthenticationData
     public string name;
     public string token;
     public string session_token;
-    public float balance;
+    public double balance;
     public string currency_type;
     public string gamename;
     public string operatorname;

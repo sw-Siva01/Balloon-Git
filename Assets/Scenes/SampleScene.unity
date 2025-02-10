@@ -3609,7 +3609,7 @@ RectTransform:
   m_Father: {fileID: 1671899633}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.320364}
+  m_AnchorMin: {x: 0, y: 0.23044395}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -4.619995}
   m_SizeDelta: {x: 40, y: 46.54}
@@ -6065,7 +6065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: DummyData
-      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"b1cdb116-9dc5-4540-8548-0c00f47ece49","token":"ab5590c5-6b30-4f84-9a83-e01738825539","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"mobile","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
+      value: '{"operatorDomainUrl":"https://dev.rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"9e300455-f867-4451-8fa5-7cae9137fa88","token":"ba6f0630-37a9-4742-8ca9-af1739167062","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -6335,7 +6335,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VERSION (07-02-25)_0.7
+  m_text: VERSION (10-02-25)_0.8
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a69942246e9f3304e859c60cf7d549fc, type: 2}
   m_sharedMaterial: {fileID: -6247532791395908082, guid: a69942246e9f3304e859c60cf7d549fc, type: 2}
@@ -6362,7 +6362,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.1
+  m_fontSize: 24.65
   m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7370,7 +7370,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 478, y: -25}
+  m_AnchoredPosition: {x: 463, y: -25}
   m_SizeDelta: {x: 76, y: 76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &468879601
@@ -9212,8 +9212,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 926.5, y: -149}
-  m_SizeDelta: {x: 1503, y: 100}
+  m_AnchoredPosition: {x: 1226.5, y: -149}
+  m_SizeDelta: {x: 2103, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &567208390
 GameObject:
@@ -9233,7 +9233,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &567208391
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9251,8 +9251,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -263.945}
-  m_SizeDelta: {x: 1678, y: 47.53}
+  m_AnchoredPosition: {x: 1149, y: -175.125}
+  m_SizeDelta: {x: 2278, y: 47.53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &567208392
 MonoBehaviour:
@@ -9403,8 +9403,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -1558.695}
-  m_SizeDelta: {x: 1678, y: 92.65}
+  m_AnchoredPosition: {x: 1149, y: -1367.22}
+  m_SizeDelta: {x: 2278, y: 43.04}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &575153660
 MonoBehaviour:
@@ -12595,7 +12595,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 277310105}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.679636
+  m_Size: 0.76955605
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12676,8 +12676,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -1277.87}
-  m_SizeDelta: {x: 1678, y: 369}
+  m_AnchoredPosition: {x: 1149, y: -1111.2}
+  m_SizeDelta: {x: 2278, y: 369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &796241724
 MonoBehaviour:
@@ -15305,8 +15305,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00012207031}
-  m_SizeDelta: {x: 0, y: 2275.63}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 2009.73}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &935229658
 MonoBehaviour:
@@ -22541,7 +22541,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1359960856
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22559,8 +22559,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -23.765}
-  m_SizeDelta: {x: 1678, y: 47.53}
+  m_AnchoredPosition: {x: 1149, y: -23.765}
+  m_SizeDelta: {x: 2278, y: 47.53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1359960858
 MonoBehaviour:
@@ -24239,8 +24239,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -1819.1951}
-  m_SizeDelta: {x: 1678, y: 142.27}
+  m_AnchoredPosition: {x: 1149, y: -1578.105}
+  m_SizeDelta: {x: 2278, y: 92.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1448011035
 MonoBehaviour:
@@ -24397,8 +24397,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -617.25}
-  m_SizeDelta: {x: 1678, y: 373}
+  m_AnchoredPosition: {x: 1149, y: -489.22}
+  m_SizeDelta: {x: 2278, y: 373}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1468616030
 MonoBehaviour:
@@ -25688,8 +25688,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -1676.54}
-  m_SizeDelta: {x: 1678, y: 43.04}
+  m_AnchoredPosition: {x: 1149, y: -1460.26}
+  m_SizeDelta: {x: 2278, y: 43.04}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1565755457
 MonoBehaviour:
@@ -26972,8 +26972,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -2129.305}
-  m_SizeDelta: {x: 1678, y: 92.65}
+  m_AnchoredPosition: {x: 1149, y: -1863.405}
+  m_SizeDelta: {x: 2278, y: 92.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1633589260
 MonoBehaviour:
@@ -28924,7 +28924,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1763905176
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28942,8 +28942,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -877.235}
-  m_SizeDelta: {x: 1678, y: 46.97}
+  m_AnchoredPosition: {x: 1149, y: -749.20496}
+  m_SizeDelta: {x: 2278, y: 46.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1763905177
 MonoBehaviour:
@@ -30317,8 +30317,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -1986.655}
-  m_SizeDelta: {x: 1678, y: 92.65}
+  m_AnchoredPosition: {x: 1149, y: -1720.755}
+  m_SizeDelta: {x: 2278, y: 92.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1846554549
 MonoBehaviour:
@@ -31322,8 +31322,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -359.22998}
-  m_SizeDelta: {x: 1678, y: 43.04}
+  m_AnchoredPosition: {x: 1149, y: -202.04001}
+  m_SizeDelta: {x: 2278, y: 101.36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1905961930
 MonoBehaviour:
@@ -31337,8 +31337,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: '<margin-left=1.5em>Objective - The goal is to heat the balloon
-    and catch a multiplier before it flies away.</indent>
+  prerequisites: '~ Objective
+
+
+    <margin-left=1.35em>Objective - The goal is to
+    heat the balloon and catch a multiplier before it flies away.</indent>
 
     </margin>'
   textElement: {fileID: 1905961931}
@@ -31364,8 +31367,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<margin-left=1em><margin-left=1.5em>Objective - The goal is to heat the
-    balloon and catch a multiplier before it flies away.</indent>
+  m_text: '<margin-left=1em><size=40><b><alpha=#FF><color=#FB9718> Objective</b></color></size>
+
+
+    <margin-left=1.35em>Objective
+    - The goal is to heat the balloon and catch a multiplier before it flies away.</indent>
 
     </margin></margin>'
   m_isRightToLeft: 0
@@ -32073,7 +32079,7 @@ MonoBehaviour:
   heatbtnCollider: {fileID: 704416877}
   maxBet_Reached: {fileID: 629583619}
   audioController: {fileID: 1165968576047954302}
-  RedirectionPanel: {fileID: 2116896246}
+  RedirectionPanel: {fileID: 0}
   MatchRes:
     status: 0
     MatchToken: 
@@ -34471,8 +34477,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -143.855}
-  m_SizeDelta: {x: 1678, y: 92.65}
+  m_AnchoredPosition: {x: 1149, y: -50.68}
+  m_SizeDelta: {x: 2278, y: 101.36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2100038996
 MonoBehaviour:
@@ -34486,8 +34492,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: '<margin-left=1.5em>Balloon is a single player crash game of chance
-    with unique mechanics. Fly a big balloon and catch big winnings.</indent>
+  prerequisites: '~ Balloon
+
+
+    <margin-left=1.35em>Balloon is a single player
+    crash game of chance with unique mechanics. Fly a big balloon and catch big winnings.</indent>
 
     </margin>'
   textElement: {fileID: 2100038997}
@@ -34513,8 +34522,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<margin-left=1em><margin-left=1.5em>Balloon is a single player crash game
-    of chance with unique mechanics. Fly a big balloon and catch big winnings.</indent>
+  m_text: '<margin-left=1em><size=40><b><alpha=#FF><color=#FB9718> Balloon</b></color></size>
+
+
+    <margin-left=1.35em>Balloon
+    is a single player crash game of chance with unique mechanics. Fly a big balloon
+    and catch big winnings.</indent>
 
     </margin></margin>'
   m_isRightToLeft: 0
@@ -34838,8 +34851,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 926.5, y: -184}
-  m_SizeDelta: {x: 1503, y: 100}
+  m_AnchoredPosition: {x: 1226.5, y: -184}
+  m_SizeDelta: {x: 2103, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2105058083
 GameObject:
@@ -35271,8 +35284,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 849, y: -997.045}
-  m_SizeDelta: {x: 1678, y: 92.65}
+  m_AnchoredPosition: {x: 1149, y: -801.20996}
+  m_SizeDelta: {x: 2278, y: 150.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2129229310
 MonoBehaviour:
@@ -35286,8 +35299,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: "\u2022Players start by placing a bet before the balloon takes off.
-    They can place one or multiple bets in a single round and then heat up the balloon.</indent></indent>\n</margin></margin>"
+  prerequisites: "~ Rules\n\n\u2022Players start by placing a bet before the balloon
+    takes off. They can place one or multiple bets in a single round and then heat
+    up the balloon.</indent></indent>\n</margin></margin>"
   textElement: {fileID: 2129229311}
   padding: 10
   isInEditMode: 1
@@ -35311,9 +35325,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<margin-left=1em>  \u2022<indent=1.6em>Players start by placing a bet
-    before the balloon takes off. They can place one or multiple bets in a single
-    round and then heat up the balloon.</indent></indent></indent>\n</margin></margin></margin>"
+  m_text: "<margin-left=1em><size=40><b><alpha=#FF><color=#FB9718> Rules</b></color></size>\n\n 
+    \u2022<indent=1.6em>Players start by placing a bet before the balloon takes off.
+    They can place one or multiple bets in a single round and then heat up the balloon.</indent></indent></indent>\n</margin></margin></margin>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 446cd538c0024ce46acbe2eb6a54d814, type: 2}
   m_sharedMaterial: {fileID: -2260656690800960777, guid: 446cd538c0024ce46acbe2eb6a54d814, type: 2}

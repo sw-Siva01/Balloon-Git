@@ -101,7 +101,7 @@ public class APIController : MonoBehaviour
     public void UpdateBalanceResponse(double data)
     {
         DebugHelper.Log("Balance Updated response  :::::::----::: " + data);
-        userDetails.balance = (float)data;
+        userDetails.balance = (double)data;
         OnUserBalanceUpdate?.Invoke();
 #if !UNITY_EDITOR && UNITY_WEBGL
         UpdateBalance();
@@ -177,7 +177,7 @@ public class APIController : MonoBehaviour
             {
                 JObject json = JObject.Parse(apiResponse["data"].ToString());
                 DebugHelper.Log($"Player Info Json Response 1 => {json.ToString()}");
-                authentication.balance = (float)json["balance"];
+                authentication.balance = (double)json["balance"];
                 userDetails.balance = authentication.balance;
                 DebugHelper.Log("/8::----::: " + authentication.balance);
                 OnUserBalanceUpdate?.Invoke();
@@ -275,7 +275,7 @@ public class APIController : MonoBehaviour
                    JObject output = JObject.Parse(apiResponse["output"].ToString());
                    authentication.session_token = (string)output["session_token"];
                    authentication.name = (string)data["username"];
-                   authentication.balance = (float)data["balance"];
+                   authentication.balance = (double)data["balance"];
                    DebugHelper.Log("Auth response 1 => " + authentication.balance);
                    if (!ignoreAuthdata)
                    {
@@ -503,7 +503,7 @@ public class APIController : MonoBehaviour
             await UniTask.Delay(200);
         }
 
-        float currentBalance = userDetails.balance + win_amount_with_comission;
+        double currentBalance = userDetails.balance + win_amount_with_comission;
         DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
 #if CasinoGames
         bool winningBetResponce = false;
