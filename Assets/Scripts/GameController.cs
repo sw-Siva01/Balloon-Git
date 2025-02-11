@@ -137,6 +137,7 @@ public class GameController : MonoBehaviour
     [SerializeField] TextMeshProUGUI multiplierTxt;
     [SerializeField] TextMeshProUGUI xTxt;
     [SerializeField] TextMeshProUGUI multiplierTxt_Shadow;
+    [SerializeField] TextMeshProUGUI xTxt_Shadow;
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI totalAmountTxt;
     [SerializeField] TextMeshProUGUI takeCurrenyType;
@@ -394,7 +395,7 @@ public class GameController : MonoBehaviour
                 isRayHitActive = true;
 
                 if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
-                    !InternetChecking.instance.InternetDisconnectedPopup.activeSelf &&
+                    !InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                     !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                 {
                     Button_ONEnter();
@@ -418,7 +419,7 @@ public class GameController : MonoBehaviour
         if (!isRayHitActive)
         {
             if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
-                !InternetChecking.instance.InternetDisconnectedPopup.activeSelf &&
+                !InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                 !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
                 OnClickUp();
@@ -1280,7 +1281,10 @@ public class GameController : MonoBehaviour
     {
         DebugHelper.Log("Check2");
         multiplierTxt.color = Color.white;
-        winTxt.color = Color.white;
+        multiplierTxt_Shadow.color = Color.black; ;
+        xTxt_Shadow.color = Color.black; ;
+        //winTxt.color = Color.white;
+        winTxt.color = Color.green;
         xTxt.color = Color.white;
         Multiplier = 0f;
         multiplierTxt.text = Multiplier.ToString("0.00");
@@ -1387,8 +1391,12 @@ public class GameController : MonoBehaviour
         multiplierTxt.text = Multiplier.ToString("0.00");
         multiplierTxt_Shadow.text = Multiplier.ToString("0.00");
         // Change the text color
-        multiplierTxt.color = Color.black;
-        xTxt.color = Color.black;
+        //multiplierTxt.color = Color.black;
+        //xTxt.color = Color.black;
+        multiplierTxt_Shadow.color = new Color32(0, 0, 0, 0);
+        xTxt_Shadow.color = new Color32(0, 0, 0, 0);
+        multiplierTxt.color = new Color32(0, 0, 0, 240);
+        xTxt.color = new Color32(0, 0, 0, 240);
         makeLose = false;
         unPress.SetActive(true);
         pressed.SetActive(false);
@@ -1412,7 +1420,8 @@ public class GameController : MonoBehaviour
 
     void Winning_Animations()
     {
-        winTxt.text = Multiplier.ToString("0.00" + " <size=80>X</size>");
+        //winTxt.text = Multiplier.ToString("0.00" + " <size=80>X</size>");
+        winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
         WinTxtObj();
     }
     public async void TakingCash()
@@ -2179,7 +2188,7 @@ public class GameController : MonoBehaviour
     {
         // Create and configure a DoTween sequence for scaling animation
         DOTween.Sequence()
-            .Append(betAmountTxt.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 0.2f).SetEase(Ease.InSine))
+            .Append(betAmountTxt.transform.DOScale(new Vector3(0.95f, 0.95f, 0.95f), 0.2f).SetEase(Ease.InSine))
             .AppendInterval(0.02f)
             .Append(betAmountTxt.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InOutSine));
     }
