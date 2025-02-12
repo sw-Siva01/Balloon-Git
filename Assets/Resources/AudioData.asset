@@ -15,7 +15,7 @@ MonoBehaviour:
   audioData:
   - audioClip: {fileID: 8300000, guid: c515d961f8707b946bdcd03acc0d92a8, type: 3}
     audioName: 1
-    volume: 0.5
+    volume: 0.2
     pitch: 1
     mute: 0
   - audioClip: {fileID: 8300000, guid: c1c1690ffbc5eb2448a0515ae64c0868, type: 3}
@@ -45,12 +45,12 @@ MonoBehaviour:
     mute: 0
   - audioClip: {fileID: 8300000, guid: fe783df366865f94fbbf1e88ef6c5f1b, type: 3}
     audioName: 7
-    volume: 0.2
+    volume: 0.1
     pitch: 1
     mute: 0
   - audioClip: {fileID: 8300000, guid: 127df30d9af0b8b43a494a345117531c, type: 3}
     audioName: 8
-    volume: 0.2
+    volume: 0.1
     pitch: 1
     mute: 0
   - audioClip: {fileID: 8300000, guid: da19d65ce234f414bbf381164a0f00a0, type: 3}
