@@ -1284,7 +1284,7 @@ public class GameController : MonoBehaviour
         multiplierTxt_Shadow.color = Color.black; ;
         xTxt_Shadow.color = Color.black; ;
         //winTxt.color = Color.white;
-        winTxt.color = Color.green;
+        //winTxt.color = Color.green;
         xTxt.color = Color.white;
         Multiplier = 0f;
         multiplierTxt.text = Multiplier.ToString("0.00");
@@ -1357,9 +1357,6 @@ public class GameController : MonoBehaviour
         balloonParts.SetActive(true);
         balloonBlue_Start.SetActive(true);
     }
-
-
-
     public void HandleInsuffitient()
     {
         Button_Switch_ON();
@@ -1404,8 +1401,6 @@ public class GameController : MonoBehaviour
         IsCreateMatchCalled=false;
         Invoke("TimeDelay", 1.5f);
     }
-
-
     public void BetResetForInsufficient()
     {
         isPressed = false;
@@ -1416,15 +1411,13 @@ public class GameController : MonoBehaviour
         pressed.SetActive(false);
         ButtonSelect_Anim();
     }
-
-
     void Winning_Animations()
     {
         //winTxt.text = Multiplier.ToString("0.00" + " <size=80>X</size>");
         winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
         WinTxtObj();
     }
-    public async void TakingCash()
+    public void TakingCash()
     {
         //await UniTask.Delay(3000);
         API_Winning();
@@ -1446,7 +1439,7 @@ public class GameController : MonoBehaviour
             winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
         }
 
-        winTxt.color = Color.green;
+        //winTxt.color = Color.green;
     }
     async void balloon_Objs()
     {
@@ -1695,7 +1688,7 @@ public class GameController : MonoBehaviour
         }
         #endregion
     }*/
-    public async void OnClickDown()
+    public void OnClickDown()
     {
         APIController.instance.CheckInternetandProcess(async (success) =>
         {

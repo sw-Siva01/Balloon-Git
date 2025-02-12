@@ -6065,7 +6065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: DummyData
-      value: '{"operatorDomainUrl":"https://rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"848cd23a-9284-4cab-9fe6-86b63417a306","token":"afc9c179-e848-4b1c-bdec-b61739287704","currency_type":"INR","operatorname":"rumblebets","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[10,50,100,250],"maxBetValue":10000,"minBetValue":10,"incrementValue":10,"decrementValue":10,"entryAmounts":[10,20,50,100],"smallBlinds":[10,20,50,100,200],"potLimits":[1000,2000,5000,10000,12000],"chaalLimits":[320,640,1600,3200,6400],"player_count":0,"comission":0},"sound":"1","music":"1","environment":"dev"}'
+      value: '{"operatorDomainUrl":"https://rumblebets.utwebapps.com/callback/lootrix/","gamename":"balloon","Id":"848cd23a-9284-4cab-9fe6-86b63417a306","token":"ab3978c0-e05e-47f5-8e56-a01739340780","currency_type":"USD","operatorname":"demo","returnurl":"https://lootrix.utwebapps.com/exit","platform":"desktop","game_data":{"betValues":[1,2,5,10],"maxBetValue":100,"minBetValue":1,"incrementValue":1,"decrementValue":1,"entryAmounts":[1,2,5,10],"smallBlinds":[1,2,5,10],"potLimits":[100,200,500,1000],"chaalLimits":[32,64,160,320],"player_count":2,"comission":0},"sound":"1","music":"1","environment":"dev"}'
       objectReference: {fileID: 0}
     - target: {fileID: 1735056280675803439, guid: bdd7200a1ad3448d6a5da4736861a03e, type: 3}
       propertyPath: defaultGameName
@@ -16030,7 +16030,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0.00 <size=80>X</size>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a69942246e9f3304e859c60cf7d549fc, type: 2}
   m_sharedMaterial: {fileID: -2107759151067231342, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -16038,7 +16038,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0, g: 1, b: 0, a: 1}
+  m_fontColor: {r: 0.9058824, g: 0.6431373, b: 0.18039216, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -16094,7 +16094,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &957965318
@@ -25470,7 +25470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3432087392305069572, guid: d662933de28a345748173c8d2d445289, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -325.40002
+      value: -325.4004
       objectReference: {fileID: 0}
     - target: {fileID: 3432087393670086918, guid: d662933de28a345748173c8d2d445289, type: 3}
       propertyPath: m_IsActive
@@ -28255,7 +28255,7 @@ RectTransform:
   m_GameObject: {fileID: 1714326335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8846444, y: 0.8846444, z: 0.8846444}
+  m_LocalScale: {x: 0.8846444, y: 0.8846444, z: 0.88464403}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 160661362}
@@ -28263,8 +28263,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -184, y: -130}
-  m_SizeDelta: {x: 283.99988, y: 92}
+  m_AnchoredPosition: {x: -174.7998, y: -125.73}
+  m_SizeDelta: {x: 284, y: 59.18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1714326337
 MonoBehaviour:
@@ -28286,7 +28286,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000.00<size=30>USD</size>
+  m_text: 5000.00 <size=30>USD</size>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
   m_sharedMaterial: {fileID: -2107759151067231342, guid: 531b91d48381fc846bcd1ab6fa82bad5, type: 2}
@@ -28316,9 +28316,9 @@ MonoBehaviour:
   m_fontSize: 35
   m_fontSizeBase: 35
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 35
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -28349,7 +28349,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -6.639923, y: -19.81552, z: -1.6863861, w: -19.81552}
+  m_margin: {x: -6.639923, y: 0.38722038, z: -1.6863861, w: -0.4546795}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -31337,11 +31337,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7175d3fa12de24498684c1e50b2489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prerequisites: '~ Objective
+  prerequisites: '~ Game Objective
 
 
-    <margin-left=1.35em>Objective - The goal is to
-    heat the balloon and catch a multiplier before it flies away.</indent>
+    <margin-left=1.35em>Objective - The goal
+    is to heat the balloon and catch a multiplier before it flies away.</indent>
 
     </margin>'
   textElement: {fileID: 1905961931}
@@ -31367,7 +31367,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<margin-left=1em><size=40><b><alpha=#FF><color=#FB9718> Objective</b></color></size>
+  m_text: '<margin-left=1em><size=40><b><alpha=#FF><color=#FB9718> Game Objective</b></color></size>
 
 
     <margin-left=1.35em>Objective
@@ -31688,10 +31688,10 @@ RectTransform:
   m_Father: {fileID: 160661362}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -120}
-  m_SizeDelta: {x: 0, y: 261}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -123}
+  m_SizeDelta: {x: 2400, y: 226}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1925581795
 MonoBehaviour:
@@ -31713,7 +31713,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 05b994397a119b546b7a73eaee0800ba, type: 3}
+  m_Sprite: {fileID: -1320663059, guid: 75a83ba4c33ff94478daaff1d9f35dbd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -48057,7 +48057,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
   m_AnchorMin: {x: 0.010000001, y: 0.521579}
   m_AnchorMax: {x: 0.43600002, y: 0.80036855}
-  m_AnchoredPosition: {x: 0.9998779, y: 38}
+  m_AnchoredPosition: {x: 0.99975586, y: 38}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5045185550159431732
