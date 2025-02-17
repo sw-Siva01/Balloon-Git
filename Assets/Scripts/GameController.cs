@@ -2099,15 +2099,11 @@ public class GameController : MonoBehaviour
         {
             minusButton.enabled = false;
             minusButtonImg.color = new Color32(255, 255, 255, 100);
-            /*DebugHelper.Log("minusButtonImg Shade is " + 0);
-            DebugHelper.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);*/
         }
         else if (betAmount > APIController.instance.authentication.entryAmountDetails.incrementValue)
         {
             minusButton.enabled = true;
             minusButtonImg.color = new Color32(255, 255, 255, 255);
-            /*DebugHelper.Log("minusButtonImg Shade is " + 1);
-            DebugHelper.Log("minusButtonImg Shade is " + APIController.instance.authentication.entryAmountDetails.incrementValue);*/
         }
 
         if (betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue)
@@ -2123,40 +2119,6 @@ public class GameController : MonoBehaviour
     }
     void ButtonSelect_Anim()
     {
-        #region
-        /*if (button_1.gameObject.activeSelf)
-        {
-            for (int i = 0; i < button_Anim.Length; i++)
-            {
-                button_Anim[0].SetActive(false);
-                button_Anim[1].SetActive(true); button_Anim[2].SetActive(true); button_Anim[3].SetActive(true);
-            }
-        }
-        else if (button_2.gameObject.activeSelf)
-        {
-            for (int i = 0; i < button_Anim.Length; i++)
-            {
-                button_Anim[1].SetActive(false);
-                button_Anim[0].SetActive(true); button_Anim[2].SetActive(true); button_Anim[3].SetActive(true);
-            }
-        }
-        else if (button_5.gameObject.activeSelf)
-        {
-            for (int i = 0; i < button_Anim.Length; i++)
-            {
-                button_Anim[2].SetActive(false);
-                button_Anim[0].SetActive(true); button_Anim[1].SetActive(true); button_Anim[3].SetActive(true);
-            }
-        }
-        else if (button_10.gameObject.activeSelf)
-        {
-            for (int i = 0; i < button_Anim.Length; i++)
-            {
-                button_Anim[3].SetActive(false);
-                button_Anim[0].SetActive(true); button_Anim[1].SetActive(true); button_Anim[2].SetActive(true);
-            }
-        }*/
-        #endregion
         // Determine which button is active
         GameObject activeButton = null;
 
