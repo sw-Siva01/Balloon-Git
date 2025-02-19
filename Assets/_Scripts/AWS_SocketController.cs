@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using System.Linq;
 using NativeWebSocket;
 using UnityEditor;
+using System.Numerics;
 
 public class AWS_SocketController : MonoBehaviour
 {
@@ -42,9 +43,10 @@ public class AWS_SocketController : MonoBehaviour
     }
 
 
-    public void ConnectWebSocket(string environment)
+    public void ConnectWebSocket(string _url)
     {
-        url += environment;
+        url = _url;
+        //url += environment;
         ConnectToWebSocket();
     }
 
@@ -126,6 +128,14 @@ public class AWS_SocketController : MonoBehaviour
         };
         string payload = JsonConvert.SerializeObject(bodyDict);
         WSMessage message = new WSMessage("gameservice", payload);
+        string reqID = message.RequestID;
+         Debug.Log("Checking ID Already exists" + reqID);
+        while (wss_Events.Exists(x=>x.RequestID == reqID))
+        {
+            Debug.Log("Request ID Already exists" + reqID);
+            reqID = (long.Parse(reqID)+1).ToString() + UnityEngine.Random.Range(0,100);
+        }
+        message.RequestID = reqID;
         WSS_Event wssevent = new WSS_Event()
         {
             RequestType = requestType,
@@ -148,6 +158,15 @@ public class AWS_SocketController : MonoBehaviour
     {
         WSMessage message = new WSMessage("lambda", body);
        
+                string reqID = message.RequestID;
+         Debug.Log("Checking ID Already exists" + reqID);
+        while (wss_Events.Exists(x=>x.RequestID == reqID))
+        {
+            Debug.Log("Request ID Already exists" + reqID);
+            reqID = (long.Parse(reqID)+1).ToString() + UnityEngine.Random.Range(0,100);
+        }
+        message.RequestID = reqID;
+
         WSS_Event wssevent = new WSS_Event()
         {
             RequestType = requestType,
@@ -162,6 +181,7 @@ public class AWS_SocketController : MonoBehaviour
         message.Body = body;
         Debug.Log( message.Body +"??");
         // reqID = message.RequestID;
+
          _=_wsClient.Send(message,wssevent.TaskID);
          return message.RequestID;
 
@@ -306,7 +326,7 @@ public class AWS_SocketController : MonoBehaviour
        return SendRequest("Authentication", JsonConvert.SerializeObject(payload), initiatedAction, successAction, errorAction);
     }
 
-    public string WSS_CreateAndJoin(string lobbyName, int bet_index, float amount, bool isAbleToCancel, string metaData, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public string WSS_CreateAndJoin(string lobbyName, int bet_index, double amount, bool isAbleToCancel, string metaData, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
 
         /*  Sample Request Data ********************************
@@ -369,7 +389,7 @@ public class AWS_SocketController : MonoBehaviour
         return SendRequest("CreateAndJoinMatch", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
 
-    public string WSS_WinningBet(string betID, int isWin, float amount, float spendAmount, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
+    public string WSS_WinningBet(string betID, int isWin, double amount, double spendAmount, Action<string> initalizedAction, Action<string> successAction, Action<string> errorAction)
     {
         DebugHelper.Log("WSS_WinningBet " + amount + " sa " + spendAmount);
 

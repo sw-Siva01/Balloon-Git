@@ -109,6 +109,18 @@ public class UserGameData
 }
 
 [System.Serializable]
+public class TitleData
+{
+    public string api_url;
+    public string wss_url;
+    public string server_url;
+    public string server_port;
+    public string game_name;
+    public string game_id;
+}
+
+
+[System.Serializable]
 public class AuthenticationData
 {
     public string Id;
@@ -122,11 +134,11 @@ public class AuthenticationData
     public string operatorDomainUrl;
     public string platform;
     public string returnurl;
-   
+
     public bool music = true;
     public bool sound = true;
 
-   public string environment = "";
+    public string environment = "";
 
     public EntryAmountDetails entryAmountDetails = new EntryAmountDetails();
 }
@@ -209,7 +221,7 @@ public class BetAmountDetails
 [System.Serializable]
 public class TransactionMetaData
 {
-    public float Amount;
+    public double Amount;
     public string Info;
 }
 public class CreateAndJoinGameReq
@@ -359,7 +371,6 @@ public enum NetworkStatus
     Active = 0,
     NetworkIssue = 1,
     ServerIssue = 2,
-
     WaitingforResponse = 3
 }
 

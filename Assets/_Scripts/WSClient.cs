@@ -25,6 +25,7 @@ public class WSClient : MonoBehaviour
 
     public event Action OnConnected;
     public event Action OnDisconnected;
+
     public event Action<Exception> OnError;
 
     public WebSocket _webSocket;
@@ -50,16 +51,14 @@ public class WSClient : MonoBehaviour
 
     public async UniTask CheckServerStatus()
     {
-        Debug.Log("Checking server for internet" + Time.time);
+         Debug.Log("Checking server for internet" + Time.time);
         await UniTask.Delay(1000);
-        if (!awsController.IsOnline())
+        if(!awsController.IsOnline())
         {
-            Debug.Log("Checking server for internet =  false" + Time.time);
+            Debug.Log("Checking server for internet =  false"+ Time.time);
             OnDisconnected?.Invoke();
             return;
         }
-        NetworkHandler.instance.ShowWaitingForResponse();
-        Debug.Log("Checking server for internet =  true");
     }
 
 
@@ -148,7 +147,7 @@ public class WSClient : MonoBehaviour
         }
         if (_reconnectionCoroutine != null)
             StopCoroutine(_reconnectionCoroutine);
-        Debug.Log("HANDLE DISCONNECTION1");
+              Debug.Log("HANDLE DISCONNECTION1");
         _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
     }
 
@@ -189,7 +188,7 @@ public class WSClient : MonoBehaviour
     /// and then send the message.
     /// </remarks>
     /******  2768293f-1097-4b49-bb44-daf85de939b8  *******/
-    public async UniTask Send(WSMessage data, string TaskID)
+    public async UniTask Send(WSMessage data,string TaskID)
     {
         // if (!_isConnected)
         // {
@@ -197,7 +196,7 @@ public class WSClient : MonoBehaviour
         //     return;
         // }
         WSMessage message = data;
-        // Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
+        Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
         string id = TaskID;
         try
         {
@@ -218,10 +217,10 @@ public class WSClient : MonoBehaviour
                 DebugHelper.LogError($"Serialization failed: {ex.Message}");
             }
 
-            DebugHelper.Log("Checking if Server Connected");
+            DebugHelper.Log("Checking if Server Connected");   
             while (!awsController.IsOnline())
             {
-                if (!awsController.GetTaskStatus(id))
+                if(!awsController.GetTaskStatus(id))
                 {
                     return;
                 }
@@ -238,8 +237,8 @@ public class WSClient : MonoBehaviour
                 DebugHelper.LogError($"Serialization failed: {ex.Message}");
             }
 
-            DebugHelper.Log("Server is Connected");
-            DebugHelper.Log(json + "=====Sent Request==== " + Cryptography.EncryptStr(json));
+            DebugHelper.Log("Server is Connected");   
+            DebugHelper.Log(json + "=====Sent Request==== ");
             await _webSocket.SendText(Cryptography.EncryptStr(json));
         }
         catch (Exception ex)
@@ -263,9 +262,9 @@ public class WSClient : MonoBehaviour
                 // if (_reconnectionCoroutine != null)
                 //     StopCoroutine(_reconnectionCoroutine);
                 Dictionary<string, string> response = new Dictionary<string, string>();
-                Debug.Log("HANDLE DISCONNECTION" + requestID);
+                Debug.Log("HANDLE DISCONNECTION"+ requestID);
                 _reconnectionCoroutine = StartCoroutine(HandleDisconnection());
-
+               
                 if (_webSocket == null)
                 {
                     response["requestID"] = requestID;
@@ -322,7 +321,7 @@ public class WSClient : MonoBehaviour
                 if (_reconnectionCoroutine != null)
                     StopCoroutine(_reconnectionCoroutine);
                 _ = _webSocket.Close();
-                Debug.Log("HANDLE DISCONNECTION2");
+                  Debug.Log("HANDLE DISCONNECTION2");
                 _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
                 _stopwatch.Stop();
                 yield break;
@@ -330,7 +329,7 @@ public class WSClient : MonoBehaviour
 
             _stopwatch.Restart();
             WSMessage heartbeatMessage = new WSMessage("heartbeat", "{}");
-            _ = Send(heartbeatMessage, "");
+            _ = Send(heartbeatMessage,"");
         }
     }
 
@@ -350,7 +349,7 @@ public class WSClient : MonoBehaviour
         {
             yield return new WaitForSeconds(ReconnectInterval);
             _ = Connect(_serverUrl);
-            if (handleServer)
+            if(handleServer)
                 _ = CheckServerStatus();
             while (!_isConnected)
                 yield return null;

@@ -395,7 +395,7 @@ public class GameController : MonoBehaviour
             {
                 isRayHitActive = true;
 
-                if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
+                if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
                     !InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                     !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                 {
@@ -574,10 +574,10 @@ public class GameController : MonoBehaviour
             }
         }
         yield return null;
-        if (!startGame)
+        /*if (!startGame)
         {
             timerCount = false;
-        }
+        }*/
         StartCoroutine(nameof(TimerCount));
     }
     IEnumerator HolidngButtons()

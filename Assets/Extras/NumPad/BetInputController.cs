@@ -57,7 +57,6 @@ public class BetInputController : MonoBehaviour
 
                     BetAmtInput.textViewport.gameObject.SetActive(false);
                 }
-
             }
         }
     }

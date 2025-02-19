@@ -27,6 +27,8 @@ public class APIController : MonoBehaviour
     public Action OnUserBalanceUpdate;
     public Action OnUserDeposit;
 
+    public TitleData titleData;
+
     public Action<NetworkStatus> OnInternetStatusChange;
 
     public Action<bool> OnSwitchingTab;
@@ -177,7 +179,7 @@ public class APIController : MonoBehaviour
             {
                 JObject json = JObject.Parse(apiResponse["data"].ToString());
                 DebugHelper.Log($"Player Info Json Response 1 => {json.ToString()}");
-                authentication.balance = (double)json["balance"];
+                authentication.balance = (float)json["balance"];
                 userDetails.balance = authentication.balance;
                 DebugHelper.Log("/8::----::: " + authentication.balance);
                 OnUserBalanceUpdate?.Invoke();
@@ -217,17 +219,25 @@ public class APIController : MonoBehaviour
 
 
     public AuthenticationData authentication = new AuthenticationData();
-    public void StartAuthentication(string data)
+
+    
+
+
+    public async void StartAuthentication(string data)
     {
         DebugHelper.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
-        // if (data.Length < 30 || (authentication != null && authentication.operatorname == "demo"))
-        // {
-        //     SetUserData(data);
-        //     return;
-        // }
-        bool ignoreAuthdata = true;
-        AWS_SocketController.instance.ConnectWebSocket(authentication.environment);
+
+        await UniTask.Delay(10);
+        GetTitleData((success) => {
+            // if(success)
+            titleData =success;
+            {
+                Debug.Log("Title Data" +  JsonConvert.SerializeObject(success));
+
+
+                 bool ignoreAuthdata = true;
+        AWS_SocketController.instance.ConnectWebSocket(titleData.wss_url);
         try
         {
             JObject apiResponse = JObject.Parse(data);
@@ -257,7 +267,7 @@ public class APIController : MonoBehaviour
 
            (successRes) =>
            {
-               DebugHelper.Log("authentication response is : " + successRes);
+               DebugHelper.Log("authentication response json is : " + successRes);
                JObject apiResponse = JObject.Parse(successRes);
                DebugHelper.Log("authentication response is : " + (int)apiResponse["code"]);
                /*
@@ -317,6 +327,7 @@ public class APIController : MonoBehaviour
 
                    // MiniRouletteUIController.instance.SettingsPanel.UpdateToggle(authentication.sound, authentication.music);
                    AudioListener.volume = 1;
+
 #if UNITY_EDITOR
                    if (MobileShow)
                    {
@@ -350,6 +361,20 @@ public class APIController : MonoBehaviour
                ErrorPopUpHandler.instance.ShowError((int)apiResponse["code"], (string)apiResponse["message"]);
            }
        );
+            // }
+            // else
+            // {
+            //    // ErrorPopUpHandler.instance.ShowError
+            }
+        });
+
+
+        // if (data.Length < 30 || (authentication != null && authentication.operatorname == "demo"))
+        // {
+        //     SetUserData(data);
+        //     return;
+        // }
+       
     }
 
     // public void GetRandomCard()
@@ -374,6 +399,140 @@ public class APIController : MonoBehaviour
                  {
                      action.Invoke(isSuccess);
                  }, 2);
+    }
+
+
+    // public  async void GetTitleData(Action<bool> action)
+    // {
+
+    //     // List<KeyValuePojo> param = new List<KeyValuePojo>();
+    //     // param.Add(new KeyValuePojo(){keyId = "request_type",value = "GetTitleData"});
+    //     // param.Add(new KeyValuePojo() {keyId = "game_name",value = authentication.gamename});
+    //      Dictionary<string, string> payload = new Dictionary<string, string>
+    //     {
+    //         { "request_type", "GetTitleData" },
+    //         { "game_name", authentication.gamename }
+    //     };
+        
+    //     string EncryptedPayload = Cryptography.EncryptStr(JsonConvert.SerializeObject(payload));
+
+    //     WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA,
+    //         $"https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/{authentication.environment}",
+    //         new List<KeyValuePojo>() {new KeyValuePojo{keyId = "data",value = EncryptedPayload}},
+    //         async (bool isSuccess, string error, string body) =>
+    //         {  
+    //             JObject obj = JObject.Parse(body);
+    //             Debug.Log("TitleData Receivec" + obj["data"]);
+    //             Debug.Log("TitleData Receivec" + Cryptography.DecryptStr(obj["data"].ToString()));
+    //         //  action.Invoke(isSuccess);
+    //         }, 2);
+    // }
+
+    public string CleanUrl(string url)
+    {
+        // Remove the protocol part (http:// or https://) and the trailing slash
+        return url.Replace("https://", "").Replace("http://", "").TrimEnd('/');
+    }
+    public void GetTitleData(Action<TitleData> action)
+    {
+              
+                Dictionary<string, string> payload = new Dictionary<string, string>();
+                payload["request_type"] = "GetTitleData";
+                payload["game_name"] = authentication.gamename;
+                string payloadJson = JsonConvert.SerializeObject(payload);
+                string encryptPayload = Cryptography.EncryptStr(payloadJson);
+
+                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/"+authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
+                {
+                    Debug.Log("GetTitleData Response is ::: " + body);
+                    if (success)
+                    {
+                        var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
+                        string orginalData = Cryptography.DecryptStr(response["data"]);
+                        Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
+                        var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
+
+                        if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
+                        {
+                            action.Invoke(JsonConvert.DeserializeObject<TitleData>(finalresponse["data"]));
+                        }
+                        else
+                        {
+                            ErrorPopUpHandler.instance.ShowError(int.Parse(finalresponse["code"]),finalresponse["message"].ToString()); 
+                        }
+                    }
+                    else
+                    {
+                       ErrorPopUpHandler.instance.ShowError(420,"Something went wrong!"); 
+                    }
+
+                }, 3);
+    }    
+    public async void GetServerData(Action<TitleData> action)
+    {
+
+        int retrycount = 0;
+        string domainUrl = "";
+        while (domainUrl == "" && retrycount < 6)
+        {
+            retrycount++;
+            bool isRun = true;
+            Dictionary<string, string> payload = new Dictionary<string, string>();
+            payload["request_type"] = "GetServer";
+            payload["game_name"] = authentication.gamename;
+            string payloadJson = JsonConvert.SerializeObject(payload);
+            string encryptPayload = Cryptography.EncryptStr(payloadJson);
+
+            WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/" + authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
+            {
+                Debug.Log("GetServerDetails Response is ::: " + body);
+                if (success)
+                {
+                    var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
+                    string orginalData = Cryptography.EncryptStr(response["data"]);
+                    Debug.Log("GetServerDetails Response is orginal ::: " + orginalData);
+                    var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
+
+                    if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
+                    {
+                        action.Invoke(JsonConvert.DeserializeObject<TitleData>(finalresponse["data"]));
+                    }
+                    else
+                    {
+                        if (retrycount > 5 && finalresponse.ContainsKey("message"))
+                        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                                DisconnectGame(finalresponse["message"]);
+#endif
+                        }
+                        else
+                        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                                DisconnectGame("Internal Server Error");
+#endif
+                        }
+                        await UniTask.Delay(1000);
+                    }
+                }
+                else
+                {
+                    if (retrycount > 5)
+                    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                                DisconnectGame("Internal Server Error");
+#endif
+                        return;
+                    }
+                    await UniTask.Delay(1000);
+                }
+                isRun = false;
+
+            }, 3);
+            while (isRun)
+            {
+                await UniTask.Delay(100);
+            }
+        }
     }
 
     public async void CheckInternetandProcess(Action<bool> action, bool isLooping = false)
@@ -489,7 +648,7 @@ public class APIController : MonoBehaviour
     }
     public bool winningBetCalled;
 
-    public async void WinningsBetMultiplayerAPI(int betIndex, string betId, float win_amount_with_comission, float spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
+    public async void WinningsBetMultiplayerAPI(int betIndex, string betId, double win_amount_with_comission, double spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
         winningBetCalled = true;
         string reqID = "";
@@ -668,7 +827,7 @@ public class APIController : MonoBehaviour
     }
 
     public CreateMatchResponse matchResponse;
-    public async void CreateAndJoinMatch(int index, float amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
+    public async void CreateAndJoinMatch(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
     {
         DebugHelper.Log("1CreateAndJoinMatch 1 init => " + index);
 
@@ -695,7 +854,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log($"BetRequest JSON Temp before Response.....BetIndex_{index}");
         bool createandjoingameResponseReceived = false;
         string reqID = "";
-        reqID = AWS_SocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonConvert.SerializeObject(metadata),
+       reqID = AWS_SocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonConvert.SerializeObject(metadata),
 
         (initiatedres) =>
         {
@@ -755,7 +914,10 @@ public class APIController : MonoBehaviour
                              502 - Error in lootrix side
                              408 - timeout
                              */
-
+                // switch((int)jsonObject["code"])
+                // {
+                //     case 402:
+                // }
                 matchResponse.Message = "";
 
                 DebugHelper.Log(jsonObject.ToString());
@@ -768,9 +930,21 @@ public class APIController : MonoBehaviour
         },
         (errorres) =>
         {
-           // createandjoingameResponseReceived = true;
-            DebugHelper.Log("CreateAndJoinMatch Failed " + errorres);
+
             JObject jobject = JObject.Parse(errorres);
+            
+            try
+            {
+               int code = (int)jobject["code"];
+               createandjoingameResponseReceived = true;
+            }
+            catch(Exception ex){
+
+            }
+
+
+            DebugHelper.Log("CreateAndJoinMatch Failed " + errorres);
+           
             matchResponse.status = false;
             matchResponse.Message = jobject["message"]?.ToString();
             errorAction?.Invoke(matchResponse);
