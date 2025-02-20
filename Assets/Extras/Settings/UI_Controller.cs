@@ -55,7 +55,9 @@ public class UI_Controller : MonoBehaviour
 
     void ShowCloseWindow()
     {
+#if UNITY_WEBGL
         APIController.CloseWindow();
+#endif
     }
 
     #region Sound Properties

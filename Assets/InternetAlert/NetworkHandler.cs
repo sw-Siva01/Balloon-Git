@@ -41,11 +41,14 @@ public class NetworkHandler : MonoBehaviour
         {
            HideWaitingForResponse();
             DebugHelper.Log($"NetworkStatus ==> {data.ToString()}");
-            if (ConnectionPanel.activeSelf || ServerPopPanel.activeSelf)
+            CancelInvoke(nameof(CheckToEnable));
+            ConnectionPanel.SetActive(false);
+            ServerPopPanel.SetActive(false);
+            /*if (ConnectionPanel.activeSelf || ServerPopPanel.activeSelf)
             {
                 ConnectionPanel.SetActive(false);
                 ServerPopPanel.SetActive(false);
-            }
+            }*/
         }
         DebugHelper.Log("AudioController.Instance.IsActive");
         DebugHelper.Log("APIController.instance.isOnline");

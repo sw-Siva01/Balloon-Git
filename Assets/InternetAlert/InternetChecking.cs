@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class InternetChecking : MonoBehaviour
 {
-    public static InternetChecking instance;
+    //public static InternetChecking instance;
     public GameObject InternetDisconnectedPopup;
     public GameObject ServerMaintenancePopup;
 
@@ -13,7 +13,7 @@ public class InternetChecking : MonoBehaviour
     }
     private void Awake()
     {
-        instance = this;
+        //instance = this;
     }
     public void GetNetworkStatus(NetworkStatus data)
     {

@@ -396,13 +396,13 @@ public class GameController : MonoBehaviour
                 isRayHitActive = true;
 
                 if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
-                    !InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
+                    !NetworkHandler.instance.ConnectionPanel.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                     !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                 {
                     Button_ONEnter();
                     OnClickDown();
                 }
-                else if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf && isPressed)
+                else if (NetworkHandler.instance.ConnectionPanel.activeSelf && isPressed)
                 {
                     isPressed = false;
                     Button_OFFEnter();
@@ -420,7 +420,7 @@ public class GameController : MonoBehaviour
         if (!isRayHitActive)
         {
             if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad &&
-                !InternetChecking.instance.InternetDisconnectedPopup.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
+                !NetworkHandler.instance.ConnectionPanel.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                 !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
             {
                 OnClickUp();
@@ -434,7 +434,7 @@ public class GameController : MonoBehaviour
         rumbleBet_cancelButton.SetActive(isAmountSufficient);
 
         // Handle animation based on internet connectivity
-        if (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        if (!NetworkHandler.instance.ConnectionPanel.activeSelf)
         {
             Animation_Play();
         }
@@ -544,7 +544,7 @@ public class GameController : MonoBehaviour
     }
     IEnumerator TimerCount()
     {
-        if (startGame && !pauseGame && (!InternetChecking.instance.InternetDisconnectedPopup.activeSelf))
+        if (startGame && !pauseGame && (!NetworkHandler.instance.ConnectionPanel.activeSelf))
         {
             if (Multiplier < 1.01f)
             {
@@ -597,7 +597,7 @@ public class GameController : MonoBehaviour
         BetAmountUpdates();
 
         // Handle internet disconnection and button press
-        if (InternetChecking.instance.InternetDisconnectedPopup.activeSelf && isPressed)
+        if (NetworkHandler.instance.ConnectionPanel.activeSelf && isPressed)
         {
             isPressed = false;
             Button_OFFEnter();
@@ -750,7 +750,7 @@ public class GameController : MonoBehaviour
             timeHeld = 0f;
             isPressed = false;
         }
-        if (bonusCount && APIController.instance.isOnline && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+        if (bonusCount && APIController.instance.isOnline && !NetworkHandler.instance.ConnectionPanel.activeSelf)
         {
             TakeCashOut();
             bonusCount = false;
@@ -1604,7 +1604,7 @@ public class GameController : MonoBehaviour
             }
 
             // Game setup if conditions are met
-            if (!startGame && !gameLost && !isBegin && !InternetChecking.instance.InternetDisconnectedPopup.activeSelf)
+            if (!startGame && !gameLost && !isBegin && !NetworkHandler.instance.ConnectionPanel.activeSelf)
             {
                 //SetupGameForNewRound();
                 if (!IsCreateMatchCalled)

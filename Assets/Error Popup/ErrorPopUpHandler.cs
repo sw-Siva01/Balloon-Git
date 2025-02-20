@@ -12,8 +12,7 @@ public class ErrorPopUpHandler : MonoBehaviour
     public TMP_Text errorText;
     CanvasGroup canvasGroup;
 
-    public
-        int _code;
+    public int _code;
 
     void Awake()
     {
@@ -25,7 +24,7 @@ public class ErrorPopUpHandler : MonoBehaviour
     {
         if (code == 504)
         {
-            InternetChecking.instance.ServerMaintenancePopup.SetActive(true);
+            NetworkHandler.instance.ServerPopPanel.SetActive(true);
             return;
         }
         ErrorPanel.gameObject.SetActive(true);
@@ -55,7 +54,7 @@ public class ErrorPopUpHandler : MonoBehaviour
                     break;
                 case 503:
                     // SettingsPanelHandler.Instance.ShowServerMaintanence();
-                    InternetChecking.instance.ServerMaintenancePopup.SetActive(true);
+                    NetworkHandler.instance.ServerPopPanel.SetActive(true);
 
                     break;
                 default:
