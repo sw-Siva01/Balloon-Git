@@ -433,41 +433,64 @@ public class APIController : MonoBehaviour
         // Remove the protocol part (http:// or https://) and the trailing slash
         return url.Replace("https://", "").Replace("http://", "").TrimEnd('/');
     }
-    public void GetTitleData(Action<TitleData> action)
+    public async void GetTitleData(Action<TitleData> action)
     {
               
-                Dictionary<string, string> payload = new Dictionary<string, string>();
-                payload["request_type"] = "GetTitleData";
-                payload["game_name"] = authentication.gamename;
-                string payloadJson = JsonConvert.SerializeObject(payload);
-                string encryptPayload = Cryptography.EncryptStr(payloadJson);
+    int count = 0;
+    while (count < 3)
+    {
+        bool responseReceived = false;
+        bool successResponse  = false;
+        Dictionary<string, string> payload = new Dictionary<string, string>();
+        payload["request_type"] = "GetTitleData";
+        payload["game_name"] = authentication.gamename;
+        string payloadJson = JsonConvert.SerializeObject(payload);
+        string encryptPayload = Cryptography.EncryptStr(payloadJson);
 
-                WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/"+authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
+        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/"+authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
+        {
+            responseReceived = true;
+            Debug.Log("GetTitleData Response is ::: " + body);
+            if (success)
+            {
+                var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
+                string orginalData = Cryptography.DecryptStr(response["data"]);
+                Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
+                var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
+
+                if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
                 {
-                    Debug.Log("GetTitleData Response is ::: " + body);
-                    if (success)
-                    {
-                        var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
-                        string orginalData = Cryptography.DecryptStr(response["data"]);
-                        Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
-                        var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
+                    successResponse = true;
+                    action.Invoke(JsonConvert.DeserializeObject<TitleData>(finalresponse["data"]));
+                }
+                else
+                {
+                    ErrorPopUpHandler.instance.ShowError(int.Parse(finalresponse["code"]),finalresponse["message"].ToString()); 
+                }
+            }
 
-                        if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
-                        {
-                            action.Invoke(JsonConvert.DeserializeObject<TitleData>(finalresponse["data"]));
-                        }
-                        else
-                        {
-                            ErrorPopUpHandler.instance.ShowError(int.Parse(finalresponse["code"]),finalresponse["message"].ToString()); 
-                        }
-                    }
-                    else
-                    {
-                       ErrorPopUpHandler.instance.ShowError(420,"Something went wrong!"); 
-                    }
+            }, 3);
 
-                }, 3);
-    }    
+        while(responseReceived == false)
+        {
+            await UniTask.Delay(50);
+        }
+        if(successResponse)
+        {
+            break;
+        }
+        else
+        {
+            count ++;
+        }
+        }
+
+        if(count >= 3)
+        {
+        ErrorPopUpHandler.instance.ShowError(420,"Something went wrong!"); 
+        }
+
+    }   
     public async void GetServerData(Action<TitleData> action)
     {
 

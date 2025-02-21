@@ -173,7 +173,7 @@ public class WebApiManager : MonoBehaviour
         string jsonData = JsonConvert.SerializeObject(keyValuePairs);
         DebugHelper.Log($"<color=magenta>{jsonData}\n{url}</color>");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-        using UnityWebRequest request = UnityWebRequest.Post(url, "POST");
+        using UnityWebRequest request = UnityWebRequest.PostWwwForm(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
