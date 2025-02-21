@@ -12,7 +12,7 @@ public class HOWTOPLAY : MonoBehaviour
     [SerializeField] String prerequisites;
     public TMP_Text textElement;
     public float padding = 10f;
-    float bulletIndent = 1.6f;
+    float bulletIndent = 1.2f;
     float leftMargin = 1f;
     public bool isInEditMode;
 

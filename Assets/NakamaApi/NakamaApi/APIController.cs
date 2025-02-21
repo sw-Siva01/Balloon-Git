@@ -487,7 +487,7 @@ public class APIController : MonoBehaviour
 
         if(count >= 3)
         {
-        ErrorPopUpHandler.instance.ShowError(420,"Something went wrong!"); 
+        ErrorPopUpHandler.instance.ShowError(501,"Something went wrong!"); 
         }
 
     }   
