@@ -313,7 +313,7 @@ public class InfiniteScroll : MonoBehaviour
 
             //controller.tString = (controller.betAmount * float.Parse(controller.mString)).ToString("0.00");
             controller.Tstring = (controller.betAmount * controller.Multiplier).ToString();
-            controller.TakeCash = float.Parse(controller.Tstring);
+            controller.TakeCash = double.Parse(controller.Tstring);
 
             BonusMultiplier_txt.text = controller.Multiplier.ToString("0.00");
 

@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     [Header("Float")]
-    [SerializeField] public float betAmount = 1f;  // Initial bet amount
+    [SerializeField] public double betAmount = 1f;  // Initial bet amount
     public float Multiplier = 0.00f;  // Initial multiplier value
     public string Mstring;  // Initial multiplier value in String
     [SerializeField] float incrementRate = 1.01f;  // Increment rate
@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
     [SerializeField] float holdHeight = 2f; // Minimum time to hold the button
     [SerializeField] float timeHeld = 0f;   // Timer to track time button is held
     [SerializeField] string timeHold;   // Timer to track time 
-    public float TakeCash;  // TakeCash
+    public double TakeCash;  // TakeCash
     public string Tstring;  // TakeCash in String
     [SerializeField] int gameCounts;
     [SerializeField] double TotalAmount = 250.00f;  // Total Amount
@@ -509,7 +509,7 @@ public class GameController : MonoBehaviour
         PassTxt(takeCurrenyType, APIController.instance.userDetails.currency_type);
         /*PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);*/
         PassTxt(betAmountTxt, $"{betAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");
-        PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size=35>{APIController.instance.userDetails.currency_type}</size>");
+        PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size=30>{APIController.instance.userDetails.currency_type}</size>");
         DebugHelper.Log("Amount Details Subscribed");
     }
     private void OnSwitchTab(bool isFocus)
@@ -840,9 +840,10 @@ public class GameController : MonoBehaviour
         }
         if (startGame && !lost)
         {
-            Mstring = (MathF.Floor(Multiplier * 100) / 100f).ToString("0.00");
-            Tstring = (betAmount * float.Parse(Mstring)).ToString("0.00");
-            TakeCash = float.Parse(Tstring);
+            Mstring = (Mathf.FloorToInt(Multiplier * 100) / 100f).ToString("0.00");
+            Tstring = (betAmount * double.Parse(Mstring)).ToString("0.00");
+            TakeCash = double.Parse(Tstring);
+            //TakeCash = (betAmount * double.Parse(Mstring));
             takeCashWintxt.text = TakeCash.ToString("0.00");
         }
 
@@ -851,7 +852,7 @@ public class GameController : MonoBehaviour
             stopper = false;
             Multiplier += Time.deltaTime;
             Multiplier = Mathf.Min(Multiplier);
-            string s = (MathF.Floor(Multiplier * 100) / 100f).ToString("0.00");
+            string s = (Mathf.FloorToInt(Multiplier * 100) / 100f).ToString("0.00");
             multiplierTxt.text = s;
             multiplierTxt_Shadow.text = s;
             balloonBlue_Start.SetActive(false);
@@ -863,10 +864,12 @@ public class GameController : MonoBehaviour
             balloonShake_blue.SetActive(false);
             balloonParts.SetActive(false);
             balloonShake.SetActive(true);
-            string s = (MathF.Floor(Multiplier * 100) / 100f).ToString("0.00");
+            string s = (Mathf.FloorToInt(Multiplier * 100) / 100f).ToString("0.00");
             multiplierTxt.text = s;
             multiplierTxt_Shadow.text = s;
-            TakeCash = betAmount * Multiplier;
+
+            //TakeCash = betAmount * Multiplier;
+
             takeCashTxt.text = TakeCash.ToString("0.00");
             // Increment the timer by the time elapsed since the last frame
             timeSinceLastIncrement += Time.deltaTime;
@@ -893,7 +896,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (countTime >= 7)
+        if (countTime >= 6.5)
         {
             TakeButtonColor();
         }
@@ -931,12 +934,13 @@ public class GameController : MonoBehaviour
             // Increase the multiplier by the increment rate
             Multiplier *= incrementRate;
             // Update the multiplier text
-            string s = (MathF.Floor(Multiplier * 100) / 100f).ToString("0.00");
+            string s = (Mathf.FloorToInt(Multiplier * 100) / 100f).ToString("0.00");
             multiplierTxt.text = s;
             multiplierTxt_Shadow.text = s;
 
             // Calculate the win amount
-            TakeCash = betAmount * Multiplier;
+            //TakeCash = betAmount * Multiplier;
+
             // Update the take cash text
             takeCashTxt.text = TakeCash.ToString("0.00");
         }
@@ -977,15 +981,6 @@ public class GameController : MonoBehaviour
     }
     public void TakeCashOut() // TakeCash button
     {
-        ////////////////////////////////////////////////////////
-        //Color32 disabledColor = new Color32(194, 236, 166, 120);
-        //takeCashImg.color = new Color32(140, 140, 140, 255);
-        //takeCashtxt.color = disabledColor;
-        //takeCashWintxt.color = disabledColor;
-        //takeCurrencytxt.color = disabledColor;
-        //takeCash_Anim.gameObject.SetActive(false) ;
-
-        ////////////////////////////////////////////////////////
         InternetCheck = true;
 
         if (!isWin)
@@ -1108,8 +1103,9 @@ public class GameController : MonoBehaviour
     void API_Winning()
     {
         string message = "Game Won";
-        string value = TakeCash.ToString("F2");
-        float amount = float.Parse(value);
+        //string value = TakeCash.ToString("F2");
+        string value = TakeCash.ToString("0.00");
+        double amount = double.Parse(value);
         TransactionMetaData val = new TransactionMetaData();
         val.Amount = amount;
         val.Info = message;
@@ -1120,12 +1116,12 @@ public class GameController : MonoBehaviour
     public void WinningBetAPICall(double WinAmount, double PotAmount)   //WINNINGBETAPI CALLING METHOD
     {
         TransactionMetaData _metaData = new TransactionMetaData();
-        _metaData.Amount = (float)WinAmount;
+        _metaData.Amount = WinAmount;
         _metaData.Info = "Game Won";
         DebugHelper.Log($"1 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}");
 
         DebugHelper.Log(" WinningBetAPI , Checking Internet" + checking + MatchRes.MatchToken);
-        APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, (float)WinAmount, betAmount, PotAmount, _metaData, (success) =>
+        APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
             DebugHelper.Log($"2 WinningBetAPI Call ========> {WinAmount}  && POt Amount {PotAmount}  && bet index {BetIndex} , My Bet Amount {betAmount}");
 
@@ -1164,8 +1160,8 @@ public class GameController : MonoBehaviour
                     isNormal = true;
                 //}
 
-              //  Demo_Bonus();
-
+                //  Demo_Bonus();
+                
                 if ((WinCash_demo < 10))
                 {
                     audioController.PlayAudio(AudioEnum.winGame);
@@ -1223,7 +1219,6 @@ public class GameController : MonoBehaviour
 
         if (isNormal)
         {
-
             DebugHelper.Log("Check1");
             await UniTask.Delay(3500);
             TimeDelay();
@@ -1274,14 +1269,10 @@ public class GameController : MonoBehaviour
     void TimeDelay() // Clear UI
     {
         DebugHelper.Log("Check2");
-        //multiplierTxt.color = Color.white;
         multiplierTxt.color = new Color32(116, 85, 185, 255);
         xTxt.color = new Color32(116, 85, 185, 255);
         multiplierTxt_Shadow.color = Color.black;
-        xTxt_Shadow.color = Color.black; ;
-        //winTxt.color = Color.white;
-        //winTxt.color = Color.green;
-        //xTxt.color = Color.white;
+        xTxt_Shadow.color = Color.black;
         Multiplier = 0f;
         multiplierTxt.text = Multiplier.ToString("0.00");
         multiplierTxt_Shadow.text = Multiplier.ToString("0.00");
@@ -1385,11 +1376,6 @@ public class GameController : MonoBehaviour
         flewAway_Txt.SetActive(true);
         multiplierTxt.text = Multiplier.ToString("0.00");
         multiplierTxt_Shadow.text = Multiplier.ToString("0.00");
-        // Change the text color
-        //multiplierTxt.color = Color.black;
-        //xTxt.color = Color.black;
-        //multiplierTxt_Shadow.color = Color.black;
-        //xTxt_Shadow.color = Color.black;
         multiplierTxt.color = new Color32(248, 140, 52, 255);
         xTxt.color = new Color32(248, 140, 52, 255);
         makeLose = false;
@@ -1565,8 +1551,6 @@ public class GameController : MonoBehaviour
 
     #region ::::::::::::::::::::::::::: Event Trigger Buttons :::::::::::::::::::::::::::
     bool InternetCheck;
-
-    #region ::::::: OnClickDown :::::::
     public void OnClickDown()
     {
         APIController.instance.CheckInternetandProcess(async (success) =>
@@ -1718,7 +1702,6 @@ public class GameController : MonoBehaviour
         //API_IntitalizeBetAmount();
         isBegin = true;
     }
-    #endregion
     public void RNG_APICall()   //RNG_APICALL CALLING METHOD
     {
         APIController.instance.GetRNG_API(betAmount, operatorName, APIController.instance.userDetails.gameId, (_IsWin, _MaxWin, _gameCount) =>

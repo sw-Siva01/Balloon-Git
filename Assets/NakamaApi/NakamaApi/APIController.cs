@@ -1101,7 +1101,7 @@ public class APIController : MonoBehaviour
         // });
         return;
     }
-    public void GetRNG_API(float amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
+    public void GetRNG_API(double amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
     {
         WinLoseRNG winlogic = new()
         {
