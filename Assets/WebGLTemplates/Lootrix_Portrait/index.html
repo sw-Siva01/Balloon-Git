@@ -1,7 +1,3 @@
-<!-- <?php 
-include_once("../game_manager.php");
-?> -->
-
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
@@ -11,7 +7,7 @@ include_once("../game_manager.php");
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="../style.css">
     <link rel="manifest" href="manifest.webmanifest">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../jquery.min.js"></script>
   </head>
   <body id="fullscreenDiv">
       <div id="unity-container">
@@ -49,15 +45,13 @@ include_once("../game_manager.php");
       </div>
       <script>
               var currentDate = new Date();
-          // Get the current date components
-          var year = currentDate.getFullYear(); // Full year (e.g., 2024)
-          var month = currentDate.getMonth() + 1; // Month (0-11, so we add 1 for human readability)
-          var day = currentDate.getDate(); // Day of the month (1-31)
-          // Get the current time components
-          var hours = currentDate.getHours(); // Hours (0-23)
-          var minutes = currentDate.getMinutes(); // Minutes (0-59)
-          var seconds = currentDate.getSeconds(); // Seconds (0-59)
-          // Combine date and time components into a single string variable
+          var year = currentDate.getFullYear(); 
+          var month = currentDate.getMonth() + 1;
+          var day = currentDate.getDate(); 
+          var hours = currentDate.getHours(); 
+          var minutes = currentDate.getMinutes(); 
+          var seconds = currentDate.getSeconds(); 
+
           var currentDateTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
       var applicationInstance;
       window.addEventListener("load", function () {
@@ -73,12 +67,6 @@ include_once("../game_manager.php");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -121,20 +109,7 @@ include_once("../game_manager.php");
         showBanner: unityShowBanner,
       };
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-      }
 
 #if BACKGROUND_FILENAME
       canvas.style.background = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
@@ -143,16 +118,6 @@ include_once("../game_manager.php");
       loadingtext.style.display = "block";
       var script = document.createElement("script");
       script.src = loaderUrl;
-      // script.onload = () => {
-      //   createUnityInstance(canvas, config, (progress) => {
-      //     progressBarFull.style.width = 100 * progress + "%";
-      //   }).then((unityInstance) => {
-      //     applicationInstance = unityInstance;
-      //     loadingBar.style.display = "none";
-      //   }).catch((message) => {
-      //    // alert(message);
-      //   });
-      // };
       script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
          
@@ -165,7 +130,7 @@ include_once("../game_manager.php");
             loadingBar.style.display = "none";
             loadingtext.style.display = "none";
           }).catch((message) => {
-           // alert(message);
+
           });
         };
       document.body.appendChild(script);
@@ -174,7 +139,6 @@ include_once("../game_manager.php");
      
        
 
-     // Unity's loading progress handler
      function onUnityProgress(progress) {
        var loadProgress = Math.round(progress * 100);
 
@@ -201,15 +165,10 @@ include_once("../game_manager.php");
      window.onUnityProgress = onUnityProgress;
       </script>
       <script>
-
-          // Create a new script element with the updated src attribute
           var script = document.createElement('script');
           script.src = "../ingame.js?timefornocatch=" + currentDateTime;
           document.head.appendChild(script);
         function GetLoginDetails(data) {
-            // GetBotData();
-            //      SetParentUrl();
-
             if (getParentUrl() == null) {
                 window.applicationInstance.SendMessage("APIController", "SetUserData", "");
                  return;
@@ -232,17 +191,6 @@ include_once("../game_manager.php");
             }
             console.log(name);
             console.log("------------");
-            // var userData = {
-            //   Id: user,
-            //   token: token,
-            //   name: uname,
-            //   balance: amount,
-            //   currency_type: currencyType,
-            //   game_Id: 'defaultgame',
-            //   isBlockApiConnection: isPlayFun,
-            //   bootAmount: '',
-            // };
-            // window.applicationInstance.SendMessage("APIController", "GetLoginDataResponseFromWebGL", "" + userData);
         }
         function getParentUrl() {
             var isInIframe = (parent !== window),
@@ -252,25 +200,6 @@ include_once("../game_manager.php");
             }
             return parentUrl;
         }
- 
-       
-        // function GetRandomPrediction(type,rowCount,columnCount,predictionCount)
-        // {
-        //   if (getParentUrl() == null) {
-        //           return;
-        //       }
-        //       var jsondata = {
-        //           event: type,
-        //           data: {
-        //             rowCount: rowCount,
-        //             columnCount: columnCount,
-        //             predictionCount: predictionCount                     
-        //           }
-        //       };
-        //       var jsonString = JSON.stringify(jsondata);
-        //       console.log(jsondata);
-        //       window.parent.postMessage(jsonString, '*'); 
-        // }
       </script>
       <script>
      
