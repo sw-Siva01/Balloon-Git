@@ -29,6 +29,7 @@ public class SettingsPanelHandler : UIHandler
     private void Awake()
     {
         instance = this;
+
         _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });
 
         howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
@@ -76,6 +77,8 @@ public class SettingsPanelHandler : UIHandler
         if (SoundToggle.isOn)
             MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
 
+         if (!Updatetoggle) return;
+
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
     }
@@ -88,6 +91,8 @@ public class SettingsPanelHandler : UIHandler
         musicTogWelcome.isOn = _state;
 
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
+
+        if (!Updatetoggle) return;
 
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
@@ -168,9 +173,11 @@ public class SettingsPanelHandler : UIHandler
         });
     }
 
+    bool Updatetoggle = false;
     public void SetToggleValueFromAPI(bool sound, bool music)
     {
         SoundToggle.isOn = sound;
         MusicToggle.isOn = music;
+        Updatetoggle = true;
     }
 }

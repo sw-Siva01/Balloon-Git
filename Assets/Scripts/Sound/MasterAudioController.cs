@@ -194,5 +194,18 @@ public class MasterAudioController : MonoBehaviour
         }
        
     }
+
+    public bool IsAnyAudioPlaying()
+    {
+        foreach (var audioType in audiosActive)
+        {
+            foreach (var audioSource in audioType.audioActive)
+            {
+                if (audioSource.isPlaying)
+                    return true;
+            }
+        }
+        return false;
+    }
 }
 

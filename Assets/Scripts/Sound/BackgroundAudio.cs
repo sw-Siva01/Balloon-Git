@@ -75,6 +75,14 @@ public class BackgroundAudio : MonoBehaviour
         }
     }
 
+    public void PlayAudioBGM()
+    {
+        if (!bgmAudioSource.isPlaying)
+        {
+            bgmAudioSource.Play();
+        }
+    }
+
     public void PlayGameBGM()
     {
 

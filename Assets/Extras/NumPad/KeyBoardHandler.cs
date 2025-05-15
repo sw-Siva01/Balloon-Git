@@ -75,7 +75,7 @@ public class KeyBoardHandler : MonoBehaviour
             else
             {
                 displayText.text = currentInput;
-                controller.betAmount = float.Parse(currentInput);
+                controller.betAmount = double.Parse(currentInput);
             }
         }
         else
@@ -154,7 +154,7 @@ public class KeyBoardHandler : MonoBehaviour
             DebugHelper.Log("KeyPad Input WIth Some Values");
         }
         DebugHelper.Log("OnSubmitInput Called");
-        BetInputController.Instance.CloseKeyPadPanel();
+        //BetInputController.Instance.CloseKeyPadPanel();
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
     }
 
@@ -205,7 +205,7 @@ public class KeyBoardHandler : MonoBehaviour
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
     }
 
-    public void ShowKeyBoard(float currentValue, Action<float> _onSubmitAction, Action<float> _onValueChanged, Action<float> _onCancelAction)
+    public void ShowKeyBoard(double currentValue, Action<float> _onSubmitAction, Action<float> _onValueChanged, Action<float> _onCancelAction)
     {
         BetInputController.Instance.BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         BetInputController.Instance.BetAmtInput.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;

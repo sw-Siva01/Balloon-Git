@@ -2,21 +2,35 @@ mergeInto(LibraryManager.library, {
   CloseWindow: function () {
   ExitGame();
   },
-  GetUpdatedBalance: function () {
+  UpdateBalance: function () {
   GetBalance();
-  },
-  DisconnectGame: function (msg) {
-  Disconnect(UTF8ToString(msg));
-  },
-  ExternalApiResponse: function (msg) {
-  ExecuteAPIResponse(UTF8ToString(msg));
   },
   SetAudio: function (sound,music) {
   SetGameAudio(sound,music);
   },
-  UpdateBalance: function () {
-    GetBalance();
+  DisconnectGame: function (msg) {
+  Disconnect(UTF8ToString(msg));
   },
+  IsMobileBrowser: function () {
+       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        if (/Mobi|Android|iPhone|iPod|Windows Phone/i.test(userAgent)) {
+            return true;
+        }
+        if (/iPad/i.test(userAgent)) {
+            return true;
+        }
+        return false;
+  },
+  isMousePresent: function () {
+        const hasMouse = matchMedia('(pointer:fine)').matches; // Detects devices like a mouse or trackpad
+        return hasMouse ? 1 : 0; // Convert boolean to an integer (1 for true, 0 for false)
+    },
+    detectInputDevice: function () {
+        const mouseDetected = matchMedia('(pointer:fine)').matches; // Detect mouse presence
+        // Assuming sendToUnity is a C# function invoked via UnitySendMessage
+        const detected = mouseDetected ? 1 : 0; // Convert boolean to an integer
+        return detected;
+    },
   GetLoginData: function () {
   GetLoginDetails("game");
   },
@@ -31,6 +45,12 @@ mergeInto(LibraryManager.library, {
   },
   ExecuteExternalUrl: function (url,timeout) {
   ExecuteExternalRequestWithResponse(UTF8ToString(url),timeout);
+  },
+  InternetCheckResponse: function () {
+  CheckInternet();
+  },
+    ExternalApiResponse: function (msg) {
+  ExecuteAPIResponse(UTF8ToString(msg));
   },
   GetABot: function () {
   GetBotData();
@@ -62,5 +82,14 @@ mergeInto(LibraryManager.library, {
   GetRandomPrediction: function(type,rowCount,columnCount,predictedCount)
   {
     GetRandomPrediction(UTF8ToString(type),rowCount,columnCount,predictedCount);
+  },
+  RegisterMouseEvents: function () {
+    var canvas = document.getElementById('unity-canvas');
+    canvas.addEventListener('mouseleave', function () {
+      SendMessage('CursorController', 'OnMouseLeaveCanvas');
+    });
+    canvas.addEventListener('mouseenter', function () {
+      SendMessage('CursorController', 'OnMouseEnterCanvas');
+    });
   }
 });

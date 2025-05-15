@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Nakama.Helpers;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Audio;
 
 public class GameController : MonoBehaviour
 {
@@ -113,7 +114,7 @@ public class GameController : MonoBehaviour
     private bool isBegin;
     private bool pauseGame;
     private bool isPressed;
-    private bool buttonPress;
+    public bool buttonPress;
     private bool takeBetAmount;
     private bool isSet;
     private bool isFire;
@@ -127,7 +128,7 @@ public class GameController : MonoBehaviour
     private bool touch;
     private bool stopper;
     private bool timerCount = true;
-    public bool IsCreateMatchCalled=false;  
+    private bool IsCreateMatchCalled = false;
 
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -279,9 +280,15 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Panel")]
-    [SerializeField] 
+    [SerializeField]
     public GameObject RedirectionPanel;
 
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("IDLE_TimerCount")]
+    [SerializeField] float currentTime;
+    [SerializeField] float startCount = 10f;
+    [SerializeField] GameObject showPopUp;
 
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -310,6 +317,8 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        audioController.muteAllAudio = true;
+        AudioListener.volume = 0;
         CanPlayAudio = false;
         settingsBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.CallingSettingPanel());
     }
@@ -356,8 +365,9 @@ public class GameController : MonoBehaviour
         timeRemaining = 0f; // Start the timer at 0
 
 
-        
-
+        // Start coroutines for IDLE_TimerCount
+        currentTime = startCount;
+        StartCoroutine(nameof(CoundownTimerforIdle));
 
 
         for (int i = 0; i < setected_Buttons.Count; i++)
@@ -396,7 +406,7 @@ public class GameController : MonoBehaviour
                 isRayHitActive = true;
 
                 if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
-                    !NetworkHandler.instance.ConnectionPanel.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
+                    !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
                     !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue)
                 {
                     Button_ONEnter();
@@ -415,6 +425,7 @@ public class GameController : MonoBehaviour
                 isRayHitActive = true;
             }
         }
+
 
         // Handle Mouse Button Release or when no ray hit
         if (!isRayHitActive)
@@ -472,8 +483,8 @@ public class GameController : MonoBehaviour
             CanPlayAudio = true;
             settingsPanelHandler.HideMe();
             Welcom_Button();
+            audioController.BackgroundAudio.PlayAudioBGM();
         }
-
 
         for (int i = 0; i < 4; i++)
         {
@@ -485,7 +496,7 @@ public class GameController : MonoBehaviour
 
         //////////////////////////////////////////////////////////////////////
         betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
-        betAmountTxt.text = $"{betAmount:0.00} <size=30>{currencyType}</size>";
+        betAmountTxt.text = $"{betAmount:F2} <size=30>{currencyType}</size>";
         ButtonSelect_Anim();
         fireObj.SetActive(true);
         fireIdleObj.SetActive(true);
@@ -496,8 +507,9 @@ public class GameController : MonoBehaviour
         ///
 
         DebugHelper.Log("Player Details Subscribed");
-
         settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
+        audioController.muteAllAudio = false;
+
     }
     public void InitAmountDetails()
     {
@@ -622,6 +634,7 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
+                Debug.Log("InsufficientPopUpAppers ==>>>_1 : " + buttonPress);
             }
         }
 
@@ -758,7 +771,6 @@ public class GameController : MonoBehaviour
         yield return null;
         StartCoroutine(nameof(HolidngButtons));
     }
-    #endregion
     IEnumerator Backgourn_Ballon_Fly()
     {
         while (true)
@@ -767,6 +779,43 @@ public class GameController : MonoBehaviour
             yield return null;
         }
     }
+    IEnumerator CoundownTimerforIdle()
+    {
+        if (!startGame)
+        {
+            if (!LoadingPopUp.activeSelf && !take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
+                        !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf)
+            {
+                currentTime -= 1 * Time.deltaTime;
+
+                if (currentTime <= 0)
+                {
+                    currentTime = 0;
+                    showPopUp.SetActive(true);
+                }
+            }
+            else if (!LoadingPopUp.activeSelf && !take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
+                        !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf)
+            {
+                currentTime = 60;
+                showPopUp.SetActive(false);
+            }
+
+            if ((audioController != null && audioController.IsAnyAudioPlaying()))
+            {
+                currentTime = 60;
+                showPopUp.SetActive(false);
+            }
+        }
+        else if (startGame)
+        {
+            currentTime = 60;
+            showPopUp.SetActive(false);
+        }
+        yield return null;
+        StartCoroutine(nameof(CoundownTimerforIdle));
+    }
+    #endregion
     void BonusBalloon()
     {
         if (isBonus_1 || isBonus_2 || isBonus_3 || isScroll)
@@ -951,7 +1000,6 @@ public class GameController : MonoBehaviour
         DebugHelper.Log("Process Final Winnings Changed");
     }
     bool checking = false;
-
     public ImageSequencer imageSequencer;
     public void Animation_Pause()
     {
@@ -1043,6 +1091,7 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
+                Debug.Log("InsufficientPopUpAppers ==>>>_2 : " + buttonPress);
                 BetResetForInsufficient();
             }
             return;
@@ -1057,7 +1106,7 @@ public class GameController : MonoBehaviour
         val.Amount = betAmount;
         val.Info = message;
         string m = betAmount.ToString("0.00");
-        betAmount = float.Parse(m);
+        betAmount = double.Parse(m);
         DebugHelper.Log("LocalInitializeBet Controller.BetButtonclik ");
         DebugHelper.Log("BetAMount ********* " + betAmount + " " + " Balance ******* " + TotalAmount);
         List<string> _list = new List<string>();
@@ -1157,11 +1206,11 @@ public class GameController : MonoBehaviour
                 //}
                 //else
                 //{
-                    isNormal = true;
+                isNormal = true;
                 //}
 
                 //  Demo_Bonus();
-                
+
                 if ((WinCash_demo < 10))
                 {
                     audioController.PlayAudio(AudioEnum.winGame);
@@ -1382,7 +1431,7 @@ public class GameController : MonoBehaviour
         unPress.SetActive(true);
         pressed.SetActive(false);
 
-        IsCreateMatchCalled=false;
+        IsCreateMatchCalled = false;
         Invoke("TimeDelay", 1.5f);
     }
     public void BetResetForInsufficient()
@@ -1444,10 +1493,11 @@ public class GameController : MonoBehaviour
     async void Slider_Objs()
     {
         await UniTask.Delay(200);
-        slider_bg.SetActive(true);
-        fillArea.SetActive(true);
         slider_txt.SetActive(true);
         sliderTxt.text = sliderDupTxt.text.ToString();
+        await UniTask.Delay(500);
+        slider_bg.SetActive(true);
+        fillArea.SetActive(true);
     }
 
     #region ::::::::::::::::::::::::::: Bonus Functions :::::::::::::::::::::::::::
@@ -1578,8 +1628,8 @@ public class GameController : MonoBehaviour
             }
 
             // Format amounts with two decimal places
-            TotalAmount = float.Parse(TotalAmount.ToString("0.00"));
-            betAmount = float.Parse(betAmount.ToString("0.00"));
+            TotalAmount = double.Parse(TotalAmount.ToString("0.00"));
+            betAmount = double.Parse(betAmount.ToString("0.00"));
 
             // Deactivate active button animations
             foreach (var button in button_Anim.Where(button => button.activeSelf))
@@ -1588,13 +1638,12 @@ public class GameController : MonoBehaviour
             }
 
             // Game setup if conditions are met
-            if (!startGame && !gameLost && !isBegin && !NetworkHandler.instance.ConnectionPanel.activeSelf)
+            if (!startGame && !buttonPress && !gameLost && !isBegin && !NetworkHandler.instance.ConnectionPanel.activeSelf)
             {
                 //SetupGameForNewRound();
                 if (!IsCreateMatchCalled)
                 {
                     API_IntitalizeBetAmount();
-
                 }
                 else
                 {
@@ -1603,9 +1652,8 @@ public class GameController : MonoBehaviour
             }
             while (!startGame)
             {
-                await UniTask.Delay(100);  
+                await UniTask.Delay(100);
             }
-
             SetupGameForNewRound();
         });
 
@@ -1798,7 +1846,7 @@ public class GameController : MonoBehaviour
         ButtonSelect_Anim();
 
         // Activate the hand gestures and slider animation
-     //   handGestures_btAmt.SetActive(true);
+        //   handGestures_btAmt.SetActive(true);
         slider_Anim.SetBool("isON", true);
 
         // Call method to handle slider objects
@@ -1820,8 +1868,8 @@ public class GameController : MonoBehaviour
         if (!startGame && !take && !isScroll && !onClick)
         {
             // Set the bet amount
-            betAmount = (float)betValue;
-            betAmountTxt.text = $"{betAmount:0.00} <size=30>{currencyType}</size>";
+            betAmount = betValue;
+            betAmountTxt.text = $"{betAmount:F2} <size=30>{currencyType}</size>";
             BetAmountTxt_Scaling();
 
             // Set buttons' active state based on bet amount
@@ -2130,18 +2178,18 @@ public class GameController : MonoBehaviour
     }
     public void HandGesture()
     {
-       
-            // Deactivate and activate UI elements
-            handGestures_btAmt.SetActive(false);
-           // handGestures_start.SetActive(true);
 
-            // Enable necessary components
-            heatbtnCollider.enabled = true;
-            fireIdleObj.SetActive(true);
+        // Deactivate and activate UI elements
+        handGestures_btAmt.SetActive(false);
+        // handGestures_start.SetActive(true);
 
-            // Play animation
-            heat_IdleAnim.SetBool("isPlay1", true);
-        
+        // Enable necessary components
+        heatbtnCollider.enabled = true;
+        fireIdleObj.SetActive(true);
+
+        // Play animation
+        heat_IdleAnim.SetBool("isPlay1", true);
+
     }
     public void Insufficient_OFF()
     {
@@ -2151,6 +2199,11 @@ public class GameController : MonoBehaviour
 
 
 
+    }
+    public void Close_ShowPopUp() // Show PopUp for Close Button
+    {
+        currentTime = 60;
+        showPopUp.SetActive(false);
     }
     #endregion
 
