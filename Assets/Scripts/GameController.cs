@@ -327,7 +327,9 @@ public class GameController : MonoBehaviour
         audioController.muteAllAudio = true;
         AudioListener.volume = 0;
         CanPlayAudio = false;
-        settingsBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.CallingSettingPanel());
+        settingsPanelHandler.settingsBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.CallingSettingPanel());
+        settingsPanelHandler.settingsCloseBtn.onClick.AddListener(() => UI_Controller.instance.settingsHandler.HideMe());
+
     }
     private void Start()
     {
@@ -361,6 +363,10 @@ public class GameController : MonoBehaviour
         StartCoroutine(HolidngButtons());
         StartCoroutine(nameof(TimerCount));
         StartCoroutine(FillImg());
+
+        // Settings Button
+        settingsPanelHandler.settingsCloseBtn.gameObject.SetActive(false);
+        settingsPanelHandler.settingsBtn.gameObject.SetActive(true);
 
         // Background position
         initialBackgroundPosition = background.localPosition;
@@ -1873,7 +1879,7 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
-    public Button settingsBtn;
+    
     public int currentClickValue;
     public void BetButtonPressed(int betValue)
     {

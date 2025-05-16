@@ -25,15 +25,17 @@ public class SettingsPanelHandler : UIHandler
     public Toggle MusicToggle;
     public Toggle soundTogWelcome, musicTogWelcome;
     public GameObject RedirectingPanel;
+
+    public Button settingsBtn;
+    public Button settingsCloseBtn;
+    [SerializeField] private Button gameLimits_Btn;
+    [SerializeField] private GameObject gameLimits;
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
         instance = this;
-
         _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });
-
         howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
-
         ExitBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnExitBtnClick(); });
         emptySpaceBtn.onClick.AddListener(() =>
         {
@@ -46,6 +48,8 @@ public class SettingsPanelHandler : UIHandler
         MusicToggle.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
         soundTogWelcome.onValueChanged.AddListener((state) => { ToggleSound(state); });
         musicTogWelcome.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
+
+        gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
     }
     public void FullScreenFunc()
     {
@@ -115,6 +119,9 @@ public class SettingsPanelHandler : UIHandler
         PanelTransform.GetComponent<CanvasGroup>().DOFade(0, 0.3f).OnComplete(() => { gameObject.SetActive(false); PanelTransform.gameObject.SetActive(false); });
         SwapSpriteSequence?.Invoke();
         emptySpaceObj.SetActive(false);
+        Debug.Log("SettingPanel__Close :");
+        settingsCloseBtn.gameObject.SetActive(false);
+        settingsBtn.gameObject.SetActive(true);
     }
     public void Welcomebtn_OFF()
     {
@@ -137,6 +144,9 @@ public class SettingsPanelHandler : UIHandler
         {
             UI_Controller.instance.settingsHandler.ShowMe();
             UI_Controller.instance.PlayButtonSound();
+            Debug.Log("SettingPanel__Open :");
+            settingsBtn.gameObject.SetActive(false);
+            settingsCloseBtn.gameObject.SetActive(true);
         }
         else
         {
@@ -179,5 +189,13 @@ public class SettingsPanelHandler : UIHandler
         SoundToggle.isOn = sound;
         MusicToggle.isOn = music;
         Updatetoggle = true;
+    }
+
+    public void ShowGameLimitScreen()
+    {
+        gameLimits.SetActive(true);
+        HideMe();
+        settingsBtn.gameObject.SetActive(true);
+        settingsCloseBtn.gameObject.SetActive(false);
     }
 }
