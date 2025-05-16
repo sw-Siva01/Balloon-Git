@@ -288,7 +288,14 @@ public class GameController : MonoBehaviour
     [Header("IDLE_TimerCount")]
     [SerializeField] float currentTime;
     [SerializeField] float startCount = 10f;
-    [SerializeField] GameObject showPopUp;
+    [SerializeField] GameObject sessionTimeOut;
+
+    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
+
+    [Header("GameLimits_TMP-Txt")]
+    [SerializeField] private TMP_Text minBetTxt;
+    [SerializeField] private TMP_Text maxBetTxt;
+    [SerializeField] private TMP_Text maxWinOneBetTxt;
 
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -502,9 +509,19 @@ public class GameController : MonoBehaviour
         fireIdleObj.SetActive(true);
         unPress.SetActive(true);
         pressed.SetActive(false);
+        ////////////////////////////////////////////////////////////////////// 
 
-        ////////////////////////////////////////////////////
-        ///
+
+        //// Game Limits /////
+        minBetTxt.text = $"{APIController.instance.authentication.entryAmountDetails.minBetValue:F2} <size=20>{currencyType}</size>";
+        maxBetTxt.text = $"{APIController.instance.authentication.entryAmountDetails.maxBetValue:F2} <size=20>{currencyType}</size>";
+
+        if (APIController.instance.authentication.operatorname == "demo")
+            maxWinOneBetTxt.text = $"{10000:F2} {APIController.instance.userDetails.currency_type}";
+        else
+            maxWinOneBetTxt.text = $"{100000:F2} {APIController.instance.userDetails.currency_type}";
+        //// Game Limits /////
+
 
         DebugHelper.Log("Player Details Subscribed");
         settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
@@ -791,26 +808,26 @@ public class GameController : MonoBehaviour
                 if (currentTime <= 0)
                 {
                     currentTime = 0;
-                    showPopUp.SetActive(true);
+                    sessionTimeOut.SetActive(true);
                 }
             }
             else if (!LoadingPopUp.activeSelf && !take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf &&
                         !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf)
             {
                 currentTime = 60;
-                showPopUp.SetActive(false);
+                sessionTimeOut.SetActive(false);
             }
 
             if ((audioController != null && audioController.IsAnyAudioPlaying()))
             {
                 currentTime = 60;
-                showPopUp.SetActive(false);
+                sessionTimeOut.SetActive(false);
             }
         }
         else if (startGame)
         {
             currentTime = 60;
-            showPopUp.SetActive(false);
+            sessionTimeOut.SetActive(false);
         }
         yield return null;
         StartCoroutine(nameof(CoundownTimerforIdle));
@@ -1446,8 +1463,8 @@ public class GameController : MonoBehaviour
     }
     void Winning_Animations()
     {
-        //winTxt.text = Multiplier.ToString("0.00" + " <size=80>X</size>");
-        winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
+        //winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
+        winTxt.text = TakeCash.ToString("0.00" + " INR");
         WinTxtObj();
     }
     public void TakingCash()
@@ -1461,15 +1478,16 @@ public class GameController : MonoBehaviour
         winTxt.transform.DORotate(new Vector3(0f, 360f, 0f), 0.5f, RotateMode.FastBeyond360).SetEase(Ease.InOutSine);
         if (APIController.instance.userDetails.currency_type == "USD")
         {
-            winTxt.text = TakeCash.ToString("0.00" + " <size=70>USD</size>");
+            //winTxt.text = TakeCash.ToString("0.00" + " <size=70>USD</size>");
+            winTxt.text = TakeCash.ToString("0.00" + " USD");
         }
         else if (APIController.instance.userDetails.currency_type == "EUR")
         {
-            winTxt.text = TakeCash.ToString("0.00" + " <size=70>EUR</size>");
+            winTxt.text = TakeCash.ToString("0.00" + " EUR");
         }
         else if (APIController.instance.userDetails.currency_type == "INR")
         {
-            winTxt.text = TakeCash.ToString("0.00" + " <size=70>INR</size>");
+            winTxt.text = TakeCash.ToString("0.00" + " INR");
         }
 
         //winTxt.color = Color.green;
@@ -2200,10 +2218,10 @@ public class GameController : MonoBehaviour
 
 
     }
-    public void Close_ShowPopUp() // Show PopUp for Close Button
+    public void Close_sessionTimeOut() // Show PopUp for Close Button
     {
         currentTime = 60;
-        showPopUp.SetActive(false);
+        sessionTimeOut.SetActive(false);
     }
     #endregion
 
