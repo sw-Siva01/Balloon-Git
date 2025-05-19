@@ -4,6 +4,8 @@ using System.Collections;
 using TMPro;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using System;
+using Random = UnityEngine.Random;
 
 public class InfiniteScroll : MonoBehaviour
 {
@@ -303,8 +305,7 @@ public class InfiniteScroll : MonoBehaviour
 
         while (controller.Multiplier < bonusValue)
         {
-            controller.Mstring = controller.Multiplier.ToString("0.00");
-
+            controller.Mstring = (Mathf.FloorToInt(controller.Multiplier * 100) / 100f).ToString("0.00");
             if (controller.Multiplier < bonusValue)
             {
                 controller.Multiplier += bfloat * Time.deltaTime;
