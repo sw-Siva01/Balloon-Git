@@ -55,7 +55,7 @@ public class HOWTOPLAY : MonoBehaviour
         string bulletIndentLeftTag = $"<indent={bulletIndent}em>", bulletindentRightTag = "</indent>";
         //string boldStyleLeft = "<size=40><b><alpha=#FF>", boldStylRight = "</b></size><alpha=#70>";
         string semiBoldStyleLeft = "<size=32><b><alpha=#FF>", semiBoldStyleRight = "</b></size><alpha=#70>";
-        string boldStyleLeft = "<size=40><b><alpha=#FF><color=#FB9718>", boldStylRight = "</b></color></size>";
+        string boldStyleLeft = "<size=35><b><alpha=#FF><color=#FB9718>", boldStylRight = "</b></color></size>";
         foreach (char c in rawText)
         {
 
