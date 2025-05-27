@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 public class InfiniteScroll : MonoBehaviour
 {
-    #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
+   /* #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     [Header("GameController Script")]
     [SerializeField] GameController controller;
 
@@ -331,56 +331,6 @@ public class InfiniteScroll : MonoBehaviour
             .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
     }
 
-    #region :::::::::::: CountText_Animation OLD ::::::::::::
-    /*void CountText_Animation()
-    {
-        // DoTween Text in Sequence
-        Sequence sequence = DOTween.Sequence();
-        switch (Count)
-        {
-            case 1:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_2.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                        .Join(numbCount_1.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_1.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-                break;
-            case 2:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_3.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                        .Join(numbCount_2.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_2.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-                break;
-            case 3:
-                // Add the first scale animation and move animation to the sequence
-                sequence.Append(numbCount_1.DOScale(new Vector3(0f, 0f, 0f), 0.01f).SetEase(Ease.InOutSine))
-                        .Join(numbCount_3.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 255), 1f).SetEase(Ease.Linear));
-
-                // Add a delay of 1 second
-                sequence.AppendInterval(0.01f);
-
-                // Add the second scale animation to the sequence
-                sequence.Append(numbCount_3.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine))
-                        .Join(GlowEffect.DOColor(new Color32(255, 255, 255, 0), 1f).SetEase(Ease.Linear));
-                break;
-        }
-    }*/
-    #endregion :::::::::::: CountText_Animation OLD ::::::::::::
-
     #region :::::::::::: CountText_Animation NEW ::::::::::::
     void CountText_Animation()
     {
@@ -433,5 +383,5 @@ public class InfiniteScroll : MonoBehaviour
         BonusMultiplier_txt.text = 0.00f.ToString("0.00");
         controller.isScroll = false;
         StopAllCoroutines();
-    }
+    }*/
 }

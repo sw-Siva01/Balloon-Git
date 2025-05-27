@@ -7,7 +7,7 @@ using TMPro;
 
 public class Fill_Img : MonoBehaviour
 {
-    #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
+    /*#region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     [Header("Script")]
     [SerializeField] GameController controller;
@@ -66,7 +66,6 @@ public class Fill_Img : MonoBehaviour
     public MasterAudioController audioController;
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------//
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
-
     private void Awake()
     {
         instance = this;
@@ -268,14 +267,12 @@ public class Fill_Img : MonoBehaviour
                     .Append(activeElement.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine));
         }
     }
-
     void SettingOFF()
     {
         // Reset numbCount_1 scale to zero
         numbCount_1.DOScale(Vector3.zero, 0.01f).SetEase(Ease.InOutSine);
     }
     #endregion
-
     private void OnDisable()
     {
         if (Timer >= 10)
@@ -291,5 +288,5 @@ public class Fill_Img : MonoBehaviour
         fill_Meter.SetActive(false);
 
         StopAllCoroutines();
-    }
+    }*/
 }

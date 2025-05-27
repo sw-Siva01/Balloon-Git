@@ -40,7 +40,9 @@ public class BetInputController : MonoBehaviour
     {
         //if (BetPanel.gameObject.activeSelf)
         //{
-            if (Input.GetKeyDown(KeyCode.Return))
+        if ((Input.GetKeyDown(KeyCode.Return)) || (Input.GetKeyDown(KeyCode.KeypadEnter)))
+        {
+            if (_KeyBoardHandler.gameObject.activeSelf)
             {
                 DebugHelper.Log("Enter key was pressed!");
                 CloseKeyPadPanel();
@@ -49,16 +51,8 @@ public class BetInputController : MonoBehaviour
                     BetAmtInput.textViewport.gameObject.SetActive(false);
                 }
             }
-            if (Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
-                DebugHelper.Log("Enter key was pressed!");
-                CloseKeyPadPanel();
-                if (!GameController.instance.numBool)
-                {
-
-                    BetAmtInput.textViewport.gameObject.SetActive(false);
-                }
-            }
+          
+        }
         //}
     }
     public void OpenKeyPadPanel()
@@ -162,7 +156,7 @@ public class BetInputController : MonoBehaviour
 
                 controller.numPad = true;
                 OpenKeyPadPanel();
-
+                _KeyBoardHandler.gameObject.SetActive(true);
                 _KeyBoardHandler.ShowKeyBoard(GetTruncatedValue2(controller.betAmount),
                  (float inputValue) =>
                  {
@@ -255,7 +249,7 @@ public class BetInputController : MonoBehaviour
             KeyBoardHandler.instance.cancelButton.gameObject.SetActive(false);
 
         }
-
+        _KeyBoardHandler.gameObject.SetActive(false);
         EnableBetInput();
         DebugHelper.Log("CloseKeyPadPanel Done ");
         controller.HandGesture();

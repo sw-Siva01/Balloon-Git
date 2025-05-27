@@ -1,4 +1,6 @@
 
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class NetworkHandler : MonoBehaviour
@@ -8,11 +10,25 @@ public class NetworkHandler : MonoBehaviour
     public static NetworkHandler instance;
 
     public GameObject waitingForResponse;
+    public GameObject SessionPopup;
+
+    private DateTime _LastActiveTime;
+    [SerializeField] private double _SessionDelay;
 
     private void Start()
     {
         instance = this;
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
+        SetDelay(60);
+        StartIdleSession();
+    }
+
+    private void Update()
+    {
+        if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.startGame) || (SettingsPanelHandler.instance.HTP.gameObject.activeSelf && Input.mouseScrollDelta.y != 0))
+        {
+            StartIdleSession();
+        }
     }
 
     public void GetNetworkStatus(NetworkStatus data)
@@ -44,11 +60,6 @@ public class NetworkHandler : MonoBehaviour
             CancelInvoke(nameof(CheckToEnable));
             ConnectionPanel.SetActive(false);
             ServerPopPanel.SetActive(false);
-            /*if (ConnectionPanel.activeSelf || ServerPopPanel.activeSelf)
-            {
-                ConnectionPanel.SetActive(false);
-                ServerPopPanel.SetActive(false);
-            }*/
         }
         DebugHelper.Log("AudioController.Instance.IsActive");
         DebugHelper.Log("APIController.instance.isOnline");
@@ -77,5 +88,40 @@ public class NetworkHandler : MonoBehaviour
     {
         waitingForResponse.gameObject.SetActive(false);
         ConnectionPanel.SetActive(false);
+    }
+
+    private IEnumerator ValidateIdle()
+    {
+        while ((DateTime.Now - _LastActiveTime).TotalSeconds <= _SessionDelay)
+        {
+            yield return new WaitForSeconds(1f);
+            DebugHelper.Log($"ValidateIdle : {DateTime.Now}");
+        }
+        if (!GameController.instance.startGame && !GameController.instance.autoPlayPanel.activeSelf)
+            SessionPopup.SetActive(true);
+        SetDelay();
+    }
+
+    public void StartIdleSession(bool _check = true)
+    {
+        if (SessionPopup.activeSelf) { return; }
+
+        StopCoroutine(nameof(ValidateIdle));
+        if (_check)
+        {
+            _LastActiveTime = DateTime.Now;
+            DebugHelper.Log($"Active Time : {_LastActiveTime}, {_SessionDelay}");
+            StartCoroutine(nameof(ValidateIdle));
+        }
+    }
+
+    public DateTime GetLastActiveTime()
+    {
+        return _LastActiveTime;
+    }
+
+    public void SetDelay(double delay = 60)
+    {
+        _SessionDelay = delay;
     }
 }

@@ -18,6 +18,7 @@ public class SettingsPanelHandler : UIHandler
     public UnityAction SwapSpriteSequence;
     public Button emptySpaceBtn;
     public GameObject emptySpaceObj;
+    public GameObject HTP;
     public string playerName;
     public Button _fullScreen;
     public TMP_Text playerNameTxt;
@@ -29,7 +30,7 @@ public class SettingsPanelHandler : UIHandler
     public Button settingsBtn;
     public Button settingsCloseBtn;
     [SerializeField] private Button gameLimits_Btn;
-    [SerializeField] private GameObject gameLimits;
+    public GameObject GameLimits;
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
@@ -193,7 +194,7 @@ public class SettingsPanelHandler : UIHandler
 
     public void ShowGameLimitScreen()
     {
-        gameLimits.SetActive(true);
+        GameLimits.SetActive(true);
         HideMe();
         settingsBtn.gameObject.SetActive(true);
         settingsCloseBtn.gameObject.SetActive(false);

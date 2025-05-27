@@ -1,0 +1,198 @@
+using System;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class AutoplayInputHandler : MonoBehaviour
+{
+    public TMP_InputField inputField;
+    public float minVal, maxVal;
+    public Button plusButton, minusButton;
+    public Toggle toggle;
+    float incrementValue = 1f;
+    public TMP_Text currencyValue;
+    public TMP_Text InputField_txt;
+    public bool isToggle;
+
+    private float InputValue { get; set; }
+
+    void OnEnable()
+    {
+        SubscribeToEvents();
+
+        if (!isToggle)
+        {
+            minVal = 0;
+            maxVal = APIController.instance.authentication.entryAmountDetails.maxBetValue;
+        }
+        //plusButton.interactable = false;
+        if (currencyValue != null)
+        {
+            currencyValue.text = APIController.instance.authentication.currency_type.ToUpper();
+        }
+        ResetToggles();
+    }
+
+    public float GetValue()
+    {
+        return InputValue;
+    }
+
+    void OnDisable()
+    {
+        UnsubscribeFromEvents();
+    }
+
+    private void SubscribeToEvents()
+    {
+        if (plusButton != null) plusButton.onClick.AddListener(PlusButtonClick);
+        if (minusButton != null) minusButton.onClick.AddListener(MinusButtonClick);
+        if (toggle != null) toggle.onValueChanged.AddListener(ToggleValueChanged);
+        if (inputField != null) inputField.onValueChanged.AddListener(OnValueChanged);
+        if (inputField != null) inputField.onEndEdit.AddListener(OnInputValueEndedit);
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        if (plusButton != null) plusButton.onClick.RemoveListener(PlusButtonClick);
+        if (minusButton != null) minusButton.onClick.RemoveListener(MinusButtonClick);
+        if (toggle != null) toggle.onValueChanged.RemoveListener(ToggleValueChanged);
+        if (inputField != null) inputField.onValueChanged.RemoveListener(OnValueChanged);
+        if (inputField != null) inputField.onEndEdit.RemoveListener(OnInputValueEndedit);
+    }
+
+    public void PlusButtonClick()
+    {
+        //AudioController.instance.PlayButtonSound();
+
+        InputValue += incrementValue;
+        Debug.Log(InputValue + " Plus button check1");
+        InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
+        /*minusButton.interactable = toggle.isOn && InputValue > minVal;
+        plusButton.interactable = toggle.isOn && InputValue < maxVal;*/
+
+        Plus_Minus_Func();
+        UpdateTextField();
+    }
+
+    public void MinusButtonClick()
+    {
+        //AudioController.instance.PlayButtonSound();
+        InputValue -= incrementValue;
+        Debug.Log(InputValue + " Minus button check1");
+        InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
+        /*minusButton.interactable = toggle.isOn && InputValue > minVal;
+        plusButton.interactable = toggle.isOn && InputValue < maxVal;*/
+
+        Plus_Minus_Func();
+        UpdateTextField();
+    }
+
+    public void ToggleValueChanged(bool value)
+    {
+        //AudioController.instance.PlayToggleSound();
+        if (inputField != null) inputField.interactable = value;
+        if (plusButton != null) plusButton.interactable = value;
+        if (minusButton != null) minusButton.interactable = value && InputValue > minVal;
+        plusButton.interactable = toggle.isOn && InputValue < maxVal;
+
+        Color color = currencyValue.color;
+        color.a = value ? 1f : 0.5f;
+        currencyValue.color = color;
+        
+        Color color1 = InputField_txt.color;
+        color1.a = value ? 1f : 0.5f;
+        InputField_txt.color = color1;
+        
+
+        if (!value && InputValue > minVal)
+        {
+            ResetToggles();
+        }
+    }
+
+    public void OnValueChanged(string value)
+    {
+        // if (string.IsNullOrEmpty(value))
+        // {
+        //     InputValue = 0;
+        // }
+        // else if (float.TryParse(value, out float result))
+        // {
+        //     InputValue = result;
+        // }
+        // UpdateTextField();
+    }
+
+    public void OnInputValueEndedit(string value)
+    {
+
+        if (string.IsNullOrEmpty(value))
+        {
+            InputValue = minVal;
+        }
+        else
+        {
+            InputValue = float.Parse(value);
+        }
+        DebugHelper.Log(InputValue + " OnInputValueEndedit");
+
+        InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
+        DebugHelper.Log(InputValue + minVal + " OnInputValueEndedit1");
+
+        Plus_Minus_Func();
+        UpdateTextField();
+    }
+
+    void UpdateTextField()
+    {
+        if (inputField != null)
+        {
+            DebugHelper.Log(TruncateToTwoDecimalPlaces(InputValue) + " %$#@OnInputValueEndedit");
+            inputField.text = TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
+            //inputField.text = InputValue.ToString("F2");
+        }
+    }
+
+    public void ResetToggles()
+    {
+        if (!isToggle)
+        {
+            InputValue = minVal;
+            ToggleValueChanged(false);
+        }
+        else
+        {
+            minVal = 1.01f;
+
+            InputValue = 2f;
+        }
+        UpdateTextField();
+
+        if (toggle != null && !isToggle) toggle.isOn = false;
+
+        Plus_Minus_Func();
+    }
+
+
+    private float TruncateToTwoDecimalPlaces(float value)
+    {
+
+        return (float)Math.Floor((decimal)(value * 100)) / 100;
+    }
+
+    void Plus_Minus_Func()
+    {
+        if (!isToggle)
+        {
+            minusButton.interactable = toggle.isOn && InputValue > minVal;
+            plusButton.interactable = toggle.isOn && InputValue < maxVal;
+        }
+        else
+        {
+            minusButton.interactable = toggle.isOn && InputValue >= 1.02f;
+            plusButton.interactable = toggle.isOn && InputValue < maxVal;
+        }
+    }
+}

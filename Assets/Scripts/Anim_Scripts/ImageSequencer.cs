@@ -11,7 +11,7 @@ public class ImageSequencer : MonoBehaviour
     private Image image; // Reference to the UI Image component (if using UI)
     private int currentIndex = 0; // Current sprite index
     private float timer = 0f; // Timer for animation
-    private bool isON;
+    public bool isON;
     void OnEnable()
     {
         isON = true;
