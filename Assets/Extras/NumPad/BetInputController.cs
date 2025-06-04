@@ -16,6 +16,7 @@ public class BetInputController : MonoBehaviour
 {
     public KeyBoardHandler _KeyBoardHandler;
     public TMP_InputField BetAmtInput;
+    
     public Button Done;
     int clickCount = 0;
     public RectTransform BetPanel;
@@ -51,7 +52,7 @@ public class BetInputController : MonoBehaviour
                     BetAmtInput.textViewport.gameObject.SetActive(false);
                 }
             }
-          
+
         }
         //}
     }
@@ -86,6 +87,7 @@ public class BetInputController : MonoBehaviour
     public void OnEndEditBetAmount(float amount)
     {
         DebugHelper.Log("OnEndEditBetAmount");
+
         if (GameController.instance.numBool)
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
@@ -123,6 +125,7 @@ public class BetInputController : MonoBehaviour
             controller.betAmount = float.Parse(_s);
 
             EnableBetInput();
+
             BetAmtInput.interactable = false;
             BetAmtInput.interactable = true;
             BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -133,6 +136,7 @@ public class BetInputController : MonoBehaviour
             if (GameController.instance.numBool)
             {
                 controller.betAmountTxt.gameObject.SetActive(true);
+
             }
         }
         BetAmtInput.interactable = false;

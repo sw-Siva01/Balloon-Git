@@ -14,11 +14,13 @@ public class AutoplayInputHandler : MonoBehaviour
     public TMP_Text currencyValue;
     public TMP_Text InputField_txt;
     public bool isToggle;
+    [SerializeField] bool isAudioStop;
 
     private float InputValue { get; set; }
 
     void OnEnable()
     {
+        isAudioStop = true;
         SubscribeToEvents();
 
         if (!isToggle)
@@ -32,6 +34,12 @@ public class AutoplayInputHandler : MonoBehaviour
             currencyValue.text = APIController.instance.authentication.currency_type.ToUpper();
         }
         ResetToggles();
+        isAudioStop = false;
+    }
+
+    public void GetAudioBool(bool isON)
+    {
+         isAudioStop = isON;
     }
 
     public float GetValue()
@@ -65,13 +73,14 @@ public class AutoplayInputHandler : MonoBehaviour
     public void PlusButtonClick()
     {
         //AudioController.instance.PlayButtonSound();
-
+        UI_Controller.instance.PlayButtonSound();
         InputValue += incrementValue;
         Debug.Log(InputValue + " Plus button check1");
         InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
         /*minusButton.interactable = toggle.isOn && InputValue > minVal;
         plusButton.interactable = toggle.isOn && InputValue < maxVal;*/
 
+        GameController.instance.ResetBtnON();
         Plus_Minus_Func();
         UpdateTextField();
     }
@@ -79,18 +88,23 @@ public class AutoplayInputHandler : MonoBehaviour
     public void MinusButtonClick()
     {
         //AudioController.instance.PlayButtonSound();
+        UI_Controller.instance.PlayButtonSound();
         InputValue -= incrementValue;
         Debug.Log(InputValue + " Minus button check1");
         InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
         /*minusButton.interactable = toggle.isOn && InputValue > minVal;
         plusButton.interactable = toggle.isOn && InputValue < maxVal;*/
 
+        GameController.instance.ResetBtnON();
         Plus_Minus_Func();
         UpdateTextField();
     }
 
     public void ToggleValueChanged(bool value)
     {
+        if (SettingsPanelHandler.instance.SoundToggle.isOn && !isAudioStop)
+            MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
+
         //AudioController.instance.PlayToggleSound();
         if (inputField != null) inputField.interactable = value;
         if (plusButton != null) plusButton.interactable = value;
@@ -104,7 +118,6 @@ public class AutoplayInputHandler : MonoBehaviour
         Color color1 = InputField_txt.color;
         color1.a = value ? 1f : 0.5f;
         InputField_txt.color = color1;
-        
 
         if (!value && InputValue > minVal)
         {
@@ -127,7 +140,6 @@ public class AutoplayInputHandler : MonoBehaviour
 
     public void OnInputValueEndedit(string value)
     {
-
         if (string.IsNullOrEmpty(value))
         {
             InputValue = minVal;
@@ -140,6 +152,9 @@ public class AutoplayInputHandler : MonoBehaviour
 
         InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
         DebugHelper.Log(InputValue + minVal + " OnInputValueEndedit1");
+
+        inputField.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        inputField.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         Plus_Minus_Func();
         UpdateTextField();

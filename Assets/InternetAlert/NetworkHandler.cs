@@ -25,7 +25,8 @@ public class NetworkHandler : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.startGame) || (SettingsPanelHandler.instance.HTP.gameObject.activeSelf && Input.mouseScrollDelta.y != 0))
+        if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.netCheck) || (SettingsPanelHandler.instance.HTP.gameObject.activeInHierarchy && Input.mouseScrollDelta.y != 0) || 
+            (!GameController.instance.autoPlayPanel.activeSelf && Input.mouseScrollDelta.y != 0))
         {
             StartIdleSession();
         }
@@ -52,6 +53,7 @@ public class NetworkHandler : MonoBehaviour
                 if (!waitingForResponse.activeSelf)
                     ShowWaitingForResponse();
             }
+            StartIdleSession(false);
         }
         else
         {
@@ -95,9 +97,8 @@ public class NetworkHandler : MonoBehaviour
         while ((DateTime.Now - _LastActiveTime).TotalSeconds <= _SessionDelay)
         {
             yield return new WaitForSeconds(1f);
-            DebugHelper.Log($"ValidateIdle : {DateTime.Now}");
         }
-        if (!GameController.instance.startGame && !GameController.instance.autoPlayPanel.activeSelf)
+        if (!GameController.instance.startGame && !ConnectionPanel.activeSelf)
             SessionPopup.SetActive(true);
         SetDelay();
     }
@@ -105,12 +106,11 @@ public class NetworkHandler : MonoBehaviour
     public void StartIdleSession(bool _check = true)
     {
         if (SessionPopup.activeSelf) { return; }
-
+        SessionPopup.SetActive(false);
         StopCoroutine(nameof(ValidateIdle));
         if (_check)
         {
             _LastActiveTime = DateTime.Now;
-            DebugHelper.Log($"Active Time : {_LastActiveTime}, {_SessionDelay}");
             StartCoroutine(nameof(ValidateIdle));
         }
     }

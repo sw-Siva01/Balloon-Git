@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bb275b02190042342ba87d76e80c1022
+guid: 4b61ecdf5f5e76244b9a4680446c44cb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1464864583286749199
-    second: Possitive Icon Hover__0
+      213: -5735864430335769672
+    second: Minus Icon_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -24,7 +24,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Possitive Icon Hover__0
+      name: Minus Icon_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 152
-        height: 152
+        x: 54
+        y: 66
+        width: 42
+        height: 21
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f087bdac39e345410800000000000000
-      internalID: 1464864583286749199
+      spriteID: 8b3c906c0bd1660b0800000000000000
+      internalID: -5735864430335769672
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Possitive Icon Hover__0: 1464864583286749199
+      Minus Icon_0: -5735864430335769672
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

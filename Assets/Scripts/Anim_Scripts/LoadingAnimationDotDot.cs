@@ -17,7 +17,7 @@ public class LoadingAnimationDotDot : MonoBehaviour
         Message = MessageTxt.text;
         string dots = ".";
         MessageTween?.Kill();
-        MessageTween = DOTween.To(() => dots, x => dots = x, "...", 3).OnUpdate(() => MessageTxt.text = Message + $"<color=#ffffff>{dots}</color>").SetLoops(-1, LoopType.Restart);
+        MessageTween = DOTween.To(() => dots, x => dots = x, "...", 3).OnUpdate(() => MessageTxt.text = Message + $"<color=#B5B5B8>{dots}</color>").SetLoops(-1, LoopType.Restart);
 
         /*ShadowMessageTxt.text = ShadowMessageTxt.text.Replace(".", "");
         Message = ShadowMessageTxt.text;
