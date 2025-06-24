@@ -1416,10 +1416,30 @@ public class GameController : MonoBehaviour
                 }
                 Call_Functions();
                 DelayFuction();
+
+                Betlist localBet = new Betlist
+                {
+                    bet_amount = betAmount,
+                    win_amount = WinAmount,
+                    multiplier = Multiplier,
+                    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                };
+                APIController.instance.betlistArray.Add(localBet);
+                BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);
             }
             else
             {
                 DebugHelper.Log("WinningBetAPIfailed========>");
+
+                Betlist localBet = new Betlist
+                {
+                    bet_amount = betAmount,
+                    win_amount = 0,
+                    multiplier = 0,
+                    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                };
+                APIController.instance.betlistArray.Add(localBet);
+                BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
     }
@@ -2587,4 +2607,15 @@ public class GameController : MonoBehaviour
         APIController.instance.UpdateBalanceResponse(testAmount);
     }
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
+}
+
+[System.Serializable]
+public class BetData
+{
+    public string DateAndTime;
+    public string BetAmount;
+    public string WinAmount;
+    public string MultiplierValue;
+    public string currencyType;
+    public bool IsWin;
 }

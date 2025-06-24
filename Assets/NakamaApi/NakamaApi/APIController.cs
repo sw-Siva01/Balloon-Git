@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Unity.Jobs;
 using UnityEngine;
+using static BetData;
 
 public class APIController : MonoBehaviour
 {
@@ -50,6 +51,8 @@ public class APIController : MonoBehaviour
     public bool isOnline = true;
     public bool MobileShow;
     public BackendAPI BackendAPIURL = new BackendAPI();
+
+    public List<Betlist> betlistArray = new List<Betlist>();
 #if UNITY_WEBGL
     #region WebGl Events
     [DllImport("__Internal")]

@@ -19,8 +19,10 @@ public class SettingsPanelHandler : UIHandler
     public Button emptySpaceBtn;
     public GameObject emptySpaceObj;
     public GameObject HTP;
+    [SerializeField] private Button betHistory_Btn;
+    [SerializeField] private GameObject betHistory;
     public string playerName;
-    public Button _fullScreen;
+    /*public Button _fullScreen;*/
     public TMP_Text playerNameTxt;
     public Button howtoPlayBtn;
     public Toggle MusicToggle;
@@ -35,12 +37,13 @@ public class SettingsPanelHandler : UIHandler
     private void Awake()
     {
         instance = this;
-        _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });
+       /* _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });*/
         howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
         ExitBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnExitBtnClick(); });
+        
         emptySpaceBtn.onClick.AddListener(() =>
         {
-            UI_Controller.instance.settingsHandler.HideMe();
+            HideMe();
         });
         //HideMe();
         //ToggleSound(true);
@@ -51,12 +54,20 @@ public class SettingsPanelHandler : UIHandler
         musicTogWelcome.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
 
         gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
+        betHistory_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowBetHistoryScreen(); });
     }
-    public void FullScreenFunc()
+    /*public void FullScreenFunc()
     {
         DebugHelper.Log("FullScreenFunc");
         APIController.FullScreen();
-        UI_Controller.instance.settingsHandler.HideMe();
+        HideMe();
+    }*/
+    public void ShowBetHistoryScreen()
+    {
+        betHistory.SetActive(true);
+        HideMe();
+        settingsBtn.gameObject.SetActive(true);
+        settingsCloseBtn.gameObject.SetActive(false);
     }
     public void HowToPlay()
     {
@@ -143,7 +154,7 @@ public class SettingsPanelHandler : UIHandler
     {
         if (!UI_Controller.instance.settingsHandler.gameObject.activeSelf)
         {
-            UI_Controller.instance.settingsHandler.ShowMe();
+            ShowMe();
             UI_Controller.instance.PlayButtonSound();
             Debug.Log("SettingPanel__Open :");
             settingsBtn.gameObject.SetActive(false);
@@ -152,7 +163,7 @@ public class SettingsPanelHandler : UIHandler
         else
         {
 
-            UI_Controller.instance.settingsHandler.HideMe();
+            HideMe();
         }
     }
     public void ShowDeposit()
