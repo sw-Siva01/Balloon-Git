@@ -1417,15 +1417,15 @@ public class GameController : MonoBehaviour
                 Call_Functions();
                 DelayFuction();
 
-                Betlist localBet = new Betlist
-                {
-                    bet_amount = betAmount,
-                    win_amount = WinAmount,
-                    multiplier = Multiplier,
-                    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                };
-                APIController.instance.betlistArray.Add(localBet);
-                BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);
+                //Betlist localBet = new Betlist
+                //{
+                //    bet_amount = betAmount,
+                //    win_amount = WinAmount,
+                //    multiplier = Multiplier,
+                //    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                //};
+                //APIController.instance.betlistArray.Add(localBet);
+                //BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);
             }
             else
             {
@@ -1644,6 +1644,7 @@ public class GameController : MonoBehaviour
     }
     public void TakingCash()
     {
+        Debug.Log($"TakeCashBetAmount 1 : _ { TakeCash }");
         API_Winning();
     }
     async void WinTxtObj()
