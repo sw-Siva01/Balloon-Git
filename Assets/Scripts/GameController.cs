@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 
 public class GameController : MonoBehaviour
 {
@@ -118,7 +119,7 @@ public class GameController : MonoBehaviour
     [SerializeField] public bool _balanceUpdate = false;
     [SerializeField] public bool onClick;
     [SerializeField] bool isChecked;
-    private bool makeLose;
+    [SerializeField] bool makeLose;
     private bool isBegin;
     private bool pauseGame;
     private bool isPressed;
@@ -1317,7 +1318,14 @@ public class GameController : MonoBehaviour
         List<string> _list = new List<string>();
         _list.Add(APIController.instance.userDetails.Id);
 
-        CreateMatchAPICall();
+        GetPredictionProcess(async () =>
+        {
+            await UniTask.Delay(100);
+            Debug.Log($"GetPredictionProcess Done");
+            CreateMatchAPICall(); // After PedictionProcess done. Cal your CreateMatchMethod here
+
+        });
+        //CreateMatchAPICall();
         #endregion
     }
     public void CreateMatchAPICall()    //CREATEMATCHAPICALL CALLING METHOD
@@ -1834,7 +1842,7 @@ public class GameController : MonoBehaviour
     }
     private void SetupGameForNewRound()
     {
-        makeLose = true;
+       /* makeLose = true;
 
         // Ensure hand gestures are disabled
         if (handGestures_start.activeSelf)
@@ -1855,7 +1863,7 @@ public class GameController : MonoBehaviour
 
         // Initialize bet amount
         //API_IntitalizeBetAmount();
-        isBegin = true;
+        isBegin = true;*/
     }
     public void RNG_APICall()   //RNG_APICALL CALLING METHOD
     {
@@ -1874,6 +1882,63 @@ public class GameController : MonoBehaviour
 
         }, gameName, 0);
     }
+
+    #region GET PREDICTION FROM API
+    public async void GetPredictionProcess(Action onSuccess)
+    {
+        bool predictionValue = false;
+
+        Dictionary<string, string> bodyDict = new Dictionary<string, string>
+        {
+            //{ "GameName", "Balloon"}
+            // Send Data to server
+        };
+        string payload = JsonConvert.SerializeObject(bodyDict);
+        string reqID = "";
+        reqID = APIController.instance.GetPredictionValue(payload, (init) =>
+        {
+            DebugHelper.Log("GetPredictionProcess Init Response Prediciton" + init.ToString());
+        },
+        (success) =>
+        {
+            predictionValue = true;
+            DebugHelper.Log("GetPredictionProcess success Response Prediciton" + success.ToString());
+            JObject data = JObject.Parse(success);
+            string heightString = data["prediction"].ToString();
+            float height = float.Parse(heightString);
+            height = (float)Math.Round(height, 2);
+            holdHeight = height;
+            Debug.Log($"CheckingRNGvalue :  + {height} , {holdHeight}");
+  
+            // For Debugging RNG data
+            if (true) // Need to do
+            {
+                onSuccess?.Invoke();
+                DebugHelper.Log($"RNG Calculation:\n==============\n Selected numbers from server are {height}\n==============\n");
+            }
+        },
+        (failure) =>
+        {
+            DebugHelper.Log("Set_API_Index failure Response Prediciton" + failure.ToString());
+        });
+        float time = Time.time;
+
+        while (!predictionValue)
+        {
+            if (Time.time - time > 5)
+            {
+                if (BaseSocketController.instance.IsOnline())
+                {
+                    BaseSocketController.instance.RemoveRequestEvent(reqID);
+                    DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
+                    GetPredictionProcess(onSuccess);
+                    return;
+                }
+            }
+            await UniTask.Delay(100);
+        }
+    }
+    #endregion
     public void OnClickUp()
     {
         APIController.instance.CheckInternetandProcess((success) =>
