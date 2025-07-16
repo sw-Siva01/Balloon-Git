@@ -169,7 +169,7 @@ public class CursorController : MonoBehaviour
     }
     private bool IsValidCursorTexture(Texture2D texture)
     {
-        Debug.Log($"{texture.name} - Readable: {texture.isReadable}, Format: {texture.format}, Mipmap Count: {texture.mipmapCount}");
+        DebugHelper.Log($"{texture.name} - Readable: {texture.isReadable}, Format: {texture.format}, Mipmap Count: {texture.mipmapCount}");
         if (texture == null)
         {
             Debug.LogError("Cursor texture is null.");

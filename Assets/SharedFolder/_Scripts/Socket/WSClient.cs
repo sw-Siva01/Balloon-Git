@@ -46,11 +46,11 @@ namespace Aws_Gateway
 
         public async UniTask CheckServerStatus()
         {
-            Debug.Log("Checking server for internet" + Time.time);
+            DebugHelper.Log("Checking server for internet" + Time.time);
             await UniTask.Delay(1000);
             if (!awsController.IsOnline())
             {
-                Debug.Log("Checking server for internet =  false" + Time.time);
+                DebugHelper.Log("Checking server for internet =  false" + Time.time);
                 OnDisconnected?.Invoke();
                 return;
             }
@@ -142,7 +142,7 @@ namespace Aws_Gateway
             }
             if (_reconnectionCoroutine != null)
                 StopCoroutine(_reconnectionCoroutine);
-            Debug.Log("HANDLE DISCONNECTION1");
+            DebugHelper.Log("HANDLE DISCONNECTION1");
             _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
         }
 
@@ -180,7 +180,7 @@ namespace Aws_Gateway
             //     return;
             // }
             WSMessage message = data;
-            Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
+            DebugHelper.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
             string id = TaskID;
             try
             {
@@ -244,7 +244,7 @@ namespace Aws_Gateway
                     // if (_reconnectionCoroutine != null)
                     //     StopCoroutine(_reconnectionCoroutine);
                     Dictionary<string, string> response = new Dictionary<string, string>();
-                    Debug.Log("HANDLE DISCONNECTION" + requestID);
+                    DebugHelper.Log("HANDLE DISCONNECTION" + requestID);
                     _reconnectionCoroutine = StartCoroutine(HandleDisconnection());
 
                     response["requestID"] = requestID;
@@ -295,7 +295,7 @@ namespace Aws_Gateway
                     if (_reconnectionCoroutine != null)
                         StopCoroutine(_reconnectionCoroutine);
                     _ = _webSocket.Close();
-                    Debug.Log("HANDLE DISCONNECTION2");
+                    DebugHelper.Log("HANDLE DISCONNECTION2");
                     _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
                     _stopwatch.Stop();
                     yield break;

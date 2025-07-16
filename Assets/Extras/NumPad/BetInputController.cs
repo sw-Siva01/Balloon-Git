@@ -16,7 +16,7 @@ public class BetInputController : MonoBehaviour
 {
     public KeyBoardHandler _KeyBoardHandler;
     public TMP_InputField BetAmtInput;
-    
+
     public Button Done;
     int clickCount = 0;
     public RectTransform BetPanel;
@@ -29,11 +29,11 @@ public class BetInputController : MonoBehaviour
     {
         Instance = this;
         BetAmtInput.onValueChanged.AddListener(delegate { OnBetAmountEdit(); });
-        BetAmtInput.onEndEdit.AddListener(delegate { OnEndEditBetAmount(BetAmtInput.text.Length < 15 ? 100f : (float.Parse(BetAmtInput.text))); });
+        BetAmtInput.onEndEdit.AddListener(delegate { OnEndEditBetAmount(BetAmtInput.text.Length < 15 ? APIController.instance.authentication.entryAmountDetails.minBetValue : (float.Parse(BetAmtInput.text))); });
     }
     void Start()
     {
-        //  Done.onClick.AddListener(delegate { CloseKeyPadPanel(); });
+        Done.onClick.AddListener(delegate { CloseKeyPadPanel(); });
         BetAmtInput.text = "1.00";
 
     }
@@ -87,19 +87,22 @@ public class BetInputController : MonoBehaviour
     public void OnEndEditBetAmount(float amount)
     {
         DebugHelper.Log("OnEndEditBetAmount");
+        _KeyBoardHandler.OnSubmitInput();
 
-        if (GameController.instance.numBool)
+        /*if (GameController.instance.numBool)
         {
             if (!string.IsNullOrWhiteSpace(BetAmtInput.text))
             {
                 if (BetAmtInput.text == ".")
                 {
                     amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
+                    DebugHelper.Log($" CheckingTheNumPadAmt _1 : {amount}");
 
                 }
                 try
                 {
                     amount = Mathf.Clamp((float)amount, APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
+                    DebugHelper.Log($" CheckingTheNumPadAmt _2 : {amount}");
                 }
                 catch
                 {
@@ -111,7 +114,7 @@ public class BetInputController : MonoBehaviour
                 if (GameController.instance.numBool)
                 {
                     amount = APIController.instance.authentication.entryAmountDetails.minBetValue;
-
+                    DebugHelper.Log($" CheckingTheNumPadAmt _3 : {amount}");
                 }
                 DebugHelper.Log("eMPTY iNPUT eNDeDIT");
                 IsEmptyInput = true;
@@ -123,9 +126,9 @@ public class BetInputController : MonoBehaviour
             controller.betAmount = amount;
             string _s = controller.betAmount.ToString("0.00");
             controller.betAmount = float.Parse(_s);
-
+            DebugHelper.Log($" CheckingTheNumPadAmt _4 : {amount}");
             EnableBetInput();
-
+            DebugHelper.Log($" CheckingTheNumPadAmt _5 : {amount}");
             BetAmtInput.interactable = false;
             BetAmtInput.interactable = true;
             BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -138,10 +141,15 @@ public class BetInputController : MonoBehaviour
                 controller.betAmountTxt.gameObject.SetActive(true);
 
             }
-        }
+        }*/
+
+        StartCoroutine(ResetInputInteractableNextFrame());
+    }
+    private IEnumerator ResetInputInteractableNextFrame()
+    {
+        yield return null; // Wait one frame
         BetAmtInput.interactable = false;
         BetAmtInput.interactable = true;
-
     }
 
     public void OnEditInput()
@@ -172,6 +180,7 @@ public class BetInputController : MonoBehaviour
                      CloseKeyPadPanel();
                      controller.betAmountTxt.gameObject.SetActive(true);
                      DebugHelper.Log("Done " + controller.betAmount);
+                     DebugHelper.Log($" CheckingTheNumPadAmt _5 : CloseKeyPadPanel");
                  },
                  (value) =>
                  {
@@ -188,6 +197,7 @@ public class BetInputController : MonoBehaviour
                      CloseKeyPadPanel();
                      controller.betAmountTxt.gameObject.SetActive(true);
                      DebugHelper.Log("Done " + controller.betAmount);
+                     DebugHelper.Log($" CheckingTheNumPadAmt _6 : CloseKeyPadPanel");
                  });
                 DebugHelper.Log(" Done  ");
             }

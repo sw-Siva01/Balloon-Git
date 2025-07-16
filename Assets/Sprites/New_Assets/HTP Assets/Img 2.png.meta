@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0c19ab3d8ad034d4d8e05798c5097f41
+guid: 0d5c21fa7102ab2498ee94c1ee4d65d4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 574530655587966327
-    second: Bet history expanded ref_0
+      213: 8185743901057973737
+    second: Img 2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bet history expanded ref_0
+      name: Img 2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1080
-        height: 2160
+        x: 1
+        y: 1
+        width: 942
+        height: 406
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 77d94e6569429f700800000000000000
-      internalID: 574530655587966327
+      spriteID: 9ed71e445ba999170800000000000000
+      internalID: 8185743901057973737
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Bet history expanded ref_0: 574530655587966327
+      Img 2_0: 8185743901057973737
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

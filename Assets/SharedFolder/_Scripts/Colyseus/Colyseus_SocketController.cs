@@ -35,7 +35,7 @@ public class Colyseus_SocketController : MonoBehaviour
     {
         if (_networkClient._client == null)
         {
-            _ = _networkClient.JoinOrCreateGame(gameName, url, APIController.instance.authentication.environment);
+            _networkClient.CreateGame(gameName, url, APIController.instance.authentication.environment);
             return false;
         }
         else
@@ -158,7 +158,7 @@ public class Colyseus_SocketController : MonoBehaviour
 
         if (!UseLocalUrl)
             url = _url;
-        _networkClient.Initialize(url, _gameName);
+        _networkClient.Initialize(url, gameName);
     }
 
     // Update is called once per frame
@@ -189,10 +189,10 @@ public class Colyseus_SocketController : MonoBehaviour
         WSMessage message = new WSMessage(messaheType, body);
 
         string reqID = message.RequestID;
-        Debug.Log("Checking ID Already exists" + reqID);
+        DebugHelper.Log("Checking ID Already exists" + reqID);
         while (wss_Events.Exists(x => x.RequestID == reqID))
         {
-            Debug.Log("Request ID Already exists" + reqID);
+            DebugHelper.Log("Request ID Already exists" + reqID);
             reqID = (long.Parse(reqID) + 1).ToString() + UnityEngine.Random.Range(0, 100);
         }
         message.RequestID = reqID;
@@ -209,7 +209,7 @@ public class Colyseus_SocketController : MonoBehaviour
         wss_Events.Add(wssevent);
         ActiveTasks.Add(wssevent.TaskID, true);
         message.Body = body;
-        Debug.Log(message.Body + "??");
+        DebugHelper.Log(message.Body + "??");
         // reqID = message.RequestID;
 
         _networkClient.SendClientMsg(message);

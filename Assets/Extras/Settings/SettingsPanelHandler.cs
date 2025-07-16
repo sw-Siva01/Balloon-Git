@@ -131,7 +131,7 @@ public class SettingsPanelHandler : UIHandler
         PanelTransform.GetComponent<CanvasGroup>().DOFade(0, 0.3f).OnComplete(() => { gameObject.SetActive(false); PanelTransform.gameObject.SetActive(false); });
         SwapSpriteSequence?.Invoke();
         emptySpaceObj.SetActive(false);
-        Debug.Log("SettingPanel__Close :");
+        DebugHelper.Log("SettingPanel__Close :");
         settingsCloseBtn.gameObject.SetActive(false);
         settingsBtn.gameObject.SetActive(true);
     }
@@ -156,7 +156,7 @@ public class SettingsPanelHandler : UIHandler
         {
             ShowMe();
             UI_Controller.instance.PlayButtonSound();
-            Debug.Log("SettingPanel__Open :");
+            DebugHelper.Log("SettingPanel__Open :");
             settingsBtn.gameObject.SetActive(false);
             settingsCloseBtn.gameObject.SetActive(true);
         }

@@ -75,7 +75,7 @@ public class AutoplayInputHandler : MonoBehaviour
         //AudioController.instance.PlayButtonSound();
         UI_Controller.instance.PlayButtonSound();
         InputValue += incrementValue;
-        Debug.Log(InputValue + " Plus button check1");
+        DebugHelper.Log(InputValue + " Plus button check1");
         InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
         /*minusButton.interactable = toggle.isOn && InputValue > minVal;
         plusButton.interactable = toggle.isOn && InputValue < maxVal;*/
@@ -90,7 +90,7 @@ public class AutoplayInputHandler : MonoBehaviour
         //AudioController.instance.PlayButtonSound();
         UI_Controller.instance.PlayButtonSound();
         InputValue -= incrementValue;
-        Debug.Log(InputValue + " Minus button check1");
+        DebugHelper.Log(InputValue + " Minus button check1");
         InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
         /*minusButton.interactable = toggle.isOn && InputValue > minVal;
         plusButton.interactable = toggle.isOn && InputValue < maxVal;*/

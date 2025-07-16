@@ -306,7 +306,7 @@ public class BaseSocketController : MonoBehaviour
     public string SendRequest(string requestName, string requestType, string payload, Action<string> initalizedAction = null, Action<string> successAction = null, Action<string> errorAction = null)
     {
 
-        Debug.Log($"Request Name : {requestName} Request Type : {requestType} Payload : {payload}");
+        DebugHelper.Log($"Request Name : {requestName} Request Type : {requestType} Payload : {payload}");
 
         if (websocketProvider == WebSocketProvider.AWS)
         {
@@ -322,7 +322,7 @@ public class BaseSocketController : MonoBehaviour
     public void SetServerType(WebSocketProvider provider)
     {
         websocketProvider = provider;
-        Debug.Log("WebSocket Provider set to: " + websocketProvider);
+        DebugHelper.Log("WebSocket Provider set to: " + websocketProvider);
     }
 }
 

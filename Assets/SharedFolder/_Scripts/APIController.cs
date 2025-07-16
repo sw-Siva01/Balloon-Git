@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -237,11 +236,11 @@ public class APIController : MonoBehaviour
 
     public async void StartAuthentication(string data)
     {
-        DebugHelper.Log("Response from wegbl for authentication : " + data);
+        Debug.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
         //return;
         string orginalData = Cryptography.DecryptStr(authentication.title_data);
-        Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
+        DebugHelper.Log("GetTitleData Response is orginal ::: " + orginalData);
         var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
         if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
         {
@@ -335,18 +334,15 @@ public class APIController : MonoBehaviour
                        userDetails.bootAmount = 25;
                        IsBotInGame = userDetails.hasBot;
                        userDetails.bootAmount = defaultBootAmount;
-
                        string musics = LocalStorage.Load("Lootrix_music");
                        string sounds = LocalStorage.Load("Lootrix_sound");
                        bool music = (string.IsNullOrEmpty(musics) || musics == "true") ? true : false;
                        bool sound = (string.IsNullOrEmpty(sounds) || sounds == "true") ? true : false;
                        authentication.sound = sound;
                        authentication.music = music;
-
                        if (string.IsNullOrWhiteSpace(userDetails.gameId))
                            userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
                        DebugHelper.Log("Check this once !!!!!!!!!!!!!" + JsonUtility.ToJson(userDetails));
-
                        // MiniRouletteUIController.instance.SettingsPanel.UpdateToggle(authentication.sound, authentication.music);
                        AudioListener.volume = 1;
 
@@ -445,8 +441,8 @@ public class APIController : MonoBehaviour
     //         async (bool isSuccess, string error, string body) =>
     //         {  
     //             JObject obj = JObject.Parse(body);
-    //             Debug.Log("TitleData Receivec" + obj["data"]);
-    //             Debug.Log("TitleData Receivec" + Cryptography.DecryptStr(obj["data"].ToString()));
+    //             DebugHelper.Log("TitleData Receivec" + obj["data"]);
+    //             DebugHelper.Log("TitleData Receivec" + Cryptography.DecryptStr(obj["data"].ToString()));
     //         //  action.Invoke(isSuccess);
     //         }, 2);
     // }
@@ -473,12 +469,12 @@ public class APIController : MonoBehaviour
             WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, authentication.client_url, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
                 responseReceived = true;
-                Debug.Log("GetTitleData Response is ::: " + body);
+                DebugHelper.Log("GetTitleData Response is ::: " + body);
                 if (success)
                 {
                     var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
                     string orginalData = Cryptography.DecryptStr(response["data"]);
-                    Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
+                    DebugHelper.Log("GetTitleData Response is orginal ::: " + orginalData);
                     var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
 
                     if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
@@ -532,12 +528,12 @@ public class APIController : MonoBehaviour
 
             WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/" + authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
-                Debug.Log("GetServerDetails Response is ::: " + body);
+                DebugHelper.Log("GetServerDetails Response is ::: " + body);
                 if (success)
                 {
                     var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
                     string orginalData = Cryptography.EncryptStr(response["data"]);
-                    Debug.Log("GetServerDetails Response is orginal ::: " + orginalData);
+                    DebugHelper.Log("GetServerDetails Response is orginal ::: " + orginalData);
                     var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
 
                     if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
@@ -713,7 +709,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
 #if CasinoGames
         bool winningBetResponce = false;
-        reqID = BaseSocketController.instance.WSS_WinningBet(betId, isWinner ? 1 : 0, win_amount_with_comission, spend_amount,
+        reqID = BaseSocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
         (initatedres) =>
         {
 
@@ -729,19 +725,16 @@ public class APIController : MonoBehaviour
         {
             OnInternetStatusChange?.Invoke(NetworkStatus.Active);
             winningBetResponce = true;
-          
+            DebugHelper.Log(successRes);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(successRes);
-          
             action?.Invoke(response != null && (response.code == 200 || response.code == 224));
             if (response.code == 224)
             {
                 GetUpdatedBalance();
                 return;
             }
-           
             JObject json = JObject.Parse(response.message);
             double userbalance = (double)json["balance"];
-            
             UpdateBalanceResponse(userbalance);
         },
         (failRes) =>

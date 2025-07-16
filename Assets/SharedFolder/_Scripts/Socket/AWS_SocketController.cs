@@ -122,10 +122,10 @@ namespace Aws_Gateway
             WSMessage message = new WSMessage(messaheType, body);
 
             string reqID = message.RequestID;
-            Debug.Log("Checking ID Already exists" + reqID);
+            DebugHelper.Log("Checking ID Already exists" + reqID);
             while (wss_Events.Exists(x => x.RequestID == reqID))
             {
-                Debug.Log("Request ID Already exists" + reqID);
+                DebugHelper.Log("Request ID Already exists" + reqID);
                 reqID = (long.Parse(reqID) + 1).ToString() + UnityEngine.Random.Range(0, 100);
             }
             message.RequestID = reqID;
@@ -142,7 +142,7 @@ namespace Aws_Gateway
             wss_Events.Add(wssevent);
             ActiveTasks.Add(wssevent.TaskID, true);
             message.Body = body;
-            Debug.Log(message.Body + "??");
+            DebugHelper.Log(message.Body + "??");
             // reqID = message.RequestID;
 
             _ = _wsClient.Send(message, wssevent.TaskID);

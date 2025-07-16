@@ -28,7 +28,7 @@ public class KeyPadManager : MonoBehaviour
         CurrentBetAmount = betValue;
         CurrentBetAmount = Mathf.Clamp(CurrentBetAmount, minBetValue, maxBetValue);
         CurrentBetInput.text = CurrentBetAmount.ToString("F2");
-        Debug.Log($"Current Bet Amount : {CurrentBetAmount}");
+        DebugHelper.Log($"Current Bet Amount : {CurrentBetAmount}");
     }
 
     public void OnClickPlus()
@@ -126,7 +126,7 @@ public class KeyPadManager : MonoBehaviour
         }
         catch (FormatException e)
         {
-            Debug.Log(e + " Error in conversion");
+            DebugHelper.Log(e + " Error in conversion");
         }
     }
 
@@ -144,106 +144,4 @@ public class KeyPadManager : MonoBehaviour
        CurrentBetAmount = string.IsNullOrWhiteSpace(KeyPadInput.text) ? 0 : float.Parse(KeyPadInput.text.ToString());
     }
     #endregion
-
-   /* void PlusTargetValue()
-    {
-        audioController.PlayAudio(AudioEnum.buttonClick);
-        //plus_Anim.SetBool("isON", true);
-
-        if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
-        {
-            BetInputController.Instance.CloseKeyPadPanel();
-            BetInputController.Instance.RestrictInput();
-            BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
-            return;
-        }
-
-        if (keyBoard.cancelButton.gameObject.activeSelf)
-            keyBoard.OnCancelInput();
-
-        if (!startGame && !take && !isScroll && !onClick)
-        {
-            if (targetMultiplier < 100)
-            {
-                targetMultiplier += 1f;
-                targetMultiplierTxt.text = targetMultiplier.ToString("0.00");
-                //BetAmountTxt_Scaling();
-                addValBtns.interactable = true;
-                addValBtnsImg.color = new Color32(255, 255, 255, 255);
-                //AmountColor_Glow();
-            }
-            if (targetMultiplier >= 100f)
-            {
-                targetMultiplier = 100f;
-                addValBtns.interactable = false;
-                targetMultiplierTxt.text = targetMultiplier.ToString("0.00");
-                //BetAmountTxt_Scaling();
-                addValBtnsImg.color = new Color32(255, 255, 255, 100);
-                //MaxBet_Object();
-            }
-        }
-    }
-    void MinusTargetValue()
-    {
-        audioController.PlayAudio(AudioEnum.buttonClick);
-        //minus_Anim.SetBool("isON", true);
-        if (BetInputController.Instance.BetPanel.gameObject.activeSelf)
-        {
-            BetInputController.Instance.CloseKeyPadPanel();
-            BetInputController.Instance.RestrictInput();
-            BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
-            return;
-        }
-
-        if (!startGame && !take && !isScroll && !onClick)
-        {
-            if (targetMultiplier > 1f)
-            {
-                targetMultiplier -= 1f;
-                targetMultiplierTxt.text = targetMultiplier.ToString("0.00");
-                //BetAmountTxt_Scaling();
-                subValBtnsImg.color = new Color32(255, 255, 255, 255);
-                //AmountColor_Glow();
-            }
-            if (targetMultiplier <= 2f)
-            {
-                targetMultiplier = 1.01f;
-                targetMultiplierTxt.text = targetMultiplier.ToString("0.00");
-                subValBtns.interactable = false;
-                subValBtnsImg.color = new Color32(255, 255, 255, 100);
-            }
-            if (targetMultiplier <= 1f)
-            {
-                targetMultiplier = 1f;
-                targetMultiplierTxt.text = targetMultiplier.ToString("0.00");
-                //BetAmountTxt_Scaling();
-                subValBtns.interactable = false;
-                subValBtnsImg.color = new Color32(255, 255, 255, 100);
-            }
-        }
-    }
-    void Plus_Minus_Interactive()
-    {
-        if (targetMultiplier > 1f)
-        {
-            subValBtnsImg.color = new Color32(255, 255, 255, 255);
-            subValBtns.interactable = true;
-        }
-        else if (targetMultiplier <= 1f)
-        {
-            subValBtnsImg.color = new Color32(255, 255, 255, 100);
-            subValBtns.interactable = false;
-        }
-
-        if (targetMultiplier < 100f)
-        {
-            addValBtnsImg.color = new Color32(255, 255, 255, 255);
-            addValBtns.interactable = true;
-        }
-        else if (targetMultiplier >= 100f)
-        {
-            addValBtnsImg.color = new Color32(255, 255, 255, 100);
-            addValBtns.interactable = false;
-        }
-    }*/
 }

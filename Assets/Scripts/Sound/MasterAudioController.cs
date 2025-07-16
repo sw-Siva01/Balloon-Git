@@ -156,11 +156,10 @@ public class MasterAudioController : MonoBehaviour
         }
     }
 
-    public bool MuteStatus;
     public void SetVolumeMute()
     {
         muteAllAudio = true;
-
+        audioSources.Clear();
         foreach (var item in audioSources)
         {
             item.mute = true;

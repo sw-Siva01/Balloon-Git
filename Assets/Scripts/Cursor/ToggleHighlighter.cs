@@ -16,7 +16,7 @@ public class ToggleHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerEx
     }
     private void OnEnable()
     {
-        //   Debug.Log("ToggleHighlighter OnEnable");
+        //   DebugHelper.Log("ToggleHighlighter OnEnable");
         sourceImg.sprite = images[0];
     }
     public void OnPointerEnter(PointerEventData eventData)
@@ -24,7 +24,7 @@ public class ToggleHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (APIController.instance.authentication.platform == "mobile" || APIController.instance.authentication.platform == "tablet")
             return;
 
-        Debug.Log("ToggleCheckDesktop_=>>>>_01 : ");
+        DebugHelper.Log("ToggleCheckDesktop_=>>>>_01 : ");
         isHovered = true;
         if (isDangerBtn)
         {
@@ -32,13 +32,13 @@ public class ToggleHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerEx
             {
                 sourceImg.sprite = images[1];
                 StartCoroutine(WatchForDisable());
-                Debug.Log("ToggleCheckDesktop_=>>>>_02 : ");
+                DebugHelper.Log("ToggleCheckDesktop_=>>>>_02 : ");
             }
         }
         else
         {
             sourceImg.sprite = images[1];
-            Debug.Log("ToggleCheckDesktop_=>>>>_03 : " + images[1].name);
+            DebugHelper.Log("ToggleCheckDesktop_=>>>>_03 : " + images[1].name);
         }
         //if (hoverCheckCoroutine == null)
         //    hoverCheckCoroutine = StartCoroutine(CheckHoverExit());
@@ -62,7 +62,7 @@ public class ToggleHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             sourceImg.sprite = images[0];
             isHovered = false;
-            Debug.Log("ToggleCheckDesktop_=>>>>_04 : " + images[0].name);
+            DebugHelper.Log("ToggleCheckDesktop_=>>>>_04 : " + images[0].name);
         }
     }
     private IEnumerator CheckHoverExit()

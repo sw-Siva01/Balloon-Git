@@ -118,7 +118,7 @@ public class KeyBoardHandler : MonoBehaviour
         displayText.text = "0";
     }
 
-    void OnSubmitInput()
+    public void OnSubmitInput()
     {
         DebugHelper.Log("OnSubmitInput");
         currentInput = displayText.text;
@@ -161,7 +161,7 @@ public class KeyBoardHandler : MonoBehaviour
     public void OnCancelInput()
     {
         DebugHelper.Log("OnCancelInput");
-        MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
+        //MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {

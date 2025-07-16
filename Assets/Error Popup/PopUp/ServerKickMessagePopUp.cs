@@ -55,7 +55,7 @@ public class ServerKickMessagePopUp : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("TEST================>");
+                    DebugHelper.Log("TEST================>");
                     MsgTxt.text = Message;
                     //UIController.instance.ShowLoadingScreen();
                     // Invoke(nameof(RedirectToGame), 3);

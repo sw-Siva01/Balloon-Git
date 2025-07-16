@@ -120,9 +120,10 @@ public class GameController : MonoBehaviour
     [SerializeField] public bool onClick;
     [SerializeField] bool isChecked;
     [SerializeField] bool makeLose;
+    [SerializeField] bool isPrediction = false;
     private bool isBegin;
     private bool pauseGame;
-    private bool isPressed;
+    [SerializeField] bool isPressed;
     private bool buttonPress;
     private bool takeBetAmount;
     private bool isSet;
@@ -138,6 +139,7 @@ public class GameController : MonoBehaviour
     private bool stopper;
     private bool timerCount = true;
     private bool IsCreateMatchCalled = false;
+    private bool predictionCheck = false;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -503,7 +505,7 @@ public class GameController : MonoBehaviour
                     if (keyBoard.gameObject.activeInHierarchy)
                         keyBoard.OnCancelInput();
 
-                    if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !autoPlayPanel.activeSelf &&
+                    if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !autoPlayPanel.activeSelf && !NetworkHandler.instance.ServerKick.activeSelf &&
                         !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
                         !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && !settingsPanelHandler.GameLimits.activeSelf && !NetworkHandler.instance.SessionPopup.activeSelf)
                     {
@@ -523,7 +525,6 @@ public class GameController : MonoBehaviour
                     isRayHitActive = true;
                 }
             }
-
 
             // Handle Mouse Button Release or when no ray hit
             if (!isRayHitActive)
@@ -555,8 +556,8 @@ public class GameController : MonoBehaviour
 
         if (isAutoPlay)
         {
-            if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf &&
-                        !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
+            if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
+                        !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf && !NetworkHandler.instance.ServerKick.activeSelf &&
                         !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && rounds >= 0 && !settingsPanelHandler.GameLimits.activeSelf && !NetworkHandler.instance.SessionPopup.activeSelf)
             {
                 Button_ONEnter();
@@ -571,7 +572,7 @@ public class GameController : MonoBehaviour
                     Multiplier = Mathf.Clamp(Multiplier, 0f, Difference);
                     multiplierTxt_Shadow.text = $"{Multiplier:F2}";
                     multiplierTxt.text = $"{Multiplier:F2}";
-                    Debug.Log($"CheckingForValue >>> : " + TakeCash);
+                    DebugHelper.Log($"CheckingForValue >>> : " + TakeCash);
                     isPressed = false;
                     //TakeCashOut();
                     timeSinceLastIncrement = 7f;
@@ -584,7 +585,7 @@ public class GameController : MonoBehaviour
             cancelButton.SetActive(isAmountSufficient);
             rumbleBet_cancelButton.SetActive(isAmountSufficient);
 
-            if ((rounds > -1 && rounds <= 0))
+            if ((rounds > -1 && rounds <= 0) && isPrediction)
             {
                 Stop_AutoPlayBtn();
                 rounds = -1;
@@ -654,7 +655,11 @@ public class GameController : MonoBehaviour
 
         DebugHelper.Log("Player Details Subscribed");
         settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
-        audioController.muteAllAudio = false;
+
+        if (settingsPanelHandler.SoundToggle.isOn)
+            audioController.muteAllAudio = false;
+        else if (!settingsPanelHandler.SoundToggle.isOn)
+            audioController.muteAllAudio = true;
     }
     public void InitAmountDetails()
     {
@@ -793,7 +798,7 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
-                Debug.Log("InsufficientPopUpAppers ==>>>_1 : " + buttonPress);
+                DebugHelper.Log("InsufficientPopUpAppers ==>>>_1 : " + buttonPress);
             }
         }
 
@@ -902,8 +907,8 @@ public class GameController : MonoBehaviour
             //sliderAutoCashNoTxt.gameObject.SetActive(false);
             sliderAutoCashNoTxt.text = " ";
             //balloon, takeCash & heat button
-            heat_Anim.SetBool("isPlay1", false);
-            heat_IdleAnim.SetBool("isPlay1", false);
+            //heat_Anim.SetBool("isPlay1", false);
+            //heat_IdleAnim.SetBool("isPlay1", false);
             idleFireGlow.SetActive(false);
             idleFireObj.SetActive(true);
             fireObj.SetActive(false);
@@ -922,9 +927,19 @@ public class GameController : MonoBehaviour
 
         if (startGame && !takeBetAmount)
         {
-            if (Multiplier >= holdHeight)
+            /*if (Multiplier >= holdHeight)
             {
                 //DebugHelper.Log("mStringValue =====> " + float.Parse(Mstring) + holdHeight);
+                gameLost = true;
+                lost = true;
+                Balloon_Burt();
+            }*/
+            if (GetTruncatedValue_float(Multiplier) >= holdHeight)
+            {
+                Multiplier = Mathf.Clamp(Multiplier, 0f, holdHeight);
+                multiplierTxt_Shadow.text = $"{Multiplier:F2}";
+                multiplierTxt.text = $"{Multiplier:F2}";
+                //DebugHelper.Log($"CheckingLostForValue >>> : " + holdHeight);
                 gameLost = true;
                 lost = true;
                 Balloon_Burt();
@@ -1055,7 +1070,7 @@ public class GameController : MonoBehaviour
             audioController.StopAudio(AudioEnum.startSlider);
             audioController.StopAudio(AudioEnum.Movement);
             isPressed = false;
-            heat_Anim.SetBool("isPlay2", false);
+            //heat_Anim.SetBool("isPlay2", false);
             fireObj.SetActive(false);
             if (!lost && !take && Multiplier >= 1.01f && !isScroll)
             {
@@ -1098,11 +1113,11 @@ public class GameController : MonoBehaviour
                 Multiplier = Mathf.Clamp(Multiplier, 0f, Difference);
 
             Mstring = GetTruncatedValue_float(Multiplier).ToString("F2");
-            Debug.Log($"Check_BetAmount : {betAmount} , {Mstring}");
+            DebugHelper.Log($"Check_BetAmount : {betAmount} , {Mstring}");
             TakeCash = (betAmount * double.Parse(Mstring));
 
             takeCashWintxt.text = GetTruncatedValue(TakeCash).ToString("F2");
-            Debug.Log($"Multipler1 TakeCash==>>> : {TakeCash}");
+            DebugHelper.Log($"Multipler1 TakeCash==>>> : {TakeCash}");
         }
 
         if (stopper)
@@ -1131,7 +1146,7 @@ public class GameController : MonoBehaviour
             multiplierTxt.text = s;
             multiplierTxt_Shadow.text = s;
 
-            Debug.Log("CheckingTakeCash Value : " + GetTruncatedValue(TakeCash));
+            DebugHelper.Log("CheckingTakeCash Value : " + GetTruncatedValue(TakeCash));
             takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
 
             // Increment the timer by the time elapsed since the last frame
@@ -1164,7 +1179,7 @@ public class GameController : MonoBehaviour
         if (isPressed && Multiplier >= 1.01f && !isAutoPlay && !take)
             sliderAutoCashNoTxt.text = " 7";
 
-        if (startGame &&/* countTime >= 6.5*/Multiplier >= 1.01f && !isAutoPlay)
+        if (startGame && Multiplier >= 1.01f && !isAutoPlay)
         {
             TakeButtonColor();
         }
@@ -1206,7 +1221,7 @@ public class GameController : MonoBehaviour
             multiplierTxt_Shadow.text = s;
 
             // Update the take cash text
-            Debug.Log("CheckingTakeCash Value_2 : " + GetTruncatedValue(TakeCash));
+            DebugHelper.Log("CheckingTakeCash Value_2 : " + GetTruncatedValue(TakeCash));
             takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
         }
     }
@@ -1225,7 +1240,7 @@ public class GameController : MonoBehaviour
     }
     public void Animation_Play()
     {
-        heat_IdleAnim.SetBool("isPlay1", true);
+        //heat_IdleAnim.SetBool("isPlay1", true);
         imageSequencer.enabled = true;
         for (int i = 0; i < unsetected_Buttons.Count; i++)
         {
@@ -1297,7 +1312,7 @@ public class GameController : MonoBehaviour
             {
                 insufficientBalance.SetActive(false);
                 insufBal_Rumblebets.SetActive(true);
-                Debug.Log("InsufficientPopUpAppers ==>>>_2 : " + buttonPress);
+                DebugHelper.Log("InsufficientPopUpAppers ==>>>_2 : " + buttonPress);
                 BetResetForInsufficient();
             }
             return;
@@ -1321,10 +1336,12 @@ public class GameController : MonoBehaviour
         GetPredictionProcess(async () =>
         {
             await UniTask.Delay(100);
-            Debug.Log($"GetPredictionProcess Done");
-            CreateMatchAPICall(); // After PedictionProcess done. Cal your CreateMatchMethod here
-
         });
+
+        if (isPrediction)
+        {
+            CreateMatchAPICall();
+        }
         //CreateMatchAPICall();
         #endregion
     }
@@ -1380,7 +1397,7 @@ public class GameController : MonoBehaviour
         TransactionMetaData _metaData = new TransactionMetaData();
         _metaData.Amount = WinAmount;
         _metaData.Info = "Game Won";
-        Debug.Log("WinningsAmtBet ... : " + WinAmount);
+        DebugHelper.Log("WinningsAmtBet ... : " + WinAmount);
         APIController.instance.WinningsBetMultiplayerAPI(BetIndex, betID, WinAmount, betAmount, PotAmount, _metaData, (success) =>
         {
             if (success)
@@ -1496,7 +1513,7 @@ public class GameController : MonoBehaviour
         {
             winCount = false;
         }
-
+        isPrediction = false;
         if (!isAutoPlay)
             autoPlayBtn.interactable = true;
 
@@ -1628,7 +1645,7 @@ public class GameController : MonoBehaviour
         makeLose = false;
         unPress.SetActive(true);
         pressed.SetActive(false);
-
+        isPrediction = false;
         IsCreateMatchCalled = false;
         Invoke("TimeDelay", 1.5f);
     }
@@ -1652,7 +1669,7 @@ public class GameController : MonoBehaviour
     }
     public void TakingCash()
     {
-        Debug.Log($"TakeCashBetAmount 1 : _ { TakeCash }");
+        DebugHelper.Log($"TakeCashBetAmount 1 : _ {TakeCash}");
         API_Winning();
     }
     async void WinTxtObj()
@@ -1790,14 +1807,9 @@ public class GameController : MonoBehaviour
     }
     private void HandleGameStart()
     {
-
         // Update button states
         unPress.SetActive(false);
         pressed.SetActive(true);
-
-        // Disable hand gestures and bet input
-        if (handGestures_start.activeSelf)
-            handGestures_start.SetActive(false);
 
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
 
@@ -1820,11 +1832,6 @@ public class GameController : MonoBehaviour
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
         touch = true;
 
-        // Set animations for heat effect
-        heat_Anim.SetBool("isPlay1", true);
-        heat_Anim.SetBool("isPlay2", true);
-        heat_IdleAnim.SetBool("isPlay1", false);
-
         // Manage fire-related objects
         //idleFireGlow.SetActive(false);
         fireObj.SetActive(true);
@@ -1842,28 +1849,28 @@ public class GameController : MonoBehaviour
     }
     private void SetupGameForNewRound()
     {
-       /* makeLose = true;
+        makeLose = true;
 
         // Ensure hand gestures are disabled
         if (handGestures_start.activeSelf)
             handGestures_start.SetActive(false);
 
-        gameCounts++;
+        /* gameCounts++;
 
-        // Randomize height based on game count
-        if (gameCounts != 15)
-        {
-            holdHeight = UnityEngine.Random.Range(0.80f, 9.8f);
-        }
-        else
-        {
-            holdHeight = UnityEngine.Random.Range(0.75f, 0.99f);
-            gameCounts = 0;
-        }
+         // Randomize height based on game count
+         if (gameCounts != 15)
+         {
+             holdHeight = UnityEngine.Random.Range(0.80f, 9.8f);
+         }
+         else
+         {
+             holdHeight = UnityEngine.Random.Range(0.75f, 0.99f);
+             gameCounts = 0;
+         }*/
 
         // Initialize bet amount
         //API_IntitalizeBetAmount();
-        isBegin = true;*/
+        isBegin = true;
     }
     public void RNG_APICall()   //RNG_APICALL CALLING METHOD
     {
@@ -1886,6 +1893,12 @@ public class GameController : MonoBehaviour
     #region GET PREDICTION FROM API
     public async void GetPredictionProcess(Action onSuccess)
     {
+
+        if (isPrediction)
+            return;
+
+        DebugHelper.Log($"GetPredectedValueForWinREspone_#01 : {isPrediction}");
+        isPrediction = true;
         bool predictionValue = false;
 
         Dictionary<string, string> bodyDict = new Dictionary<string, string>
@@ -1902,19 +1915,20 @@ public class GameController : MonoBehaviour
         (success) =>
         {
             predictionValue = true;
+
             DebugHelper.Log("GetPredictionProcess success Response Prediciton" + success.ToString());
             JObject data = JObject.Parse(success);
             string heightString = data["prediction"].ToString();
             float height = float.Parse(heightString);
             height = (float)Math.Round(height, 2);
             holdHeight = height;
-            Debug.Log($"CheckingRNGvalue :  + {height} , {holdHeight}");
-  
+
             // For Debugging RNG data
             if (true) // Need to do
             {
+                if (!demo)
+                    Debug.Log($"RNG Calculation:\n==============\n Selected numbers from server are {height}\n==============\n");
                 onSuccess?.Invoke();
-                DebugHelper.Log($"RNG Calculation:\n==============\n Selected numbers from server are {height}\n==============\n");
             }
         },
         (failure) =>
@@ -1922,15 +1936,20 @@ public class GameController : MonoBehaviour
             DebugHelper.Log("Set_API_Index failure Response Prediciton" + failure.ToString());
         });
         float time = Time.time;
-
+        bool waitingForresponseActive = false;
         while (!predictionValue)
         {
-            if (Time.time - time > 5)
+            if (!waitingForresponseActive && Time.time - time > APIController.instance.waitingForResponseDelay)
+            {
+                waitingForresponseActive = true;
+                APIController.instance.OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+            }
+            if (Time.time - time > APIController.instance.retryDelay)
             {
                 if (BaseSocketController.instance.IsOnline())
                 {
                     BaseSocketController.instance.RemoveRequestEvent(reqID);
-                    DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
+                    DebugHelper.Log("WinningBetResponce  Retry Called");
                     GetPredictionProcess(onSuccess);
                     return;
                 }
@@ -1958,8 +1977,8 @@ public class GameController : MonoBehaviour
 
             // Reset button press state and update animations
             isPressed = false;
-            heat_Anim.SetBool("isPlay2", false);
-            heat_IdleAnim.SetBool("isPlay1", true);
+            //heat_Anim.SetBool("isPlay2", false);
+            //heat_IdleAnim.SetBool("isPlay1", true);
 
             // Manage fire-related objects
             fireObj.SetActive(false);
@@ -2021,7 +2040,7 @@ public class GameController : MonoBehaviour
         // Activate the hand gestures and slider animation
         //   handGestures_btAmt.SetActive(true);
 
-        slider_Anim.SetBool("isON", true);
+        //slider_Anim.SetBool("isON", true);
 
         if (!isAutoPlay)
             pressToBetBtn.gameObject.SetActive(true);
@@ -2458,7 +2477,7 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll && !onClick)
         {
-            audioController.PlayAudio(AudioEnum.buttonClick);
+            //audioController.PlayAudio(AudioEnum.buttonClick);
 
             // Set the bet amount
             rounds = _rounds;
@@ -2529,7 +2548,8 @@ public class GameController : MonoBehaviour
     }
     void Stop_AutoPlayBtn()
     {
-        audioController.PlayAudio(AudioEnum.buttonClick);
+        if (stopAutoPlayBtn.gameObject.activeSelf)
+            audioController.PlayAudio(AudioEnum.buttonClick);
         autoPlayBtnPrss = false;
         stopAutoPlayBtn.gameObject.SetActive(false);
         autoPlayBtn.gameObject.SetActive(true);
@@ -2541,7 +2561,8 @@ public class GameController : MonoBehaviour
     }
     void Reset_AutoPlayBtn()
     {
-        audioController.PlayAudio(AudioEnum.buttonClick);
+        if (autoPlayPanel.activeSelf)
+            audioController.PlayAudio(AudioEnum.buttonClick);
         if (setRounds.Count >= 0)
             NumCountRounds(setRounds[0]);
 

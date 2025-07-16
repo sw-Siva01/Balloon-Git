@@ -11,6 +11,7 @@ public class NetworkHandler : MonoBehaviour
 
     public GameObject waitingForResponse;
     public GameObject SessionPopup;
+    public GameObject ServerKick;
 
     private DateTime _LastActiveTime;
     [SerializeField] private double _SessionDelay;
@@ -50,6 +51,7 @@ public class NetworkHandler : MonoBehaviour
             }
             else if (data == NetworkStatus.WaitingforResponse)
             {
+                DebugHelper.Log("THeGameIsin_WaitingForResponse");
                 if (!waitingForResponse.activeSelf)
                     ShowWaitingForResponse();
             }

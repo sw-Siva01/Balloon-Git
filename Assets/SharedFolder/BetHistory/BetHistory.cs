@@ -52,7 +52,7 @@ public class BetHistory : MonoBehaviour
         ValidateHistroy();
 
         // Optionally show balance somewhere
-        Debug.Log("Player balance: ");
+        DebugHelper.Log("Player balance: ");
     }
 
     public void ValidateHistroy()
