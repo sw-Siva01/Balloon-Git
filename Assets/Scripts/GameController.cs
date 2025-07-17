@@ -303,7 +303,7 @@ public class GameController : MonoBehaviour
     // ScrollView GameObjects
     [Header("Insufficient Balance")]
     [SerializeField] GameObject insufficientBalance;
-    [SerializeField] GameObject insufBal_Rumblebets;
+    public GameObject insufBal_Rumblebets;
     [SerializeField] GameObject cancelButton;
     [SerializeField] GameObject rumbleBet_cancelButton;
     [SerializeField] GameObject howToPlay;
@@ -705,6 +705,12 @@ public class GameController : MonoBehaviour
     public void InitUserDeposit()
     {
         DebugHelper.Log("Deposit Called");
+
+        if (!demo && APIController.instance.userDetails.balance >= APIController.instance.authentication.entryAmountDetails.minBetValue)
+        {
+            insufBal_Rumblebets.SetActive(false);
+            GameController.instance.Insufficient_OFF();
+        }
     }
     public void PassTxt(TMP_Text _txt, string _passingValue)
     {
@@ -2505,6 +2511,7 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < selectedroundBtns.Count; i++)
         {
+            //audioController.PlayAudio(AudioEnum.buttonClick);
             selectedroundBtns[i].gameObject.SetActive(activeBet == _setRounds[i]);
         }
     }

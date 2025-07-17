@@ -33,14 +33,15 @@ public class SettingsPanelHandler : UIHandler
     public Button settingsCloseBtn;
     [SerializeField] private Button gameLimits_Btn;
     public GameObject GameLimits;
+    public Button addCashBtn;
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
         instance = this;
-       /* _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });*/
+        /* _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });*/
         howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
         ExitBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnExitBtnClick(); });
-        
+
         emptySpaceBtn.onClick.AddListener(() =>
         {
             HideMe();
@@ -55,6 +56,8 @@ public class SettingsPanelHandler : UIHandler
 
         gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
         betHistory_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowBetHistoryScreen(); });
+
+        addCashBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowDeposit(); });
     }
     /*public void FullScreenFunc()
     {
@@ -82,9 +85,9 @@ public class SettingsPanelHandler : UIHandler
 
         if (SoundToggle.isOn)
         {
-           
+
             MasterAudioController.instance.SetVolumeUnMute();
-           
+
         }
         else
         {
@@ -93,7 +96,7 @@ public class SettingsPanelHandler : UIHandler
         if (SoundToggle.isOn)
             MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
 
-         if (!Updatetoggle) return;
+        if (!Updatetoggle) return;
 
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
@@ -162,17 +165,27 @@ public class SettingsPanelHandler : UIHandler
         }
         else
         {
-
             HideMe();
         }
     }
     public void ShowDeposit()
     {
 #if UNITY_WEBGL
-        if (!GameController.instance.demo)
-            APIController.instance.OnClickDepositBtn();
+        APIController.instance.CheckInternetandProcess(async (success) =>
+        {
+            if (!success)
+            {
+                return;
+            }
+            else
+            {
+                if (!GameController.instance.demo)
+                {
+                    APIController.instance.OnClickDepositBtn();
+                }
+            }
 #endif
-
+        });
     }
     private void UpdateMusic()
     {
