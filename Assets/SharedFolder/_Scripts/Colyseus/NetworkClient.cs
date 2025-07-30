@@ -74,7 +74,7 @@ public class NetworkClient : MonoBehaviour
         //_client = new ColyseusClient(url);
 
 
-        DebugHelper.Log("Initializing NetworkClient with URL: " + _serverUrl + " and GameName: " + GameName);
+        Debug.Log("Initializing NetworkClient with URL: " + _serverUrl + " and GameName: " + GameName);
         CreateGame(GameName, _serverUrl, environment);
     }
 
@@ -152,7 +152,7 @@ public class NetworkClient : MonoBehaviour
     public async UniTask JoinOrCreateGame(string GameName, string url, string environment)
     {
 
-        DebugHelper.Log("Join or create Game called");
+        Debug.Log("Join or create Game called");
         if (IsConnected())
         {
             DebugHelper.Log("Already connected. Skipping connection attempt.");
@@ -176,7 +176,7 @@ public class NetworkClient : MonoBehaviour
             string tokenUrl = url + "/Auth_Tocken";
             string requestUrl = $"{tokenUrl}?data={signature}";
 
-            DebugHelper.Log("Token request URL: " + requestUrl);
+            Debug.Log("Token request URL: " + requestUrl);
 
             UnityWebRequest www = UnityWebRequest.Get(requestUrl);
 
@@ -192,7 +192,7 @@ public class NetworkClient : MonoBehaviour
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                DebugHelper.Log("game quit due to " + www.error);
+                Debug.Log("game quit due to " + www.error);
 
                 APIController.DisconnectGame(www.error);
                 return;
@@ -200,7 +200,7 @@ public class NetworkClient : MonoBehaviour
 
             string json = www.downloadHandler.text;
             string data = Cryptography.GetEncryptedData(json);
-            DebugHelper.Log(json + "Decrypted data: " + data);
+            Debug.Log(json + "Decrypted data: " + data);
             if (string.IsNullOrWhiteSpace(data))
             {
                 return;
@@ -229,7 +229,7 @@ public class NetworkClient : MonoBehaviour
             }
             catch (Exception ex)
             {
-                DebugHelper.Log("ERROR===>" + ex);
+                Debug.Log("ERROR===>" + ex);
                 await UniTask.Delay(1500);
                 CreateGame(GameName, url, environment);
                 return;
@@ -241,13 +241,13 @@ public class NetworkClient : MonoBehaviour
             _isReconnecting = false;
             _room.OnMessage<byte[]>("__playground_message_types", (msg) =>
             {
-                DebugHelper.Log("Received playground message (ignored).");
+                Debug.Log("Received playground message (ignored).");
             });
             _room.OnMessage<byte[]>("server_msg", (bytes) =>
             {
-                DebugHelper.Log("----SERVER MESSAGE----" + bytes.Length);
+                Debug.Log("----SERVER MESSAGE----" + bytes.Length);
                 var message = Encoding.UTF8.GetString(bytes);
-                DebugHelper.Log("----SERVER MESSAGE----" + message);
+                Debug.Log("----SERVER MESSAGE----" + message);
                 try
                 {
                     string decryptedMsg = Cryptography.GetEncryptedData(message);
@@ -262,19 +262,19 @@ public class NetworkClient : MonoBehaviour
 
             _room.OnStateChange += (state, isFirstState) =>
             {
-                DebugHelper.Log("State updated. clientCount: " + state.clientCount);
+                Debug.Log("State updated. clientCount: " + state.clientCount);
             };
 
             _room.OnMessage<string>("", (message) =>
             {
-                DebugHelper.Log("Unnamed message received from server: " + message);
+                Debug.Log("Unnamed message received from server: " + message);
             });
 
             _room.OnLeave += (code) => ServerDisconected(code);
 
             _room.OnError += (code, message) =>
             {
-                DebugHelper.Log($"[NetworkClient] Error: {code} - {message}");
+                Debug.Log($"[NetworkClient] Error: {code} - {message}");
                 OnError?.Invoke(new Exception(message));
             };
         }
@@ -307,7 +307,7 @@ public class NetworkClient : MonoBehaviour
 
     private async void ServerDisconected(object code)
     {
-        DebugHelper.Log($"[NetworkClient] Disconnected from server: {code}");
+        Debug.Log($"[NetworkClient] Disconnected from server: {code}");
         await RestartReconnection();
     }
 
@@ -319,7 +319,7 @@ public class NetworkClient : MonoBehaviour
         }
 
         WSMessage message = data;
-        DebugHelper.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
+        Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
         string id = TaskID;
         try
         {
@@ -372,7 +372,7 @@ public class NetworkClient : MonoBehaviour
             try
             {
                 Dictionary<string, string> response = new Dictionary<string, string>();
-                DebugHelper.Log("HANDLE DISCONNECTION" + requestID);
+                Debug.Log("HANDLE DISCONNECTION" + requestID);
                 if (_reconnectionCoroutine != null)
                     StopCoroutine(_reconnectionCoroutine);
                 _reconnectionCoroutine = StartCoroutine(HandleDisconnection());
@@ -392,10 +392,10 @@ public class NetworkClient : MonoBehaviour
     {
         Cleanup();
         _isReconnecting = true;
-        DebugHelper.Log("Handling disconnection...");
+        Debug.Log("Handling disconnection...");
         while (!_isManuallyDisconnected)
         {
-            DebugHelper.Log("Handling disconnection...1");
+            Debug.Log("Handling disconnection...1");
             yield return new WaitForSeconds(ReconnectInterval);
             if (!IsConnected())
                 CreateGame(_gameName, _serverUrl, _environment);
@@ -417,7 +417,7 @@ public class NetworkClient : MonoBehaviour
         {
             if (IsConnected())
             {
-                DebugHelper.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
+                Debug.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
                 await _room.Leave();
             }
             _room = null;
@@ -425,7 +425,7 @@ public class NetworkClient : MonoBehaviour
         }
         if (_reconnectionCoroutine != null)
             StopCoroutine(_reconnectionCoroutine);
-        DebugHelper.Log("HANDLE DISCONNECTION1");
+        Debug.Log("HANDLE DISCONNECTION1");
         _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
     }
 
@@ -440,7 +440,7 @@ public class NetworkClient : MonoBehaviour
         // _serverStatusCts?.Dispose();
         if (IsConnected())
         {
-            DebugHelper.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
+            Debug.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
             _ = _room.Leave();
             _room = null;
             _client = null;
@@ -466,7 +466,7 @@ public class NetworkClient : MonoBehaviour
         {
             _isManuallyDisconnected = true;
             OnDisconnected?.Invoke();
-            DebugHelper.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
+            Debug.Log($"[NetworkClient] Leaving room: {_room.RoomId}");
             await _room.Leave();
             DebugHelper.Log("WebSocket Disconnected.");
         }
@@ -487,20 +487,20 @@ public class NetworkClient : MonoBehaviour
         _serverStatusCts?.Dispose();
         _serverStatusCts = new CancellationTokenSource();
         var token = _serverStatusCts.Token;
-        DebugHelper.Log("Checking server for internet: " + Time.time);
+        Debug.Log("Checking server for internet: " + Time.time);
         try
         {
             await UniTask.Delay(1000, cancellationToken: token);
 
             if (!colyseus_SocketController.IsOnline())
             {
-                DebugHelper.Log("Server offline: " + Time.time);
+                Debug.Log("Server offline: " + Time.time);
                 OnDisconnected?.Invoke();
             }
         }
         catch (OperationCanceledException)
         {
-            DebugHelper.Log("Server check cancelled: " + Time.time);
+            Debug.Log("Server check cancelled: " + Time.time);
         }
     }
 }

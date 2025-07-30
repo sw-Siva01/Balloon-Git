@@ -65,11 +65,11 @@ public class NetworkHandler : MonoBehaviour
             ConnectionPanel.SetActive(false);
             ServerPopPanel.SetActive(false);
         }
-        DebugHelper.Log("AudioController.Instance.IsActive");
+        /*DebugHelper.Log("AudioController.Instance.IsActive");
         DebugHelper.Log("APIController.instance.isOnline");
         DebugHelper.Log("APIController.instance.isInFocus");
         DebugHelper.Log("!ConnectionPanel.gameObject.activeSelf");
-        DebugHelper.Log("data == NetworkStatus.Active");
+        DebugHelper.Log("data == NetworkStatus.Active");*/
 
       
         AudioListener.volume = (data == NetworkStatus.Active && !ConnectionPanel.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;

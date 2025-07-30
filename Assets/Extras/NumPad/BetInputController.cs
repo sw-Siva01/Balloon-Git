@@ -173,7 +173,7 @@ public class BetInputController : MonoBehaviour
                  (float inputValue) =>
                  {
                      DebugHelper.Log("EDIT OVER : " + inputValue + "    " + controller.betAmount);
-                     controller.betAmount = GetTruncatedValue(inputValue);
+                     controller.betAmount = inputValue;
                      DebugHelper.Log("EDIT OVER 333 : " + inputValue + "    " + controller.betAmount);
                      controller.betAmountTxt.text = inputValue.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
 
@@ -192,7 +192,7 @@ public class BetInputController : MonoBehaviour
                      DebugHelper.Log("EDIT OVER@#$=>> 2" + input + controller.betAmount);
                      //controller.betAmount = input;
                      //controller.betAmountTxt.text = GetTruncatedValue2(controller.betAmount).ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
-                     controller.betAmount = GetTruncatedValue(input);
+                     controller.betAmount = input;
                      controller.betAmountTxt.text = input.ToString("F2") + " <size=30>" + APIController.instance.userDetails.currency_type + "</size>";
                      CloseKeyPadPanel();
                      controller.betAmountTxt.gameObject.SetActive(true);
@@ -244,7 +244,7 @@ public class BetInputController : MonoBehaviour
             amount = Mathf.Clamp(amount, APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
             IsEmptyInput = false;
 
-            controller.betAmount = GetTruncatedValue(amount);
+            controller.betAmount = amount;
             /*            string _s = controller.betAmount.ToString("0.00");
                         controller.betAmount = float.Parse(_s);*/
         }

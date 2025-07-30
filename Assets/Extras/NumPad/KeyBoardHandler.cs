@@ -75,7 +75,7 @@ public class KeyBoardHandler : MonoBehaviour
             else
             {
                 displayText.text = currentInput;
-                controller.betAmount = double.Parse(currentInput);
+                controller.betAmount = float.Parse(currentInput);
             }
         }
         else
