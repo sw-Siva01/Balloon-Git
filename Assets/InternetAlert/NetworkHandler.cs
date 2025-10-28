@@ -100,7 +100,7 @@ public class NetworkHandler : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
         }
-        if (!GameController.instance.startGame && !ConnectionPanel.activeSelf)
+        if (!GameController.instance.startGame && !ConnectionPanel.activeSelf && !ServerPopPanel.activeInHierarchy)
             SessionPopup.SetActive(true);
         SetDelay();
     }
