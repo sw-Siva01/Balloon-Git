@@ -25,7 +25,7 @@ public class WelcomSettings : UIHandler
     }
     private void SetDelay()
     {
-        APIController.CloseWindow();
+        //APIController.CloseWindow();
     }
     public void Show()
     {

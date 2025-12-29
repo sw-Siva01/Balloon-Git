@@ -18,6 +18,6 @@ public class ExitToMainMenu : MonoBehaviour
 
     public void Exit()
     {
-        APIController.CloseWindow();
+        //APIController.CloseWindow();
     }
 }

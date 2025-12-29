@@ -184,8 +184,8 @@ public class SettingsPanelHandler : UIHandler
                     APIController.instance.OnClickDepositBtn();
                 }
             }
-#endif
         });
+#endif
     }
     private void UpdateMusic()
     {
