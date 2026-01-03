@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
     [Header("Buttons")]
+    [SerializeField] Button HeatBtn;
     [SerializeField] Button takeCashbutton;
     [SerializeField] Button holdButton;
     [SerializeField] TextMeshProUGUI heatTxt;
@@ -91,7 +92,7 @@ public class GameController : MonoBehaviour
     [SerializeField] TextMeshProUGUI takeCashtxt;
     [SerializeField] TextMeshProUGUI takeCashWintxt;
     [SerializeField] TextMeshProUGUI takeCurrencytxt;
-    [SerializeField] Image takeCashImg;
+    [SerializeField] TextMeshProUGUI ballonCashTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -99,8 +100,6 @@ public class GameController : MonoBehaviour
     [Header("UI bet Buttons Images")]
     [SerializeField] Image plusButtomImg;
     [SerializeField] Image minusButtonImg;
-
-    // [SerializeField] EventTrigger holdButtonEvent;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -130,7 +129,8 @@ public class GameController : MonoBehaviour
     private bool isBegin;
     private bool pauseGame;
     [SerializeField] bool isPressed;
-    private bool buttonPress;
+    [SerializeField] bool HeatBtnpress;
+    [SerializeField] bool buttonPress;
     private bool takeBetAmount;
     private bool isSet;
     private bool isFire;
@@ -167,6 +167,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Button addValBtns, subValBtns;
     [SerializeField] Button autoPlayBtn, stopAutoPlayBtn;
     [SerializeField] Button startBtn;
+    [SerializeField] Image autoPlayicon;
     public Button resetBtn;
     [SerializeField] Image addValBtnsImg, subValBtnsImg, infiniteImg;
     [SerializeField] TMP_InputField targetInputField;
@@ -181,14 +182,13 @@ public class GameController : MonoBehaviour
     [Header("TextMeshProUGUI")]
     [SerializeField] TextMeshProUGUI multiplierTxt;
     [SerializeField] TextMeshProUGUI xTxt;
-    /*[SerializeField] TextMeshProUGUI multiplierTxt_Shadow;
-    [SerializeField] TextMeshProUGUI xTxt_Shadow;*/
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI totalAmountTxt;
     [SerializeField] TextMeshProUGUI takeCurrenyType;
     [SerializeField] TextMeshProUGUI multiplierValue_Txt;
     // UI Bet Amount txt
     public TextMeshProUGUI betAmountTxt;
+    public TextMeshProUGUI betFontTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -219,28 +219,6 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject balloonParts;
     [SerializeField] GameObject balloonShake;
     [SerializeField] GameObject balloonShake_blue;
-
-    [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
-
-    // Sliders
-    [Header("Sliders")]
-    [SerializeField] Slider slider;
-    [SerializeField] float countTime;
-    [SerializeField] GameObject slider_bg;
-    /// <summary>
-    [SerializeField] GameObject sliderbg;
-    [SerializeField] GameObject pressToBetBtn;
-    /// 
-    /// </summary>
-    [SerializeField] GameObject fillArea;
-    //[SerializeField] Image FillImage;
-    [SerializeField] GameObject slider_txt;
-    [SerializeField] GameObject keepHolding_txt;
-    [SerializeField] GameObject preHeating_txt;
-    [SerializeField] TextMeshProUGUI sliderTxt;
-    [SerializeField] TextMeshProUGUI sliderDupTxt;
-    [SerializeField] TextMeshProUGUI sliderAutoCashTxt;
-    [SerializeField] TextMeshProUGUI sliderAutoCashNoTxt;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -372,7 +350,6 @@ public class GameController : MonoBehaviour
     private bool IsInTab = true;
     public bool CanPlayAudio;
     [SerializeField] GameObject LoadingPopUp;
-    /*[SerializeField] GameObject ResponsePopUp;*/
     [SerializeField] Image inputField;
     public bool needToCancelBet;
     public static GameController instance;
@@ -415,22 +392,15 @@ public class GameController : MonoBehaviour
         skeletonAnimation.gameObject.SetActive(false);
         /////
 
-        // Initialize take cash UI elements
-        Color32 disabledColor = new Color32(194, 236, 166, 120);
-        takeCashImg.color = new Color32(140, 140, 140, 255);
-        takeCashtxt.color = disabledColor;
-        takeCashWintxt.color = disabledColor;
-        takeCurrencytxt.color = disabledColor;
         takeCashObj.SetActive(false);
 
         // Initialize multiplier text
         string multiplierText = Multiplier.ToString("0.00");
         multiplierTxt.text = multiplierText;
-        /*multiplierTxt_Shadow.text = multiplierText;*/
 
         // Start coroutines
         StartCoroutine(HolidngButtons());
-        StartCoroutine(nameof(TimerCount));
+        /*StartCoroutine(nameof(TimerCount));*/
         StartCoroutine(FillImg());
 
         // Settings Button
@@ -442,14 +412,11 @@ public class GameController : MonoBehaviour
 
         // Initialize slider
         Winbonus = 3;
-        slider.maxValue = 7f;
-        slider.minValue = 1f;
         timeRemaining = 0f; // Start the timer at 0
 
 
         // Start coroutines for IDLE_TimerCount
         currentTime = startCount;
-        //StartCoroutine(nameof(CoundownTimerforIdle));
 
         takeCashbutton.onClick.AddListener(() => TakeCashOut());
 
@@ -476,8 +443,7 @@ public class GameController : MonoBehaviour
             NumCountRounds(setRounds[index]));
         }
 
-        //addValBtns.onClick.AddListener(() => PlusTargetValue());
-        //subValBtns.onClick.AddListener(() => MinusTargetValue());
+        HeatBtn.onClick.AddListener(() => HeatButton());
 
         autoPlayBtn.onClick.AddListener(() => AutoPlayBtnPress());
         stopAutoPlayBtn.onClick.AddListener(() => Stop_AutoPlayBtn());
@@ -487,67 +453,28 @@ public class GameController : MonoBehaviour
 
         #endregion :::::::::::: { Auto Play } :::::::::::::::
 
-        // Initialize slider-related objects
-        slider_bg.SetActive(false);
-        fillArea.SetActive(false);
-        slider_txt.SetActive(false);
-        keepHolding_txt.SetActive(false);
-        //sliderAutoCashNoTxt.gameObject.SetActive(false);
-        sliderAutoCashNoTxt.text = " ";
-
         netCheck = false;
     }
     private void LateUpdate()
     {
-        if (!isAutoPlay)
+        //////////////////////////////////////////////
+        if (!isAutoPlay && HeatBtnpress)
         {
-            // Get ray origin and direction
-            Vector3 rayOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 rayDirection = Vector3.forward;
-            bool isRayHitActive = false;
 
-            // Raycast to detect the Heat_button
-            if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit) && hit.collider.gameObject.name == "Heat_button")
+            if (keyBoard.gameObject.activeInHierarchy)
+                keyBoard.OnCancelInput();
+
+            if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !autoPlayPanel.activeSelf && !NetworkHandler.instance.ServerKick.activeSelf &&
+                !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
+                !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && !settingsPanelHandler.GameLimits.activeSelf && !NetworkHandler.instance.SessionPopup.activeSelf)
             {
-                // Handle Mouse Button Down
-                if (Input.GetMouseButtonDown(0))
-                {
-                    isRayHitActive = true;
-
-                    if (keyBoard.gameObject.activeInHierarchy)
-                        keyBoard.OnCancelInput();
-
-                    if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !autoPlayPanel.activeSelf && !NetworkHandler.instance.ServerKick.activeSelf &&
-                        !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
-                        !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && !settingsPanelHandler.GameLimits.activeSelf && !NetworkHandler.instance.SessionPopup.activeSelf)
-                    {
-                        Button_ONEnter();
-                        OnClickDown();
-                    }
-                    else if (NetworkHandler.instance.ConnectionPanel.activeSelf && isPressed)
-                    {
-                        isPressed = false;
-                        Button_OFFEnter();
-                    }
-                }
-
-                // Handle Mouse Button Held
-                if (Input.GetMouseButton(0))
-                {
-                    isRayHitActive = true;
-                }
+                Button_ONEnter();
+                HeatButton();
             }
-
-            // Handle Mouse Button Release or when no ray hit
-            if (!isRayHitActive)
+            else if (NetworkHandler.instance.ConnectionPanel.activeSelf && isPressed)
             {
-                if (!take && !lost && !isScroll && !howToPlay.activeSelf && !numPad && !RedirectionPanel.activeSelf && !NetworkHandler.instance.SessionPopup.activeSelf &&
-                    !NetworkHandler.instance.ConnectionPanel.activeSelf && !settingsPanelHandler.gameObject.activeSelf &&
-                    !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && !settingsPanelHandler.GameLimits.activeSelf)
-                {
-                    OnClickUp();
-                    Button_OFFEnter();
-                }
+                isPressed = false;
+                Button_OFFEnter();
             }
 
             // Enable/Disable cancel buttons based on TotalAmount
@@ -555,6 +482,7 @@ public class GameController : MonoBehaviour
             cancelButton.SetActive(isAmountSufficient);
             rumbleBet_cancelButton.SetActive(isAmountSufficient);
         }
+        //////////////////////////////////////////////
 
         // Handle animation based on internet connectivity
         if (!NetworkHandler.instance.ConnectionPanel.activeSelf)
@@ -568,9 +496,9 @@ public class GameController : MonoBehaviour
 
         if (isAutoPlay)
         {
-            if (!take && !lost && !isScroll && /*!howToPlay.activeSelf && */!numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
+            if (!take && !lost && !isScroll && !numPad && !insufficientBalance.activeSelf && !insufBal_Rumblebets.activeSelf && !RedirectionPanel.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf &&
                         !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf && !NetworkHandler.instance.ServerKick.activeSelf &&
-                        !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && rounds >= 0 && /*!settingsPanelHandler.GameLimits.activeSelf && */!NetworkHandler.instance.SessionPopup.activeSelf)
+                        !pauseGame && betAmount >= APIController.instance.authentication.entryAmountDetails.minBetValue && rounds >= 0 && !NetworkHandler.instance.SessionPopup.activeSelf)
             {
                 Button_ONEnter();
                 OnClickDown();
@@ -582,11 +510,9 @@ public class GameController : MonoBehaviour
                 if (GetTruncatedValue_float(Multiplier) >= Difference)
                 {
                     Multiplier = Mathf.Clamp(Multiplier, 0f, Difference);
-                    /*multiplierTxt_Shadow.text = $"{Multiplier:F2}";*/
                     multiplierTxt.text = $"{Multiplier:F2}";
                     DebugHelper.Log($"CheckingForValue >>> : " + TakeCash);
                     isPressed = false;
-                    //TakeCashOut();
                     timeSinceLastIncrement = 7f;
                     OnClickUp();
                     Button_OFFEnter();
@@ -609,7 +535,6 @@ public class GameController : MonoBehaviour
                 Stop_AutoPlayBtn();
                 TimeDelay();
             }
-
         }
     }
     #region { ::::::::::::::::::::::::: API ::::::::::::::::::::::::: }
@@ -682,7 +607,6 @@ public class GameController : MonoBehaviour
         currencyType = APIController.instance.userDetails.currency_type;
         PassTxt(totalAmountTxt, APIController.instance.userDetails.currency_type);
         PassTxt(takeCurrenyType, APIController.instance.userDetails.currency_type);
-        /*PassTxt(betAmountTxt, betAmount.ToString("0.00") + " " + APIController.instance.userDetails.currency_type);*/
         PassTxt(betAmountTxt, $"{betAmount:F2} <size={totalAmountTxt.fontSize - 10}>{APIController.instance.userDetails.currency_type}</size>");
         PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size={totalAmountTxt.fontSize - 10}>{APIController.instance.userDetails.currency_type}</size>");
         DebugHelper.Log("Amount Details Subscribed");
@@ -758,44 +682,6 @@ public class GameController : MonoBehaviour
         }
 
     }
-    IEnumerator TimerCount()
-    {
-        if (startGame && !pauseGame && !take && (!NetworkHandler.instance.ConnectionPanel.activeSelf))
-        {
-            if (Multiplier < 1.01f && isChecked)
-            {
-                countTime += 7f * Time.deltaTime;
-                slider.value = countTime;
-                if (!isAutoPlay)
-                    sliderAutoCashNoTxt.text = countTime.ToString(" 0");
-            }
-            if (Multiplier >= 1.01f && !isPressed && !take)
-            {
-                timeSinceLastIncrement += Time.deltaTime;
-
-                slider.gameObject.SetActive(true);
-
-                countTime -= 1f * Time.deltaTime;
-                //sliderAutoCashNoTxt.text = countTime.ToString(" 0");
-                audioController.StopAudio(AudioEnum.startSlider);
-                slider.value = countTime;
-                if (countTime < 1)
-                {
-                    countTime = 0;
-                }
-                if (!isAutoPlay)
-                    sliderAutoCashNoTxt.text = countTime.ToString(" 0");
-            }
-            else if (Multiplier >= 1.01f && isPressed)
-            {
-                countTime = 7f;
-                slider.maxValue = 7f;
-                slider.value = 7f;
-            }
-        }
-        yield return null;
-        StartCoroutine(nameof(TimerCount));
-    }
     IEnumerator HolidngButtons()
     {
         // Handle bet amount updates
@@ -841,7 +727,7 @@ public class GameController : MonoBehaviour
             Color color = betAmountTxt.color;
             color.a = 0.5f;
             betAmountTxt.color = color;
-
+            betFontTxt.color = new Color32(255, 255, 255, 100);
             for (int i = 0; i < btnAmtTxt.Length; i++)
             {
                 if (btnAmtTxt[i] != null)
@@ -865,18 +751,12 @@ public class GameController : MonoBehaviour
         // Bonus Scroll View
         if (isScroll)
         {
-            //ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
             ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
 
             heat_Anim.SetBool("isPlay1", false);
             heat_IdleAnim.SetBool("isPlay1", false);
             fireObj.SetActive(false);
             fireIdleObj.SetActive(false);
-            takeCashbutton.interactable = false;
-            takeCashImg.color = new Color32(140, 140, 140, 255);
-            takeCashtxt.color = new Color32(194, 236, 166, 120);
-            takeCashWintxt.color = new Color32(194, 236, 166, 120);
-            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
             heatTxt.color = new Color32(63, 15, 15, 200);
         }
         // Game Lose
@@ -884,10 +764,10 @@ public class GameController : MonoBehaviour
         {
             startGame = false;
             onClick = false;
+            HeatBtnpress = false;
             //////
             skeletonAnimation.loop = false;
             //////
-            preHeating_txt.gameObject.SetActive(false);
             audioController.StopAudio(AudioEnum.reverseSlider);
             audioController.StopAudio(AudioEnum.startSlider);
             audioController.StopAudio(AudioEnum.Movement);
@@ -895,12 +775,6 @@ public class GameController : MonoBehaviour
             // sliderOBjs
             slider_Anim.SetBool("isOFF", true);
             sliderBg_Anim.SetBool("isFalse", true);
-            slider_bg.SetActive(false);
-            fillArea.SetActive(false);
-            slider_txt.SetActive(false);
-            keepHolding_txt.SetActive(false);
-            //sliderAutoCashNoTxt.gameObject.SetActive(false);
-            sliderAutoCashNoTxt.text = " ";
             //heat button
             heat_Anim.SetBool("isPlay1", false);
             heat_Anim.SetBool("isPlay2", false);
@@ -915,12 +789,7 @@ public class GameController : MonoBehaviour
             ballon_shake.SetBool("itsON", false);
             balloonShake.SetActive(false);
             balloonShake_blue.SetActive(false);
-            //takeCash & heat button 
-            takeCashImg.color = new Color32(140, 140, 140, 255);
-            takeCashtxt.color = new Color32(194, 236, 166, 120);
-            takeCashWintxt.color = new Color32(194, 236, 166, 120);
-            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
-            heatTxt.color = new Color32(63, 15, 15, 200);
+            //takeCash button 
             takeCashObj.SetActive(false);
         }
         // Taking cash
@@ -928,24 +797,15 @@ public class GameController : MonoBehaviour
         {
             startGame = false;
             onClick = false;
+            HeatBtnpress = false;
             unPress.SetActive(true);
             pressed.SetActive(false);
-            sliderAutoCashNoTxt.text = " ";
             audioController.StopAudio(AudioEnum.reverseSlider);
             audioController.StopAudio(AudioEnum.Movement);
             takeCashbutton.interactable = false;
             // sliderOBjs
             slider_Anim.SetBool("isOFF", true);
             sliderBg_Anim.SetBool("isFalse", true);
-            slider_bg.SetActive(false);
-            fillArea.SetActive(false);
-            slider_txt.SetActive(false);
-            keepHolding_txt.SetActive(false);
-            //sliderAutoCashNoTxt.gameObject.SetActive(false);
-            sliderAutoCashNoTxt.text = " ";
-            //balloon, takeCash & heat button
-            //heat_Anim.SetBool("isPlay1", false);
-            //heat_IdleAnim.SetBool("isPlay1", false);
             idleFireGlow.SetActive(false);
             idleFireObj.SetActive(true);
             fireObj.SetActive(false);
@@ -974,19 +834,10 @@ public class GameController : MonoBehaviour
 
         if (startGame && !takeBetAmount)
         {
-            /*if (Multiplier >= holdHeight)
-            {
-                //DebugHelper.Log("mStringValue =====> " + float.Parse(Mstring) + holdHeight);
-                gameLost = true;
-                lost = true;
-                Balloon_Burt();
-            }*/
             if (GetTruncatedValue_float(Multiplier) >= holdHeight)
             {
                 Multiplier = Mathf.Clamp(Multiplier, 0f, holdHeight);
-                /*multiplierTxt_Shadow.text = $"{Multiplier:F2}";*/
                 multiplierTxt.text = $"{Multiplier:F2}";
-                //DebugHelper.Log($"CheckingLostForValue >>> : " + holdHeight);
                 gameLost = true;
                 lost = true;
                 //////
@@ -1092,17 +943,10 @@ public class GameController : MonoBehaviour
         timeHeld = 0f; // Reset the time button is held
         winCash = 0f;
         _balanceUpdate = true;
-        multiplierTxt.color = Color.black;
-        xTxt.color = Color.black;
 
         // sliderOBjs
         slider_Anim.SetBool("isOFF", true);
         sliderBg_Anim.SetBool("isFalse", true);
-        slider_bg.SetActive(false);
-        fillArea.SetActive(false);
-        slider_txt.SetActive(false);
-        keepHolding_txt.SetActive(false);
-        sliderAutoCashNoTxt.text = " ";
         takeCashObj.SetActive(false);
     }
     void FireButton()
@@ -1123,7 +967,6 @@ public class GameController : MonoBehaviour
             audioController.StopAudio(AudioEnum.startSlider);
             audioController.StopAudio(AudioEnum.Movement);
             isPressed = false;
-            //heat_Anim.SetBool("isPlay2", false);
             fireObj.SetActive(false);
             if (!lost && !take && Multiplier >= 1.01f && !isScroll)
             {
@@ -1161,6 +1004,7 @@ public class GameController : MonoBehaviour
         timeHold = GetTruncatedValue_float(Multiplier).ToString("F2");
         Mstring = GetTruncatedValue_float(Multiplier).ToString("F2");
         takeCashWintxt.text = GetTruncatedValue_float(TakeCash).ToString("F2");
+        ballonCashTxt.text = GetTruncatedValue_float(TakeCash).ToString("F2") + " <size=40>" + APIController.instance.userDetails.currency_type + "</size>";
 
         if (startGame && Multiplier <= incrementRate)
         {
@@ -1176,7 +1020,7 @@ public class GameController : MonoBehaviour
             TakeCash = (betAmount * float.Parse(Mstring));
 
             takeCashWintxt.text = GetTruncatedValue_float(TakeCash).ToString("F2");
-            //takeCashWintxt.text = (TakeCash).ToString("F2");
+            ballonCashTxt.text = GetTruncatedValue_float(TakeCash).ToString("F2") + " <size=40>" + APIController.instance.userDetails.currency_type + "</size>";
             DebugHelper.Log($"Multipler1 TakeCash==>>> : {TakeCash}");
         }
 
@@ -1191,7 +1035,6 @@ public class GameController : MonoBehaviour
 
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            /*multiplierTxt_Shadow.text = s;*/
             balloon_Objs();
         }
         else if (isPressed && startGame && Multiplier >= 1.01f)
@@ -1204,7 +1047,6 @@ public class GameController : MonoBehaviour
 
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            /*multiplierTxt_Shadow.text = s;*/
 
             DebugHelper.Log("CheckingTakeCash Value : " + GetTruncatedValue(TakeCash));
             takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
@@ -1225,20 +1067,6 @@ public class GameController : MonoBehaviour
             ApplyBalloonParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
         }
 
-        if (countTime >= 7 && !isPressed && !lost)
-        {
-            if (!take)
-            {
-                sliderTxt.text = sliderAutoCashTxt.text.ToString();
-                //sliderAutoCashNoTxt.gameObject.SetActive(true);
-                if (!isAutoPlay)
-                    sliderAutoCashNoTxt.text = countTime.ToString(" 0");
-            }
-        }
-
-        if (isPressed && Multiplier >= 1.01f && !isAutoPlay && !take)
-            sliderAutoCashNoTxt.text = " 7";
-
         if (startGame && Multiplier >= 1.01f && !isAutoPlay)
         {
             TakeButtonColor();
@@ -1254,19 +1082,11 @@ public class GameController : MonoBehaviour
         if (startGame)
         {
             takeCashbutton.interactable = true;
-            takeCashImg.color = new Color32(255, 255, 255, 255);
-            takeCashtxt.color = new Color32(194, 236, 166, 255);
-            takeCashWintxt.color = new Color32(194, 236, 166, 255);
-            takeCurrencytxt.color = new Color32(194, 236, 166, 255);
             takeCashObj.SetActive(true);
         }
         else
         {
             takeCashbutton.interactable = false;
-            takeCashImg.color = new Color32(140, 140, 140, 255);
-            takeCashtxt.color = new Color32(194, 236, 166, 120);
-            takeCashWintxt.color = new Color32(194, 236, 166, 120);
-            takeCurrencytxt.color = new Color32(194, 236, 166, 120);
             takeCashObj.SetActive(false);
         }
     }
@@ -1278,7 +1098,6 @@ public class GameController : MonoBehaviour
             Multiplier *= GetTruncatedValue_float(incrementRate);
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            /*multiplierTxt_Shadow.text = s;*/
 
             // Update the take cash text
             DebugHelper.Log("CheckingTakeCash Value_2 : " + GetTruncatedValue(TakeCash));
@@ -1296,11 +1115,9 @@ public class GameController : MonoBehaviour
         handGestures_start_Img.SetActive(false);
         handGestures_btAmt_Img.SetActive(false);
         takeCash_Anim.SetActive(false);
-        //balloonShake_blue.GetComponent<ImageSequencer>().enabled = false;
     }
     public void Animation_Play()
     {
-        //heat_IdleAnim.SetBool("isPlay1", true);
         imageSequencer.enabled = true;
         for (int i = 0; i < unsetected_Buttons.Count; i++)
         {
@@ -1472,18 +1289,8 @@ public class GameController : MonoBehaviour
                 onClick = false;
                 holdButton.enabled = false;
                 // TakeCash
-                takeCashImg.color = new Color32(140, 140, 140, 255);
-                takeCashtxt.color = new Color32(194, 236, 166, 120);
-                takeCashWintxt.color = new Color32(194, 236, 166, 120);
-                takeCurrencytxt.color = new Color32(194, 236, 166, 120);
                 takeCashObj.SetActive(false);
                 // sliderOBjs
-                slider_bg.SetActive(false);
-                fillArea.SetActive(false);
-                slider_txt.SetActive(false);
-                keepHolding_txt.SetActive(false);
-                //sliderAutoCashNoTxt.gameObject.SetActive(false);
-                sliderAutoCashNoTxt.text = " ";
                 slider_Anim.SetBool("isOFF", true);
                 sliderBg_Anim.SetBool("isFalse", true);
                 ballon_Anim.SetBool("isTake", true);
@@ -1519,15 +1326,15 @@ public class GameController : MonoBehaviour
             {
                 DebugHelper.Log("WinningBetAPIfailed========>");
 
-                /*Betlist localBet = new Betlist
-                {
-                    bet_amount = betAmount,
-                    win_amount = 0,
-                    multiplier = 0,
-                    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                };
-                APIController.instance.betlistArray.Add(localBet);
-                BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);*/
+                //Betlist localBet = new Betlist
+                //{
+                //    bet_amount = betAmount,
+                //    win_amount = 0,
+                //    multiplier = 0,
+                //    dateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                //};
+                //APIController.instance.betlistArray.Add(localBet);
+                //BetHistory.instance.AddPlayerBetDetails(APIController.instance.betlistArray, true);
             }
         }, APIController.instance.userDetails.Id, false, WinAmount == 0 ? false : true, gameName, operatorName, APIController.instance.userDetails.gameId, APIController.instance.userDetails.commission, MatchRes.MatchToken);
     }
@@ -1548,14 +1355,9 @@ public class GameController : MonoBehaviour
     void TimeDelay() // Clear UI
     {
         DebugHelper.Log("Check2");
-        /*multiplierTxt_Shadow.color = Color.black;
-        xTxt_Shadow.color = Color.black;*/
         Multiplier = 0f;
         multiplierTxt.text = Multiplier.ToString("0.00");
-        multiplierTxt.color = Color.white;
-        xTxt.color = Color.white;
         multiplierValue_Txt.gameObject.SetActive(false);
-        /*multiplierTxt_Shadow.text = Multiplier.ToString("0.00");*/
         TakeCash = 0f;
         Mstring = " ";
         takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
@@ -1583,21 +1385,24 @@ public class GameController : MonoBehaviour
         if (!isAutoPlay)
             autoPlayBtn.interactable = true;
 
+        HeatBtn.gameObject.SetActive(true);
+        takeCashbutton.gameObject.SetActive(false);
+
         /////
         btnPressed = false;
         skeletonAnimation.maskInteraction = SpriteMaskInteraction.None;
         skeletonAnimation.AnimationName = "Idle";
         skeletonAnimation.loop = true;
         /////
-
+        ///
+        if (!autoPlayBtn.interactable)
+        {
+            autoPlayBtn.interactable = true;
+            autoPlayicon.color = new Color32(255, 255, 255, 255);
+        }
+        betFontTxt.color = new Color32(255, 255, 255, 255);
         Button_Switch_ON();
         //colors
-        takeCashImg.color = new Color32(140, 140, 140, 255);
-        takeCashtxt.color = new Color32(194, 236, 166, 120);
-        takeCashWintxt.color = new Color32(194, 236, 166, 120);
-        takeCurrencytxt.color = new Color32(194, 236, 166, 120);
-        heatTxt.color = new Color32(63, 15, 15, 255);
-        autoPlay_Txt.color = new Color32(146, 158, 167, 255);
 
         // takeCash
         takeCashbutton.interactable = false;
@@ -1606,8 +1411,6 @@ public class GameController : MonoBehaviour
         winPanel.SetActive(false);
         takeBetAmount = true;
         isWin = false;
-        countTime = 0f;
-        slider.value = 0f;
 
         ButtonSelect_Anim();
 
@@ -1639,13 +1442,7 @@ public class GameController : MonoBehaviour
 
         // sliderOBjs
         slider_Anim.SetBool("isON", true);
-        sliderbg.SetActive(false);
         sliderBg_Anim.SetBool("isTrue", false);
-
-        if (!isAutoPlay || !stopAutoPlay)
-            pressToBetBtn.gameObject.SetActive(true);
-
-        //Slider_Objs();
         NetworkHandler.instance.StartIdleSession();
 
         Color color = betAmountTxt.color;
@@ -1687,12 +1484,6 @@ public class GameController : MonoBehaviour
     public void HandleInsuffitient()
     {
         Button_Switch_ON();
-        //colors
-        takeCashImg.color = new Color32(140, 140, 140, 255);
-        takeCashtxt.color = new Color32(194, 236, 166, 120);
-        takeCashWintxt.color = new Color32(194, 236, 166, 120);
-        takeCurrencytxt.color = new Color32(194, 236, 166, 120);
-        heatTxt.color = new Color32(63, 15, 15, 255);
 
         // takeCash
         takeCashObj.SetActive(false);
@@ -1700,8 +1491,6 @@ public class GameController : MonoBehaviour
         winPanel.SetActive(false);
         takeBetAmount = true;
         isWin = false;
-        countTime = 0f;
-        slider.value = 0f;
 
         ButtonSelect_Anim();
     }
@@ -1714,7 +1503,6 @@ public class GameController : MonoBehaviour
         winPanel.SetActive(false);
         flewAway_Txt.SetActive(true);
         multiplierTxt.text = Multiplier.ToString("0.00");
-        /*multiplierTxt_Shadow.text = Multiplier.ToString("0.00");*/
         makeLose = false;
         unPress.SetActive(true);
         pressed.SetActive(false);
@@ -1796,9 +1584,7 @@ public class GameController : MonoBehaviour
         if (!isAutoPlay)
         {
             await UniTask.Delay(200);
-            sliderTxt.text = sliderAutoCashTxt.text.ToString();
             await UniTask.Delay(500);
-            fillArea.SetActive(true);
         }
     }
     void Button_SwitchingOFF()
@@ -1806,6 +1592,7 @@ public class GameController : MonoBehaviour
         autoPlayBtn.interactable = false;
         minusButton.interactable = false;
         plusButton.interactable = false;
+
         // Disable all buttons
         button_1.interactable = false; button_2.interactable = false; button_5.interactable = false; button_10.interactable = false;
 
@@ -1843,7 +1630,6 @@ public class GameController : MonoBehaviour
             if (!startGame && !pauseGame && ((float)TotalAmount < betAmount))
             {
                 buttonPress = true;
-                //DebugHelper.Log("Bigger_Amount " + buttonPress);
             }
 
             if (!numPad && !buttonPress && !lost && !isAutoPlay)
@@ -1865,7 +1651,6 @@ public class GameController : MonoBehaviour
             // Game setup if conditions are met
             if (!startGame && !buttonPress && !gameLost && !isBegin && !NetworkHandler.instance.ConnectionPanel.activeSelf)
             {
-                //SetupGameForNewRound();
                 if (!IsCreateMatchCalled)
                 {
                     API_IntitalizeBetAmount();
@@ -1879,9 +1664,6 @@ public class GameController : MonoBehaviour
             {
                 await UniTask.Delay(100);
             }
-
-            /*if (!isAutoPlay)
-                SetupGameForNewRound();*/
         });
 
         // Early return if no internet connection
@@ -1911,14 +1693,12 @@ public class GameController : MonoBehaviour
         audioController.PlayAudio(AudioEnum.Movement, true);
 
         // Handle balloon states and parallax effect
-        //balloonShake_blue.SetActive(false);
         ballon_shake.SetBool("itsON", false);
         balloonParts.SetActive(false);
         ApplyParallaxEffect(holdButton.GetComponent<RectTransform>().anchoredPosition.y);
         touch = true;
 
         // Manage fire-related objects
-        //idleFireGlow.SetActive(false);
         fireObj.SetActive(true);
         idleFireObj.SetActive(true);
         fireIdleObj.SetActive(false);
@@ -1934,9 +1714,6 @@ public class GameController : MonoBehaviour
         {
             button.SetActive(false);
         }
-
-        // Disable the take cash button
-        takeCashbutton.interactable = false;
     }
     private void SetupGameForNewRound()
     {
@@ -1946,21 +1723,6 @@ public class GameController : MonoBehaviour
         if (handGestures_start.activeSelf)
             handGestures_start.SetActive(false);
 
-        /* gameCounts++;
-
-         // Randomize height based on game count
-         if (gameCounts != 15)
-         {
-             holdHeight = UnityEngine.Random.Range(0.80f, 9.8f);
-         }
-         else
-         {
-             holdHeight = UnityEngine.Random.Range(0.75f, 0.99f);
-             gameCounts = 0;
-         }*/
-
-        // Initialize bet amount
-        //API_IntitalizeBetAmount();
         isBegin = true;
     }
     public void RNG_APICall()   //RNG_APICALL CALLING METHOD
@@ -2068,8 +1830,6 @@ public class GameController : MonoBehaviour
 
             // Reset button press state and update animations
             isPressed = false;
-            //heat_Anim.SetBool("isPlay2", false);
-            //heat_IdleAnim.SetBool("isPlay1", true);
 
             // Manage fire-related objects
             fireObj.SetActive(false);
@@ -2133,19 +1893,6 @@ public class GameController : MonoBehaviour
 
         if (!startGame)
             ButtonSelect_Anim();
-
-        // Activate the hand gestures and slider animation
-        //   handGestures_btAmt.SetActive(true);
-
-        //slider_Anim.SetBool("isON", true);
-
-        if (!isAutoPlay)
-            pressToBetBtn.gameObject.SetActive(true);
-        /*sliderbg.SetActive(true);
-        sliderBg_Anim.SetBool("isTrue", true);*/
-
-        // Call method to handle slider objects
-        //Slider_Objs();
     }
     private void PressToBet()
     {
@@ -2157,11 +1904,8 @@ public class GameController : MonoBehaviour
         Invoke(nameof(SetAnimDelay), 0.5f);
         /////
 
-        pressToBetBtn.gameObject.SetActive(false);
-
         if (!isAutoPlay)
         {
-            sliderbg.SetActive(true);
             sliderBg_Anim.SetBool("isTrue", true);
         }
 
@@ -2177,18 +1921,86 @@ public class GameController : MonoBehaviour
     {
         await UniTask.Delay(400);
         TxtObjs.gameObject.SetActive(true);
-        if (!isAutoPlay)
-        {
-            slider_txt.SetActive(true);
-            keepHolding_txt.SetActive(true);
-            slider_bg.SetActive(true);
-        }
         await UniTask.Delay(400);
         isChecked = true;
     }
     #endregion
 
     #region { ::::::::::::::::::::::::: Buttons ::::::::::::::::::::::::: }
+
+    /// <summary>
+
+    public void HeatButton()
+    {
+        netCheck = true;
+        NetworkHandler.instance.StartIdleSession(false);
+
+        APIController.instance.CheckInternetandProcess(async (success) =>
+        {
+            if (!success)
+            {
+                InternetCheck = false;
+                DebugHelper.Log("CheckInternetandProcess failed: " + success);
+                return;
+            }
+            // Proceed if internet check is successful
+            InternetCheck = true;
+            onClick = true;
+            HeatBtnpress = true;
+            takeCashbutton.gameObject.SetActive(true);
+            HeatBtn.gameObject.SetActive(false);
+            autoPlayicon.color = new Color32(255, 255, 255, 100);
+            autoPlayBtn.interactable = false;
+
+            // Handle button press logic if conditions are met
+            if (!startGame && !pauseGame && ((float)TotalAmount < betAmount))
+            {
+                buttonPress = true;
+            }
+
+            if (!numPad && !buttonPress && !lost && !isAutoPlay)
+            {
+                Button_SwitchingOFF();
+                HandleGameStart();
+            }
+
+            // Format amounts with two decimal places
+            TotalAmount = double.Parse(TotalAmount.ToString("0.00"));
+            betAmount = float.Parse(betAmount.ToString("0.00"));
+
+            // Deactivate active button animations
+            foreach (var button in button_Anim.Where(button => button.activeSelf))
+            {
+                button.SetActive(false);
+            }
+
+            // Game setup if conditions are met
+            if (!startGame && !buttonPress && !gameLost && !isBegin && !NetworkHandler.instance.ConnectionPanel.activeSelf)
+            {
+                if (!IsCreateMatchCalled)
+                {
+                    API_IntitalizeBetAmount();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            while (!startGame)
+            {
+                await UniTask.Delay(100);
+            }
+        });
+
+        // Early return if no internet connection
+        if (!InternetCheck)
+        {
+            return;
+        }
+    }
+
+    /// </summary>
+
     public int currentClickValue;
     public void TakeButtonPress() // Function used in TakeButton Inspector in Editor
     {
@@ -2559,7 +2371,6 @@ public class GameController : MonoBehaviour
     {
         // Deactivate and activate UI elements
         handGestures_btAmt.SetActive(false);
-        // handGestures_start.SetActive(true);
 
         // Enable necessary components
         heatbtnCollider.enabled = true;
@@ -2589,8 +2400,6 @@ public class GameController : MonoBehaviour
 
         if (!startGame && !take && !isScroll && !onClick)
         {
-            //audioController.PlayAudio(AudioEnum.buttonClick);
-
             // Set the bet amount
             rounds = _rounds;
             if (rounds <= 99)
@@ -2604,9 +2413,6 @@ public class GameController : MonoBehaviour
                 infiniteImg.gameObject.SetActive(true);
                 roundsTxt.text = " ";
             }
-
-            //CheckMinCondition();
-
             // Set buttons' active state based on bet amount
             SetRoundBtnActiveState(_rounds);
         }
