@@ -10,6 +10,8 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
+using Spine.Unity;
+using System.Xml.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -39,6 +41,7 @@ public class GameController : MonoBehaviour
     [Header("Script")]
     [SerializeField] KeyBoardHandler keyBoard;
     [SerializeField] SettingsPanelHandler settingsPanelHandler;
+    [SerializeField] SkeletonAnimation skeletonAnimation;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -123,6 +126,7 @@ public class GameController : MonoBehaviour
     [SerializeField] bool isChecked;
     [SerializeField] bool makeLose;
     [SerializeField] bool isPrediction = false;
+    [SerializeField] bool btnPressed;
     private bool isBegin;
     private bool pauseGame;
     [SerializeField] bool isPressed;
@@ -177,11 +181,12 @@ public class GameController : MonoBehaviour
     [Header("TextMeshProUGUI")]
     [SerializeField] TextMeshProUGUI multiplierTxt;
     [SerializeField] TextMeshProUGUI xTxt;
-    [SerializeField] TextMeshProUGUI multiplierTxt_Shadow;
-    [SerializeField] TextMeshProUGUI xTxt_Shadow;
+    /*[SerializeField] TextMeshProUGUI multiplierTxt_Shadow;
+    [SerializeField] TextMeshProUGUI xTxt_Shadow;*/
     [SerializeField] TextMeshProUGUI takeCashTxt;
     [SerializeField] TextMeshProUGUI totalAmountTxt;
     [SerializeField] TextMeshProUGUI takeCurrenyType;
+    [SerializeField] TextMeshProUGUI multiplierValue_Txt;
     // UI Bet Amount txt
     public TextMeshProUGUI betAmountTxt;
 
@@ -404,6 +409,11 @@ public class GameController : MonoBehaviour
         touch = true;
         takeBetAmount = true;
         Difference = 0;
+        btnPressed = false;
+        /////
+        multiplierValue_Txt.gameObject.SetActive(false);
+        skeletonAnimation.gameObject.SetActive(false);
+        /////
 
         // Initialize take cash UI elements
         Color32 disabledColor = new Color32(194, 236, 166, 120);
@@ -416,7 +426,7 @@ public class GameController : MonoBehaviour
         // Initialize multiplier text
         string multiplierText = Multiplier.ToString("0.00");
         multiplierTxt.text = multiplierText;
-        multiplierTxt_Shadow.text = multiplierText;
+        /*multiplierTxt_Shadow.text = multiplierText;*/
 
         // Start coroutines
         StartCoroutine(HolidngButtons());
@@ -572,7 +582,7 @@ public class GameController : MonoBehaviour
                 if (GetTruncatedValue_float(Multiplier) >= Difference)
                 {
                     Multiplier = Mathf.Clamp(Multiplier, 0f, Difference);
-                    multiplierTxt_Shadow.text = $"{Multiplier:F2}";
+                    /*multiplierTxt_Shadow.text = $"{Multiplier:F2}";*/
                     multiplierTxt.text = $"{Multiplier:F2}";
                     DebugHelper.Log($"CheckingForValue >>> : " + TakeCash);
                     isPressed = false;
@@ -621,6 +631,7 @@ public class GameController : MonoBehaviour
         if (LoadingPopUp.activeSelf)
         {
             LoadingPopUp.SetActive(false);
+            skeletonAnimation.gameObject.SetActive(true);
             CanPlayAudio = true;
             settingsPanelHandler.HideMe();
             Welcom_Button();
@@ -873,6 +884,9 @@ public class GameController : MonoBehaviour
         {
             startGame = false;
             onClick = false;
+            //////
+            skeletonAnimation.loop = false;
+            //////
             preHeating_txt.gameObject.SetActive(false);
             audioController.StopAudio(AudioEnum.reverseSlider);
             audioController.StopAudio(AudioEnum.startSlider);
@@ -942,6 +956,11 @@ public class GameController : MonoBehaviour
             takeCashObj.SetActive(false);
             balloonParts.SetActive(true);
             heatTxt.color = new Color32(63, 15, 15, 200);
+            /////
+            multiplierValue_Txt.gameObject.SetActive(false);
+            skeletonAnimation.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            skeletonAnimation.AnimationName = "Idle";
+            /////
         }
 
         if (menuCancelBtn.activeSelf && !settingsPanelHandler.gameObject.activeSelf)
@@ -965,11 +984,15 @@ public class GameController : MonoBehaviour
             if (GetTruncatedValue_float(Multiplier) >= holdHeight)
             {
                 Multiplier = Mathf.Clamp(Multiplier, 0f, holdHeight);
-                multiplierTxt_Shadow.text = $"{Multiplier:F2}";
+                /*multiplierTxt_Shadow.text = $"{Multiplier:F2}";*/
                 multiplierTxt.text = $"{Multiplier:F2}";
                 //DebugHelper.Log($"CheckingLostForValue >>> : " + holdHeight);
                 gameLost = true;
                 lost = true;
+                //////
+                skeletonAnimation.loop = false;
+                skeletonAnimation.AnimationName = "Balloon blast";
+                //////
                 Balloon_Burt();
             }
         }
@@ -1069,6 +1092,8 @@ public class GameController : MonoBehaviour
         timeHeld = 0f; // Reset the time button is held
         winCash = 0f;
         _balanceUpdate = true;
+        multiplierTxt.color = Color.black;
+        xTxt.color = Color.black;
 
         // sliderOBjs
         slider_Anim.SetBool("isOFF", true);
@@ -1166,7 +1191,7 @@ public class GameController : MonoBehaviour
 
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            multiplierTxt_Shadow.text = s;
+            /*multiplierTxt_Shadow.text = s;*/
             balloon_Objs();
         }
         else if (isPressed && startGame && Multiplier >= 1.01f)
@@ -1179,7 +1204,7 @@ public class GameController : MonoBehaviour
 
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            multiplierTxt_Shadow.text = s;
+            /*multiplierTxt_Shadow.text = s;*/
 
             DebugHelper.Log("CheckingTakeCash Value : " + GetTruncatedValue(TakeCash));
             takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
@@ -1253,7 +1278,7 @@ public class GameController : MonoBehaviour
             Multiplier *= GetTruncatedValue_float(incrementRate);
             string s = GetTruncatedValue_float(Multiplier).ToString("F2");
             multiplierTxt.text = s;
-            multiplierTxt_Shadow.text = s;
+            /*multiplierTxt_Shadow.text = s;*/
 
             // Update the take cash text
             DebugHelper.Log("CheckingTakeCash Value_2 : " + GetTruncatedValue(TakeCash));
@@ -1523,11 +1548,14 @@ public class GameController : MonoBehaviour
     void TimeDelay() // Clear UI
     {
         DebugHelper.Log("Check2");
-        multiplierTxt_Shadow.color = Color.black;
-        xTxt_Shadow.color = Color.black;
+        /*multiplierTxt_Shadow.color = Color.black;
+        xTxt_Shadow.color = Color.black;*/
         Multiplier = 0f;
         multiplierTxt.text = Multiplier.ToString("0.00");
-        multiplierTxt_Shadow.text = Multiplier.ToString("0.00");
+        multiplierTxt.color = Color.white;
+        xTxt.color = Color.white;
+        multiplierValue_Txt.gameObject.SetActive(false);
+        /*multiplierTxt_Shadow.text = Multiplier.ToString("0.00");*/
         TakeCash = 0f;
         Mstring = " ";
         takeCashTxt.text = GetTruncatedValue(TakeCash).ToString("F2");
@@ -1554,6 +1582,13 @@ public class GameController : MonoBehaviour
         isPrediction = false;
         if (!isAutoPlay)
             autoPlayBtn.interactable = true;
+
+        /////
+        btnPressed = false;
+        skeletonAnimation.maskInteraction = SpriteMaskInteraction.None;
+        skeletonAnimation.AnimationName = "Idle";
+        skeletonAnimation.loop = true;
+        /////
 
         Button_Switch_ON();
         //colors
@@ -1679,13 +1714,13 @@ public class GameController : MonoBehaviour
         winPanel.SetActive(false);
         flewAway_Txt.SetActive(true);
         multiplierTxt.text = Multiplier.ToString("0.00");
-        multiplierTxt_Shadow.text = Multiplier.ToString("0.00");
+        /*multiplierTxt_Shadow.text = Multiplier.ToString("0.00");*/
         makeLose = false;
         unPress.SetActive(true);
         pressed.SetActive(false);
         isPrediction = false;
         IsCreateMatchCalled = false;
-        Invoke("TimeDelay", 1.5f);
+        Invoke(nameof(TimeDelay), 1.5f);
     }
     public void BetResetForInsufficient()
     {
@@ -1737,11 +1772,23 @@ public class GameController : MonoBehaviour
         {
             balloonShake_blue.SetActive(true);
             ballon_shake.SetBool("itsON", true);
+
+            if (btnPressed)
+            {
+                skeletonAnimation.AnimationName = "Fly loop";
+                skeletonAnimation.loop = true;
+            }
         }
         else
         {
             balloonShake_blue.SetActive(true);
             ballon_shake.SetBool("itsON", false);
+
+            if (btnPressed)
+            {
+                skeletonAnimation.AnimationName = "Fly idle";
+                skeletonAnimation.loop = true;
+            }
         }
     }
     async void Slider_Objs()
@@ -1875,6 +1922,12 @@ public class GameController : MonoBehaviour
         fireObj.SetActive(true);
         idleFireObj.SetActive(true);
         fireIdleObj.SetActive(false);
+
+        if (btnPressed)
+        {
+            skeletonAnimation.AnimationName = "Fly loop";
+            skeletonAnimation.loop = true;
+        }
 
         // Disable all button animations
         foreach (var button in button_Anim)
@@ -2023,6 +2076,12 @@ public class GameController : MonoBehaviour
             idleFireObj.SetActive(false);
             fireIdleObj.SetActive(true);
 
+            if (btnPressed)
+            {
+                skeletonAnimation.AnimationName = "Fly idle";
+                skeletonAnimation.loop = true;
+            }
+
             // Handle audio and balloon states
             if (isFire && Multiplier >= 1.01f)
             {
@@ -2092,6 +2151,11 @@ public class GameController : MonoBehaviour
     {
         balloonBlue_Start.SetActive(false);
         ballon_Anim.SetBool("isJump", true);
+        /////
+        skeletonAnimation.loop = false;
+        skeletonAnimation.AnimationName = "Jump";
+        Invoke(nameof(SetAnimDelay), 0.5f);
+        /////
 
         pressToBetBtn.gameObject.SetActive(false);
 
@@ -2103,6 +2167,11 @@ public class GameController : MonoBehaviour
 
         Slider_Objs();
         SliderDelay();
+    }
+    void SetAnimDelay()
+    {
+        btnPressed = true;
+        multiplierValue_Txt.gameObject.SetActive(true);
     }
     async void SliderDelay()
     {

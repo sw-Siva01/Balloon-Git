@@ -1,0 +1,212 @@
+Balloon.png
+size:2042,1848
+filter:Linear,Linear
+pma:true
+Balloon blast/1
+bounds:315,1796,89,50
+Balloon blast/10
+bounds:1147,1767,93,79
+Balloon blast/2
+bounds:2,1819,27,53
+rotate:90
+Balloon blast/3
+bounds:1057,1773,73,88
+rotate:90
+Balloon blast/4
+bounds:911,1775,71,144
+rotate:90
+Balloon blast/5
+bounds:105,1808,38,71
+rotate:90
+Balloon blast/6
+bounds:178,1803,135,43
+Balloon blast/7
+bounds:526,1786,84,60
+Balloon blast/8
+bounds:406,1790,56,118
+rotate:90
+Balloon blast/9
+bounds:612,1782,64,145
+rotate:90
+Balloon blast/FX/Blast seq_1
+bounds:1536,1340,200,200
+Balloon blast/FX/Blast seq_10
+bounds:1738,1340,200,200
+Balloon blast/FX/Blast seq_2
+bounds:2,1295,200,200
+Balloon blast/FX/Blast seq_3
+bounds:204,1282,200,200
+Balloon blast/FX/Blast seq_4
+bounds:406,1274,200,200
+Balloon blast/FX/Blast seq_5
+bounds:608,1268,200,200
+Balloon blast/FX/Blast seq_6
+bounds:810,1267,200,200
+Balloon blast/FX/Blast seq_7
+bounds:1012,1259,200,200
+Balloon blast/FX/Blast seq_8
+bounds:1012,1259,200,200
+Balloon blast/FX/Blast seq_9
+bounds:1214,1238,200,200
+Balloon blast/Stove
+bounds:57,1818,46,28
+Balloon_orange
+bounds:1416,1030,308,372
+rotate:90
+Fire glow
+bounds:2,876,404,401
+rotate:90
+Fire/Fire_00000
+bounds:405,753,512,512
+Fire/Fire_00001
+bounds:919,516,512,512
+Fire/Fire_00002
+bounds:1433,516,512,512
+Fire/Fire_00003
+bounds:2,239,512,512
+Fire/Fire_00004
+bounds:516,2,512,512
+Fire/Fire_00005
+bounds:1030,2,512,512
+Flag 1/Flag 1_00000
+bounds:1242,1746,100,100
+Flag 1/Flag 1_00001
+bounds:1344,1746,100,100
+Flag 1/Flag 1_00002
+bounds:1446,1746,100,100
+Flag 1/Flag 1_00003
+bounds:1548,1746,100,100
+Flag 1/Flag 1_00004
+bounds:1650,1746,100,100
+Flag 1/Flag 1_00005
+bounds:1752,1746,100,100
+Flag 1/Flag 1_00006
+bounds:1854,1746,100,100
+Flag 1/Flag 1_00007
+bounds:2,1716,100,100
+Flag 1/Flag 1_00008
+bounds:104,1701,100,100
+Flag 1/Flag 1_00009
+bounds:206,1701,100,100
+Flag 1/Flag 1_00010
+bounds:308,1688,100,100
+Flag 1/Flag 1_00011
+bounds:410,1688,100,100
+Flag 1/Flag 1_00012
+bounds:512,1680,100,100
+Flag 1/Flag 1_00013
+bounds:614,1680,100,100
+Flag 1/Flag 1_00014
+bounds:716,1674,100,100
+Flag 1/Flag 1_00015
+bounds:818,1673,100,100
+Flag 1/Flag 1_00016
+bounds:920,1673,100,100
+Flag 1/Flag 1_00017
+bounds:1022,1671,100,100
+Flag 1/Flag 1_00018
+bounds:1124,1665,100,100
+Flag 1/Flag 1_00019
+bounds:1226,1644,100,100
+Flag 1/Flag 1_00020
+bounds:1328,1644,100,100
+Flag 1/Flag 1_00021
+bounds:1430,1644,100,100
+Flag 1/Flag 1_00022
+bounds:1532,1644,100,100
+Flag 1/Flag 1_00023
+bounds:1634,1644,100,100
+Flag 1/Flag 1_00024
+bounds:1736,1644,100,100
+Flag 1/Flag 1_00025
+bounds:1838,1644,100,100
+Flag 1/Flag 1_00026
+bounds:1940,1644,100,100
+Flag 1/Flag 1_00027
+bounds:2,1614,100,100
+Flag 1/Flag 1_00028
+bounds:104,1599,100,100
+Flag 1/Flag 1_00029
+bounds:206,1599,100,100
+Flag 1/Flag 1_00030
+bounds:308,1586,100,100
+Flag 2/Flag 2_00000
+bounds:410,1586,100,100
+Flag 2/Flag 2_00030
+bounds:410,1586,100,100
+Flag 2/Flag 2_00001
+bounds:512,1578,100,100
+Flag 2/Flag 2_00002
+bounds:614,1578,100,100
+Flag 2/Flag 2_00003
+bounds:716,1572,100,100
+Flag 2/Flag 2_00004
+bounds:818,1571,100,100
+Flag 2/Flag 2_00005
+bounds:920,1571,100,100
+Flag 2/Flag 2_00006
+bounds:1022,1569,100,100
+Flag 2/Flag 2_00007
+bounds:1124,1563,100,100
+Flag 2/Flag 2_00008
+bounds:1226,1542,100,100
+Flag 2/Flag 2_00009
+bounds:1328,1542,100,100
+Flag 2/Flag 2_00010
+bounds:1430,1542,100,100
+Flag 2/Flag 2_00011
+bounds:1532,1542,100,100
+Flag 2/Flag 2_00012
+bounds:1634,1542,100,100
+Flag 2/Flag 2_00013
+bounds:1736,1542,100,100
+Flag 2/Flag 2_00014
+bounds:1838,1542,100,100
+Flag 2/Flag 2_00015
+bounds:1940,1542,100,100
+Flag 2/Flag 2_00016
+bounds:2,1512,100,100
+Flag 2/Flag 2_00017
+bounds:104,1497,100,100
+Flag 2/Flag 2_00018
+bounds:206,1497,100,100
+Flag 2/Flag 2_00019
+bounds:308,1484,100,100
+Flag 2/Flag 2_00020
+bounds:410,1484,100,100
+Flag 2/Flag 2_00021
+bounds:512,1476,100,100
+Flag 2/Flag 2_00022
+bounds:614,1476,100,100
+Flag 2/Flag 2_00023
+bounds:716,1470,100,100
+Flag 2/Flag 2_00024
+bounds:818,1469,100,100
+Flag 2/Flag 2_00025
+bounds:920,1469,100,100
+Flag 2/Flag 2_00026
+bounds:1022,1467,100,100
+Flag 2/Flag 2_00027
+bounds:1124,1461,100,100
+Flag 2/Flag 2_00028
+bounds:1226,1440,100,100
+Flag 2/Flag 2_00029
+bounds:1328,1440,100,100
+Rope
+bounds:1430,1438,102,104
+rotate:90
+basket
+bounds:759,1776,150,70
+
+Balloon_2.png
+size:1030,1030
+filter:Linear,Linear
+pma:true
+Fire/Fire_00006
+bounds:2,516,512,512
+Fire/Fire_00007
+bounds:2,2,512,512
+Fire/Fire_00008
+bounds:516,516,512,512
+Fire/Fire_00009
+bounds:516,2,512,512
