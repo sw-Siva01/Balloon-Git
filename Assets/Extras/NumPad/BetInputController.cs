@@ -266,7 +266,7 @@ public class BetInputController : MonoBehaviour
         _KeyBoardHandler.gameObject.SetActive(false);
         EnableBetInput();
         DebugHelper.Log("CloseKeyPadPanel Done ");
-        controller.HandGesture();
+        /*controller.HandGesture();*/
 
     }
 
