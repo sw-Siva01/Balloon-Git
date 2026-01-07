@@ -165,7 +165,7 @@ public class AutoplayInputHandler : MonoBehaviour
         if (inputField != null)
         {
             DebugHelper.Log(TruncateToTwoDecimalPlaces(InputValue) + " %$#@OnInputValueEndedit");
-            inputField.text = TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
+            inputField.text = " <size=30>" + "x" + "</size>" + TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
             //inputField.text = InputValue.ToString("F2");
         }
     }

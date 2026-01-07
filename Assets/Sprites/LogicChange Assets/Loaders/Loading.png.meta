@@ -116,37 +116,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Loading_0
-      rect:
-        serializedVersion: 2
-        x: 4
-        y: 3
-        width: 159
-        height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5079ca9decb1340f0800000000000000
-      internalID: -1134032105938053371
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Loading_1
       rect:
         serializedVersion: 2
-        x: 8
-        y: 84
-        width: 159
-        height: 83
+        x: 0
+        y: 0
+        width: 172
+        height: 172
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -163,7 +141,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a24c8ec98c5db4146ab30fddc52323cc
     internalID: 0
     vertices: []
     indices: 
@@ -172,7 +150,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Loading_1: -5715818429344116891
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

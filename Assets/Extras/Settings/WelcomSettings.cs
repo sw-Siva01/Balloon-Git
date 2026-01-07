@@ -11,7 +11,7 @@ public class WelcomSettings : UIHandler
     [SerializeField] private Button popupCloseBtn, continueBtn, closeBtn;
 
     public static WelcomSettings instance;
-    private void Awake()
+    /*private void Awake()
     {
         AudioListener.volume = 0;
         instance = this;
@@ -47,5 +47,5 @@ public class WelcomSettings : UIHandler
     {
         base.OnBack();
     }
-    #endregion
+    #endregion*/
 }

@@ -26,7 +26,7 @@ public class SettingsPanelHandler : UIHandler
     public TMP_Text playerNameTxt;
     public Button howtoPlayBtn;
     public Toggle MusicToggle;
-    public Toggle soundTogWelcome, musicTogWelcome;
+    /*public Toggle soundTogWelcome, musicTogWelcome;*/
     public GameObject RedirectingPanel;
 
     public Button settingsBtn;
@@ -51,8 +51,8 @@ public class SettingsPanelHandler : UIHandler
         //SetMusicVolume(true);
         SoundToggle.onValueChanged.AddListener((state) => { ToggleSound(state); });
         MusicToggle.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
-        soundTogWelcome.onValueChanged.AddListener((state) => { ToggleSound(state); });
-        musicTogWelcome.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
+        /*soundTogWelcome.onValueChanged.AddListener((state) => { ToggleSound(state); });
+        musicTogWelcome.onValueChanged.AddListener((state) => { SetMusicVolume(state); });*/
 
         gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
         betHistory_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowBetHistoryScreen(); });
@@ -80,7 +80,7 @@ public class SettingsPanelHandler : UIHandler
     {
         SoundToggle.isOn = value;
 
-        soundTogWelcome.isOn = value;
+        /*soundTogWelcome.isOn = value;*/
         DebugHelper.Log("Sound volume --> " + value);
 
         if (SoundToggle.isOn)
@@ -107,7 +107,7 @@ public class SettingsPanelHandler : UIHandler
 
         DebugHelper.Log("Music volume --> " + _state);
         MusicToggle.isOn = _state;
-        musicTogWelcome.isOn = _state;
+        /*musicTogWelcome.isOn = _state;*/
 
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
 
