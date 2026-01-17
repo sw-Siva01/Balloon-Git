@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class AutoplayInputHandler : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class AutoplayInputHandler : MonoBehaviour
     public TMP_Text currencyValue;
     public TMP_Text InputField_txt;
     public bool isToggle;
+    [SerializeField] bool isTargetMult;
     [SerializeField] bool isAudioStop;
 
     private float InputValue { get; set; }
@@ -22,6 +25,10 @@ public class AutoplayInputHandler : MonoBehaviour
     {
         isAudioStop = true;
         SubscribeToEvents();
+
+        // This line to restrict input to decimal numbers
+        if (inputField != null)
+            inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
 
         if (!isToggle)
         {
@@ -39,7 +46,7 @@ public class AutoplayInputHandler : MonoBehaviour
 
     public void GetAudioBool(bool isON)
     {
-         isAudioStop = isON;
+        isAudioStop = isON;
     }
 
     public float GetValue()
@@ -114,7 +121,7 @@ public class AutoplayInputHandler : MonoBehaviour
         Color color = currencyValue.color;
         color.a = value ? 1f : 0.5f;
         currencyValue.color = color;
-        
+
         Color color1 = InputField_txt.color;
         color1.a = value ? 1f : 0.5f;
         InputField_txt.color = color1;
@@ -138,7 +145,7 @@ public class AutoplayInputHandler : MonoBehaviour
         // UpdateTextField();
     }
 
-    public void OnInputValueEndedit(string value)
+    /*public void OnInputValueEndedit(string value)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -158,15 +165,63 @@ public class AutoplayInputHandler : MonoBehaviour
 
         Plus_Minus_Func();
         UpdateTextField();
+    }*/
+    public void OnInputValueEndedit(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            InputValue = minVal;
+        }
+        else
+        {
+            // Remove any non-numeric characters except decimal point and minus sign
+            string cleanedValue = new string(value.Where(c => char.IsDigit(c) || c == '.' || c == '-').ToArray());
+
+            if (string.IsNullOrEmpty(cleanedValue))
+            {
+                InputValue = minVal;
+            }
+            else if (float.TryParse(cleanedValue, System.Globalization.NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out float result))
+            {
+                InputValue = result;
+            }
+            else
+            {
+                InputValue = minVal;
+            }
+        }
+
+        DebugHelper.Log(InputValue + " OnInputValueEndedit");
+
+        InputValue = Mathf.Clamp(InputValue, minVal, maxVal);
+        DebugHelper.Log(InputValue + minVal + " OnInputValueEndedit1");
+
+        inputField.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        inputField.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+        Plus_Minus_Func();
+        UpdateTextField();
     }
 
     void UpdateTextField()
     {
-        if (inputField != null)
+        if (isTargetMult)
         {
-            DebugHelper.Log(TruncateToTwoDecimalPlaces(InputValue) + " %$#@OnInputValueEndedit");
-            inputField.text = " <size=30>" + "x" + "</size>" + TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
-            //inputField.text = InputValue.ToString("F2");
+            if (inputField != null)
+            {
+                DebugHelper.Log(TruncateToTwoDecimalPlaces(InputValue) + " %$#@OnInputValueEndedit");
+                inputField.text = " <size=30>" + "x" + "</size>" + TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
+            }
+        }
+        else
+        {
+            if (inputField != null)
+            {
+                DebugHelper.Log(TruncateToTwoDecimalPlaces(InputValue) + " %$#@OnInputValueEndedit");
+                inputField.text = " <size=30>" + "</size>" + TruncateToTwoDecimalPlaces(InputValue).ToString("F2");
+                //inputField.text = InputValue.ToString("F2");
+            }
         }
     }
 

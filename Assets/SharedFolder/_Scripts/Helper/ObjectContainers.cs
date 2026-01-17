@@ -200,9 +200,9 @@ public class EntryAmountDetails
         }
         else
         {
-            betValues = new List<int> { 10, 100, 150, 250 };
+            betValues = new List<int> { 10, 50, 100, 250 };
             minBetValue = 10;
-            maxBetValue = 100;
+            maxBetValue = 10000;
             incrementValue = 10;
             decrementValue = 10;
             entryAmounts = new List<int> { };
