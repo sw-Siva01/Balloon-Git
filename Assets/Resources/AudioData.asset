@@ -18,9 +18,9 @@ MonoBehaviour:
     volume: 0.2
     pitch: 1
     mute: 0
-  - audioClip: {fileID: 8300000, guid: c1c1690ffbc5eb2448a0515ae64c0868, type: 3}
+  - audioClip: {fileID: 8300000, guid: aef4f1943b346064fa8a596551aa1265, type: 3}
     audioName: 2
-    volume: 1
+    volume: 0.2
     pitch: 1
     mute: 0
   - audioClip: {fileID: 8300000, guid: 030c720b32e59034bb9d1034f24ca580, type: 3}

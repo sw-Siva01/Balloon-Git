@@ -654,7 +654,7 @@ public class GameController : MonoBehaviour
             HeatBtnpress = false;
             /*audioController.StopAudio(AudioEnum.reverseSlider);*/
             audioController.StopAudio(AudioEnum.Movement);
-            takeCashbutton.interactable = false;
+            /*takeCashbutton.interactable = false;*/
 
             /////
             multiplierValue_Txt.gameObject.SetActive(false);
@@ -708,7 +708,7 @@ public class GameController : MonoBehaviour
             // Automatically take cash
             TakeCashOut();
             /*HeatBtn.interactable = false;*/
-            takeCashbutton.interactable = false;
+            /*takeCashbutton.interactable = false;*/
             // Reset the timer
             timeSinceLastIncrement = 5.9f;
             isPressed = false;
@@ -1039,7 +1039,7 @@ public class GameController : MonoBehaviour
                 startGame = false;
                 onClick = false;
                 // TakeCash
-                takeCashObj.SetActive(false);
+                takeCashbutton.interactable = false;
 
                 if (isAutoPlay && (stopSingleWin > 0) && (TakeCash > stopSingleWin))
                 {
@@ -1122,6 +1122,7 @@ public class GameController : MonoBehaviour
         skeletonAnimation.maskInteraction = SpriteMaskInteraction.None;
         skeletonAnimation.AnimationName = "Idle";
         skeletonAnimation.loop = true;
+        BetArea_numPad.SetActive(true);
         /////
 
         ///
@@ -2032,16 +2033,17 @@ public class GameController : MonoBehaviour
         stopAutoPlay = false;
         autoCount.SetActive(false);
         totalCash = 0f;
-        //Invoke(nameof(SetOffAutoCount), 0.2f);
+        Invoke(nameof(SetOffAutoCount), 0.2f);
     }
-    /*void SetOffAutoCount()
+    void SetOffAutoCount()
     {
         if (!isAutoPlay)
         {
+            HeatBtn.interactable = true;
             totalCash = 0f;
             Reset_AutoPlayBtn();
         }
-    }*/
+    }
     void Reset_AutoPlayBtn()
     {
         if (autoPlayPanel.activeSelf)
