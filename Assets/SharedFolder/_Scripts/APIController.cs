@@ -12,8 +12,7 @@ using UnityEngine.UI;
 
 public class APIController : MonoBehaviour
 {
-
-    public static APIController instance;
+    public string @operator; public static APIController instance;
 
     [Header("Response from webGL json")]
     public string DummyData;
@@ -27,11 +26,8 @@ public class APIController : MonoBehaviour
     public Action OnUserDetailsUpdate;
     public Action OnUserBalanceUpdate;
     public Action OnUserDeposit;
-
     public TitleData titleData;
-
     public Action<NetworkStatus> OnInternetStatusChange;
-
     public Action<bool> OnSwitchingTab;
     public bool isWin = false;
     public bool IsBotInGame = true;
@@ -41,18 +37,13 @@ public class APIController : MonoBehaviour
     public bool isPlayByDummyData;
     public double maxWinAmount;
     public bool isClickDeopsit = false;
-
     public int defaultBootAmount = 25;
-
     public float waitingForResponseDelay = 4, retryDelay = 7;
-
     public List<APIRequestList> apiRequestList;
     public bool isInFocus = true;
     public bool isOnline = true;
     public bool MobileShow;
     public BackendAPI BackendAPIURL = new BackendAPI();
-
-    public List<Betlist> betlistArray = new List<Betlist>();
 
 #if UNITY_WEBGL
     #region WebGl Events
@@ -84,7 +75,6 @@ public class APIController : MonoBehaviour
 
     void Start()
     {
-        GetLambdaURL(true);
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetLoginData();
 #elif UNITY_EDITOR
@@ -108,6 +98,7 @@ public class APIController : MonoBehaviour
     {
         DebugHelper.Log("Balance Updated response  :::::::----::: " + data);
         userDetails.balance = (double)data;
+        authentication.balance = (double)data;
         OnUserBalanceUpdate?.Invoke();
 #if !UNITY_EDITOR && UNITY_WEBGL
         UpdateBalance();
@@ -220,7 +211,9 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
-                if (BaseSocketController.instance.IsOnline())
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                bool pingSuccess = await BaseSocketController.instance.TryPing();
+                if (pingSuccess)
                 {
                     GetUpdatedBalance();
                     return;
@@ -236,11 +229,12 @@ public class APIController : MonoBehaviour
 
     public async void StartAuthentication(string data)
     {
-        Debug.Log("Response from wegbl for authentication : " + data);
+        DebugHelper.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
+        /*LoadingHandler.instance.EnableLoading("Connecting");*/
         //return;
         string orginalData = Cryptography.DecryptStr(authentication.title_data);
-        DebugHelper.Log("GetTitleData Response is orginal ::: " + orginalData);
+        Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
         var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
         if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
         {
@@ -288,7 +282,7 @@ public class APIController : MonoBehaviour
                    DebugHelper.Log("authentication response is : " + initaitedres + "ignore" + ignoreAuthdata);
                },
 
-               (successRes) =>
+               async (successRes) =>
                {
                    JObject apiResponse = JObject.Parse(successRes);
                    /*
@@ -336,8 +330,8 @@ public class APIController : MonoBehaviour
                        userDetails.bootAmount = defaultBootAmount;
                        string musics = LocalStorage.Load("Lootrix_music");
                        string sounds = LocalStorage.Load("Lootrix_sound");
-                       bool music = (string.IsNullOrEmpty(musics) || musics == "true") ? true : false;
-                       bool sound = (string.IsNullOrEmpty(sounds) || sounds == "true") ? true : false;
+                       bool music = (string.IsNullOrEmpty(musics) || musics == "false") ? false : true;
+                       bool sound = (sounds == "false") ? false : true;
                        authentication.sound = sound;
                        authentication.music = music;
                        if (string.IsNullOrWhiteSpace(userDetails.gameId))
@@ -369,6 +363,7 @@ public class APIController : MonoBehaviour
 
                    OnUserBalanceUpdate?.Invoke();
                    OnUserDetailsUpdate?.Invoke();
+                   /*LoadingHandler.instance.DisableLoading();*/
                },
 
 
@@ -394,6 +389,18 @@ public class APIController : MonoBehaviour
         //     return;
         // }
 
+    }
+
+    public void GetRNG_API(double amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
+    {
+        WinLoseRNG winlogic = new()
+        {
+            amount = amount,
+            operatorName = operatorname,
+            gameID = gameid,
+            gameName = gamename,
+            playerSetMultiplier = playersetmultiplier
+        };
     }
 
     // public void GetRandomCard()
@@ -441,8 +448,8 @@ public class APIController : MonoBehaviour
     //         async (bool isSuccess, string error, string body) =>
     //         {  
     //             JObject obj = JObject.Parse(body);
-    //             DebugHelper.Log("TitleData Receivec" + obj["data"]);
-    //             DebugHelper.Log("TitleData Receivec" + Cryptography.DecryptStr(obj["data"].ToString()));
+    //             Debug.Log("TitleData Receivec" + obj["data"]);
+    //             Debug.Log("TitleData Receivec" + Cryptography.DecryptStr(obj["data"].ToString()));
     //         //  action.Invoke(isSuccess);
     //         }, 2);
     // }
@@ -469,12 +476,12 @@ public class APIController : MonoBehaviour
             WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, authentication.client_url, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
                 responseReceived = true;
-                DebugHelper.Log("GetTitleData Response is ::: " + body);
+                Debug.Log("GetTitleData Response is ::: " + body);
                 if (success)
                 {
                     var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
                     string orginalData = Cryptography.DecryptStr(response["data"]);
-                    DebugHelper.Log("GetTitleData Response is orginal ::: " + orginalData);
+                    Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
                     var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
 
                     if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
@@ -528,12 +535,12 @@ public class APIController : MonoBehaviour
 
             WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/" + authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
-                DebugHelper.Log("GetServerDetails Response is ::: " + body);
+                Debug.Log("GetServerDetails Response is ::: " + body);
                 if (success)
                 {
                     var response = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
                     string orginalData = Cryptography.EncryptStr(response["data"]);
-                    DebugHelper.Log("GetServerDetails Response is orginal ::: " + orginalData);
+                    Debug.Log("GetServerDetails Response is orginal ::: " + orginalData);
                     var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
 
                     if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
@@ -693,21 +700,22 @@ public class APIController : MonoBehaviour
 
     public async void WinningsBetMultiplayerAPI(int betIndex, string betId, double win_amount_with_comission, double spend_amount, double pot_amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, float commission, string matchToken)
     {
+        if (!BaseSocketController.instance.IsOnline())
+        {
+            bool pingSuccess = await BaseSocketController.instance.TryPing();
+        }
         winningBetCalled = true;
         string reqID = "";
         DebugHelper.Log($"BetIndex: {betIndex}, playerId: {playerId}, matchToken: {matchToken} , BetId : {betId},betRequest Count + {betRequest.Count}");
         BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
         while (request.BetId != betId)
         {
-
             DebugHelper.Log("Request Bet" + request.BetId + "betID" + betId);
-
             await UniTask.Delay(200);
         }
 
         double currentBalance = userDetails.balance + win_amount_with_comission;
         DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
-#if CasinoGames
         bool winningBetResponce = false;
         reqID = BaseSocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
         (initatedres) =>
@@ -733,6 +741,14 @@ public class APIController : MonoBehaviour
                 GetUpdatedBalance();
                 return;
             }
+            BetHistoryHandler.Instance.UpdateBet(new Betlist
+            {
+                dateTime = DateTime.Now.ToString(),
+                id = betId,
+                bet_amount = spend_amount,
+                win_amount = win_amount_with_comission,
+                matchID = matchToken
+            });
             JObject json = JObject.Parse(response.message);
             double userbalance = (double)json["balance"];
             UpdateBalanceResponse(userbalance);
@@ -758,7 +774,9 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
-                if (BaseSocketController.instance.IsOnline())
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                bool pingSuccess = await BaseSocketController.instance.TryPing();
+                if (pingSuccess)
                 {
                     BaseSocketController.instance.RemoveRequestEvent(reqID);
                     WinningsBetMultiplayerAPI(betIndex, betId, win_amount_with_comission, spend_amount, pot_amount, metadata, action, playerId, isBot, isWinner, gameName, operatorName, gameId, commission, matchToken);
@@ -767,7 +785,6 @@ public class APIController : MonoBehaviour
             }
             await UniTask.Delay(100);
         }
-#endif
     }
 
     public async void GetRandomPredictionIndexApi(int rowCount, int columnCount, int predectedCount, Action<string, bool> OnScucces = null, string gamename = "")
@@ -813,6 +830,7 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
                 if (BaseSocketController.instance.IsOnline())
                 {
                     BaseSocketController.instance.RemoveRequestEvent(reqID);
@@ -880,6 +898,7 @@ public class APIController : MonoBehaviour
     */
     public string GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
     {
+
         return BaseSocketController.instance.FetchGamePrediction("Prediction", authentication.gamename, payload, initAction, successAction, errorAction);
     }
 
@@ -888,6 +907,13 @@ public class APIController : MonoBehaviour
     {
         DebugHelper.Log("1CreateAndJoinMatch 1 init => " + index);
 
+
+        if (!BaseSocketController.instance.IsOnline())
+        {
+            DebugHelper.Log("2CreateAndJoinMatch 2 init => " + index);
+            bool pingSuccess = await BaseSocketController.instance.TryPing();
+
+        }
 
         matchResponse = new CreateMatchResponse();
         if (isBlockAPI)
@@ -957,6 +983,20 @@ public class APIController : MonoBehaviour
                  UpdateBalanceResponse(matchResponse.balance);
                  successAction?.Invoke(index, matchResponse);
                  DebugHelper.Log(JsonConvert.SerializeObject(matchResponse) + "CreateAndJoinMatch 2 => " + bet.BetId + " ... " + bet.MatchToken + "....Balance" + matchResponse.balance);
+                 BaseSocketController.instance.IsOnline();
+                 BetHistoryHandler.Instance.AddBet(new Betlist
+                 {
+                     dateTime = DateTime.Now.ToString(),
+                     id = bet.BetId,
+                     bet_amount = amount,
+                     win_amount = 0,
+                     matchID = bet.MatchToken
+                 });
+                 successAction = null;
+             }
+             else if ((int)jsonObject["code"] == 224)
+             {
+
              }
              else
              {
@@ -976,9 +1016,7 @@ public class APIController : MonoBehaviour
                  //     case 402:
                  // }
                  matchResponse.Message = "";
-
                  DebugHelper.Log(jsonObject.ToString());
-
                  ErrorPopUpHandler.instance.ShowError((int)jsonObject["code"], jsonObject["message"]?.ToString());
                  matchResponse.status = false;
                  errorAction?.Invoke(matchResponse);
@@ -999,10 +1037,7 @@ public class APIController : MonoBehaviour
              {
 
              }
-
-
              DebugHelper.Log("CreateAndJoinMatch Failed " + errorres);
-
              matchResponse.status = false;
              matchResponse.Message = jobject["message"]?.ToString();
              errorAction?.Invoke(matchResponse);
@@ -1023,15 +1058,19 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
-                if (BaseSocketController.instance.IsOnline())
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                BaseSocketController.instance.RemoveRequestEvent(reqID);
+                DebugHelper.Log("CreateAndJoinMatch 3 => " + createandjoingameResponseReceived);
+                bool pingSuccess = await BaseSocketController.instance.TryPing();
+                if (pingSuccess)
                 {
-                    BaseSocketController.instance.RemoveRequestEvent(reqID);
+                    //OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                     DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     return;
                 }
             }
-            await UniTask.Delay(100);
+            await UniTask.Delay(500);
         }
         // return index;
     }
@@ -1043,160 +1082,5 @@ public class APIController : MonoBehaviour
         LocalStorage.Save("Lootrix_sound", APIController.instance.authentication.sound ? "true" : "false");
         LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");
         return;
-
-#if !UNITY_EDITOR
-        SetAudio(APIController.instance.authentication.sound ? 1 : 0, APIController.instance.authentication.music ? 1 : 0);
-#endif
-        return;
-        if (APIController.instance.userDetails.isBlockApiConnection)
-            return;
-        var param = new List<KeyValuePojo>();
-        param.Add(new KeyValuePojo { keyId = "requestType", value = "audio" });
-        param.Add(new KeyValuePojo { keyId = "session_token", value = APIController.instance.authentication.session_token });
-        param.Add(new KeyValuePojo { keyId = "user_id", value = APIController.instance.authentication.Id });
-        param.Add(new KeyValuePojo { keyId = "sound", value = (APIController.instance.authentication.sound ? 1 : 0).ToString() });
-        param.Add(new KeyValuePojo { keyId = "music", value = (APIController.instance.authentication.music ? 1 : 0).ToString() });
-        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD, BackendAPIURL.LootrixAudioUpdate, param, (success, error, body) =>
-        {
-            if (success)
-            {
-                DebugHelper.Log("Audio Settings Has been Updated");
-            }
-        });
     }
-    public void ServerInactiveAPI()
-    {
-        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.GET_METHOD, BackendAPIURL.LootrixServerInactiveAPI, new List<KeyValuePojo>()
-      {
-          new KeyValuePojo { keyId = "requestType", value = "ServerInactive" }, new KeyValuePojo { keyId = "Id", value = userDetails.gameId }, new KeyValuePojo { keyId = "Host", value = "Nakama.Helpers.NakamaManager.Instance.connectedHost" }
-      }, (bool isSuccess, string error, string body) => { }, 2);
-    }
-
-    #region  TODO
-    public async void GetLambdaURL(bool isLive)
-    {
-        return;
-        bool success = false;
-        while (!success)
-        {
-            ApiRequest apiRequest = new ApiRequest();///?requestType=GetGameServer&game_name=carrom
-            apiRequest.url = "https://qllb52jc5pxturffykekbtewn40osanl.lambda-url.ap-south-1.on.aws/";
-            List<KeyValuePojo> param = new List<KeyValuePojo>();
-            param.Add(new KeyValuePojo { keyId = "LoginType", value = isLive ? "1" : "0" });
-            param.Add(new KeyValuePojo { keyId = "GameName", value = "" });
-            apiRequest.param = param;
-            apiRequest.callType = NetworkCallType.GET_METHOD;
-            apiRequest.action = (success1, error, body) =>
-            {
-                success = success1;
-
-                if (success1)
-                {
-                    ApiResponse response = JsonUtility.FromJson<ApiResponse>(body);
-                    if (response.code == 200)
-                    {
-                        BackendAPIURL = JsonUtility.FromJson<BackendAPI>(response.message);
-                        BackendAPIURL.isGetData = true;
-                        // NakamaManager.Instance.connectedHost = BackendAPIURL.LootrixHost;
-                        // DebugHelper.Log(NakamaManager.Instance.connectedHost + "DSFSDFSDF");
-                    }
-                }
-            };
-            ExecuteAPI(apiRequest, 3);
-            await UniTask.Delay(3000);
-        }
-    }
-    public async void CancelBetMultiplayerAPI(int betIndex, string betId, double amount, TransactionMetaData metadata, Action<bool> action, string playerId, bool isBot, bool isWinner, string gameName, string operatorName, string gameId, string matchToken)
-    {
-        BetRequest request = betRequest.Find(x => x.betId == betIndex && x.PlayerId == playerId && x.MatchToken.Equals(matchToken));
-        while (request.BetId != betId)
-        {
-            await UniTask.Delay(200);
-        }
-        CancelBetReq cancelBetreq = new CancelBetReq();
-        cancelBetreq.Amount = amount;
-        cancelBetreq.GameID = gameId == "" ? userDetails.gameId : gameId;
-        cancelBetreq.GameName = gameName == "" ? userDetails.game_Id.Split("_")[1] : gameName;
-        cancelBetreq.Index = betIndex;
-        cancelBetreq.IsBot = isBot;
-        cancelBetreq.Metadata = metadata;
-        cancelBetreq.Betid = betId;
-        cancelBetreq.MatchToken = matchToken;
-        cancelBetreq.OperatorName = operatorName == "" ? userDetails.game_Id.Split("_")[0] : operatorName;
-        cancelBetreq.PlayerId = string.IsNullOrEmpty(playerId) ? userDetails.Id : playerId;
-        // Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_CancelBet", cancelBetreq.ToJson(), (res) =>
-        // {
-        //     DebugHelper.Log(res);
-        //     ApiResponse response = JsonUtility.FromJson<ApiResponse>(res);
-        //     action?.Invoke(response != null && response.code == 200);
-        //     JObject json = JObject.Parse(response.message);
-        //     double userbalance = (double)json["balance"];
-        //     UpdateBalanceResponse(userbalance);
-
-        // });
-        return;
-    }
-    public void GetRNG_API(double amount, string operatorname, string gameid, Action<bool, float, int> canWin, string gamename, float playersetmultiplier)
-    {
-        WinLoseRNG winlogic = new()
-        {
-            amount = amount,
-            operatorName = operatorname,
-            gameID = gameid,
-            gameName = gamename,
-            playerSetMultiplier = playersetmultiplier
-        };
-
-        // Nakama.Helpers.NakamaManager.Instance.SendRPC("rpc_GetIsWinOrLose", winlogic.ToJson(), (res) =>
-        // {
-        //     DebugHelper.Log("Rng Calculation inside GetRNG 2");
-        //     JObject jsonObject = JObject.Parse(res);
-        //     userDetails.isWin = ((int.Parse(jsonObject["iswin"].ToString()) > 0));
-        //     userDetails.maxWin = float.Parse(jsonObject["Multiplier"].ToString());
-        //     int gameCount = int.Parse(jsonObject["GameCount"].ToString());
-        //     canWin.Invoke(userDetails.isWin, userDetails.maxWin, gameCount);
-        // });
-    }
-
-
-    public void GetLastBet(string matchID)
-    {
-        if (authentication.operatorname == "demo")
-        {
-            return;
-        }
-        return;
-        List<KeyValuePojo> param = new List<KeyValuePojo>();
-        param.Add(new KeyValuePojo { keyId = "user_id", value = authentication.Id });
-        param.Add(new KeyValuePojo { keyId = "operator", value = authentication.operatorname });
-        param.Add(new KeyValuePojo { keyId = "game_id", value = userDetails.gameId });
-        param.Add(new KeyValuePojo { keyId = "request_type", value = "getleastbet" });
-        param.Add(new KeyValuePojo { keyId = "limit", value = "20" });
-        param.Add(new KeyValuePojo { keyId = "match_id", value = matchID });
-        WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, authentication.client_url, param, (success, error, body) =>
-        {
-            if (success)
-            {
-                JObject jsonObject = JObject.Parse(body);
-                if ((int)(jsonObject["code"]) == 200)
-                {
-                    ///betlist
-                    JObject betlistString = JObject.Parse(jsonObject["data"].ToString());
-
-                    List<Betlist> betlistArray = JsonConvert.DeserializeObject<List<Betlist>>(betlistString["betlist"]?.ToString());
-                    int balance = int.Parse(betlistString["balance"].ToString());
-                    BetHistory.instance.AddPlayerBetDetails(betlistArray);
-                }
-                else
-                {
-                    DebugHelper.Log("GetLastBet response is : " + (string)jsonObject["message"]);
-                }
-            }
-            else
-            {
-                DebugHelper.Log("GetLastBet response is : " + error);
-            }
-        });
-    }
-    #endregion
 }

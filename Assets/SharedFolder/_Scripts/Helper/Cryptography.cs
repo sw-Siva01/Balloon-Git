@@ -33,12 +33,8 @@ public class Cryptography
 
     public static string EncryptStr(string data)
     {
-        //InitCharacters();
-        //DebugHelper.Log(new string(cryptocharacters.ToArray()));
-        //DebugHelper.Log("data is :: " + data);
         byte[] bytes = Encoding.UTF8.GetBytes(data);
         string encryptedData = Convert.ToBase64String(bytes);
-        //DebugHelper.Log("base64 is :: " + encryptedData);
         encryptedData = Encryptbase64String(encryptedData);
         return encryptedData;
     }

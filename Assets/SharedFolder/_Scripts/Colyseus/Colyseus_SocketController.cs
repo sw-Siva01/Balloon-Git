@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Aws_Gateway;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -35,13 +37,21 @@ public class Colyseus_SocketController : MonoBehaviour
     {
         if (_networkClient._client == null)
         {
-            _networkClient.CreateGame(gameName, url, APIController.instance.authentication.environment);
+            // _networkClient.CreateGame(gameName, url, APIController.instance.authentication.environment);
             return false;
         }
         else
         {
             return _networkClient.IsConnected();
         }
+    }
+
+    public async UniTask<bool> TryPing()
+    {
+        bool success = await _networkClient.TryPing();
+        if (success)
+            _ = _networkClient.JoinOrCreateGame(gameName, url, APIController.instance.authentication.environment);
+        return success;
     }
 
     void SubscribeToEvents()
@@ -183,37 +193,56 @@ public class Colyseus_SocketController : MonoBehaviour
             ActiveTasks.Remove(requestID);
         wss_Events.RemoveAll(x => x.RequestID.Equals(requestID));
     }
-
-    public string SendRequest(string messaheType, string requestType, string body, Action<string> initialaction, Action<string> successaction, Action<string> errorAction)
+    private readonly Dictionary<string, CancellationTokenSource> _sendTokens = new();
+    public string SendRequest(
+    string messageType,
+    string requestType,
+    string body,
+    Action<string> initialAction,
+    Action<string> successAction,
+    Action<string> errorAction)
     {
-        WSMessage message = new WSMessage(messaheType, body);
+        WSMessage message = new WSMessage(messageType, body);
 
         string reqID = message.RequestID;
-        DebugHelper.Log("Checking ID Already exists" + reqID);
+        Debug.Log("Checking ID Already exists " + reqID);
         while (wss_Events.Exists(x => x.RequestID == reqID))
         {
-            DebugHelper.Log("Request ID Already exists" + reqID);
+            Debug.Log("Request ID Already exists " + reqID);
             reqID = (long.Parse(reqID) + 1).ToString() + UnityEngine.Random.Range(0, 100);
         }
         message.RequestID = reqID;
 
-        WSS_Event wssevent = new WSS_Event()
+        var wssevent = new WSS_Event()
         {
             RequestType = requestType,
-            InitialtedCallBack = initialaction,
-            SuccessCallBack = successaction,
+            InitialtedCallBack = initialAction,
+            SuccessCallBack = successAction,
             ErrorCallBack = errorAction,
             RequestID = message.RequestID,
             TaskID = message.RequestID
         };
+
         wss_Events.Add(wssevent);
         ActiveTasks.Add(wssevent.TaskID, true);
         message.Body = body;
-        DebugHelper.Log(message.Body + "??");
-        // reqID = message.RequestID;
 
-        _networkClient.SendClientMsg(message);
+        // Cancel old token if any (retry case)
+        if (_sendTokens.TryGetValue(requestType, out var existingCts))
+        {
+            existingCts.Cancel();
+            _sendTokens.Remove(requestType);
+        }
+
+        // Create new CTS for this message
+        var cts = new CancellationTokenSource();
+        _sendTokens[requestType] = cts;
+
+        Debug.Log($"[{requestType}] Sending message of type {messageType}");
+
+        _networkClient.SendClientMsg(message, requestType, cts.Token);
+
         return message.RequestID;
-
     }
+
 }

@@ -163,7 +163,8 @@ namespace Colyseus
         /// <returns>Connection closure depending on user consent</returns>
         public async Task Leave(bool consented = true)
         {
-            if (!Connection.IsOpen) {
+            if (!Connection.IsOpen)
+            {
                 return;
             }
 
@@ -171,7 +172,7 @@ namespace Colyseus
             {
                 if (consented)
                 {
-                    await Connection.Send(new[] {ColyseusProtocol.LEAVE_ROOM});
+                    await Connection.Send(new[] { ColyseusProtocol.LEAVE_ROOM });
                 }
                 else
                 {
@@ -201,28 +202,28 @@ namespace Colyseus
         ///     Called by the <see cref="ColyseusClient" /> upon connection to a room
         /// </summary>
         /// <param name="colyseusConnection">The connection created by the client</param>
-        public void SetConnection(ColyseusConnection colyseusConnection,  ColyseusRoom<T> room = null, Action devModeCloseCallback = null)
+        public void SetConnection(ColyseusConnection colyseusConnection, ColyseusRoom<T> room = null, Action devModeCloseCallback = null)
         {
-	        room ??= this;
-	        room.Connection = colyseusConnection;
+            room ??= this;
+            room.Connection = colyseusConnection;
 
-	        room.Connection.OnClose += code =>
-	        {
-		        if (devModeCloseCallback == null || code == 1006)
-		        {
-			        room.OnLeave?.Invoke(code);
-		        }
-		        else
-		        {
-			        devModeCloseCallback();
-		        }
-	        };
+            room.Connection.OnClose += code =>
+            {
+                if (devModeCloseCallback == null || code == 1006)
+                {
+                    room.OnLeave?.Invoke(code);
+                }
+                else
+                {
+                    devModeCloseCallback();
+                }
+            };
 
-	        // TODO: expose WebSocket error code!
-	        // Connection.OnError += (code, message) => OnError?.Invoke(code, message);
+            // TODO: expose WebSocket error code!
+            // Connection.OnError += (code, message) => OnError?.Invoke(code, message);
 
-	        room.Connection.OnError += message => room.OnError?.Invoke(0, message);
-	        room.Connection.OnMessage += bytes => room.ParseMessage(bytes);
+            room.Connection.OnError += message => room.OnError?.Invoke(0, message);
+            room.Connection.OnMessage += bytes => room.ParseMessage(bytes);
         }
 
         /// <summary>
@@ -244,7 +245,7 @@ namespace Colyseus
         /// <param name="type">Message type</param>
         public async Task Send(byte type)
         {
-            await Connection.Send(new[] {ColyseusProtocol.ROOM_DATA, type});
+            await Connection.Send(new[] { ColyseusProtocol.ROOM_DATA, type });
         }
 
         /// <summary>
@@ -257,7 +258,7 @@ namespace Colyseus
             MemoryStream serializationOutput = new MemoryStream();
             MsgPack.Serialize(message, serializationOutput, SerializationOptions.SuppressTypeInformation);
 
-            byte[] initialBytes = {ColyseusProtocol.ROOM_DATA, type};
+            byte[] initialBytes = { ColyseusProtocol.ROOM_DATA, type };
             byte[] encodedMessage = serializationOutput.ToArray();
 
             byte[] bytes = new byte[initialBytes.Length + encodedMessage.Length];
@@ -405,20 +406,21 @@ namespace Colyseus
                 }
                 else
                 {
-                    Serializer = (IColyseusSerializer<T>) new NoneSerializer();
+                    Serializer = (IColyseusSerializer<T>)new NoneSerializer();
                 }
 
                 if (bytes.Length > offset)
                 {
-	                try {
-		                Serializer.Handshake(bytes, offset);
-	                }
-	                catch (Exception e)
-	                {
-		                await Leave(false);
-		                OnError?.Invoke(ColyseusErrorCode.SCHEMA_MISMATCH, e.Message);
-		                return;
-	                }
+                    try
+                    {
+                        Serializer.Handshake(bytes, offset);
+                    }
+                    catch (Exception e)
+                    {
+                        await Leave(false);
+                        OnError?.Invoke(ColyseusErrorCode.SCHEMA_MISMATCH, e.Message);
+                        return;
+                    }
                 }
 
                 ReconnectionToken = new ReconnectionToken()
@@ -430,14 +432,14 @@ namespace Colyseus
                 OnJoin?.Invoke();
 
                 // Acknowledge JOIN_ROOM
-                await Connection.Send(new[] {ColyseusProtocol.JOIN_ROOM});
+                await Connection.Send(new[] { ColyseusProtocol.JOIN_ROOM });
             }
             else if (code == ColyseusProtocol.ERROR)
             {
-                Iterator it = new Iterator {Offset = 1};
+                Iterator it = new Iterator { Offset = 1 };
                 float errorCode = Decode.DecodeNumber(bytes, it);
                 string errorMessage = Decode.DecodeString(bytes, it);
-                OnError?.Invoke((int) errorCode, errorMessage);
+                OnError?.Invoke((int)errorCode, errorMessage);
             }
             else if (code == ColyseusProtocol.LEAVE_ROOM)
             {
@@ -445,7 +447,7 @@ namespace Colyseus
             }
             else if (code == ColyseusProtocol.ROOM_STATE)
             {
-	            SetState(bytes, 1);
+                SetState(bytes, 1);
             }
             else if (code == ColyseusProtocol.ROOM_STATE_PATCH)
             {
@@ -456,7 +458,7 @@ namespace Colyseus
                 IColyseusMessageHandler handler = null;
                 object type;
 
-                Iterator it = new Iterator {Offset = 1};
+                Iterator it = new Iterator { Offset = 1 };
 
                 if (Decode.NumberCheck(bytes, it))
                 {
@@ -473,7 +475,7 @@ namespace Colyseus
                 {
                     object message = null;
 
-                    if ( code == ColyseusProtocol.ROOM_DATA )
+                    if (code == ColyseusProtocol.ROOM_DATA)
                     {
                         //
                         // MsgPack deserialization can be optimized:
@@ -484,7 +486,7 @@ namespace Colyseus
                                 new MemoryStream(bytes, it.Offset, bytes.Length - it.Offset, false))
                             : null;
                     }
-                    else if ( code == ColyseusProtocol.ROOM_DATA_BYTES )
+                    else if (code == ColyseusProtocol.ROOM_DATA_BYTES)
                     {
                         message = new byte[bytes.Length - it.Offset];
                         Buffer.BlockCopy(bytes, it.Offset, (byte[])message, 0, bytes.Length - it.Offset);

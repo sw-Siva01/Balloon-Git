@@ -17,26 +17,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1735056280675803438
-RectTransform:
+--- !u!4 &1735056280675803438
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1735056280675803433}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.22, y: 0.22, z: 0.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 750, y: 1200}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1735056280675803439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,6 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c8665eb9852bf34dbaa53d5564e7371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  operator: 
+  DummyData: 
+  titleData:
+    api_url: 
+    wss_url: 
+    server_url: 
+    server_port: 
+    game_name: 
+    game_id: 
   isWin: 0
   IsBotInGame: 1
   winningStatus:
@@ -64,32 +68,77 @@ MonoBehaviour:
     Id: 
     name: 
     token: 
+    session_token: 
     balance: 0
     currency_type: 
     game_Id: 
     gameId: 
+    operatorDomainUrl: 
+    platform: 
     isBlockApiConnection: 0
     bootAmount: 0
     isWin: 0
     hasBot: 0
     commission: 0
     maxWin: 0
-  betDetails: []
   betRequest: []
   isPlayByDummyData: 0
   maxWinAmount: 0
   isClickDeopsit: 0
-  testJson: 
-  defaultGameName: hilo
   defaultBootAmount: 25
+  waitingForResponseDelay: 4
+  retryDelay: 7
   apiRequestList: []
-  PlayerIDs:
-  - f0255647-61d5-4807-b700-352ce052c791
-  - f24c7429-3946-4567-87be-e258571f704f
-  - 72b183bc-fcbb-4ed4-9061-775d3e908731
-  - 72d43cf3-7bbb-4b88-b443-0669b1390d5e
-  - cb282b1f-d52f-4958-a28c-9c4a31610877
-  - bd004aed-2912-46ed-b30b-216e861376e4
-  - 4b2921b6-275b-4454-b61a-d120b57933f3
-  isNeedToPauseWhileSwitchingTab: 0
-  LootrixAPIPath: https://xpxpmhpjldqvjulexwx34z7jca0kdxzf.lambda-url.ap-south-1.on.aws/
+  isInFocus: 1
+  isOnline: 1
+  MobileShow: 0
+  BackendAPIURL:
+    LootrixMatchAPI: https://b465kezbry2ssew2w6w56x3jhi0ennyi.lambda-url.ap-south-1.on.aws/
+    LootrixTransactionAPI: https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/
+    LootrixGetServerAPI: https://htatuqjumsb7qhv3yvmfx6jlza0pdwyg.lambda-url.ap-south-1.on.aws/
+    LootrixInternetCheckAPI: https://6rugffwb323fkm7j7umild4vjm0hfcfm.lambda-url.ap-south-1.on.aws/
+    LootrixValidateServerAPI: https://vbklyx2pq3nh6xf3vr55vmrwem0ldawq.lambda-url.ap-south-1.on.aws/
+    LootrixServerInactiveAPI: https://waekhvdxviqdmzdzo6hisjqsli0bvajw.lambda-url.ap-south-1.on.aws/?requestType=ServerInactive&Id&Message
+    LootrixAudioUpdate: https://lfu76bhfx3dif4sglqij4qu6ou0hghmx.lambda-url.ap-south-1.on.aws/
+    LootrixHost: turbogames.utwebapps.com
+    isGetData: 0
+  betlistArray: []
+  authentication:
+    Id: 
+    name: 
+    token: 
+    session_token: 
+    balance: 0
+    currency_type: 
+    gamename: 
+    operatorname: 
+    operatorDomainUrl: 
+    platform: 
+    returnurl: 
+    client_url: 
+    music: 1
+    sound: 1
+    environment: 
+    server_type: colyseus
+    title_data: 
+    entryAmountDetails:
+      betValues: 
+      maxBetValue: 0
+      minBetValue: 0
+      incrementValue: 0
+      decrementValue: 0
+      entryAmounts: 
+      smallBlinds: 
+      potLimits: 
+      chaalLimits: 
+      player_count: 2
+      comission: 0
+  winningBetCalled: 0
+  matchResponse:
+    status: 0
+    MatchToken: 
+    MatchCount: 0
+    WinChance: 0
+    Message: 
+    IsRandom: 0
+    balance: 0

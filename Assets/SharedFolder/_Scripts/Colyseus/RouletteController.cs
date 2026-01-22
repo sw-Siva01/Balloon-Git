@@ -48,7 +48,7 @@ public class RouletteController : MonoBehaviour
                 case "Heartbeat":
                     {
                         float pingMs = (Time.realtimeSinceStartup - pingStartTime) * 1000f;
-                        DebugHelper.Log($"[Heartbeat] Ping: {pingMs:F1} ms");
+                        Debug.Log($"[Heartbeat] Ping: {pingMs:F1} ms");
                     }
                     break;
 
@@ -56,7 +56,7 @@ public class RouletteController : MonoBehaviour
                     {
                         // Example: for roulette spin result
                         var gameResponse = JsonConvert.DeserializeObject<RouletteSpinResult>(wrapper.payload.Message);
-                        DebugHelper.Log($"[Roulette] Spin result: {gameResponse.prediction}");
+                        Debug.Log($"[Roulette] Spin result: {gameResponse.prediction}");
                     }
                     break;
 
@@ -64,7 +64,7 @@ public class RouletteController : MonoBehaviour
                     {
                         // Placeholder for lambda responses
                         float pingMs = (Time.realtimeSinceStartup - LambdaStartTime) * 1000f;
-                        DebugHelper.Log($"[LambdaResponse] {pingMs:F1} ms : {wrapper.payload.Message}");
+                        Debug.Log($"[LambdaResponse] {pingMs:F1} ms : {wrapper.payload.Message}");
                     }
                     break;
 

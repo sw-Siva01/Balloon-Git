@@ -12,6 +12,7 @@ using WebSocket = NativeWebSocket.WebSocket;
 using System;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Aws_Gateway
 {
@@ -46,11 +47,11 @@ namespace Aws_Gateway
 
         public async UniTask CheckServerStatus()
         {
-            DebugHelper.Log("Checking server for internet" + Time.time);
+            Debug.Log("Checking server for internet" + Time.time);
             await UniTask.Delay(1000);
             if (!awsController.IsOnline())
             {
-                DebugHelper.Log("Checking server for internet =  false" + Time.time);
+                Debug.Log("Checking server for internet =  false" + Time.time);
                 OnDisconnected?.Invoke();
                 return;
             }
@@ -79,8 +80,6 @@ namespace Aws_Gateway
                 OnConnected?.Invoke();
                 if (_reconnectionCoroutine != null)
                     StopCoroutine(_reconnectionCoroutine);
-
-                // Start the heartbeat mechanism
                 if (isPingRequired)
                 {
                     if (_heartbeatCoroutine != null) StopCoroutine(_heartbeatCoroutine);
@@ -142,7 +141,7 @@ namespace Aws_Gateway
             }
             if (_reconnectionCoroutine != null)
                 StopCoroutine(_reconnectionCoroutine);
-            DebugHelper.Log("HANDLE DISCONNECTION1");
+            Debug.Log("HANDLE DISCONNECTION1");
             _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
         }
 
@@ -172,6 +171,7 @@ namespace Aws_Gateway
             }
         }
 
+
         public async UniTask Send(WSMessage data, string TaskID)
         {
             // if (!_isConnected)
@@ -179,8 +179,13 @@ namespace Aws_Gateway
             //     await RestartReconnection();
             //     return;
             // }
+
+
+
+
+
             WSMessage message = data;
-            DebugHelper.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
+            Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
             string id = TaskID;
             try
             {
@@ -244,7 +249,7 @@ namespace Aws_Gateway
                     // if (_reconnectionCoroutine != null)
                     //     StopCoroutine(_reconnectionCoroutine);
                     Dictionary<string, string> response = new Dictionary<string, string>();
-                    DebugHelper.Log("HANDLE DISCONNECTION" + requestID);
+                    Debug.Log("HANDLE DISCONNECTION" + requestID);
                     _reconnectionCoroutine = StartCoroutine(HandleDisconnection());
 
                     response["requestID"] = requestID;
@@ -295,7 +300,7 @@ namespace Aws_Gateway
                     if (_reconnectionCoroutine != null)
                         StopCoroutine(_reconnectionCoroutine);
                     _ = _webSocket.Close();
-                    DebugHelper.Log("HANDLE DISCONNECTION2");
+                    Debug.Log("HANDLE DISCONNECTION2");
                     _reconnectionCoroutine = StartCoroutine(HandleDisconnection(false));
                     _stopwatch.Stop();
                     yield break;

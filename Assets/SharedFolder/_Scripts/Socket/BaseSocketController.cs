@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using Aws_Gateway;
-
+using Cysharp.Threading.Tasks;
 public class BaseSocketController : MonoBehaviour
 {
 
@@ -92,7 +92,7 @@ public class BaseSocketController : MonoBehaviour
             { "id", betID },
             { "game_id", APIController.instance.userDetails.gameId },
             { "is_bot", 0 },
-            { "win_amount", amount },
+            { "win_amount", amount.ToString() },
             { "amount_spend", spendAmount },
             { "comission", 0.00 },
             { "is_win", isWin },
@@ -193,8 +193,6 @@ public class BaseSocketController : MonoBehaviour
         */
         //await UniTask.Delay(1);
         DebugHelper.Log("Trying to Authenticate" + " a " + amount + " m " + metaData);
-
-
         Dictionary<string, object> payload = new Dictionary<string, object>() {
             { "created_by", APIController.instance.authentication.Id },
             { "user_id", APIController.instance.authentication.Id },
@@ -217,8 +215,8 @@ public class BaseSocketController : MonoBehaviour
             { "provider", APIController.instance.authentication.gamename+"_lootrix" },
             { "action", "initbet" },
             { "action_id", APIController.instance.authentication.gamename+"_initbet" },
-             {"balance",APIController.instance.userDetails.balance},
-             { "environment", APIController.instance.authentication.environment }
+            {"balance",APIController.instance.userDetails.balance},
+            { "environment", APIController.instance.authentication.environment }
         };
         return SendRequest("lambda", "CreateAndJoinMatch", JsonConvert.SerializeObject(payload), initalizedAction, successAction, errorAction);
     }
@@ -276,6 +274,15 @@ public class BaseSocketController : MonoBehaviour
         }
     }
 
+    public async UniTask<bool> TryPing()
+    {
+
+        bool success = await _colyseusSocketController.TryPing();
+        return success;
+
+    }
+
+
     public void RemoveRequestEvent(string requestID)
     {
         if (websocketProvider == WebSocketProvider.AWS)
@@ -306,7 +313,7 @@ public class BaseSocketController : MonoBehaviour
     public string SendRequest(string requestName, string requestType, string payload, Action<string> initalizedAction = null, Action<string> successAction = null, Action<string> errorAction = null)
     {
 
-        DebugHelper.Log($"Request Name : {requestName} Request Type : {requestType} Payload : {payload}");
+        Debug.Log($"Request Name : {requestName} Request Type : {requestType} Payload : {payload}");
 
         if (websocketProvider == WebSocketProvider.AWS)
         {
@@ -322,7 +329,7 @@ public class BaseSocketController : MonoBehaviour
     public void SetServerType(WebSocketProvider provider)
     {
         websocketProvider = provider;
-        DebugHelper.Log("WebSocket Provider set to: " + websocketProvider);
+        Debug.Log("WebSocket Provider set to: " + websocketProvider);
     }
 }
 

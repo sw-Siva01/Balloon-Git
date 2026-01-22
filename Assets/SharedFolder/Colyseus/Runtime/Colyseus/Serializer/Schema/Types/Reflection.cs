@@ -50,7 +50,7 @@ namespace Colyseus.Schema
         public ArraySchema<ReflectionField> fields;
 
         [Preserve]
-        public ReflectionType() {}
+        public ReflectionType() { }
     }
 
     /// <summary>
@@ -68,5 +68,8 @@ namespace Colyseus.Schema
 
         [Type(1, "number")]
         public float rootType = -1;
+
+        [Preserve]
+        public Reflection() { }
     }
 }

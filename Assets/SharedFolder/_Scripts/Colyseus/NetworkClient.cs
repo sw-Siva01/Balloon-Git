@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using Colyseus.Schema;
 using UnityEngine.Networking;
 using System.Threading;
+using UnityEngine.Scripting;
 
 
 // Server response wrapper types
@@ -93,8 +94,8 @@ public class NetworkClient : MonoBehaviour
     {
         if (_isRetryingPing) return false; // prevent overlap
         _isRetryingPing = true;
-
-        const int maxRetries = 5;
+        Debug.Log("Trying to ping and join...");
+        const int maxRetries = 2;
         int attempts = 0;
 
         while (attempts < maxRetries)
@@ -107,8 +108,7 @@ public class NetworkClient : MonoBehaviour
                     if (pingRequest.result == UnityWebRequest.Result.Success)
                     {
                         _isRetryingPing = false;
-                        //   await JoinOrCreateGame(GameName, url, environment);
-                        return true; // success
+                        return true;
                     }
                     else
                     {
@@ -129,10 +129,8 @@ public class NetworkClient : MonoBehaviour
         return false; // failed
     }
 
-
     public async void CreateGame(string GameName, string url, string environment)
     {
-
         if (IsConnected())
         {
             DebugHelper.Log("Already connected. Skipping connection attempt.");
@@ -142,10 +140,16 @@ public class NetworkClient : MonoBehaviour
         if (!success)
         {
             Debug.LogWarning("Ping and join failed. Returning after delay...");
-            await UniTask.Delay(2000);
             return;
         }
         JoinOrCreateGame(GameName, url, environment).Forget();
+    }
+
+    public async UniTask<bool> TryPing()
+    {
+        bool success = await TryPingAndJoin(_gameName, _serverUrl, _environment);
+
+        return success;
     }
 
 
@@ -161,16 +165,13 @@ public class NetworkClient : MonoBehaviour
         try
         {
             colyseus_SocketController = GetComponent<Colyseus_SocketController>();
-
             string userId = APIController.instance.authentication.Id;
             long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            // string payload = $"{userId}|{timestamp}";
             Dictionary<string, string> payload = new Dictionary<string, string>();
             payload.Add("userId", userId);
             payload.Add("timestamp", timestamp.ToString());
             payload.Add("operatorName", APIController.instance.authentication.operatorname);
             string signature = Cryptography.SetEncryptedData(JsonConvert.SerializeObject(payload), true);
-            Debug.LogWarning("Ping and join failed. Returning after delay...");
             UnityWebRequest pingwww = UnityWebRequest.Get(url + "/Ping");
             pingwww.SetRequestHeader("Content-Type", "application/json");
             string tokenUrl = url + "/Auth_Tocken";
@@ -311,50 +312,54 @@ public class NetworkClient : MonoBehaviour
         await RestartReconnection();
     }
 
-    public async void SendClientMsg(WSMessage data, string TaskID = "")
+    public async void SendClientMsg(WSMessage data, string TaskID = "", CancellationToken cancellationToken = default)
     {
-        while (_room == null || _client == null)
-        {
-            await UniTask.DelayFrame(1);
-        }
+        Debug.Log($"SendClientMsg {TaskID} _room:{_room} _client:{_client}");
 
-        WSMessage message = data;
-        Debug.Log(JsonConvert.SerializeObject(message) + "??????" + TaskID);
-        string id = TaskID;
         try
         {
-            string jsonMessage = JsonConvert.SerializeObject(message);
-            string jMessage = JsonUtility.ToJson(message);
+            // Wait for room and client initialization
+            while ((_room == null || _client == null) && !cancellationToken.IsCancellationRequested)
+            {
+                await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
+            WSMessage message = data;
+
+            string json = JsonConvert.SerializeObject(message);
+            DebugHelper.Log($"Serialized JSON: {json}");
+
             if (message.Action != "heartbeat")
             {
                 CheckTimeOut(message.RequestID).Forget();
             }
-            string json = "";
-            try
+
+            // Wait until online
+            while (!colyseus_SocketController.IsOnline() && !cancellationToken.IsCancellationRequested)
             {
-                json = JsonConvert.SerializeObject(message);
-                DebugHelper.Log("Serialized JSON: " + json);
-            }
-            catch (Exception ex)
-            {
-                DebugHelper.LogError($"Serialization failed: {ex.Message}");
+                if (!colyseus_SocketController.GetTaskStatus(TaskID))
+                    return;
+
+                await UniTask.Delay(50, cancellationToken: cancellationToken);
             }
 
-            // DebugHelper.Log("Checking if Server Connected" + (_room == null));
-            while (!colyseus_SocketController.IsOnline())
-            {
-                if (!colyseus_SocketController.GetTaskStatus(id))
-                {
-                    return;
-                }
-                await UniTask.Delay(50);
-            }
+            if (cancellationToken.IsCancellationRequested)
+                return;
 
             DebugHelper.Log(json + "=====Sent Request==== ");
 
-            var bytedate = Encoding.UTF8.GetBytes(Cryptography.SetEncryptedData(json));
+            byte[] bytedata = Encoding.UTF8.GetBytes(Cryptography.SetEncryptedData(json));
 
-            await _room.Send("client_msg", bytedate);
+            // --- ✅ Convert Task -> UniTask for cancellation support ---
+            var sendTask = _room.Send("client_msg", bytedata);
+            await sendTask.AsUniTask().AttachExternalCancellation(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            DebugHelper.LogWarning($"SendClientMsg cancelled: {TaskID}");
         }
         catch (Exception ex)
         {
@@ -362,6 +367,7 @@ public class NetworkClient : MonoBehaviour
             OnError?.Invoke(ex);
         }
     }
+
 
     public async UniTask CheckTimeOut(string requestID)
     {
@@ -397,8 +403,8 @@ public class NetworkClient : MonoBehaviour
         {
             Debug.Log("Handling disconnection...1");
             yield return new WaitForSeconds(ReconnectInterval);
-            if (!IsConnected())
-                CreateGame(_gameName, _serverUrl, _environment);
+            // if (!IsConnected())
+            //     CreateGame(_gameName, _serverUrl, _environment);
             if (handleServer)
                 _ = CheckServerStatus();
             while (!IsConnected())
@@ -406,8 +412,6 @@ public class NetworkClient : MonoBehaviour
             _isReconnecting = false;
             if (IsConnected())
                 yield break;
-
-
         }
     }
 
@@ -505,8 +509,23 @@ public class NetworkClient : MonoBehaviour
     }
 }
 
+[Preserve]
 public partial class EmptyState : Schema
 {
     [Colyseus.Schema.Type(0, "int32")]
     public int clientCount = 0;
+    [Colyseus.Schema.Type(1, "array", typeof(ArraySchema<ReflectionType>))]
+    public ArraySchema<ReflectionType> Items = new ArraySchema<ReflectionType>();
+
+    [Preserve]
+    public EmptyState() { }
+
+
+}
+public class ReflectionType : Schema
+{
+    [Colyseus.Schema.Type(0, "string")]
+    public string ExampleField = "";
+
+    public ReflectionType() { } // ✅ REQUIRED: default constructor
 }
