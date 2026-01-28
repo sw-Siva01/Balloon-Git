@@ -290,7 +290,6 @@ public class GameController : MonoBehaviour
         multiplierValue_Txt.gameObject.SetActive(false);
         skeletonAnimation.gameObject.SetActive(false);
         /////
-
         takeCashObj.SetActive(false);
 
         // Initialize multiplier text
@@ -1117,7 +1116,7 @@ public class GameController : MonoBehaviour
         takeCashbutton.gameObject.SetActive(false);
 
         /////
-        HeatBtn.gameObject.SetActive(true   );
+        HeatBtn.gameObject.SetActive(true);
         btnPressed = false;
         skeletonAnimation.maskInteraction = SpriteMaskInteraction.None;
         skeletonAnimation.AnimationName = "Idle";
@@ -1138,7 +1137,6 @@ public class GameController : MonoBehaviour
             autoCount.SetActive(false);
         }
 
-        betFontTxt.color = new Color32(255, 255, 255, 255);
         Button_Switch_ON();
         //colors
 
@@ -1158,9 +1156,15 @@ public class GameController : MonoBehaviour
 
         NetworkHandler.instance.StartIdleSession();
 
-        Color color = betAmountTxt.color;
-        color.a = 1f;
-        betAmountTxt.color = color;
+        if (!isAutoPlay)
+        {
+            Color color = betAmountTxt.color;
+            color.a = 1f;
+            betAmountTxt.color = color;
+
+            betFontTxt.color = new Color32(255, 255, 255, 255);
+        }
+
 
         for (int i = 0; i < btnAmtTxt.Length; i++)
         {
@@ -1189,7 +1193,7 @@ public class GameController : MonoBehaviour
     }
     public void HandleInsuffitient()
     {
-        Button_Switch_ON();
+        //Button_Switch_ON();
 
         // takeCash
         takeCashObj.SetActive(false);
@@ -1659,6 +1663,7 @@ public class GameController : MonoBehaviour
 
             plusButton.interactable = true;
             minusButton.interactable = true;
+            Debug.Log("ButtonIntractable True _01" + plusButton);
             plusButtomImg.color = new Color32(255, 255, 255, 255);
             minusButtonImg.color = new Color32(255, 255, 255, 255);
 
@@ -1717,6 +1722,7 @@ public class GameController : MonoBehaviour
     {
         plusButton.interactable = true;
         minusButton.interactable = true;
+        Debug.Log("ButtonIntractable True _02" + plusButton);
         plusButtomImg.color = new Color32(255, 255, 255, 255);
         minusButtonImg.color = new Color32(255, 255, 255, 255);
     }
@@ -1867,10 +1873,11 @@ public class GameController : MonoBehaviour
             minusButtonImg.color = new Color32(255, 255, 255, 255);
         }
 
-        if ((betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue) && !isAutoPlay)
+        if ((betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue) && !isAutoPlay && !take && !lost)
         {
             plusButton.interactable = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
+            Debug.Log("ButtonIntractable True _03" + plusButton);
         }
         else if ((betAmount >= APIController.instance.authentication.entryAmountDetails.maxBetValue) && !isAutoPlay)
         {
