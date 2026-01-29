@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Session Timeout_0: 6452098098500967316
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

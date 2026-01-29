@@ -26,7 +26,7 @@ public class NetworkHandler : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.netCheck) || (SettingsPanelHandler.instance.HTP.gameObject.activeInHierarchy && Input.mouseScrollDelta.y != 0) || 
+        if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.netCheck) || (SettingsPanelHandler.instance.HTP.gameObject.activeInHierarchy && Input.mouseScrollDelta.y != 0) ||
             (!GameController.instance.autoPlayPanel.activeSelf && Input.mouseScrollDelta.y != 0))
         {
             StartIdleSession();
@@ -59,19 +59,13 @@ public class NetworkHandler : MonoBehaviour
         }
         else
         {
-           HideWaitingForResponse();
+            HideWaitingForResponse();
             DebugHelper.Log($"NetworkStatus ==> {data.ToString()}");
             CancelInvoke(nameof(CheckToEnable));
             ConnectionPanel.SetActive(false);
             ServerPopPanel.SetActive(false);
         }
-        /*DebugHelper.Log("AudioController.Instance.IsActive");
-        DebugHelper.Log("APIController.instance.isOnline");
-        DebugHelper.Log("APIController.instance.isInFocus");
-        DebugHelper.Log("!ConnectionPanel.gameObject.activeSelf");
-        DebugHelper.Log("data == NetworkStatus.Active");*/
 
-      
         AudioListener.volume = (data == NetworkStatus.Active && !ConnectionPanel.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
 
     }

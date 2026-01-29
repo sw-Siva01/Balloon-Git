@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Internet Disconnected_0: 2770300003385535261
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

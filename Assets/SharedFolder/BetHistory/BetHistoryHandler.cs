@@ -14,7 +14,8 @@ public class BetHistoryHandler : MonoBehaviour
     [SerializeField] private GameObject betItemPrefab;
     [SerializeField] private Transform betContainer;
     [SerializeField] private GameObject betHistoryGameobject;
-    [SerializeField] private Button loadMoreButton;
+    [SerializeField] private GameObject loadMoreGameobject;
+    [SerializeField] private Button loadMoreBtn;
     [SerializeField] private Button closeButton;
     private Dictionary<string, GameObject> betUIItems = new Dictionary<string, GameObject>();
     public List<Betlist> Betlists { get { return betLists; } private set { betLists = value; } }
@@ -25,7 +26,7 @@ public class BetHistoryHandler : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        loadMoreButton.onClick.AddListener(OnLoadMoreBetsClicked);
+        loadMoreBtn.onClick.AddListener(OnLoadMoreBetsClicked);
         closeButton.onClick.AddListener(HideBetHistory);
         InitializePool();
     }
@@ -135,7 +136,7 @@ public class BetHistoryHandler : MonoBehaviour
 
     public async void AddMyBetHistory(List<Betlist> bets, int remainingBetCount)
     {
-        loadMoreButton.gameObject.SetActive(false);
+        loadMoreGameobject.SetActive(false);
         DebugHelper.Log($"Adding {bets.Count} bets. Remaining on server: {remainingBetCount}");
         if (bets == null || bets.Count == 0)
         {
@@ -149,9 +150,9 @@ public class BetHistoryHandler : MonoBehaviour
         _remainingBetCount = remainingBetCount;
         SortBetsByDate();
         Debug.Log($"Processed {bets.Count} bets. Remaining on server: {_remainingBetCount}");
-        // await UniTask.Delay(200);
+        await UniTask.Delay(200);
 
-        loadMoreButton.gameObject.SetActive(_remainingBetCount > 0);
+        loadMoreGameobject.SetActive(_remainingBetCount > 0);
     }
 
     public void RemoveBet(string betId)
@@ -256,6 +257,10 @@ public class BetHistoryHandler : MonoBehaviour
 }
 
 
+
+
+
+
 [Serializable]
 public class Betlist
 {
@@ -267,7 +272,9 @@ public class Betlist
 
     public string GetDateAndTimeString()
     {
-        return dateTime;
+        DateTime.TryParse(dateTime, out DateTime parsedDateTime);
+        return parsedDateTime.ToString("yyyy-MM-dd HH:mm:ss"); ;
+
     }
 
     public DateTime GetDateAndTime()
@@ -288,6 +295,4 @@ public class Betlist
             return parsedDateTime;
         }
     }
-
-
 }

@@ -885,6 +885,7 @@ public class GameController : MonoBehaviour
     }
     public void TakeCashOut() // TakeCash button
     {
+        take = true;
         InternetCheck = true;
         TakingCash();
     }
@@ -1163,16 +1164,15 @@ public class GameController : MonoBehaviour
             betAmountTxt.color = color;
 
             betFontTxt.color = new Color32(255, 255, 255, 255);
-        }
 
-
-        for (int i = 0; i < btnAmtTxt.Length; i++)
-        {
-            if (btnAmtTxt[i] != null)
+            for (int i = 0; i < btnAmtTxt.Length; i++)
             {
-                Color color1 = btnAmtTxt[i].color;
-                color1.a = 1f;
-                btnAmtTxt[i].color = color1;
+                if (btnAmtTxt[i] != null)
+                {
+                    Color color1 = btnAmtTxt[i].color;
+                    color1.a = 1f;
+                    btnAmtTxt[i].color = color1;
+                }
             }
         }
 
@@ -1869,8 +1869,8 @@ public class GameController : MonoBehaviour
         }
         else if ((betAmount > APIController.instance.authentication.entryAmountDetails.incrementValue) && !isAutoPlay)
         {
-            minusButton.interactable = true;
-            minusButtonImg.color = new Color32(255, 255, 255, 255);
+            /*minusButton.interactable = true;
+            minusButtonImg.color = new Color32(255, 255, 255, 255);*/
         }
 
         if ((betAmount < APIController.instance.authentication.entryAmountDetails.maxBetValue) && !isAutoPlay && !take && !lost)
@@ -2048,6 +2048,23 @@ public class GameController : MonoBehaviour
         {
             HeatBtn.interactable = true;
             totalCash = 0f;
+
+            Color color = betAmountTxt.color;
+            color.a = 1f;
+            betAmountTxt.color = color;
+
+            betFontTxt.color = new Color32(255, 255, 255, 255);
+
+            for (int i = 0; i < btnAmtTxt.Length; i++)
+            {
+                if (btnAmtTxt[i] != null)
+                {
+                    Color color1 = btnAmtTxt[i].color;
+                    color1.a = 1f;
+                    btnAmtTxt[i].color = color1;
+                }
+            }
+
             Reset_AutoPlayBtn();
         }
     }
