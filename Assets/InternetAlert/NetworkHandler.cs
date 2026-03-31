@@ -20,7 +20,7 @@ public class NetworkHandler : MonoBehaviour
     {
         instance = this;
         APIController.instance.OnInternetStatusChange += GetNetworkStatus;
-        SetDelay(60);
+        SetDelay(180);
         StartIdleSession();
     }
 
@@ -33,6 +33,7 @@ public class NetworkHandler : MonoBehaviour
         }
     }
 
+    DateTime lastActive = new DateTime();
     public void GetNetworkStatus(NetworkStatus data)
     {
         DebugHelper.Log($"NetworkStatus ==> {data.ToString()}");
@@ -116,7 +117,7 @@ public class NetworkHandler : MonoBehaviour
         return _LastActiveTime;
     }
 
-    public void SetDelay(double delay = 60)
+    public void SetDelay(double delay = 180)
     {
         _SessionDelay = delay;
     }

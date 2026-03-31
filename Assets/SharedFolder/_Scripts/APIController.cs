@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Unity.Jobs;
@@ -246,12 +247,15 @@ public class APIController : MonoBehaviour
         if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
         {
             titleData = JsonConvert.DeserializeObject<TitleData>(finalresponse["data"]);
+
         }
         else
         {
             ErrorPopUpHandler.instance.ShowError(int.Parse(finalresponse["code"]), finalresponse["message"].ToString());
         }
+
         await UniTask.Delay(10);
+        OnUserBalanceUpdate?.Invoke();
 
         {
 
@@ -1037,6 +1041,26 @@ public class APIController : MonoBehaviour
         // Wait for 5 seconds for response
         float time = Time.time;
         bool waitingForresponseActive = false;
+        /* while (!createandjoingameResponseReceived)
+         {
+
+             if (!waitingForresponseActive && Time.time - time > waitingForResponseDelay)
+             {
+                 waitingForresponseActive = true;
+                 OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
+             }
+             if (Time.time - time > retryDelay)
+             {
+                 if (BaseSocketController.instance.IsOnline())
+                 {
+                     BaseSocketController.instance.RemoveRequestEvent(reqID);
+                     DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
+                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
+                     return;
+                 }
+             }
+             await UniTask.Delay(100);
+         }*/
         while (!createandjoingameResponseReceived)
         {
 
@@ -1047,15 +1071,19 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
-                if (BaseSocketController.instance.IsOnline())
+                OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
+                BaseSocketController.instance.RemoveRequestEvent(reqID);
+                DebugHelper.Log("CreateAndJoinMatch 3 => " + createandjoingameResponseReceived);
+                bool pingSuccess = await BaseSocketController.instance.TryPing();
+                if (pingSuccess)
                 {
-                    BaseSocketController.instance.RemoveRequestEvent(reqID);
-                    DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
+                    //OnInternetStatusChange?.Invoke(NetworkStatus.Active);
+                    DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     return;
                 }
             }
-            await UniTask.Delay(100);
+            await UniTask.Delay(500);
         }
         // return index;
     }

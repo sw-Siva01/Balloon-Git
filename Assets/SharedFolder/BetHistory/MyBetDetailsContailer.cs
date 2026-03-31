@@ -14,10 +14,6 @@ public class MyBetDetailsContailer : MonoBehaviour
     [SerializeField] private TMP_Text multiplierText;
 
     [SerializeField] private GameObject multiplierContainer;
-    /*[SerializeField] private TMP_Text matchID;
-    [SerializeField] private GameObject betCashedOutBG;
-    [SerializeField] private GameObject betDefaultBG;*/
-
     public void SetData(Betlist item, int index)
     {
         dateText.text = item.GetDateAndTimeString();

@@ -153,6 +153,7 @@ public class GameController : MonoBehaviour
     [SerializeField] TMP_InputField targetInputField;
     [SerializeField] TMP_Text startBtn_Txt, restartBtn_Txt;
     [SerializeField] TMP_Text roundsTxt;
+    [SerializeField] TMP_Text betUIstarticon_Txt, betUIPressToBet_Txt;
 
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
@@ -234,6 +235,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private TMP_Text minBetTxt;
     [SerializeField] private TMP_Text maxBetTxt;
     [SerializeField] private TMP_Text maxWinOneBetTxt;
+    [SerializeField] private TMP_Text betHistoryCurrency;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -281,6 +283,7 @@ public class GameController : MonoBehaviour
         apiController.OnSwitchingTab += OnSwitchTab;
         apiController.OnUserDetailsUpdate += InitPlayerDetails;
         apiController.OnUserBalanceUpdate += InitAmountDetails;
+        apiController.OnAuthDataUpdate += UpdateDefaultValues;
         apiController.OnUserDeposit += InitUserDeposit;
 
         takeBetAmount = true;
@@ -485,6 +488,9 @@ public class GameController : MonoBehaviour
         else
             maxWinOneBetTxt.text = $"{1000000.ToString("N2", new System.Globalization.CultureInfo("en-IN"))} <size=25>{APIController.instance.userDetails.currency_type}</size>";
         //// Game Limits /////
+        ///
+
+        betHistoryCurrency.text = "Bet " + APIController.instance.userDetails.currency_type;
 
 
         DebugHelper.Log("Player Details Subscribed");
@@ -510,6 +516,25 @@ public class GameController : MonoBehaviour
         PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size={totalAmountTxt.fontSize - 10}>{APIController.instance.userDetails.currency_type}</size>");
         DebugHelper.Log("Amount Details Subscribed");
     }
+    private void UpdateDefaultValues()
+    {
+        TotalAmount = APIController.instance.authentication.balance;
+        betAmount = APIController.instance.authentication.entryAmountDetails.minBetValue;
+        string m = TotalAmount.ToString("0.00");
+        TotalAmount = double.Parse(m);
+        PassTxt(totalAmountTxt, APIController.instance.authentication.currency_type);
+        PassTxt(takeCurrenyType, APIController.instance.authentication.currency_type);
+        PassTxt(betAmountTxt, $"{betAmount:F2} <size={totalAmountTxt.fontSize - 10}>{APIController.instance.authentication.currency_type}</size>");
+        PassTxt(totalAmountTxt, $"{TotalAmount:F2} <size={totalAmountTxt.fontSize - 10}>{APIController.instance.authentication.currency_type}</size>");
+        currencyType = APIController.instance.authentication.currency_type;
+        betAmountTxt.text = $"{betAmount:F2} <size=30>{currencyType}</size>";
+
+        for (int i = 0; i < 4; i++)
+        {
+            unSelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
+            SelectedBtnTxt[i].text = APIController.instance.authentication.entryAmountDetails.betValues[i].ToString();
+        }
+    }
     private void OnSwitchTab(bool isFocus)
     {
         DebugHelper.Log($"SwitchTab Status Check ********** {isFocus} || IsinFocus = {APIController.instance.isInFocus} || IsOnline {APIController.instance.isOnline}");
@@ -521,7 +546,7 @@ public class GameController : MonoBehaviour
             {
                 if (!netCheck && !NetworkHandler.instance.ConnectionPanel.activeSelf)
                 {
-                    if ((DateTime.Now - NetworkHandler.instance.GetLastActiveTime()).TotalSeconds >= 60)
+                    if ((DateTime.Now - NetworkHandler.instance.GetLastActiveTime()).TotalSeconds >= 180)
                     {
                         DebugHelper.Log($"Session Check on Switch Tab Success");
                         if (!NetworkHandler.instance.SessionPopup.activeSelf)
@@ -530,7 +555,7 @@ public class GameController : MonoBehaviour
                     else
                     {
                         DebugHelper.Log($"Session Check on Switch Tab Entered");
-                        NetworkHandler.instance.SetDelay(60 - (DateTime.Now - NetworkHandler.instance.GetLastActiveTime()).TotalSeconds);
+                        NetworkHandler.instance.SetDelay(180 - (DateTime.Now - NetworkHandler.instance.GetLastActiveTime()).TotalSeconds);
                         NetworkHandler.instance.StartIdleSession();
                     }
                 }
@@ -739,19 +764,19 @@ public class GameController : MonoBehaviour
                         !NetworkHandler.instance.ConnectionPanel.activeSelf && !NetworkHandler.instance.waitingForResponse.activeSelf && !settingsPanelHandler.gameObject.activeSelf
                         && !autoPlayPanel.activeSelf && !settingsPanelHandler.GameLimits.activeSelf && !RedirectionPanel.activeSelf && !NetworkHandler.instance.ServerPopPanel.activeSelf)
             {
-                currentTime = 60;
+                currentTime = 180;
                 sessionTimeOut.SetActive(false);
             }
 
             if ((audioController != null && audioController.IsAnyAudioPlaying()))
             {
-                currentTime = 60;
+                currentTime = 180;
                 sessionTimeOut.SetActive(false);
             }
         }
         else if (startGame)
         {
-            currentTime = 60;
+            currentTime = 180;
             sessionTimeOut.SetActive(false);
         }
         yield return null;
@@ -1112,6 +1137,8 @@ public class GameController : MonoBehaviour
             Debug.Log("SeetheButtonDisable");
             autoPlayBtn.interactable = true;
             autoPlayicon.color = new Color32(255, 255, 255, 255);
+            betUIstarticon_Txt.color = new Color32(255, 255, 255, 255);
+            betUIPressToBet_Txt.color = new Color32(255, 255, 255, 255);
         }
 
         takeCashbutton.gameObject.SetActive(false);
@@ -1130,6 +1157,8 @@ public class GameController : MonoBehaviour
         {
             autoPlayBtn.interactable = true;
             autoPlayicon.color = new Color32(255, 255, 255, 255);
+            betUIstarticon_Txt.color = new Color32(255, 255, 255, 255);
+            betUIPressToBet_Txt.color = new Color32(255, 255, 255, 255);
         }
 
         if (!autoPlayBtnPrss)
@@ -1579,8 +1608,12 @@ public class GameController : MonoBehaviour
             HeatBtnpress = true;
             takeCashbutton.gameObject.SetActive(true);
             HeatBtn.gameObject.SetActive(false);
-            autoPlayicon.color = new Color32(255, 255, 255, 100);
-            autoPlayBtn.interactable = false;
+
+            if (startGame)
+            {
+                autoPlayicon.color = new Color32(255, 255, 255, 40);
+                autoPlayBtn.interactable = false;
+            }
 
             // Handle button press logic if conditions are met
             if (!startGame && !pauseGame && ((float)TotalAmount < betAmount))
@@ -1626,6 +1659,11 @@ public class GameController : MonoBehaviour
     }
 
     /// </summary>
+    /// 
+    public void SettingBetValuesInAPI()
+    {
+        Debug.Log("CheckingAPI>LOG : " + APIController.instance.authentication.entryAmountDetails.betValues);
+    }
 
     public int currentClickValue;
     public void TakeButtonPress() // Function used in TakeButton Inspector in Editor
@@ -1877,7 +1915,7 @@ public class GameController : MonoBehaviour
         {
             plusButton.interactable = true;
             plusButtomImg.color = new Color32(255, 255, 255, 255);
-            Debug.Log("ButtonIntractable True _03" + plusButton);
+            //Debug.Log("ButtonIntractable True _03" + plusButton);
         }
         else if ((betAmount >= APIController.instance.authentication.entryAmountDetails.maxBetValue) && !isAutoPlay)
         {
@@ -1953,7 +1991,7 @@ public class GameController : MonoBehaviour
     }
     public void Close_sessionTimeOut() // Show PopUp for Close Button
     {
-        currentTime = 60;
+        currentTime = 180;
         sessionTimeOut.SetActive(false);
     }
     #endregion ::::::::::::::::::::::::: END :::::::::::::::::::::::::
@@ -2023,7 +2061,8 @@ public class GameController : MonoBehaviour
             autoPlayicon.gameObject.SetActive(false);
             autoCount.SetActive(true);
             stopAutoPlayBtn.gameObject.SetActive(true);
-            autoPlayBtn.interactable = false;
+            if (startGame)
+                autoPlayBtn.interactable = false;
             stopAutoPlay = true;
 
             if (stop_CashDecrease.isOn)
@@ -2037,6 +2076,9 @@ public class GameController : MonoBehaviour
         autoPlayBtnPrss = false;
         stopAutoPlayBtn.gameObject.SetActive(false);
         autoPlayicon.gameObject.SetActive(true);
+        autoPlayicon.color = new Color32(255, 255, 255, 40);
+        betUIstarticon_Txt.color = new Color32(255, 255, 255, 40);
+        betUIPressToBet_Txt.color = new Color32(255, 255, 255, 40);
         stopAutoPlay = false;
         autoCount.SetActive(false);
         totalCash = 0f;
@@ -2087,6 +2129,8 @@ public class GameController : MonoBehaviour
         autoplayInputHandler[0].ResetToggles();
         autoPlayBtn.interactable = true;
         autoPlayicon.color = new Color32(255, 255, 255, 255);
+        betUIstarticon_Txt.color = new Color32(255, 255, 255, 255);
+        betUIPressToBet_Txt.color = new Color32(255, 255, 255, 255);
         /*BetArea_numPad.SetActive(true);*/
         infiniteImg.gameObject.SetActive(false);
         stop_CashDecrease.isOn = false;
