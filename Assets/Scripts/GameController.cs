@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Button holdButton;
     [SerializeField] TMP_Text[] unSelectedBtnTxt;
     [SerializeField] TMP_Text[] SelectedBtnTxt;
+    [SerializeField] Button menuButton;
 
     [Header("-------------------------------------------------------------------------------------------------------------------------------------------------------")]
 
@@ -497,7 +498,7 @@ public class GameController : MonoBehaviour
         settingsPanelHandler.SetToggleValueFromAPI(APIController.instance.authentication.sound, APIController.instance.authentication.music);
 
         settingsPanelHandler.settingsCloseBtn.gameObject.SetActive(false);
-        settingsPanelHandler.MusicToggle.isOn = false;
+        //settingsPanelHandler.MusicToggle.isOn = false;
 
         if (settingsPanelHandler.SoundToggle.isOn)
             audioController.muteAllAudio = false;
@@ -655,6 +656,7 @@ public class GameController : MonoBehaviour
         if (takeBetAmount)
         {
             winPanel.SetActive(false);
+            menuButton.interactable = true;
         }
 
         // Game Lose
@@ -1075,6 +1077,7 @@ public class GameController : MonoBehaviour
 
                 audioController.PlayAudio(AudioEnum.winGame);
                 winPanel.SetActive(true);
+                menuButton.interactable = false;
                 Winning_Animations();
                 DelayFuction();
 
@@ -1175,6 +1178,7 @@ public class GameController : MonoBehaviour
         takeCashObj.SetActive(false);
         isBegin = false;
         winPanel.SetActive(false);
+        menuButton.interactable = true;
         takeBetAmount = true;
 
         ButtonSelect_Anim();
@@ -1192,7 +1196,7 @@ public class GameController : MonoBehaviour
             color.a = 1f;
             betAmountTxt.color = color;
 
-            betFontTxt.color = new Color32(255, 255, 255, 255);
+            betFontTxt.color = new Color32(255, 255, 255, 200);
 
             for (int i = 0; i < btnAmtTxt.Length; i++)
             {
@@ -1228,6 +1232,7 @@ public class GameController : MonoBehaviour
         takeCashObj.SetActive(false);
         isBegin = false;
         winPanel.SetActive(false);
+        menuButton.interactable = true;
         takeBetAmount = true;
 
         ButtonSelect_Anim();
@@ -1239,6 +1244,7 @@ public class GameController : MonoBehaviour
         startGame = false;
         onClick = false;
         winPanel.SetActive(false);
+        menuButton.interactable = true;
         multiplierTxt.text = Multiplier.ToString("0.00");
         makeLose = false;
         isPrediction = false;
@@ -2095,7 +2101,7 @@ public class GameController : MonoBehaviour
             color.a = 1f;
             betAmountTxt.color = color;
 
-            betFontTxt.color = new Color32(255, 255, 255, 255);
+            betFontTxt.color = new Color32(255, 255, 255, 200);
 
             for (int i = 0; i < btnAmtTxt.Length; i++)
             {

@@ -15,7 +15,7 @@ public class BetHistoryHandler : MonoBehaviour
     [SerializeField] private GameObject betItemPrefab;
     [SerializeField] private Transform betContainer;
     [SerializeField] private GameObject betHistoryGameobject;
-    [SerializeField] private GameObject loadMoreGameobject;
+    [SerializeField] public GameObject loadMoreGameobject;
     [SerializeField] private Button loadMoreBtn;
     [SerializeField] private Button closeButton;
     private Dictionary<string, GameObject> betUIItems = new Dictionary<string, GameObject>();

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -46,25 +47,19 @@ public class SettingsPanelHandler : UIHandler
         {
             HideMe();
         });
-        //HideMe();
-        //ToggleSound(true);
-        //SetMusicVolume(true);
+
         SoundToggle.onValueChanged.AddListener((state) => { ToggleSound(state); });
         MusicToggle.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
-        /*soundTogWelcome.onValueChanged.AddListener((state) => { ToggleSound(state); });
-        musicTogWelcome.onValueChanged.AddListener((state) => { SetMusicVolume(state); });*/
 
         gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
         betHistory_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowBetHistoryScreen(); });
 
         addCashBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowDeposit(); });
     }
-    /*public void FullScreenFunc()
+    private void Start()
     {
-        DebugHelper.Log("FullScreenFunc");
-        APIController.FullScreen();
-        HideMe();
-    }*/
+        APIController.instance.OnAuthDataUpdate += OnUserDetailsUpdate;
+    }
     public void ShowBetHistoryScreen()
     {
         betHistory.SetActive(true);
@@ -96,7 +91,7 @@ public class SettingsPanelHandler : UIHandler
         if (SoundToggle.isOn)
             MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
 
-        if (!Updatetoggle) return;
+        //if (!Updatetoggle) return;
 
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
@@ -105,13 +100,11 @@ public class SettingsPanelHandler : UIHandler
     {
         MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
 
-        DebugHelper.Log("Music volume --> " + _state);
         MusicToggle.isOn = _state;
-        /*musicTogWelcome.isOn = _state;*/
 
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
 
-        if (!Updatetoggle) return;
+        //if (!Updatetoggle) return;
 
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
@@ -213,7 +206,7 @@ public class SettingsPanelHandler : UIHandler
     {
         SoundToggle.isOn = sound;
         MusicToggle.isOn = music;
-        Updatetoggle = true;
+        //Updatetoggle = true;
     }
 
     public void ShowGameLimitScreen()
@@ -222,5 +215,31 @@ public class SettingsPanelHandler : UIHandler
         HideMe();
         settingsBtn.gameObject.SetActive(true);
         settingsCloseBtn.gameObject.SetActive(false);
+    }
+    void OnUserDetailsUpdate()
+    {
+
+        string sounds = LocalStorage.Load("Lootrix_sound");
+        string musics = LocalStorage.Load("Lootrix_music");
+        bool sound = /*(string.IsNullOrEmpty(sounds) || (sounds == "true")) ? true : */false;
+        bool music = /*(string.IsNullOrEmpty(musics) || (musics == "true")) ? true : */false;
+
+        if (string.IsNullOrEmpty(sounds) && string.IsNullOrEmpty(musics))
+        {
+            sound = true;
+            music = false;
+        }
+        else
+        {
+            sound = sounds == "true";
+            music = musics == "true";
+        }
+
+        DebugHelper.Log("Updating SOundddd" + sounds + "Music" + music);
+
+
+        APIController.instance.authentication.sound = sound;
+        APIController.instance.authentication.music = music;
+        SetToggleValueFromAPI(sound, music);
     }
 }

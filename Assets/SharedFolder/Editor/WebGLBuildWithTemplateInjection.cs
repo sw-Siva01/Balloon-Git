@@ -17,6 +17,10 @@ public class WebGLBuildWithTemplateInjection : IPostprocessBuildWithReport, IPre
         if (report.summary.platform != BuildTarget.WebGL)
             return;
 
+        PlayerSettings.WebGL.threadsSupport = false;
+        PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Wasm;
+        PlayerSettings.WebGL.memorySize = 256;
+
         Debug.Log("Post-build logic for WebGL triggered.");
         Dictionary<string, string> payload = new Dictionary<string, string>();
         payload["request_type"] = "GetTitleData";

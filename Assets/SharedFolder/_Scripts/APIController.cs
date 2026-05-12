@@ -351,6 +351,8 @@ public class APIController : MonoBehaviour
                            userDetails.gameId = "ecd5c5ce-e0a1-4732-82a0-099ec7d180be";
                        DebugHelper.Log("Check this once !!!!!!!!!!!!!" + JsonUtility.ToJson(userDetails));
                        // MiniRouletteUIController.instance.SettingsPanel.UpdateToggle(authentication.sound, authentication.music);
+                       if (authentication.operatorname == "demo")
+                           BetHistoryHandler.Instance.loadMoreGameobject.SetActive(false);
                        AudioListener.volume = 1;
 
 #if UNITY_EDITOR
