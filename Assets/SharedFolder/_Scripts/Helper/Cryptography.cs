@@ -11,89 +11,195 @@ using GameDevWare.Serialization;
 
 public class Cryptography
 {
-    public static List<char> cryptocharacters = new List<char>("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray());
+    /*//public static List<char> cryptocharacters = new List<char>("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray());
+    private static readonly string cryptoCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly string key = "fghdesjkhguerhgjndfkngKLJDFHJhdsf";
 
     private static string sharedSecret = "my_shared_secret";
-    //public static void InitCharacters()
-    //{
-    //    for (int i = 0; i < 26; i++)
-    //    {
-    //        cryptocharacters.Add((char)('a' + i));
-    //    }
-    //    for (int i = 0; i < 26; i++)
-    //    {
-    //        cryptocharacters.Add((char)('A' + i));
-    //    }
-    //    for (int i = 0; i < 10; i++)
-    //    {
-    //        cryptocharacters.Add((char)('0' + i));
-    //    }
-    //}
+  
+    /// <summary>
+    /// Encrypts a string using a custom encryption algorithm.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static Byte[] EncryptStringReturnByte(string data)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        string base64String = Convert.ToBase64String(bytes);
+        string dataFrom = EncryptBase64String(base64String);
+        var ByteData = Encoding.UTF8.GetBytes(dataFrom);
+        return ByteData;
+    }
 
+    /// <summary>
+    /// Encrypts a string and returns it as a Base64 encoded string.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static string EncryptStr(string data)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(data);
         string encryptedData = Convert.ToBase64String(bytes);
-        encryptedData = Encryptbase64String(encryptedData);
+        encryptedData = EncryptBase64String(encryptedData);
         return encryptedData;
     }
-    public static string Encryptbase64String(string plainText)
+
+    /// <summary>
+    /// Encrypts a plain text string using a custom algorithm based on a key and crypto characters.
+    /// </summary>
+    /// <param name="plainText"></param>
+    /// <returns></returns>
+    private static string EncryptBase64String(string plainText)
     {
-        int shift = 0;
         char[] buffer = plainText.ToCharArray();
         for (int i = 0; i < buffer.Length; i++)
         {
             char c = buffer[i];
-            if (cryptocharacters.Contains(c))
+            if (cryptoCharacters.Contains(c))
             {
-                shift = key[i % key.Length];
-                int value = (cryptocharacters.IndexOf(c) + cryptocharacters.IndexOf((char)shift));
-                if (value >= cryptocharacters.Count)
+                int shift = key[i % key.Length];
+                int value = (cryptoCharacters.IndexOf(c) + cryptoCharacters.IndexOf((char)shift));
+                if (value >= cryptoCharacters.Length)
                 {
-                    value = ((value - cryptocharacters.Count));
+                    value -= cryptoCharacters.Length;
                 }
-                c = cryptocharacters[value];
-                buffer[i] = c;
+                buffer[i] = cryptoCharacters[value];
             }
-
         }
         return new string(buffer);
     }
 
+    /// <summary>
+    /// Decrypts a Base64 encoded string and returns the original string.
+    /// </summary>
+    /// <param name="encryptedData"></param>
+    /// <returns></returns>
     public static string DecryptStr(string encryptedData)
     {
-        //DebugHelper.Log("Encoded base64 is :: " + encryptedData);
-        string base64Decoded = Decryptbase64String(encryptedData);
-        //DebugHelper.Log("Base64 decoded is :: " + base64Decoded);
+        string base64Decoded = DecryptBase64String(encryptedData);
         byte[] bytes = Convert.FromBase64String(base64Decoded);
-        string originalData = Encoding.UTF8.GetString(bytes);
-        //DebugHelper.Log("Original data is :: " + originalData);
-        return originalData;
+        return Encoding.UTF8.GetString(bytes);
     }
 
-    public static string Decryptbase64String(string encryptedText)
+
+    /// <summary>
+    /// Decrypts a Base64 encoded string using a custom decryption algorithm based on a key and crypto characters.
+    /// </summary>
+    /// <param name="encryptedText"></param>
+    /// <returns></returns>
+    private static string DecryptBase64String(string encryptedText)
     {
-        int shift = 0;
         char[] buffer = encryptedText.ToCharArray();
         for (int i = 0; i < buffer.Length; i++)
         {
             char c = buffer[i];
-            if (cryptocharacters.Contains(c))
+            if (cryptoCharacters.Contains(c))
             {
-                shift = key[i % key.Length];
-                int value = (cryptocharacters.IndexOf(c) - cryptocharacters.IndexOf((char)shift));
+                int shift = key[i % key.Length];
+                int value = (cryptoCharacters.IndexOf(c) - cryptoCharacters.IndexOf((char)shift));
                 if (value < 0)
                 {
-                    value += cryptocharacters.Count;
+                    value += cryptoCharacters.Length;
                 }
-                c = cryptocharacters[value];
-                buffer[i] = c;
+                buffer[i] = cryptoCharacters[value];
+            }
+        }
+        return new string(buffer);
+    }*/
+
+    private static readonly string cryptoCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly string key = "fghdesjkhguerhgjndfkngKLJDFHJhdsf"; // Replace with your key
+    private static string sharedSecret = "my_shared_secret";
+
+    /// <summary>
+    /// Encrypts a string using a custom encryption algorithm.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static Byte[] EncryptStringReturnByte(string data)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        string base64String = Convert.ToBase64String(bytes);
+        string dataFrom = EncryptBase64String(base64String);
+        var ByteData = Encoding.UTF8.GetBytes(dataFrom);
+        return ByteData;
+    }
+
+    /// <summary>
+    /// Encrypts a string and returns it as a Base64 encoded string.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static string EncryptStr(string data)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        string encryptedData = Convert.ToBase64String(bytes);
+        encryptedData = EncryptBase64String(encryptedData);
+        return encryptedData;
+    }
+
+    /// <summary>
+    /// Encrypts a plain text string using a custom algorithm based on a key and crypto characters.
+    /// </summary>
+    /// <param name="plainText"></param>
+    /// <returns></returns>
+    private static string EncryptBase64String(string plainText)
+    {
+        char[] buffer = plainText.ToCharArray();
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            char c = buffer[i];
+            if (cryptoCharacters.Contains(c))
+            {
+                int shift = key[i % key.Length];
+                int value = (cryptoCharacters.IndexOf(c) + cryptoCharacters.IndexOf((char)shift));
+                if (value >= cryptoCharacters.Length)
+                {
+                    value -= cryptoCharacters.Length;
+                }
+                buffer[i] = cryptoCharacters[value];
             }
         }
         return new string(buffer);
     }
 
+    /// <summary>
+    /// Decrypts a Base64 encoded string and returns the original string.
+    /// </summary>
+    /// <param name="encryptedData"></param>
+    /// <returns></returns>
+    public static string DecryptStr(string encryptedData)
+    {
+        string base64Decoded = DecryptBase64String(encryptedData);
+        byte[] bytes = Convert.FromBase64String(base64Decoded);
+        return Encoding.UTF8.GetString(bytes);
+    }
+
+
+    /// <summary>
+    /// Decrypts a Base64 encoded string using a custom decryption algorithm based on a key and crypto characters.
+    /// </summary>
+    /// <param name="encryptedText"></param>
+    /// <returns></returns>
+    private static string DecryptBase64String(string encryptedText)
+    {
+        char[] buffer = encryptedText.ToCharArray();
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            char c = buffer[i];
+            if (cryptoCharacters.Contains(c))
+            {
+                int shift = key[i % key.Length];
+                int value = (cryptoCharacters.IndexOf(c) - cryptoCharacters.IndexOf((char)shift));
+                if (value < 0)
+                {
+                    value += cryptoCharacters.Length;
+                }
+                buffer[i] = cryptoCharacters[value];
+            }
+        }
+        return new string(buffer);
+    }
 
     public static string GetEncryptedData(string message)
     {

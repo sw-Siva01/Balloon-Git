@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>cricketx</title>
+    <title>{{{ PRODUCT_NAME }}}</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="../PortraitAssets/style.css">
+    <link rel="stylesheet" href="../LandscapeAssets/style.css">
     <link rel="manifest" href="manifest.webmanifest">
-    <script src="../PortraitAssets/jquery.min.js"></script>
+    <script src="../LandscapeAssets/jquery.min.js"></script>
   </head>
-  <body id="fullscreenDiv" data-title-info="jEQB3fOb6374eaXepJZs1ojiyqmrJ4UK4ZXogKWrVJPH2d8r6f8ml90SpRcOJVsms706lFNr">
+  <body id="fullscreenDiv" data-title-info="jEQB3fOb6374eaXepJZs1ojiyqmrJ4UK4ZXogKWrVJPH2d8r6f8ml90SpRc3Kv8wwXOf">
       <div id="unity-container">
-          <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-          <div id="unity-loading-bar">
+    <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} tabindex="-1"></canvas>
+                  <div id="unity-loading-bar">
               <div id="unity-progress-bar-full">
                 <div class="loadermain">
                   <div class="hourglassBackground">
@@ -40,7 +40,7 @@
           <div id="unity-warning"></div>
       </div>
       <script src="./index.js"></script>
-      <script src="../PortraitAssets/ingame.js"></script>
+      <script src="../LandscapeAssets/ingame.js"></script>
     
   </body>
 </html>
