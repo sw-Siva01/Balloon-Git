@@ -91,5 +91,10 @@ mergeInto(LibraryManager.library, {
     canvas.addEventListener('mouseenter', function () {
       SendMessage('CursorController', 'OnMouseEnterCanvas');
     });
-  }
+  },
+  SetWebCursor: function (cursorTypePtr) {
+    var cursorType = UTF8ToString(cursorTypePtr);
+    //console.log("SetWebCursor called with:", cursorType);
+      setCursor(cursorType);
+    }
 });

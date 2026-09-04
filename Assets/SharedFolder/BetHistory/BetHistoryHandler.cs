@@ -31,12 +31,10 @@ public class BetHistoryHandler : MonoBehaviour
         closeButton.onClick.AddListener(HideBetHistory);
         InitializePool();
     }
-
     void Start()
     {
         APIController.instance.OnUserDetailsUpdate += OnUserDetailsUpdate;
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -44,12 +42,10 @@ public class BetHistoryHandler : MonoBehaviour
             ShowBetHistory();
         }
     }
-
     private void OnUserDetailsUpdate()
     {
         GetLastBet("-1");
     }
-
     void OnLoadMoreBetsClicked()
     {
         Debug.Log("Loading more bets...");
@@ -58,7 +54,6 @@ public class BetHistoryHandler : MonoBehaviour
             GetLastBet(betLists[^1].matchID);
         }
     }
-
     private void InitializePool()
     {
         for (int i = 0; i < PoolSize; i++)
@@ -68,13 +63,11 @@ public class BetHistoryHandler : MonoBehaviour
             betItemPool.Enqueue(obj);
         }
     }
-
     private void ReturnToPool(GameObject obj)
     {
         obj.SetActive(false);
         betItemPool.Enqueue(obj);
     }
-
     private GameObject GetPooledObject()
     {
         if (betItemPool.Count > 0)
@@ -89,7 +82,6 @@ public class BetHistoryHandler : MonoBehaviour
             return obj;
         }
     }
-
     public void GetLastBet(string matchID)
     {
         var authentication = APIController.instance.authentication;
@@ -134,7 +126,6 @@ public class BetHistoryHandler : MonoBehaviour
             }
         });
     }
-
     public async void AddMyBetHistory(List<Betlist> bets, int remainingBetCount)
     {
         loadMoreGameobject.SetActive(false);
@@ -152,10 +143,8 @@ public class BetHistoryHandler : MonoBehaviour
         SortBetsByDate();
         Debug.Log($"Processed {bets.Count} bets. Remaining on server: {_remainingBetCount}");
         await UniTask.Delay(200);
-
         loadMoreGameobject.SetActive(_remainingBetCount > 0);
     }
-
     public void RemoveBet(string betId)
     {
         betLists.RemoveAll(b => b.id == betId);
@@ -165,12 +154,10 @@ public class BetHistoryHandler : MonoBehaviour
             betUIItems.Remove(betId);
         }
     }
-
     public void AddBet(Betlist bet)
     {
         UpdateBet(bet);
     }
-
     public void UpdateBet(Betlist bet)
     {
         if (bet == null)
@@ -186,7 +173,6 @@ public class BetHistoryHandler : MonoBehaviour
             MyBetDetailsContailer betUI = newItem.GetComponent<MyBetDetailsContailer>();
             if (betUI != null)
             {
-                /*betUI.SetData(bet);*/
                 int index = betLists.Count - 1;
                 betUI.SetData(bet, index);
             }
@@ -202,7 +188,6 @@ public class BetHistoryHandler : MonoBehaviour
                 MyBetDetailsContailer betUI = existingItem.GetComponent<MyBetDetailsContailer>();
                 if (betUI != null)
                 {
-                    /*betUI.SetData(bet);*/
                     betUI.SetData(bet, index);
                 }
             }
@@ -210,32 +195,20 @@ public class BetHistoryHandler : MonoBehaviour
         }
         SortBetsByDate();
     }
-
     private void SortBetsByDate()
     {
         betLists = betLists.OrderByDescending(bet => bet.GetDateAndTime()).ToList();
 
         ReorderUIItems();
     }
-
     private async void ReorderUIItems()
     {
-        /*for (int i = 0; i < betLists.Count; i++)
-        {
-            string betId = betLists[i].id;
-            if (betUIItems.TryGetValue(betId, out GameObject item))
-            {
-                await UniTask.Yield();
-                item.transform.SetSiblingIndex(i); // Reorder in UI container
-            }
-        }*/
         for (int i = 0; i < betLists.Count; i++)
         {
             string betId = betLists[i].id;
             if (betUIItems.TryGetValue(betId, out GameObject item))
             {
                 item.transform.SetSiblingIndex(i);
-
                 // Update the visual appearance based on new index
                 MyBetDetailsContailer betUI = item.GetComponent<MyBetDetailsContailer>();
                 if (betUI != null)
@@ -250,17 +223,11 @@ public class BetHistoryHandler : MonoBehaviour
     {
         betHistoryGameobject.SetActive(true);
     }
-
     public void HideBetHistory()
     {
         betHistoryGameobject.SetActive(false);
     }
 }
-
-
-
-
-
 
 [Serializable]
 public class Betlist

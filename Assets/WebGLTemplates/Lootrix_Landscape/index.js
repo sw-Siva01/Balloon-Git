@@ -9,7 +9,7 @@ var day = currentDate.getDate();
 var hours = currentDate.getHours();
 var minutes = currentDate.getMinutes();
 var seconds = currentDate.getSeconds();
-var currentDateTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+
 
 var applicationInstance;
 
@@ -18,7 +18,7 @@ var applicationInstance;
 // =====================
 window.addEventListener("load", function () {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("ServiceWorker.js?timefornocatch=" + currentDateTime);
+    navigator.serviceWorker.register("ServiceWorker.js");
   }
 });
 
@@ -92,21 +92,21 @@ function unityShowBanner(msg, type) {
 // =====================
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}?timefornocatch=" + currentDateTime;
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
       var config = {
-        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}?timefornocatch=" + currentDateTime,
-        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}?timefornocatch=" + currentDateTime,
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
 #if USE_THREADS
-        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}?timefornocatch=" + currentDateTime,
+        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}",
 #endif
 #if USE_WASM
-        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}?timefornocatch=" + currentDateTime,
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
 #endif
 #if MEMORY_FILENAME
-        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}?timefornocatch=" + currentDateTime,
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
 #endif
 #if SYMBOLS_FILENAME
-        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}?timefornocatch=" + currentDateTime,
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
 #endif
         streamingAssetsUrl: "StreamingAssets",
         companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
@@ -136,8 +136,10 @@ loadingtext.classList.add("visible");
 var script = document.createElement("script");
 script.src = loaderUrl;
 console.log("Loading:", loaderUrl);
-script.onload = function () {
-    if (typeof SetTitleInfo === 'function')
+var gameLoded = false;
+function LoadGame(){
+  gameLoded = true;
+     if (typeof SetTitleInfo === 'function')
     {
       console.log("title info " + titleInfo);
         SetTitleInfo(titleInfo);  // <-- your parameter here
@@ -201,22 +203,21 @@ script.onload = function () {
         console.error(error);
 
     }
-};
-
-script.onerror = function (error) {
-
-    console.error(
-        "STEP 9 - Loader Script Failed"
-    );
-
-    console.error(error);
-
+}
+script.onload = function () {
+ LoadGame();
 };
 console.log("APPENDING SCRIPT");
-  setTimeout(function () {
+ setTimeout(function () {
 
 document.body.appendChild(script);
 console.log("SCRIPT APPENDED");
+  setTimeout(function () {
+if(!gameLoded){
+LoadGame();  
+}
+
+    }, 1000);
 
     }, 1000);
 

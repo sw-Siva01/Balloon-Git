@@ -8,11 +8,9 @@ public class NetworkHandler : MonoBehaviour
     public GameObject ConnectionPanel;
     public GameObject ServerPopPanel;
     public static NetworkHandler instance;
-
     public GameObject waitingForResponse;
     public GameObject SessionPopup;
     public GameObject ServerKick;
-
     private DateTime _LastActiveTime;
     [SerializeField] private double _SessionDelay;
 
@@ -23,7 +21,6 @@ public class NetworkHandler : MonoBehaviour
         SetDelay(180);
         StartIdleSession();
     }
-
     private void Update()
     {
         if ((Input.GetKeyDown(KeyCode.Mouse0) && !GameController.instance.netCheck) || (SettingsPanelHandler.instance.HTP.gameObject.activeInHierarchy && Input.mouseScrollDelta.y != 0) ||
@@ -77,7 +74,6 @@ public class NetworkHandler : MonoBehaviour
             ServerPopPanel.SetActive(true);
         }
     }
-
     public void ShowWaitingForResponse()
     {
         waitingForResponse.gameObject.SetActive(true);
@@ -88,7 +84,6 @@ public class NetworkHandler : MonoBehaviour
         waitingForResponse.gameObject.SetActive(false);
         ConnectionPanel.SetActive(false);
     }
-
     private IEnumerator ValidateIdle()
     {
         while ((DateTime.Now - _LastActiveTime).TotalSeconds <= _SessionDelay)
@@ -99,7 +94,6 @@ public class NetworkHandler : MonoBehaviour
             SessionPopup.SetActive(true);
         SetDelay();
     }
-
     public void StartIdleSession(bool _check = true)
     {
         if (SessionPopup.activeSelf) { return; }
@@ -111,12 +105,10 @@ public class NetworkHandler : MonoBehaviour
             StartCoroutine(nameof(ValidateIdle));
         }
     }
-
     public DateTime GetLastActiveTime()
     {
         return _LastActiveTime;
     }
-
     public void SetDelay(double delay = 180)
     {
         _SessionDelay = delay;

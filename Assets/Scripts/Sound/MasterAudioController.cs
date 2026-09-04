@@ -7,31 +7,23 @@ public class MasterAudioController : MonoBehaviour
 {
     public static MasterAudioController instance;
     public bool muteAllAudio;
-
     public Queue<AudioSource> audioSources = new Queue<AudioSource>();
-
     public int count;
-
     [System.Serializable]
     public class AudioByType
     {
         public AudioEnum audioEnum;
         public List<AudioSource> audioActive;
     }
-
     [SerializeField] List<AudioByType> audiosActive = new List<AudioByType>();
-
     int poolSize = 4;
-
     public AudioCollection audioCollection;
-
     public BackgroundAudio BackgroundAudio;
 
     private void Awake()
     {
         instance = this;
     }
-
     private void Update()
     {
 #if !UNITY_SERVER
@@ -44,8 +36,6 @@ public class MasterAudioController : MonoBehaviour
         InitializePool();
 
     }
-
-
     public void StopAudio(AudioEnum audioToPlay)
     {
         while (audiosActive.Exists(x => x.audioEnum == audioToPlay))
@@ -60,7 +50,6 @@ public class MasterAudioController : MonoBehaviour
             audiosActive.Remove(audiotypeTostop);
         }
     }
-
     public void PlayAudio(AudioEnum audioToPlay, bool loop = false)
     {
         if (muteAllAudio || audioCollection == null) return;
@@ -90,7 +79,6 @@ public class MasterAudioController : MonoBehaviour
             StartCoroutine(EnqueueAudioSource(source));
         }
     }
-
     void InitializePool()
     {
         for (int i = 0; i < poolSize; i++)
@@ -98,7 +86,6 @@ public class MasterAudioController : MonoBehaviour
             CreateNewAudioSource();
         }
     }
-
     void CreateNewAudioSource()
     {
         GameObject go = new GameObject("Audio", typeof(AudioSource));
@@ -110,7 +97,6 @@ public class MasterAudioController : MonoBehaviour
         audiosource.playOnAwake = false;
         audioSources.Enqueue(audiosource);
     }
-
     AudioSource GetAudioSource()
     {
         AudioSource audioSource = null;
@@ -121,7 +107,6 @@ public class MasterAudioController : MonoBehaviour
         audioSource = audioSources.Dequeue();
         return audioSource;
     }
-
     IEnumerator EnqueueAudioSource(AudioSource source)
     {
         if (source.clip == null)
@@ -155,7 +140,6 @@ public class MasterAudioController : MonoBehaviour
             }
         }
     }
-
     public void SetVolumeMute()
     {
         muteAllAudio = true;
@@ -173,7 +157,6 @@ public class MasterAudioController : MonoBehaviour
             }
         }
     }
-
     public void SetVolumeUnMute()
     {
        
@@ -193,7 +176,6 @@ public class MasterAudioController : MonoBehaviour
         }
        
     }
-
     public bool IsAnyAudioPlaying()
     {
         foreach (var audioType in audiosActive)

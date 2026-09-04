@@ -12,48 +12,39 @@ public class SettingsPanelHandler : UIHandler
 {
     #region { ::::::::::::::::::::::::: Headers ::::::::::::::::::::::::: }
     public static SettingsPanelHandler instance;
-    public RectTransform PanelTransform;
-    public float XOffPos = 700;
-    public Button ExitBtn;
+    [SerializeField] RectTransform PanelTransform;
+    [SerializeField] float XOffPos = 700;
+    [SerializeField] Button ExitBtn;
     public Toggle SoundToggle;
-    public UnityAction SwapSpriteSequence;
-    public Button emptySpaceBtn;
-    public GameObject emptySpaceObj;
+    [SerializeField] UnityAction SwapSpriteSequence;
+    [SerializeField] Button emptySpaceBtn;
+    [SerializeField] GameObject emptySpaceObj;
     public GameObject HTP;
     [SerializeField] private Button betHistory_Btn;
     [SerializeField] private GameObject betHistory;
-    public string playerName;
-    /*public Button _fullScreen;*/
+    [SerializeField] string playerName;
     public TMP_Text playerNameTxt;
     public Button howtoPlayBtn;
-    public Toggle MusicToggle;
-    /*public Toggle soundTogWelcome, musicTogWelcome;*/
+    [SerializeField] Toggle MusicToggle;
     public GameObject RedirectingPanel;
-
     public Button settingsBtn;
     public Button settingsCloseBtn;
     [SerializeField] private Button gameLimits_Btn;
     public GameObject GameLimits;
-    public Button addCashBtn;
+    [SerializeField] Button addCashBtn;
     #endregion  ::::::::::::::::::::::::: END :::::::::::::::::::::::::
     private void Awake()
     {
         instance = this;
-        /* _fullScreen.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); FullScreenFunc(); });*/
-        howtoPlayBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); HowToPlay(); });
         ExitBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); OnExitBtnClick(); });
-
         emptySpaceBtn.onClick.AddListener(() =>
         {
             HideMe();
         });
-
         SoundToggle.onValueChanged.AddListener((state) => { ToggleSound(state); });
         MusicToggle.onValueChanged.AddListener((state) => { SetMusicVolume(state); });
-
         gameLimits_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowGameLimitScreen(); });
         betHistory_Btn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowBetHistoryScreen(); });
-
         addCashBtn.onClick.AddListener(() => { UI_Controller.instance.PlayButtonSound(); ShowDeposit(); });
     }
     private void Start()
@@ -67,31 +58,17 @@ public class SettingsPanelHandler : UIHandler
         settingsBtn.gameObject.SetActive(true);
         settingsCloseBtn.gameObject.SetActive(false);
     }
-    public void HowToPlay()
-    {
-        /*UI_Controller.instance.howToPlay_Panel.ShowMe();*/
-    }
     public void ToggleSound(bool value)
     {
         SoundToggle.isOn = value;
-
-        /*soundTogWelcome.isOn = value;*/
         DebugHelper.Log("Sound volume --> " + value);
-
         if (SoundToggle.isOn)
-        {
-
             MasterAudioController.instance.SetVolumeUnMute();
-
-        }
         else
-        {
             MasterAudioController.instance.SetVolumeMute();
-        }
+
         if (SoundToggle.isOn)
             MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
-
-        //if (!Updatetoggle) return;
 
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
@@ -99,13 +76,8 @@ public class SettingsPanelHandler : UIHandler
     public void SetMusicVolume(bool _state)
     {
         MasterAudioController.instance.PlayAudio(AudioEnum.toggle);
-
         MusicToggle.isOn = _state;
-
         MasterAudioController.instance.BackgroundAudio.SetBgmSoundStatus(MusicToggle.isOn);
-
-        //if (!Updatetoggle) return;
-
         CancelInvoke(nameof(UpdateMusic));
         Invoke(nameof(UpdateMusic), 0.5f);
     }
@@ -140,7 +112,6 @@ public class SettingsPanelHandler : UIHandler
         SwapSpriteSequence?.Invoke();
         emptySpaceObj.SetActive(false);
     }
-
     public void OnExitBtnClick()
     {
         UI_Controller.instance.ExitWebGL();
@@ -157,9 +128,7 @@ public class SettingsPanelHandler : UIHandler
             settingsCloseBtn.gameObject.SetActive(true);
         }
         else
-        {
             HideMe();
-        }
     }
     public void ShowDeposit()
     {
@@ -167,15 +136,11 @@ public class SettingsPanelHandler : UIHandler
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
             if (!success)
-            {
                 return;
-            }
             else
             {
                 if (!GameController.instance.demo)
-                {
                     APIController.instance.OnClickDepositBtn();
-                }
             }
         });
 #endif
@@ -184,31 +149,22 @@ public class SettingsPanelHandler : UIHandler
     {
         APIController.instance.authentication.sound = SoundToggle.isOn;
         APIController.instance.authentication.music = MusicToggle.isOn;
-
         LocalStorage.Save("Lootrix_sound", APIController.instance.authentication.sound ? "true" : "false");
         LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");
-
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
             if (success)
-            {
                 APIController.instance.UpdateAudioSettings();
-            }
             else
-            {
                 Invoke(nameof(UpdateMusic), 0.5f);
-            }
         });
     }
-
     bool Updatetoggle = false;
     public void SetToggleValueFromAPI(bool sound, bool music)
     {
         SoundToggle.isOn = sound;
         MusicToggle.isOn = music;
-        //Updatetoggle = true;
     }
-
     public void ShowGameLimitScreen()
     {
         GameLimits.SetActive(true);
@@ -218,11 +174,10 @@ public class SettingsPanelHandler : UIHandler
     }
     void OnUserDetailsUpdate()
     {
-
         string sounds = LocalStorage.Load("Lootrix_sound");
         string musics = LocalStorage.Load("Lootrix_music");
-        bool sound = /*(string.IsNullOrEmpty(sounds) || (sounds == "true")) ? true : */false;
-        bool music = /*(string.IsNullOrEmpty(musics) || (musics == "true")) ? true : */false;
+        bool sound = false;
+        bool music = false;
 
         if (string.IsNullOrEmpty(sounds) && string.IsNullOrEmpty(musics))
         {
@@ -234,10 +189,7 @@ public class SettingsPanelHandler : UIHandler
             sound = sounds == "true";
             music = musics == "true";
         }
-
         DebugHelper.Log("Updating SOundddd" + sounds + "Music" + music);
-
-
         APIController.instance.authentication.sound = sound;
         APIController.instance.authentication.music = music;
         SetToggleValueFromAPI(sound, music);

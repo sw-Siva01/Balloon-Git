@@ -1,5 +1,5 @@
 #if USE_DATA_CACHING
-const cacheName = {{{JSON.stringify(COMPANY_NAME + "-" + PRODUCT_NAME + "-" + PRODUCT_VERSION )}}};
+const cacheName = {{{ JSON.stringify(COMPANY_NAME + "-" + PRODUCT_NAME + "-" + PRODUCT_VERSION) }}} + "-{{{ Date.now() }}}";
 const contentToCache = [
     "Build/{{{ LOADER_FILENAME }}}",
     "Build/{{{ FRAMEWORK_FILENAME }}}",
@@ -28,7 +28,14 @@ self.addEventListener('install', function (e) {
 #if USE_DATA_CACHING
 self.addEventListener('fetch', function (e) {
 
-    if (e.request.method !== 'GET') {
+    const url = new URL(e.request.url);
+
+    // Folders whose files should always come fresh from network, never cached
+    const cachablePaths = ['/Build/', '/TemplateData/'];
+    const isCachable = cachablePaths.some(p => url.pathname.includes(p));
+
+    // Non-GET, or not in a cachable folder → straight to network, no caching
+    if (e.request.method !== 'GET' || !isCachable) {
         e.respondWith(fetch(e.request));
         return;
     }

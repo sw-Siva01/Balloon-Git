@@ -13,8 +13,6 @@ public class KeyBoardHandler : MonoBehaviour
     public Button decimalButton, submitButton, backSpaceButton, cancelButton;
     public TMP_InputField displayText;
     public string currentInput = "";
-    /*private float minValue = APIController.instance.authentication.entryAmountDetails.minBetValue;
-    private float maxValue = APIController.instance.authentication.entryAmountDetails.maxBetValue;*/
     Action<float> OnSubmitAction, OnValurChangedAction;
     Action<float> OnCancelAction;
     public CanvasGroup canvasGroup;
@@ -52,17 +50,14 @@ public class KeyBoardHandler : MonoBehaviour
         }
         BetInputController.Instance.BetAmtInput.text = string.Empty;
         currentInput += number;
-
         UpdateDisplay(false);
     }
-
     void OnDecimalValuePressed()
     {
         MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput += ".";
         UpdateDisplay(false);
     }
-
     void UpdateDisplay(bool clampValue = true)
     {
         if (float.TryParse(currentInput, out float result))
@@ -83,7 +78,6 @@ public class KeyBoardHandler : MonoBehaviour
             displayText.text = currentInput;
             MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         }
-
         currentInput = displayText.text;
         decimalButton.interactable = !currentInput.Contains(".");
         controller.betAmountTxt.gameObject.SetActive(false);
@@ -91,13 +85,11 @@ public class KeyBoardHandler : MonoBehaviour
         {
             BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(true);
         }
-
         if (currentInput.Length > 10)
         {
             BetInputTextRect.localPosition = new Vector2(-((BetInputTextRect.sizeDelta.x / 2) + 20), 0);
         }
     }
-
     void OnBackSpacePressed()
     {
         MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
@@ -111,13 +103,11 @@ public class KeyBoardHandler : MonoBehaviour
             decimalButton.interactable = true;
         }
     }
-
     public void OnClearButtonPressed()
     {
         currentInput = "";
         displayText.text = "0";
     }
-
     public void OnSubmitInput()
     {
         DebugHelper.Log("OnSubmitInput");
@@ -144,6 +134,9 @@ public class KeyBoardHandler : MonoBehaviour
             {
                 f = Mathf.Clamp(float.Parse(currentInput), APIController.instance.authentication.entryAmountDetails.minBetValue, APIController.instance.authentication.entryAmountDetails.maxBetValue);
                 OnSubmitAction?.Invoke(f);
+
+                if (f >= APIController.instance.authentication.entryAmountDetails.maxBetValue)
+                    GameController.instance.MaxBet_Object();
             }
             catch
             {
@@ -154,14 +147,11 @@ public class KeyBoardHandler : MonoBehaviour
             DebugHelper.Log("KeyPad Input WIth Some Values");
         }
         DebugHelper.Log("OnSubmitInput Called");
-        //BetInputController.Instance.CloseKeyPadPanel();
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
     }
-
     public void OnCancelInput()
     {
         DebugHelper.Log("OnCancelInput");
-        //MasterAudioController.instance.PlayAudio(AudioEnum.buttonClick);
         currentInput = displayText.text;
         if (string.IsNullOrWhiteSpace(currentInput))
         {
@@ -200,11 +190,9 @@ public class KeyBoardHandler : MonoBehaviour
             DebugHelper.Log("KeyPad Input WIth Some Values");
         }
         DebugHelper.Log("OnCancelInput Called");
-
         BetInputController.Instance.CloseKeyPadPanel();
         BetInputController.Instance.BetAmtInput.textViewport.gameObject.SetActive(false);
     }
-
     public void ShowKeyBoard(double currentValue, Action<float> _onSubmitAction, Action<float> _onValueChanged, Action<float> _onCancelAction)
     {
         BetInputController.Instance.BetAmtInput.textComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
