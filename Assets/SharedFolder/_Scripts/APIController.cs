@@ -177,7 +177,7 @@ public class APIController : MonoBehaviour
     public async void GetUpdatedBalance()
     {
         bool playerinfoReceived = false;
-        BaseSocketController.instance.WSS_PlayerInfo(
+        /*BaseSocketController.instance.WSS_PlayerInfo(
         (initateRes) =>
         {
 
@@ -209,7 +209,7 @@ public class APIController : MonoBehaviour
         }, (falseAction) =>
         {
             DebugHelper.Log("Player Info Failed " + falseAction);
-        });
+        });*/
 
         float time = Time.time;
         bool waitingForresponseActive = false;
@@ -222,11 +222,11 @@ public class APIController : MonoBehaviour
             }
             if (Time.time - time > retryDelay)
             {
-                if (BaseSocketController.instance.IsOnline())
+                /*if (BaseSocketController.instance.IsOnline())
                 {
                     GetUpdatedBalance();
                     return;
-                }
+                }*/
             }
             await UniTask.Delay(100);
         }
@@ -241,7 +241,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log("Response from wegbl for authentication : " + data);
         authentication = JsonUtility.FromJson<AuthenticationData>(data);
         //return;
-        string orginalData = Cryptography.DecryptStr(authentication.title_data);
+        /*string orginalData = Cryptography.DecryptStr(authentication.title_data);
         Debug.Log("GetTitleData Response is orginal ::: " + orginalData);
         var finalresponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(orginalData);
         if (finalresponse.ContainsKey("code") && finalresponse["code"].ToString() == "200" && finalresponse.ContainsKey("data"))
@@ -252,7 +252,7 @@ public class APIController : MonoBehaviour
         else
         {
             ErrorPopUpHandler.instance.ShowError(int.Parse(finalresponse["code"]), finalresponse["message"].ToString());
-        }
+        }*/
 
         await UniTask.Delay(10);
         OnUserBalanceUpdate?.Invoke();
@@ -261,8 +261,8 @@ public class APIController : MonoBehaviour
 
             bool ignoreAuthdata = true;
             string _url = authentication.server_type.ToLower() == "aws" ? titleData.wss_url : titleData.server_url;
-            BaseSocketController.instance.SetServerType(authentication.server_type.ToLower() == "aws" ? WebSocketProvider.AWS : WebSocketProvider.Colyseus);
-            BaseSocketController.instance.ConnectWebSocket(_url, APIController.instance.authentication.gamename);
+            /*BaseSocketController.instance.SetServerType(authentication.server_type.ToLower() == "aws" ? WebSocketProvider.AWS : WebSocketProvider.Colyseus);
+            BaseSocketController.instance.ConnectWebSocket(_url, APIController.instance.authentication.gamename);*/
 
 
             try
@@ -288,7 +288,7 @@ public class APIController : MonoBehaviour
 
 
 
-            BaseSocketController.instance.WSS_Authentication(
+            /*BaseSocketController.instance.WSS_Authentication(
 
                (initaitedres) =>
                {
@@ -298,14 +298,7 @@ public class APIController : MonoBehaviour
                (successRes) =>
                {
                    JObject apiResponse = JObject.Parse(successRes);
-                   /*
-                   {
-                    "code": 200,
-                    "message": "Success",
-                    "data": "{\"user_id\":\"f1e0a9e7-dd42-415a-a572-80c3efb99714\",\"username\":\"THALA\",\"balance\":\"5343.68\",\"currency\":\"INR\"}",
-                    "output": "{\"session_token\":\"67bd004a-a124-0e3f-0cca-a9cf0e6f2eba\",\"gameid\":\"0d1b08db-5a4d-4a73-b050-ee616402912a\"}"
-                    }
-                   */
+                   
                    DebugHelper.Log("Auth response  => " + apiResponse.ToString());
                    if ((int)apiResponse["code"] == 200)
                    {
@@ -387,7 +380,7 @@ public class APIController : MonoBehaviour
                    JObject apiResponse = JObject.Parse(errorRes);
                    ErrorPopUpHandler.instance.ShowError((int)apiResponse["code"], (string)apiResponse["message"]);
                }
-           );
+           );*/
             // }
             // else
             // {
@@ -473,9 +466,9 @@ public class APIController : MonoBehaviour
             payload["request_type"] = "GetTitleData";
             payload["game_name"] = authentication.gamename;
             string payloadJson = JsonConvert.SerializeObject(payload);
-            string encryptPayload = Cryptography.EncryptStr(payloadJson);
+            /*string encryptPayload = Cryptography.EncryptStr(payloadJson);*/
 
-            WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, authentication.client_url, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
+            /*WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, authentication.client_url, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
                 responseReceived = true;
                 Debug.Log("GetTitleData Response is ::: " + body);
@@ -497,7 +490,7 @@ public class APIController : MonoBehaviour
                     }
                 }
 
-            }, 3);
+            }, 3);*/
 
             while (responseReceived == false)
             {
@@ -533,7 +526,7 @@ public class APIController : MonoBehaviour
             payload["request_type"] = "GetServer";
             payload["game_name"] = authentication.gamename;
             string payloadJson = JsonConvert.SerializeObject(payload);
-            string encryptPayload = Cryptography.EncryptStr(payloadJson);
+            /*string encryptPayload = Cryptography.EncryptStr(payloadJson);
 
             WebApiManager.Instance.GetNetWorkCall(NetworkCallType.POST_METHOD_USING_JSONDATA, "https://fwiknm2h5fpjwc32oguaevkggi0tibgf.lambda-url.ap-south-1.on.aws/" + authentication.environment, new List<KeyValuePojo>() { new KeyValuePojo { value = encryptPayload, keyId = "data" } }, async (success, error, body) =>
             {
@@ -579,7 +572,7 @@ public class APIController : MonoBehaviour
                 }
                 isRun = false;
 
-            }, 3);
+            }, 3);*/
             while (isRun)
             {
                 await UniTask.Delay(100);
@@ -718,7 +711,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log("Winning Bet amount" + win_amount_with_comission + "==" + currentBalance + "==" + APIController.instance.userDetails.balance + "==" + spend_amount);
 #if CasinoGames
         bool winningBetResponce = false;
-        reqID = BaseSocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
+        /*reqID = BaseSocketController.instance.WSS_WinningBet(betId, isWin ? 1 : 0, win_amount_with_comission, spend_amount,
         (initatedres) =>
         {
 
@@ -761,12 +754,12 @@ public class APIController : MonoBehaviour
             matchResponse.status = false;
             matchResponse.Message = jobject["message"]?.ToString();
             ErrorPopUpHandler.instance.ShowError((int)jobject["code"], jobject["message"].ToString());
-        });
+        });*/
 
 
         float time = Time.time;
         bool waitingForresponseActive = false;
-        while (!winningBetResponce)
+        /*while (!winningBetResponce)
         {
             if (!waitingForresponseActive && Time.time - time > waitingForResponseDelay)
             {
@@ -783,7 +776,7 @@ public class APIController : MonoBehaviour
                 }
             }
             await UniTask.Delay(100);
-        }
+        }*/
 #endif
     }
 
@@ -793,7 +786,7 @@ public class APIController : MonoBehaviour
 
         bool randomPredictionResponce = false;
         string reqID = "";
-        reqID = BaseSocketController.instance.WSS_GetRandomPredictions(rowCount, columnCount, predectedCount, gamename,
+       /* reqID = BaseSocketController.instance.WSS_GetRandomPredictions(rowCount, columnCount, predectedCount, gamename,
          (init) =>
          {
              randomPredictionResponce = true;
@@ -817,7 +810,7 @@ public class APIController : MonoBehaviour
          {
 
          }
-         );
+         );*/
         float time = Time.time;
         bool waitingForresponseActive = false;
         while (!randomPredictionResponce)
@@ -828,7 +821,7 @@ public class APIController : MonoBehaviour
                 waitingForresponseActive = true;
                 OnInternetStatusChange?.Invoke(NetworkStatus.WaitingforResponse);
             }
-            if (Time.time - time > retryDelay)
+            /*if (Time.time - time > retryDelay)
             {
                 if (BaseSocketController.instance.IsOnline())
                 {
@@ -838,7 +831,7 @@ public class APIController : MonoBehaviour
 
                     return;
                 }
-            }
+            }*/
             await UniTask.Delay(100);
         }
 #endif
@@ -852,7 +845,7 @@ public class APIController : MonoBehaviour
             await UniTask.Delay(200);
         }
 
-        BaseSocketController.instance.WSS_AddBet(BetId, amount, matchToken,
+        /*BaseSocketController.instance.WSS_AddBet(BetId, amount, matchToken,
         (initatedres) =>
         {
             // DebugHelper.Log("Add Bet Init Res :: " + initatedres);
@@ -882,7 +875,7 @@ public class APIController : MonoBehaviour
             matchResponse.status = false;
             matchResponse.Message = jobject["message"]?.ToString();
             ErrorPopUpHandler.instance.ShowError((int)jobject["code"], jobject["message"].ToString());
-        });
+        });*/
         return;
     }
 
@@ -895,10 +888,10 @@ public class APIController : MonoBehaviour
             };
             AWS_SocketController.instance.GetRandomCard();
     */
-    public string GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
+   /* public string GetPredictionValue(string payload, Action<string> initAction, Action<string> successAction, Action<string> errorAction)
     {
         return BaseSocketController.instance.FetchGamePrediction("Prediction", authentication.gamename, payload, initAction, successAction, errorAction);
-    }
+    }*/
 
     public CreateMatchResponse matchResponse;
     public async void CreateAndJoinMatch(int index, double amount, TransactionMetaData metadata, bool isAbleToCancel, string lobbyName, string playerId, bool isBot, string gameName, string operatorName, string game_ID, bool isBlockAPI, List<string> players, Action<CreateMatchResponse> initalizedAction, Action<int, CreateMatchResponse> successAction, Action<CreateMatchResponse> errorAction)
@@ -928,7 +921,7 @@ public class APIController : MonoBehaviour
         DebugHelper.Log($"BetRequest JSON Temp before Response.....BetIndex_{index}");
         bool createandjoingameResponseReceived = false;
         string reqID = "";
-        reqID = BaseSocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonConvert.SerializeObject(metadata),
+        /*reqID = BaseSocketController.instance.WSS_CreateAndJoin(lobbyName, index, amount, isAbleToCancel, JsonConvert.SerializeObject(metadata),
 
          (initiatedres) =>
          {
@@ -990,7 +983,7 @@ public class APIController : MonoBehaviour
              }
              else
              {
-                 /*
+                 *//*
                               401 - User token is invalid
                               402 - Insufficient fund
                               403 - User token is expired
@@ -1000,7 +993,7 @@ public class APIController : MonoBehaviour
                               500 - Internal error
                               502 - Error in lootrix side
                               408 - timeout
-                              */
+                              *//*
                  // switch((int)jsonObject["code"])
                  // {
                  //     case 402:
@@ -1038,7 +1031,7 @@ public class APIController : MonoBehaviour
              errorAction?.Invoke(matchResponse);
              ErrorPopUpHandler.instance.ShowError((int)jobject["code"], jobject["message"].ToString());
 
-         });
+         });*/
 
         // Wait for 5 seconds for response
         float time = Time.time;
@@ -1074,16 +1067,16 @@ public class APIController : MonoBehaviour
             if (Time.time - time > retryDelay)
             {
                 OnInternetStatusChange?.Invoke(NetworkStatus.NetworkIssue);
-                BaseSocketController.instance.RemoveRequestEvent(reqID);
+                /*BaseSocketController.instance.RemoveRequestEvent(reqID);
                 DebugHelper.Log("CreateAndJoinMatch 3 => " + createandjoingameResponseReceived);
-                bool pingSuccess = await BaseSocketController.instance.TryPing();
-                if (pingSuccess)
+                bool pingSuccess = await BaseSocketController.instance.TryPing();*/
+                /*if (pingSuccess)
                 {
                     //OnInternetStatusChange?.Invoke(NetworkStatus.Active);
                     DebugHelper.Log("NewCreateAndJoinMatch_1  Retry Called");
                     CreateAndJoinMatch(index, amount, metadata, isAbleToCancel, lobbyName, playerId, isBot, gameName, operatorName, game_ID, isBlockAPI, players, initalizedAction, successAction, errorAction);
                     return;
-                }
+                }*/
             }
             await UniTask.Delay(500);
         }

@@ -17,7 +17,8 @@ public class NetworkHandler : MonoBehaviour
     private void Start()
     {
         instance = this;
-        APIController.instance.OnInternetStatusChange += GetNetworkStatus;
+        /*APIController.instance.OnInternetStatusChange += GetNetworkStatus;*/
+        SessionEvents.OnInternetStatusChange += GetNetworkStatus;
         SetDelay(180);
         StartIdleSession();
     }
@@ -66,6 +67,15 @@ public class NetworkHandler : MonoBehaviour
 
         AudioListener.volume = (data == NetworkStatus.Active && !ConnectionPanel.gameObject.activeSelf && APIController.instance.isOnline && APIController.instance.isInFocus) ? 1 : 0;
 
+        if (BalloonGameConfig.IsB2BMode)
+        {
+            BalloonColyseusManager.Instance.RequestBalanceRefresh();
+            DebugHelper.Log($"Updated Blaance ---> 0 ");
+        }
+        else
+        {
+            GameController.instance.InitAmountDetails();
+        }
     }
     private void CheckToEnable()
     {

@@ -1,0 +1,118 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Operator {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  apiKey      String   @unique @map("api_key")
+  hmacSecret  String   @map("hmac_secret")
+  callbackUrl String   @map("callback_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  players      Player[]
+  bets         Bet[]
+  transactions Transaction[]
+
+  @@map("operators")
+}
+
+model Player {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  operatorId   String   @map("operator_id") @db.Uuid
+  externalId   String   @map("external_id")
+  sessionToken String?  @map("session_token")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  operator     Operator      @relation(fields: [operatorId], references: [id])
+  bets         Bet[]
+  transactions Transaction[]
+
+  @@unique([operatorId, externalId])
+  @@map("players")
+}
+
+model Round {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roundNumber    BigInt    @unique @default(autoincrement()) @map("round_number")
+  serverSeed     String    @map("server_seed")
+  serverSeedHash String    @map("server_seed_hash")
+  nonce          Int
+  crashPoint     Decimal?  @map("crash_point") @db.Decimal(10, 2)
+  phase          String    @default("waiting")
+  startedAt      DateTime? @map("started_at") @db.Timestamptz(6)
+  crashedAt      DateTime? @map("crashed_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  bets Bet[]
+
+  @@map("rounds")
+}
+
+model Bet {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roundId           String    @map("round_id") @db.Uuid
+  playerId          String    @map("player_id") @db.Uuid
+  operatorId        String    @map("operator_id") @db.Uuid
+  ticketSlot        Int       @map("ticket_slot") @db.SmallInt
+  amount            Decimal   @db.Decimal(12, 2)
+  clientSeed        String    @default("") @map("client_seed")
+  autoTarget        Decimal   @default(0) @map("auto_target") @db.Decimal(10, 4)
+  cashOutMultiplier Decimal?  @map("cash_out_multiplier") @db.Decimal(10, 4)
+  payout            Decimal?  @db.Decimal(12, 2)
+  status            String    @default("placed")
+  placedAt          DateTime  @default(now()) @map("placed_at") @db.Timestamptz(6)
+  cashedOutAt       DateTime? @map("cashed_out_at") @db.Timestamptz(6)
+
+  round        Round         @relation(fields: [roundId], references: [id])
+  player       Player        @relation(fields: [playerId], references: [id])
+  operator     Operator      @relation(fields: [operatorId], references: [id])
+  transactions Transaction[]
+
+  @@unique([roundId, playerId, ticketSlot])
+  @@map("bets")
+}
+
+model Transaction {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  operatorId   String    @map("operator_id") @db.Uuid
+  playerId     String    @map("player_id") @db.Uuid
+  betId        String?   @map("bet_id") @db.Uuid
+  type         String
+  amount       Decimal   @db.Decimal(12, 2)
+  operatorRef  String?   @map("operator_ref")
+  status       String    @default("pending")
+  errorMessage String?   @map("error_message")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  completedAt  DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  operator Operator @relation(fields: [operatorId], references: [id])
+  player   Player   @relation(fields: [playerId], references: [id])
+  bet      Bet?     @relation(fields: [betId], references: [id])
+
+  @@map("transactions")
+}
+
+model AuditLog {
+  id           BigInt   @id @default(autoincrement())
+  eventType    String   @map("event_type")
+  actorType    String   @map("actor_type")
+  actorId      String?  @map("actor_id")
+  resourceType String?  @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  payload      Json?
+  ipAddress    String?  @map("ip_address")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("audit_log")
+}

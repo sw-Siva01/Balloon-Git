@@ -1,0 +1,47 @@
+{
+  "name": "aviator-server",
+  "version": "1.0.14",
+  "description": "Aviator crash game Colyseus server",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:api": "node dist/api/index.js",
+    "start:all": "pm2 start ecosystem.config.cjs --env production",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "api": "tsx watch src/api/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@colyseus/schema": "^4.0.31",
+    "@colyseus/sdk": "^0.17.42",
+    "@colyseus/tools": "^0.17.19",
+    "@hono/node-server": "^2.0.3",
+    "@hono/zod-validator": "^0.8.0",
+    "@supabase/supabase-js": "^2.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
+    "colyseus": "^0.17.10",
+    "colyseus.js": "^0.16.22",
+    "dotenv": "^17.4.2",
+    "hono": "^4.12.21",
+    "jose": "^6.2.4",
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.22.0",
+    "@types/debug": "^4.1.13",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.8.0",
+    "prisma": "^5.22.0",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.3"
+  }
+}

@@ -49,7 +49,8 @@ public class SettingsPanelHandler : UIHandler
     }
     private void Start()
     {
-        APIController.instance.OnAuthDataUpdate += OnUserDetailsUpdate;
+        /*APIController.instance.OnAuthDataUpdate += OnUserDetailsUpdate;*/
+        SessionEvents.OnUserDetailsUpdate += OnUserDetailsUpdate;
     }
     public void ShowBetHistoryScreen()
     {
@@ -147,14 +148,22 @@ public class SettingsPanelHandler : UIHandler
     }
     private void UpdateMusic()
     {
-        APIController.instance.authentication.sound = SoundToggle.isOn;
+        /*APIController.instance.authentication.sound = SoundToggle.isOn;
         APIController.instance.authentication.music = MusicToggle.isOn;
         LocalStorage.Save("Lootrix_sound", APIController.instance.authentication.sound ? "true" : "false");
-        LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");
+        LocalStorage.Save("Lootrix_music", APIController.instance.authentication.music ? "true" : "false");*/
+        SessionState.sound = SoundToggle.isOn;
+        SessionState.music = MusicToggle.isOn;
+        LocalStorage.Save("Lootrix_sound", SessionState.sound ? "true" : "false");
+        LocalStorage.Save("Lootrix_music", SessionState.music ? "true" : "false");
         APIController.instance.CheckInternetandProcess(async (success) =>
         {
             if (success)
-                APIController.instance.UpdateAudioSettings();
+            {
+                LocalStorage.Save("Lootrix_sound", SessionState.sound ? "true" : "false");
+                LocalStorage.Save("Lootrix_music", SessionState.music ? "true" : "false");
+                /*APIController.instance.UpdateAudioSettings();*/
+            }
             else
                 Invoke(nameof(UpdateMusic), 0.5f);
         });
@@ -190,8 +199,10 @@ public class SettingsPanelHandler : UIHandler
             music = musics == "true";
         }
         DebugHelper.Log("Updating SOundddd" + sounds + "Music" + music);
-        APIController.instance.authentication.sound = sound;
-        APIController.instance.authentication.music = music;
+        /*APIController.instance.authentication.sound = sound;
+        APIController.instance.authentication.music = music;*/
+        SessionState.sound = sound;
+        SessionState.music = music;
         SetToggleValueFromAPI(sound, music);
     }
 }

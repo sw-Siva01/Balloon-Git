@@ -33,7 +33,13 @@ public class BetHistoryHandler : MonoBehaviour
     }
     void Start()
     {
-        APIController.instance.OnUserDetailsUpdate += OnUserDetailsUpdate;
+        /*APIController.instance.OnUserDetailsUpdate += OnUserDetailsUpdate;*/
+        SessionEvents.OnUserDetailsUpdate += OnUserDetailsUpdate;
+        BalloonColyseusManager.Instance.OnBetHistoryReceived += OnBetHistoryReceived;
+    }
+    private void OnBetHistoryReceived(List<Betlist> bets)
+    {
+        AddMyBetHistory(bets, 0);
     }
     void Update()
     {
@@ -84,7 +90,10 @@ public class BetHistoryHandler : MonoBehaviour
     }
     public void GetLastBet(string matchID)
     {
-        var authentication = APIController.instance.authentication;
+        if (!BalloonGameConfig.IsB2BMode) return;
+        BalloonColyseusManager.Instance.RequestBetHistory();
+
+        /*var authentication = APIController.instance.authentication;
         var userDetails = APIController.instance.userDetails;
 
         if (authentication.operatorname == "demo")
@@ -124,7 +133,7 @@ public class BetHistoryHandler : MonoBehaviour
             {
                 DebugHelper.Log("GetLastBet response is : " + error);
             }
-        });
+        });*/
     }
     public async void AddMyBetHistory(List<Betlist> bets, int remainingBetCount)
     {
